@@ -13,7 +13,7 @@ warnings.simplefilter(action="ignore", category=Warning)
 # не будут показываться
 
 
-year = 2023                   # год поиска
+year = 2024                   # год поиска
 year_now = date.today().year  # текущий год
 
 file = '//Server/otk/1 ГАРАНТИЯ на сервере/' + \
