@@ -98,7 +98,7 @@ def clear_res():  # функция очистки поля вывода резу
 def otchet_output():  # функция подготовки выборки из базы и печати отчета
     num1 = inf_1.split()
     num2 = inf_2.split()
-    with open(r'//Server/otk/1 ГАРАНТИЯ на сервере/Отчет по результатам поиска по базе ОТК.txt', 'w',
+    with open('//Server/otk/1 ГАРАНТИЯ на сервере/Отчет по результатам поиска по базе ОТК.txt', 'w',
               encoding="utf-8") as res_file:  # записываем в файл
         print('\n' * 2, file=res_file)
 
@@ -222,7 +222,7 @@ window = tk.Tk()
 # Создается окно с заголовком
 # меняем логотип Tkinter (перышко) на свой логотип
 window.iconbitmap(
-    '//Server/otk/1 ГАРАНТИЯ на сервере/ЗНАЧКИ_Логотипы/IconBZA.ico')
+    '//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconBZA.ico')
 # название заголовка в окне приложения
 window.title('ПОИСК ПО БАЗЕ РЕКЛАМАЦИЙ ОТК')
 window.geometry('650x600')    # размер окна приложения
