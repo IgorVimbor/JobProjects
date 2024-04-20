@@ -17,7 +17,7 @@ warnings.simplefilter(action="ignore", category=Warning)
 client = 'ЯМЗ - эксплуатация'   # потребитель
 product = 'водяной насос'       # изделие по которому будет формироваться диаграмма
 # наименование столбца по которому строим диаграмму
-value_column = 'Месяц регистрации'
+value_column = 'Дата изготовления изделия'
 # список столбцов датафрейма
 # ['Месяц регистрации',
 # 'Обозначение изделия',
@@ -30,13 +30,14 @@ value_column = 'Месяц регистрации'
 # --------------------------------------------------------------------------------
 
 # создаем датафреймы по годам
-df = MyFrame(2023, client, product).get_frame()
-# data_2023 = MyFrame(2023, client, product).get_frame()
-# data_2022 = MyFrame(2022, client, product).get_frame()
-# data_2021 = MyFrame(2021, client, product).get_frame()
+# df = MyFrame(2023, client, product).get_frame()
+data_2024 = MyFrame(2024, client, product).get_frame()
+data_2023 = MyFrame(2023, client, product).get_frame()
+data_2022 = MyFrame(2022, client, product).get_frame()
+data_2021 = MyFrame(2021, client, product).get_frame()
 
 # создаем сводный датафрейм из датафреймов по годам
-# df = pd.concat([data_2023, data_2022, data_2021])
+df = pd.concat([data_2024, data_2023, data_2022, data_2021])
 
 # если выбран столбец 'Дата изготовления изделия', то в датафрейме удаляем строки, где нет даты
 if value_column == 'Дата изготовления изделия':
