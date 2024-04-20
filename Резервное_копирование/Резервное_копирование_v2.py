@@ -184,7 +184,7 @@ class App(tk.Tk):
                 self.frame_b.insert_to_listbox(fl_pap)
 
     def change_progress(self):
-        """функция отображения виджета загрузки с задержкой на 1"""
+        """функция отображения виджета загрузки с задержкой на 1 секунду"""
         while self.progress_bar["value"] < 100:
             self.progress_bar["value"] += 10
             self.update()
