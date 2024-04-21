@@ -93,12 +93,12 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         # название заголовка в окне приложения
-        self.title("РЕЗЕРВНОЕ КОПИРОВАНИЕ")
+        self.title("РЕЗЕРВНОЕ КОПИРОВАНИЕ_v3")
         # меняем логотип Tkinter на свой
         self.iconbitmap("IconGray_square.ico")
         # self.iconbitmap("//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconGray_square.ico")
 
-        width = 530  # ширина окна
+        width = 540  # ширина окна
         heigh = 530  # высота окна
         # определяем координаты центра экрана и размещаем окно
         screenwidth = self.winfo_screenwidth()
@@ -166,6 +166,8 @@ class App(tk.Tk):
             value=0,
         )
 
+        self.text = tk.Label(self, text="Intellectual property of Igor Vasilenok")
+
         # размещаем фреймы, виджеты и кнопки
         opts = {"padx": 15, "pady": 7}
         self.group_1.grid(row=0, columnspan=2, **opts)
@@ -178,6 +180,7 @@ class App(tk.Tk):
         self.btn_del_pap.grid(row=3, column=1, **opts, sticky=tk.W)
         self.progress_bar.grid(row=4, columnspan=2, **opts)
         self.btn_copy_file.grid(row=5, columnspan=2, **opts)
+        self.text.grid(row=6, columnspan=2, sticky=tk.W)
 
     def choose_file(self, x):
         """функция для выбора файла из окна Проводника"""

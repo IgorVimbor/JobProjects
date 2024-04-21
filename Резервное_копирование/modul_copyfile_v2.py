@@ -55,7 +55,7 @@ class Copy_file:
             # записываем информацию в лог-файл
             with open(file_logs, "a", encoding="utf-8") as file:
                 print(
-                    f"{datetime.now()}\n    ОК! Скопировано {len(self.files)} файлов в каталог {self.path_to} ",
+                    f"{datetime.now()}\n    ОК! Скопировано {len(self.files)} файл(а/ов) в каталог {self.path_to} ",
                     file=file,
                 )
             return True
