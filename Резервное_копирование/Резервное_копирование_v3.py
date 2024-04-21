@@ -1,14 +1,8 @@
-# ВЕРСИЯ 2
-# База данных - файл "Резервное копирование_перечень файлов.txt" служит для хранения ТОЛЬКО перечня файлов.
-# Перечень каталогов не сохраняется - в коде используется вспомогательный список корневых каталогови.
-# При запуске приложения поле с каталогами будет пустым и надо делать обязательный выбор.
+# ВЕРСИЯ 3
+# Создана общая база данных - файл "Резервное копирование_база данных.txt", в который записывается словарь .json
+# В базе данных по ключу "files" хранится перечень файлов для копирования, по ключу "dirs" - перечень каталогов.
 
-# В программе баг!!!
-# При пустом поле в списке файлов или каталогов предупреждение об ошибке показывается,
-# но после выходит сообщение об успешном копировании!!!
-# Баг не исправлен.
-
-import os
+import json
 import time
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -16,77 +10,83 @@ import tkinter.filedialog as fd
 from tkinter import messagebox
 from modul_copyfile_v2 import Copy_file
 
-# база данных - перечень резервных копий файлов (располагается в каталоге проекта или приложения)
-file_base = "Резервное копирование_перечень файлов.txt"
+# база данных - перечень резервных копий файлов и каталогов
+# располагается в каталоге проекта или приложения
+database = "Резервное копирование_база данных.txt"
+
+try:  # если база данных уже существует
+    # открываем базу данных, считываем файл json и сохраняем словарь в переменную
+    with open(database, encoding="utf-8-sig") as file:
+        data: dict = json.load(file)
+except:  # если базы данных нет - создаем
+    data = {"files": [], "dirs": []}
+    with open(database, "w", encoding="utf-8-sig") as file:
+        json.dump(data, file, ensure_ascii=False, indent=4)
 
 
 class ListFrame(tk.Frame):
-    def __init__(self, master, width, height, is_download=False):
+    def __init__(self, master, width, height, key):
         super().__init__(master)  # наследуемся от tk.Frame
         self._width = width  # ширина виджета
         self._height = height  # высота виджета
-        # флаг, что требуется загрузить перечень файлов из базы данных
-        self._download = is_download
-        # вспомогательный список корневых каталогов для создания каталога резервного копирования
-        self.list_dir = []
+        self.key = key  # ключи из файла json ("files" или "dirs")
 
         # создаем объект Listbox и в нем объект Scrollbar с прокруткой (скроллингом)
-        self.list = tk.Listbox(self)
-        self.scroll = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.list.yview)
+        self.listbox = tk.Listbox(self)
+        self.scroll = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.listbox.yview)
         # указываем размеры объекта Listbox
-        self.list.config(width=self._width, height=self._height)
-
+        self.listbox.config(width=self._width, height=self._height)
         # сохраняем размещение объектов Listbox и Scrollbar во фрейме
-        self.list.pack(side=tk.LEFT)
+        self.listbox.pack(side=tk.LEFT)
         self.scroll.pack(side=tk.LEFT, fill=tk.Y)
 
-        # если указан флаг загрузки перечня файлов из базы данных
-        if self._download:
-            # открываем базу данных с перечнем файлов для копирования, считываем и сохраняем в переменную
-            with open(file_base, encoding="utf-8") as items:
-                self.items = items.readlines()
-            # добавляем в объект Listbox перечень файлов для копирования
-            self.list.insert(0, *[i.split("/")[-1] for i in self.items])
+        # добавляем в объект Listbox перечень файлов для копирования или каталогов
+        if key == "files":
+            self.listbox.insert(0, *[i.split("/")[-1] for i in data[self.key]])
+        else:
+            self.listbox.insert(0, *[i for i in data[self.key]])
 
     def insert_to_listbox(self, item):
         """функция для добавления файла в перечень файлов объекта Listbox и базу данных"""
-        if not os.path.isdir(item):  # если выбранный файл НЕ является каталогом
-            # добавляем новый файл в конец перечня файлов для копирования объекта Listbox
-            self.list.insert(tk.END, item.split("/")[-1])
-            self.items.append(item + "\n")  # добавляем новый файл в базу данных
-            print(self.items)
-            self.write_to_base(self.items)  # сохраняем изменения в базе данных
+        if self.key == "files":  # если выбран файл
+            # добавляем новый файл в конец перечня файлов объекта Listbox
+            self.listbox.insert(tk.END, item.split("/")[-1])
+            # добавляем новый файл в базу данных по ключу словаря
+            data[self.key].append(item + "\n")
         else:  # если выбран каталог
-            self.list.insert(tk.END, item)  # добавляем новый каталог в список каталогов
-            new_dir = self.list.get(first="end")  # сохряняем новый каталог в переменную
-            print(new_dir)
-            self.list_dir.append(new_dir)  # добавляем новый каталог в список каталогов
+            # добавляем новый каталог в список каталогов
+            self.listbox.insert(tk.END, item)
+            # сохряняем новый каталог в переменную
+            new_dir = self.listbox.get(first="end")
+            # добавляем новый каталог в базу данных по ключу словаря
+            data[self.key].append(new_dir)
+        self.write_to_base(data)  # сохраняем изменения в базе данных
+        # print(data)
 
     def del_from_listbox(self):
         """функция для удаления файла из перечня файлов объекта Listbox и из базы данных"""
-        index = self.list.curselection()  # находим индекс выделенной строки в списке
+        index = self.listbox.curselection()  # находим индекс выделенной строки в списке
         if index:  # если строка выбрана
             # определяем значение строки - наименование файла
-            value = self.list.get(index)
-            # если файл (выбранная строка) НЕ является каталогом
-            if not os.path.isdir(value):
-                # удаляем строку из перечня файлов для копирования
-                self.list.delete(index)
+            value = self.listbox.get(index)
+            if self.key == "files":  # если выбран файл
+                # удаляем файл из перечня файлов для копирования
+                self.listbox.delete(index)
                 # удаляем файл из базы данных
-                for item in self.items:
+                for item in data[self.key]:
                     if value in item:
-                        self.items.remove(item)
-                print(self.items)
-                self.write_to_base(self.items)  # сохраняем изменения в базе данных
-            else:
+                        data[self.key].remove(item)
+                self.write_to_base(data)  # сохраняем изменения в базе данных
+            else:  # если выбран каталог
                 # удаляем каталог из перечня каталогов для копирования
-                self.list.delete(index)
-                self.list_dir.remove(value)
+                self.listbox.delete(index)
+                data[self.key].remove(value)
+        # print(data)
 
-    def write_to_base(self, lst):
-        """функция для записи актуального перечня файлов для копирования в базу данных (файл txt)"""
-        with open(file_base, "w", encoding="utf-8") as file:
-            file.writelines(lst)
+    def write_to_base(self, dct):
+        """функция для записи актуального перечня файлов и каталогов в базу данных"""
+        with open(database, "w", encoding="utf-8-sig") as file:
+            json.dump(dct, file, ensure_ascii=False, indent=4)
 
 
 class App(tk.Tk):
@@ -95,6 +95,7 @@ class App(tk.Tk):
         # название заголовка в окне приложения
         self.title("РЕЗЕРВНОЕ КОПИРОВАНИЕ")
         # меняем логотип Tkinter на свой
+        self.iconbitmap("IconGray_square.ico")
         # self.iconbitmap("//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconGray_square.ico")
 
         width = 530  # ширина окна
@@ -113,7 +114,7 @@ class App(tk.Tk):
         )
         # экземпляр класса ListFrame
         # виджет с перечнем файлов для копирования и скроллингом (объект Listbox и в нем объект Scrollbar)
-        self.frame_a = ListFrame(self.group_1, width=74, height=12, is_download=True)
+        self.frame_a = ListFrame(self.group_1, width=74, height=12, key="files")
 
         # наименование фрейма с каталогом в который будут сохраняться файлы
         self.group_2 = tk.LabelFrame(
@@ -124,7 +125,7 @@ class App(tk.Tk):
         )
         # экземпляр класса ListFrame
         # виджет (объект Listbox) для выбора каталога в который будут сохраняться файлы
-        self.frame_b = ListFrame(self.group_2, width=74, height=3, is_download=False)
+        self.frame_b = ListFrame(self.group_2, width=74, height=3, key="dirs")
 
         # кнопка выбора файла и добавления в список
         self.btn_add_file = tk.Button(
@@ -198,41 +199,42 @@ class App(tk.Tk):
         while self.progress_bar["value"] < 100:
             self.progress_bar["value"] += 10
             self.update()
-            time.sleep(0.3)
+            time.sleep(0.2)
             if self.progress_bar["value"] == 70:  # остановка (псевдозагрузка)
-                time.sleep(1)
+                time.sleep(0.5)
 
-    def preparation_copy(self, dr):
-        """функция для копирования файлов в конкретный каталог"""
-        self.progress_bar["value"] = 0  # обнуляем виджет загрузки
-        # создаем экземпляр класса Copy_file из кастомного модуля modul_copyfile
-        obj = Copy_file(self.frame_a.items, dr)
-        flag = obj.copy_file()  # копируем файлы в указанный каталог
-        print(flag)
-        if flag:  # если копирование завершено без ошибок и copy_file вернула True
-            self.change_progress()  # старт виджета загрузки
-        else:  # иначе вывод информационного окна об ошибке
+    def start_copy(self):
+        """функция для копирования во все каталоги и вывода информационного окна"""
+        flag_error = False
+        # если список файлов или каталогов пустой - выводим информационное окно об ошибке
+        if not all([v for v in data.values()]):
             messagebox.showerror(
                 "ВНИМАНИЕ!",
                 "Произошла ошибка!\nФайлы или каталоги для копирования не выбраны!",
             )
+            flag_error = True
 
-    def start_copy(self):
-        """функция для копирования во все каталоги и вывода информационного окна"""
-        print(self.frame_b.list_dir)
-        # по каждому каталогу из вспомогательного списка выбранных каталогов
-        for dr in self.frame_b.list_dir:
-            self.preparation_copy(dr)
+        # по каждому каталогу из списка выбранных каталогов
+        for dr in data["dirs"]:
+            self.progress_bar["value"] = 0  # обнуляем виджет загрузки
+
+            # создаем экземпляр класса Copy_file из кастомного модуля modul_copyfile
+            obj = Copy_file(data["files"], dr)
+            flag = obj.copy_file()  # копируем файлы в указанный каталог
+            print(flag)
+            if flag:  # если копирование завершено без ошибок и copy_file вернула True
+                self.change_progress()  # старт виджета загрузки
 
         # вывод информационного окна о сохранении файлов и закрытии программы
-        result = messagebox.askyesno(
-            "СООБЩЕНИЕ",
-            "Все файлы скопированы в указанные каталоги.\nЗакрыть программу?",
-        )
-        if result:  # если согласие на закрытие программы
-            self.destroy()  # закрываем приложение
-        else:  # если НЕТ согласия
-            self.progress_bar["value"] = 0  # обнуляем виджет загрузки
+        if not flag_error:
+            result = messagebox.askyesno(
+                "СООБЩЕНИЕ",
+                "Все файлы скопированы в указанные каталоги.\nЗакрыть программу?",
+            )
+            if result:  # если согласие на закрытие программы
+                self.destroy()  # закрываем приложение
+            else:  # если НЕТ согласия
+                self.progress_bar["value"] = 0  # обнуляем виджет загрузки
 
 
 if __name__ == "__main__":

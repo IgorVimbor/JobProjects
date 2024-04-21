@@ -40,7 +40,6 @@ class Copy_file:
         с сегодняшней датой для копий файлов и записывает информацию в лог-файл
         """
         # если перечень файлов и каталог передан в аргументы, т.е. есть что и куда копировать
-        # if self.files and self.path_to:
         try:
             # если список файлов пустой - выбрасывем ошибку
             if not self.files or not self.path:
@@ -56,13 +55,12 @@ class Copy_file:
             # записываем информацию в лог-файл
             with open(file_logs, "a", encoding="utf-8") as file:
                 print(
-                    f"{datetime.now()}\n    ОК! Скопировано файлов - {len(self.files)}",
+                    f"{datetime.now()}\n    ОК! Скопировано {len(self.files)} файлов в каталог {self.path_to} ",
                     file=file,
                 )
             return True
         except:
-            # else:
-            # записываем информацию в лог-файл
+            # записываем информацию об ошибке в лог-файл
             with open(file_logs, "a", encoding="utf-8") as file:
                 print(
                     f"{datetime.now()}\n    ОШИБКА! Файлы или каталоги для копирования не выбраны!",
@@ -85,7 +83,3 @@ if __name__ == "__main__":
     obj_2 = Copy_file(files_to_copy, path_2)
     result = obj_2.copy_file()
     print(result)
-
-# "D:/EDUCATION/ПЕРЕЧЕНЬ по Python.docx",
-# "D:/YMZ_month_json.txt",
-# "D:/YMZ_year_json.txt"

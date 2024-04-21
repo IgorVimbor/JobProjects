@@ -1,0 +1,9 @@
+﻿{
+    "files": [
+        "D:/YMZ_year_json.txt\n",
+        "D:/YMZ_month_json.txt\n"
+    ],
+    "dirs": [
+        "D:/"
+    ]
+}
