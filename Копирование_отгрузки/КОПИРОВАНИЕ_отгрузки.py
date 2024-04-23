@@ -58,8 +58,7 @@ window = tk.Tk()
 
 # Создается окно с заголовком
 # меняем логотип Tkinter (перышко) на свой логотип
-window.iconbitmap(
-    '//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconGreen.ico')
+window.iconbitmap('IconGreen.ico')
 # название заголовка в окне приложения
 window.title('КОПИРОВАНИЕ ДАННЫХ ПО ОТГРУЗКЕ ИЗ ТАБЛИЦЫ ОСиМ')
 window.geometry('700x320')    # размер окна приложения
