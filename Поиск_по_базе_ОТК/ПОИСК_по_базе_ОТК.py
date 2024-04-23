@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import messagebox
-import xlrd
-from datetime import date
+from openpyxl import load_workbook
+from datetime import datetime
 import BZA_ind_coll as t
 
 
-def get_value():   # функция возвращает номер года, списки двигателей и актов из строк ввода информации
+def get_value():
+    """функция возвращает номер года, списки двигателей и актов из строк вводимой информации"""
     global god
     global inf_1
     global inf_2
@@ -22,7 +23,8 @@ def get_value():   # функция возвращает номер года, с
     return god, num1, num2
 
 
-def get_itog():   # функция подготовки выборки из базы и вывода на экран
+def get_itog():
+    """функция подготовки выборки из базы и вывода на экран"""
     global wb
     global sheet
     global cells_dvigs
@@ -32,54 +34,47 @@ def get_itog():   # функция подготовки выборки из ба
 
     god, num1, num2 = get_value()
 
-    # определяем текущий год
-    path = '//Server/otk/1 ГАРАНТИЯ на сервере/' + \
-        str(date.today().year) + \
-        '-2019_ЖУРНАЛ УЧЁТА.xls'  # путь до файла с учетом года
-    # открываем файл (вставляем свой путь до файла с базой)
-    wb = xlrd.open_workbook(path)
-    # создаем workbook для работы по имени Листа с соответствующим годом
-    sheet = wb.sheet_by_name(god)
+    # открываем файл
+    wb = load_workbook(
+        f'//Server/otk/1 ГАРАНТИЯ на сервере/{str(datetime.now().year)}-2019_ЖУРНАЛ УЧЁТА.xlsx')
+    # открываем лист по номеру года
+    sheet = wb[god]
 
     # список двигателей и актов рекламаций из всей базы
-    # колонка 19 - номера двигателей
-    cells_dvigs = tuple(sheet.col_slice(19, 2))
-    # колонка 12 - номера актов рекламаций ПРИОБРЕТАТЕЛЯ изделия
-    cells_acts = tuple(sheet.col_slice(12, 2))
+    # колонка 20 - номера двигателей
+    cells_dvigs = tuple(sheet.cell(row=i, column=20)
+                        for i in range(3, sheet.max_row+1))
+    # колонка 13 - номера актов рекламаций ПРИОБРЕТАТЕЛЯ изделия
+    cells_acts = tuple(sheet.cell(row=i, column=13)
+                       for i in range(3, sheet.max_row+1))
 
     # вспомогательные списки двигателей и актов рекламаций
-    dvigs = tuple(str(int(cell.value)) if type(cell.value)
-                  is float else cell.value for cell in cells_dvigs)
+    dvigs = tuple(str(cell.value) for cell in cells_dvigs if cell.value)
     acts = tuple(cell.value for cell in cells_acts)
 
-    for n in num1:           # перебираем входящий список двигателей и ищем двигатель во вспомогательном списке dvigs
-        if n not in dvigs:   # если во вспомогательном списке нет - печатаем результат
+    for n in num1:           # перебираем входящий список двигателей и ищем двигатель в списке dvigs
+        if n not in dvigs:   # если в списке нет - печатаем результат
             # вывод текста
-            text_1.insert(1.0, 'Двигателя {0} в базе нет\n'.format(n))
+            text_1.insert(1.0, f'Двигателя {n} в базе нет\n')
 
         for i, cell in enumerate(cells_dvigs):
             # если в списке cells_dvigs двигатель есть - печатаем номер строки таблицы Excel
             if n in str(cell.value):
                 row = i + 3
-                text_1.insert(1.0, 'Двигатель {0}: строка - {1}\n'.format(int(cell.value) if type(cell.value) is float
-                                                                          else cell.value, row))   # вывод текста
+                text_1.insert(
+                    1.0, f'Двигатель {str(cell.value)}: строка - {row}\n')
 
     for n in num2:           # перебираем входящий список актов и ищем акт во вспомогательном списке acts
         if n not in acts:    # если во вспомогательном списке нет - печатаем результат
             # вывод текста
-            text_1.insert(1.0, 'Акта {0} в базе нет\n'.format(n))
+            text_1.insert(1.0, f'Акта {n} в базе нет\n')
 
         for i, cell in enumerate(cells_acts):
             # если в списке cells_acts акт есть - печатаем номер строки таблицы Excel
             if n in str(cell.value):
                 row = i + 3
-                text_1.insert(1.0, 'Акт {0}: строка - {1}\n'.format(int(cell.value) if type(cell.value) is float
-                                                                    else cell.value, row))       # вывод текста
-
-
-def time_out(t):  # функция перевода времени из формата Excel в строку
-    y, m, d, h, i, s = xlrd.xldate_as_tuple(t, wb.datemode)
-    return ('{2:02}.{1:02}.{0}'.format(y, m, d))
+                # вывод текста
+                text_1.insert(1.0, f'Акт {cell.value}: строка - {row}\n')
 
 
 def clear_strok():  # функция очистки строк ввода номеров двигателей и актов
@@ -98,13 +93,15 @@ def clear_res():  # функция очистки поля вывода резу
 def otchet_output():  # функция подготовки выборки из базы и печати отчета
     num1 = inf_1.split()
     num2 = inf_2.split()
-    with open('//Server/otk/1 ГАРАНТИЯ на сервере/Отчет по результатам поиска по базе ОТК.txt', 'w',
-              encoding="utf-8") as res_file:  # записываем в файл
+    # записываем в файл
+    with open('//Server/otk/Support_files_не_удалять!!!/Отчет по результатам поиска по базе ОТК.txt', 'w',
+              encoding="utf-8") as res_file:
         print('\n' * 2, file=res_file)
 
         if num1:  # если есть список двигателей из строки ввода
+            # печатаем номера двигателей
             print('Номера двигателей:', ', '.join(str(n)
-                  for n in num1), file=res_file)  # печатаем номера двигателей
+                  for n in num1), file=res_file)
             print(file=res_file)
 
         for n in num1:  # ищем двигатель во вспомогательном списке dvigs
@@ -117,42 +114,74 @@ def otchet_output():  # функция подготовки выборки из 
                 if n in str(cell.value):
                     row = i + 3
 
-                    print('Двигатель', int(cell.value) if type(cell.value) is float else cell.value, '| строка -',
+                    print('Двигатель', str(cell.value), '| строка -',
                           row, '|', file=res_file)
                     print('-' * 80, file=res_file)
 
-                    print(sheet.cell_value(row - 1, t.ind('Наименование изделия')), '|',
-                          sheet.cell_value(
-                              row - 1, t.ind('Обозначение изделия')), '|',
-                          'зав.№:', sheet.cell_value(
-                              row - 1, t.ind('Заводской номер изделия')),
-                          sheet.cell_value(row - 1, t.ind('Дата изготовления изделия')), '|', file=res_file)
+                    print(
+                        sheet.cell(
+                            row, t.ind('Наименование изделия')).value, '|',
+                        sheet.cell(
+                            row, t.ind('Обозначение изделия')).value, '|',
+                        'зав.№:', sheet.cell(
+                            row, t.ind('Заводской номер изделия')).value,
+                        sheet.cell(
+                            row, t.ind('Дата изготовления изделия')).value, '|',
+                        file=res_file
+                    )
 
-                    print('Где выявлен дефект:',
-                          sheet.cell_value(row - 1, t.ind('Период выявления дефекта')), '|', end=' ', file=res_file)
-                    if sheet.cell_value(row - 1, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')):
-                        print('Р/А №:',
-                              sheet.cell_value(
-                                  row - 1, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')),
-                              '|', end=' ', file=res_file)
+                    print(
+                        'Где выявлен дефект:',
+                        sheet.cell(row, t.ind('Период выявления дефекта')).value, '|', end=' ',
+                        file=res_file
+                    )
+
+                    if sheet.cell(row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value:
+                        print(
+                            'Р/А №:',
+                            sheet.cell(
+                                row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value,
+                            '|', end=' ', file=res_file
+                        )
                     else:
                         print('Р/А №: акта нет', '|', end=' ', file=res_file)
-                    print('Дефект:', sheet.cell_value(
-                        row - 1, t.ind('Заявленный дефект изделия')), file=res_file)
-                    if sheet.cell_value(row - 1, t.ind('Номер акта исследования')):
-                        print('Акт БЗА:', sheet.cell_value(row - 1, t.ind('Номер акта исследования')),
-                              'от', time_out(sheet.cell_value(row - 1, t.ind('Дата акта исследования'))), file=res_file)
+
+                    print(
+                        'Дефект:', sheet.cell(
+                            row, t.ind('Заявленный дефект изделия')).value,
+                        file=res_file
+                    )
+
+                    if sheet.cell(row, t.ind('Номер акта исследования')).value:
+                        print(
+                            'Акт БЗА:',
+                            sheet.cell(
+                                row, t.ind('Номер акта исследования')).value, 'от',
+                            sheet.cell(
+                                row, t.ind('Дата акта исследования')).value.strftime('%d.%m.%Y'),
+                            file=res_file
+                        )
                     else:
                         print('Акт БЗА: акта нет', file=res_file)
 
-                    print('Решение БЗА:', sheet.cell_value(row - 1, t.ind('Причины возникновения дефектов')), end=' ',
-                          file=res_file)
-                    if sheet.cell_value(row - 1, t.ind('Месяц отражения в статистике БЗА')):
-                        print('| отчетность БЗА -',
-                              sheet.cell_value(row - 1, t.ind('Месяц отражения в статистике БЗА')), file=res_file)
+                    print(
+                        'Решение БЗА:',
+                        sheet.cell(
+                            row, t.ind('Причины возникновения дефектов')).value, end=' ',
+                        file=res_file)
+
+                    if sheet.cell(row, t.ind('Месяц отражения в статистике БЗА')).value:
+                        print(
+                            '| отчетность БЗА -',
+                            sheet.cell(
+                                row, t.ind('Месяц отражения в статистике БЗА')).value,
+                            file=res_file
+                        )
                     else:
-                        print('|', sheet.cell_value(row - 1, t.ind('Пояснения к причинам возникновения дефектов')),
-                              file=res_file)
+                        print(
+                            '|', sheet.cell(
+                                row, t.ind('Пояснения к причинам возникновения дефектов')).value,
+                            file=res_file)
 
                     print('-' * 80, file=res_file)
                     print(file=res_file)
@@ -176,45 +205,73 @@ def otchet_output():  # функция подготовки выборки из 
                           row, '|', file=res_file)
                     print('-' * 80, file=res_file)
 
-                    print(sheet.cell_value(row - 1, t.ind('Наименование изделия')), '|',
-                          sheet.cell_value(
-                              row - 1, t.ind('Обозначение изделия')), '|',
-                          'зав.№:', sheet.cell_value(
-                              row - 1, t.ind('Заводской номер изделия')),
-                          sheet.cell_value(row - 1, t.ind('Дата изготовления изделия')), '|', file=res_file)
+                    print(
+                        sheet.cell(row, t.ind(
+                            'Наименование изделия')).value, '|',
+                        sheet.cell(row, t.ind(
+                            'Обозначение изделия')).value, '|',
+                        'зав.№:', sheet.cell(row, t.ind(
+                            'Заводской номер изделия')).value,
+                        sheet.cell(row, t.ind(
+                            'Дата изготовления изделия')).value, '|',
+                        file=res_file
+                    )
 
-                    print('Где выявлен дефект:',
-                          sheet.cell_value(row - 1, t.ind('Период выявления дефекта')), '|', end=' ', file=res_file)
-                    if sheet.cell_value(row - 1, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')):
-                        print('Р/А №:',
-                              sheet.cell_value(
-                                  row - 1, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')),
-                              '|', end=' ', file=res_file)
+                    print(
+                        'Где выявлен дефект:',
+                        sheet.cell(row, t.ind('Период выявления дефекта')).value, '|', end=' ',
+                        file=res_file
+                    )
+
+                    if sheet.cell(row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value:
+                        print(
+                            'Р/А №:',
+                            sheet.cell(
+                                row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value,
+                            '|', end=' ',
+                            file=res_file
+                        )
                     else:
                         print('Р/А №: акта нет', '|', end=' ', file=res_file)
-                    print('Дефект:', sheet.cell_value(
-                        row - 1, t.ind('Заявленный дефект изделия')), file=res_file)
-                    if sheet.cell_value(row - 1, t.ind('Номер акта исследования')):
-                        print('Акт БЗА:', sheet.cell_value(row - 1, t.ind('Номер акта исследования')),
-                              'от', time_out(sheet.cell_value(row - 1, t.ind('Дата акта исследования'))), file=res_file)
+
+                    print(
+                        'Дефект:', sheet.cell(
+                            row, t.ind('Заявленный дефект изделия')).value,
+                        file=res_file
+                    )
+
+                    if sheet.cell(row, t.ind('Номер акта исследования')).value:
+                        print(
+                            'Акт БЗА:', sheet.cell(row, t.ind(
+                                'Номер акта исследования')).value,
+                            'от', sheet.cell(row, t.ind(
+                                'Дата акта исследования')).value.strftime('%d.%m.%Y'),
+                            file=res_file
+                        )
                     else:
                         print('Акт БЗА: акта нет', file=res_file)
 
-                    print('Решение БЗА:', sheet.cell_value(row - 1, t.ind('Причины возникновения дефектов')), end=' ',
-                          file=res_file)
-                    if sheet.cell_value(row - 1, t.ind('Месяц отражения в статистике БЗА')):
-                        print('| отчетность БЗА -', sheet.cell_value(row - 1, t.ind('Месяц отражения в статистике БЗА')),
-                              file=res_file)
+                    print(
+                        'Решение БЗА:', sheet.cell(row, t.ind('Причины возникновения дефектов')).value, end=' ',
+                        file=res_file)
+
+                    if sheet.cell(row, t.ind('Месяц отражения в статистике БЗА')).value:
+                        print(
+                            '| отчетность БЗА -', sheet.cell(row, t.ind(
+                                'Месяц отражения в статистике БЗА')).value,
+                            file=res_file)
                     else:
-                        print('|', sheet.cell_value(row - 1, t.ind('Пояснения к причинам возникновения дефектов')),
-                              file=res_file)
+                        print(
+                            '|', sheet.cell(row, t.ind(
+                                'Пояснения к причинам возникновения дефектов')).value,
+                            file=res_file)
 
                     print('-' * 80, file=res_file)
                     print(file=res_file)
 
     # вывод информационного окна о сохранении отчета
     messagebox.showinfo(
-        'ИНФОРМАЦИЯ', 'Отчет сохранен в папке "ГАРАНТИЯ на сервере"')
+        'ИНФОРМАЦИЯ', 'ОТЧЕТ СОХРАНЕН.')
 
 
 window = tk.Tk()
