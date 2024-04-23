@@ -42,11 +42,9 @@ def get_itog():
 
     # список двигателей и актов рекламаций из всей базы
     # колонка 20 - номера двигателей
-    cells_dvigs = tuple(sheet.cell(row=i, column=20)
-                        for i in range(3, sheet.max_row+1))
+    cells_dvigs = tuple(sheet.cell(row=i, column=20) for i in range(3, sheet.max_row+1))
     # колонка 13 - номера актов рекламаций ПРИОБРЕТАТЕЛЯ изделия
-    cells_acts = tuple(sheet.cell(row=i, column=13)
-                       for i in range(3, sheet.max_row+1))
+    cells_acts = tuple(sheet.cell(row=i, column=13) for i in range(3, sheet.max_row+1))
 
     # вспомогательные списки двигателей и актов рекламаций
     dvigs = tuple(str(cell.value) for cell in cells_dvigs if cell.value)
@@ -61,8 +59,7 @@ def get_itog():
             # если в списке cells_dvigs двигатель есть - печатаем номер строки таблицы Excel
             if n in str(cell.value):
                 row = i + 3
-                text_1.insert(
-                    1.0, f'Двигатель {str(cell.value)}: строка - {row}\n')
+                text_1.insert(1.0, f'Двигатель {str(cell.value)}: строка - {row}\n')
 
     for n in num2:           # перебираем входящий список актов и ищем акт во вспомогательном списке acts
         if n not in acts:    # если во вспомогательном списке нет - печатаем результат
@@ -114,19 +111,14 @@ def otchet_output():  # функция подготовки выборки из 
                 if n in str(cell.value):
                     row = i + 3
 
-                    print('Двигатель', str(cell.value), '| строка -',
-                          row, '|', file=res_file)
+                    print('Двигатель', str(cell.value), '| строка -', row, '|', file=res_file)
                     print('-' * 80, file=res_file)
 
                     print(
-                        sheet.cell(
-                            row, t.ind('Наименование изделия')).value, '|',
-                        sheet.cell(
-                            row, t.ind('Обозначение изделия')).value, '|',
-                        'зав.№:', sheet.cell(
-                            row, t.ind('Заводской номер изделия')).value,
-                        sheet.cell(
-                            row, t.ind('Дата изготовления изделия')).value, '|',
+                        sheet.cell(row, t.ind('Наименование изделия')).value, '|',
+                        sheet.cell(row, t.ind('Обозначение изделия')).value, '|',
+                        'зав.№:', sheet.cell(row, t.ind('Заводской номер изделия')).value,
+                        sheet.cell(row, t.ind('Дата изготовления изделия')).value, '|',
                         file=res_file
                     )
 
@@ -139,26 +131,23 @@ def otchet_output():  # функция подготовки выборки из 
                     if sheet.cell(row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value:
                         print(
                             'Р/А №:',
-                            sheet.cell(
-                                row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value,
+                            sheet.cell(row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value,
                             '|', end=' ', file=res_file
                         )
                     else:
                         print('Р/А №: акта нет', '|', end=' ', file=res_file)
 
                     print(
-                        'Дефект:', sheet.cell(
-                            row, t.ind('Заявленный дефект изделия')).value,
+                        'Дефект:', 
+                        sheet.cell(row, t.ind('Заявленный дефект изделия')).value,
                         file=res_file
                     )
 
                     if sheet.cell(row, t.ind('Номер акта исследования')).value:
                         print(
                             'Акт БЗА:',
-                            sheet.cell(
-                                row, t.ind('Номер акта исследования')).value, 'от',
-                            sheet.cell(
-                                row, t.ind('Дата акта исследования')).value.strftime('%d.%m.%Y'),
+                            sheet.cell(row, t.ind('Номер акта исследования')).value, 'от',
+                            sheet.cell(row, t.ind('Дата акта исследования')).value.strftime('%d.%m.%Y'),
                             file=res_file
                         )
                     else:
@@ -166,22 +155,22 @@ def otchet_output():  # функция подготовки выборки из 
 
                     print(
                         'Решение БЗА:',
-                        sheet.cell(
-                            row, t.ind('Причины возникновения дефектов')).value, end=' ',
-                        file=res_file)
+                        sheet.cell(row, t.ind('Причины возникновения дефектов')).value, end=' ',
+                        file=res_file
+                    )
 
                     if sheet.cell(row, t.ind('Месяц отражения в статистике БЗА')).value:
                         print(
                             '| отчетность БЗА -',
-                            sheet.cell(
-                                row, t.ind('Месяц отражения в статистике БЗА')).value,
+                            sheet.cell(row, t.ind('Месяц отражения в статистике БЗА')).value,
                             file=res_file
                         )
                     else:
                         print(
-                            '|', sheet.cell(
-                                row, t.ind('Пояснения к причинам возникновения дефектов')).value,
-                            file=res_file)
+                            '|', 
+                            sheet.cell(row, t.ind('Пояснения к причинам возникновения дефектов')).value,
+                            file=res_file
+                        )
 
                     print('-' * 80, file=res_file)
                     print(file=res_file)
@@ -201,19 +190,14 @@ def otchet_output():  # функция подготовки выборки из 
                 if n in str(cell.value):
                     row = i + 3
 
-                    print('Акт', cell.value, '| строка -',
-                          row, '|', file=res_file)
+                    print('Акт', cell.value, '| строка -', row, '|', file=res_file)
                     print('-' * 80, file=res_file)
 
                     print(
-                        sheet.cell(row, t.ind(
-                            'Наименование изделия')).value, '|',
-                        sheet.cell(row, t.ind(
-                            'Обозначение изделия')).value, '|',
-                        'зав.№:', sheet.cell(row, t.ind(
-                            'Заводской номер изделия')).value,
-                        sheet.cell(row, t.ind(
-                            'Дата изготовления изделия')).value, '|',
+                        sheet.cell(row, t.ind('Наименование изделия')).value, '|',
+                        sheet.cell(row, t.ind('Обозначение изделия')).value, '|',
+                        'зав.№:', sheet.cell(row, t.ind('Заводской номер изделия')).value,
+                        sheet.cell(row, t.ind('Дата изготовления изделия')).value, '|',
                         file=res_file
                     )
 
@@ -226,8 +210,7 @@ def otchet_output():  # функция подготовки выборки из 
                     if sheet.cell(row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value:
                         print(
                             'Р/А №:',
-                            sheet.cell(
-                                row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value,
+                            sheet.cell(row, t.ind('Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия')).value,
                             '|', end=' ',
                             file=res_file
                         )
@@ -235,17 +218,16 @@ def otchet_output():  # функция подготовки выборки из 
                         print('Р/А №: акта нет', '|', end=' ', file=res_file)
 
                     print(
-                        'Дефект:', sheet.cell(
-                            row, t.ind('Заявленный дефект изделия')).value,
+                        'Дефект:', 
+                        sheet.cell(row, t.ind('Заявленный дефект изделия')).value,
                         file=res_file
                     )
 
                     if sheet.cell(row, t.ind('Номер акта исследования')).value:
                         print(
-                            'Акт БЗА:', sheet.cell(row, t.ind(
-                                'Номер акта исследования')).value,
-                            'от', sheet.cell(row, t.ind(
-                                'Дата акта исследования')).value.strftime('%d.%m.%Y'),
+                            'Акт БЗА:', 
+                            sheet.cell(row, t.ind('Номер акта исследования')).value,
+                            'от', sheet.cell(row, t.ind('Дата акта исследования')).value.strftime('%d.%m.%Y'),
                             file=res_file
                         )
                     else:
@@ -253,18 +235,21 @@ def otchet_output():  # функция подготовки выборки из 
 
                     print(
                         'Решение БЗА:', sheet.cell(row, t.ind('Причины возникновения дефектов')).value, end=' ',
-                        file=res_file)
+                        file=res_file
+                    )
 
                     if sheet.cell(row, t.ind('Месяц отражения в статистике БЗА')).value:
                         print(
-                            '| отчетность БЗА -', sheet.cell(row, t.ind(
-                                'Месяц отражения в статистике БЗА')).value,
-                            file=res_file)
+                            '| отчетность БЗА -', 
+                            sheet.cell(row, t.ind('Месяц отражения в статистике БЗА')).value,
+                            file=res_file
+                        )
                     else:
                         print(
-                            '|', sheet.cell(row, t.ind(
-                                'Пояснения к причинам возникновения дефектов')).value,
-                            file=res_file)
+                            '|', 
+                            sheet.cell(row, t.ind('Пояснения к причинам возникновения дефектов')).value,
+                            file=res_file
+                        )
 
                     print('-' * 80, file=res_file)
                     print(file=res_file)
