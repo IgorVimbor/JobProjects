@@ -263,8 +263,7 @@ window = tk.Tk()
 
 # Создается окно с заголовком
 # меняем логотип Tkinter (перышко) на свой логотип
-window.iconbitmap(
-    '//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconBZA.ico')
+window.iconbitmap('IconBZA.ico')
 # название заголовка в окне приложения
 window.title('ПОИСК ПО БАЗЕ РЕКЛАМАЦИЙ ОТК')
 window.geometry('650x600')    # размер окна приложения
