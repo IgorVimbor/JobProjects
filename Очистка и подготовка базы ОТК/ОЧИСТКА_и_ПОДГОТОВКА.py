@@ -44,8 +44,7 @@ window = tk.Tk()
 
 # Создается окно с заголовком
 # меняем логотип Tkinter (перышко) на свой логотип
-window.iconbitmap(
-    '//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconYellow.ico')
+window.iconbitmap('IconYellow.ico')
 # название заголовка в окне приложения
 window.title('ОЧИСТКА ДАННЫХ ПО ОТГРУЗКЕ В ТАБЛИЦЕ ОТК')
 # размер окна приложения
