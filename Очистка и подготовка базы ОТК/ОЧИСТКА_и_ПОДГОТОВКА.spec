@@ -41,5 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['\\\\Server\\otk\\Support_files_не_удалять!!!\\Значки_Логотипы\\IconYellow.ico'],
+    icon=['IconYellow.ico'],
 )
