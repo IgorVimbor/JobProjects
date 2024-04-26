@@ -10,11 +10,11 @@ warnings.simplefilter(action="ignore", category=Warning)
 
 year_now = date.today().year  # текущий год
 
-file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
-# file_home = f"{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
+# file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
+file_home = f"{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
 
 df = pd.read_excel(
-    file,
+    file_home,
     sheet_name="2024",
     usecols=[
         "Период выявления дефекта (отказа)",
@@ -73,10 +73,6 @@ df1["DIFF"] = (
 df1_diff_mean = round(df1["DIFF"].mean(), 2)  # 4.79
 df1_diff_median = round(df1["DIFF"].median(), 2)  # 2.0
 
-print()
-print(f"Общее среднее время рассмотрения {df1_diff_mean} дней")
-print(f"Общее медианное время рассмотрения {df1_diff_median} дней")
-# sns.scatterplot(data=df1, x="DIFF", y=df1["DIFF"].count())
 # строим гистограмму
 sns.displot(data=df1, x="DIFF", kde=True)
 plt.xlim(-10, 20)
@@ -134,7 +130,6 @@ df2_not_act = df2[df2["Дата акта исследования"].isnull()]
 37                         ПАЗ - АСП         ПК 225-К-01           компрессор               2024-01-16                    NaT
 """
 
-
 # в столбце "Дата акта исследования" заменяем отсутствующие данные снгодняшней датой
 df2["Дата акта исследования"] = (
     df2["Дата акта исследования"].fillna(date.today()).apply(pd.to_datetime)
@@ -150,10 +145,6 @@ df2["DIFF"] = (
 df2_diff_mean = round(df2["DIFF"].mean(), 2)  # 20.11
 df2_diff_median = round(df2["DIFF"].median(), 2)  #  5.0
 
-print()
-print(f"Среднее время рассмотрения по АСП {df2_diff_mean} дней")
-print(f"Медианное время рассмотрения по АСП {df2_diff_median} дней")
-
 # строим гистограмму
 sns.displot(data=df2, x="DIFF", kde=True)
 plt.xlim(-1, 30)
@@ -161,40 +152,3 @@ plt.ylim(0, 30)
 # plt.show()
 
 # ----------------------------------------- Продолжительность исследования по ГП -------------------------------------------
-
-df3 = df[df["Период выявления дефекта (отказа)"].str.contains("эксплуатация") == True]
-# print(df3.info())
-"""
-#   Column                             Non-Null Count  Dtype
----  ------                             --------------  -----
- 0   Период выявления дефекта (отказа)  377 non-null    object
- 1   Обозначение изделия                377 non-null    object
- 2   Наименование изделия               377 non-null    object
- 3   Дата поступления изделия           352 non-null    datetime64[ns]
- 4   Дата акта исследования             322 non-null    datetime64[ns]
-dtypes: datetime64[ns](2), object(3)
-"""
-
-# удаляем строки, где отсутствует дата поступления на завод
-df3 = df3.dropna(subset=["Дата поступления изделия"])
-
-# датафрейм изделий по которым нет актов
-# df3_not_act = df3[df3["Дата акта исследования"].isnull()]
-
-# в столбце "Дата акта исследования" заменяем отсутствующие данные снгодняшней датой
-df3["Дата акта исследования"] = (
-    df3["Дата акта исследования"].fillna(date.today()).apply(pd.to_datetime)
-)
-
-# создаем новый столбец в разницей между датой акта и датой поступления
-df3["DIFF"] = (
-    df3["Дата акта исследования"] - df3["Дата поступления изделия"]
-) / np.timedelta64(1, "D")
-
-# находим среднее и медианное значение
-df3_diff_mean = round(df3["DIFF"].mean(), 2)  # 5.86
-df3_diff_median = round(df3["DIFF"].median(), 2)  #  3.0
-
-print()
-print(f"Среднее время рассмотрения по ГП {df3_diff_mean} дней")
-print(f"Медианное время рассмотрения по ГП {df3_diff_median} дней")
