@@ -8,6 +8,8 @@ import seaborn as sns
 warnings.simplefilter(action="ignore", category=Warning)
 
 
+analys_year = 2024  # год, по которому проводим анализ
+
 year_now = date.today().year  # текущий год
 
 # file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
@@ -15,7 +17,7 @@ file_home = f"{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
 
 df = pd.read_excel(
     file_home,
-    sheet_name="2024",
+    sheet_name=str(analys_year),
     usecols=[
         "Дата поступления сообщения в ОТК",
         "Период выявления дефекта (отказа)",
@@ -126,8 +128,8 @@ df2 = df2[
 ]
 
 # сортируем фрейм по убыванию значений стобца "DIFF" и оставляем только строки, где "DIFF" > 5
-df2_sort = df2.sort_values(by="DIFF", ascending=False)[df2["DIFF"] > 5]
-print(df2_sort)
+df2_sort = df2.sort_values(by="DIFF", ascending=False)[df2["DIFF"] >= 14]
+# print(df2_sort)
 
 # находим среднее и медианное значение
 df2_diff_mean = round(df2["DIFF"].mean(), 2)  # 20.11
@@ -156,8 +158,8 @@ dtypes: datetime64[ns](3), float64(1), object(3)
 """
 
 # сортируем фрейм по убыванию значений стобца "DIFF" и оставляем только строки, где "DIFF" > 5
-df3_sort = df3.sort_values(by="DIFF", ascending=False)[df3["DIFF"] > 5]
-print(df3_sort)
+df3_sort = df3.sort_values(by="DIFF", ascending=False)[df3["DIFF"] >= 14]
+# print(df3_sort)
 
 # находим среднее и медианное значение
 df3_diff_mean = round(df3["DIFF"].mean(), 2)  # 5.86
@@ -168,24 +170,85 @@ print(f"Средняя продолжительность рассмотрени
 print(f"Медианная продолжительность рассмотрения по ГП - {df3_diff_median} дней")
 print("-" * 60)
 
-# ---------------------------------------------------- Строим графики -------------------------------------------------------
+# ----------------------------------------------------- Результат ----------------------------------------------------------
+
+data = [
+    [df_diff_mean, df2_diff_mean, df3_diff_mean],
+    [df_diff_median, df2_diff_median, df3_diff_median],
+]
+
+result = pd.DataFrame(
+    data,
+    index=["Среднее значение", "Медианное значение"],
+    columns=["В целом", "Конвейер", "Эксплуатация"],
+)
+print(result)
+
+# ---------------------------------------------- Строим графики по отдельности ----------------------------------------------
+
+# # строим общую гистограмму
+# sns.histplot(data=df, x="DIFF", kde=True)
+# plt.xlim(-2, 110)
+# plt.ylim(0, 60)
+# plt.title("Исследование в целом\n(значения по оси Y ограничены для лучшей визуализации)")
+# # plt.show()
+
+# # строим гистограмму по АСП
+# sns.histplot(data=df2, x="DIFF", kde=True)
+# plt.xlim(-1, 110)
+# # plt.ylim(0, 30)
+# plt.title("Исследование по АСП")
+# # plt.show()
+
+# # строим гистограмму по ГП
+# sns.histplot(data=df3, x="DIFF", kde=True)
+# plt.xlim(-1, 40)
+# # plt.ylim(0, 100)
+# plt.title("Исследование по ГП")
+# # plt.show()
+
+# --------------------------------------- Объединенный рисунок из трех гистограмм -------------------------------------------------
+
+# укзываем количество строк и столбцов на рисунке, размеры рисунка
+fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15, 5))
+
+#    вариант 1 - простые гистограммы Matplotlib
+# axes[0].hist(df["DIFF"], df["DIFF"].count())
+# axes[1].hist(df2["DIFF"], df2["DIFF"].count())
+# axes[2].hist(df3["DIFF"], df3["DIFF"].count())
+# plt.show()
+
+#    вариант 2 - гистограммы Seaborn
 # строим общую гистограмму
-sns.histplot(data=df, x="DIFF", kde=True)
-plt.xlim(-2, 20)
-plt.ylim(0, 200)
-plt.title("Общая продолжительность исследования")
-plt.show()
+sns.histplot(data=df, x="DIFF", kde=True, ax=axes[0])
+axes[0].set_title("Исследование в целом")
+axes[0].set_xlim(-2, 110)
+axes[0].set_ylim(0, 60)
+axes[0].set_xlabel("Количество дней")
+axes[0].set_ylabel(
+    "Количество исследований\n(значения ограничены для лучшей визуализации)"
+)
 
 # строим гистограмму по АСП
-sns.histplot(data=df2, x="DIFF", kde=True)
-plt.xlim(-1, 30)
-plt.ylim(0, 30)
-plt.title("Продолжительность исследования по АСП")
-plt.show()
+sns.histplot(data=df2, x="DIFF", kde=True, ax=axes[1])
+axes[1].set_title("Исследование по АСП")
+axes[1].set_xlim(-1, 110)
+# axes[1].set_ylim(0, 30)
+axes[1].set_xlabel("Количество дней")
+axes[1].set_ylabel("Количество исследований")
 
 # строим гистограмму по ГП
-sns.histplot(data=df3, x="DIFF", kde=True)
-plt.xlim(-1, 30)
-plt.ylim(0, 100)
-plt.title("Продолжительность исследования по ГП")
+sns.histplot(data=df3, x="DIFF", kde=True, ax=axes[2])
+axes[2].set_title("Исследование по ГП")
+axes[2].set_xlim(-1, 40)
+# axes[2].set_ylim(0, 100)
+axes[2].set_xlabel("Количество дней")
+axes[2].set_ylabel("Количество исследований")
+
+# раздвигаем графики друг от друга по ширине
+fig.subplots_adjust(wspace=0.3)
+
+# добавляем заголовок
+fig.suptitle(f"{analys_year} год", fontsize=16)
+
 plt.show()
