@@ -39,6 +39,12 @@ df.loc[
 # удаляем строки, где отсутствует дата поступления на завод
 df = df.dropna(subset=["Дата поступления изделия"])
 
+# если в ячейке "Дата акта исследования" записаны несколько дат, то оставляем последнюю дату
+df.loc[
+    df["Дата акта исследования"].str.contains("\n") == True,
+    "Дата акта исследования",
+] = df["Дата акта исследования"].map(lambda x: str(x).split("\n")[-1])
+
 # переводим тип данных в столбцах в datetime64
 df[["Дата поступления изделия", "Дата акта исследования"]] = df[
     ["Дата поступления изделия", "Дата акта исследования"]
@@ -119,6 +125,10 @@ df2 = df2[
     & (df2["Дата поступления изделия"].dt.day != date.today().day)
 ]
 
+# сортируем фрейм по убыванию значений стобца "DIFF" и оставляем только строки, где "DIFF" > 5
+df2_sort = df2.sort_values(by="DIFF", ascending=False)[df2["DIFF"] > 5]
+print(df2_sort)
+
 # находим среднее и медианное значение
 df2_diff_mean = round(df2["DIFF"].mean(), 2)  # 20.11
 df2_diff_median = round(df2["DIFF"].median(), 2)  #  5.0
@@ -145,6 +155,10 @@ Data columns (total 7 columns):
 dtypes: datetime64[ns](3), float64(1), object(3)
 """
 
+# сортируем фрейм по убыванию значений стобца "DIFF" и оставляем только строки, где "DIFF" > 5
+df3_sort = df3.sort_values(by="DIFF", ascending=False)[df3["DIFF"] > 5]
+print(df3_sort)
+
 # находим среднее и медианное значение
 df3_diff_mean = round(df3["DIFF"].mean(), 2)  # 5.86
 df3_diff_median = round(df3["DIFF"].median(), 2)  #  3.0
@@ -156,13 +170,22 @@ print("-" * 60)
 
 # ---------------------------------------------------- Строим графики -------------------------------------------------------
 # строим общую гистограмму
-sns.displot(data=df, x="DIFF", kde=True)
-plt.xlim(-10, 20)
-plt.ylim(0, 100)
+sns.histplot(data=df, x="DIFF", kde=True)
+plt.xlim(-2, 20)
+plt.ylim(0, 200)
+plt.title("Общая продолжительность исследования")
+plt.show()
 
 # строим гистограмму по АСП
-sns.displot(data=df2, x="DIFF", kde=True)
+sns.histplot(data=df2, x="DIFF", kde=True)
 plt.xlim(-1, 30)
 plt.ylim(0, 30)
+plt.title("Продолжительность исследования по АСП")
+plt.show()
 
-# plt.show()
+# строим гистограмму по ГП
+sns.histplot(data=df3, x="DIFF", kde=True)
+plt.xlim(-1, 30)
+plt.ylim(0, 100)
+plt.title("Продолжительность исследования по ГП")
+plt.show()
