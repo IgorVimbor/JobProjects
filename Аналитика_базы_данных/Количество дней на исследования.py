@@ -30,11 +30,11 @@ analys_year = 2024  # год, по которому проводим анали�
 
 year_now = date.today().year  # текущий год
 
-# file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
-file_home = f"{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
+file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
+# file_home = f"{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
 
 df = pd.read_excel(
-    file_home,
+    file,
     sheet_name=str(analys_year),
     usecols=[
         "Дата поступления сообщения в ОТК",
