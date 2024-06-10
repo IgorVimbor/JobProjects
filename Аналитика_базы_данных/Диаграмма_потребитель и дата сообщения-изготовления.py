@@ -1,3 +1,5 @@
+# Диаграмма - потребитель и вид изделия по месяцу регистрации или дате изготовления
+
 import pandas as pd
 from functions.out_dataframe import MyFrame
 from functions.stolb_diagram import show_stolb_graph
@@ -7,17 +9,17 @@ import warnings
 # Команда для удаления предупреждений Pandas в консоли
 warnings.simplefilter(action="ignore", category=Warning)
 # То есть предупреждения типа:
-''' A value is trying to be set on a copy of a slice from a DataFrame.
-    Try using .loc[row_indexer,col_indexer] = value instead  '''
+""" A value is trying to be set on a copy of a slice from a DataFrame.
+    Try using .loc[row_indexer,col_indexer] = value instead  """
 # не будут показываться
 
 
 # ----------------------------- Вводим данные ------------------------------------
 
-client = 'ЯМЗ - эксплуатация'   # потребитель
-product = 'водяной насос'       # изделие по которому будет формироваться диаграмма
+client = "ЯМЗ - эксплуатация"  # потребитель
+product = "водяной насос"  # изделие по которому будет формироваться диаграмма
 # наименование столбца по которому строим диаграмму
-value_column = 'Дата изготовления изделия'
+value_column = "Дата изготовления изделия"
 # список столбцов датафрейма
 # ['Месяц регистрации',
 # 'Обозначение изделия',
@@ -40,7 +42,7 @@ data_2021 = MyFrame(2021, client, product).get_frame()
 df = pd.concat([data_2024, data_2023, data_2022, data_2021])
 
 # если выбран столбец 'Дата изготовления изделия', то в датафрейме удаляем строки, где нет даты
-if value_column == 'Дата изготовления изделия':
+if value_column == "Дата изготовления изделия":
     df.dropna(subset=[value_column], inplace=True)
 
 # сортированный список значений столбца датафрейма по которому строим диаграмму
@@ -50,27 +52,32 @@ lst = sorted(df[value_column].to_list())
 dct_defect = {}
 for t in lst:
     if isinstance(t, pd.Timestamp):
-        dct_defect.setdefault(t.strftime('%m.%y'), lst.count(t))
+        dct_defect.setdefault(t.strftime("%m.%y"), lst.count(t))
     else:
         dct_defect.setdefault(t, lst.count(t))
 
 # вспомогательный словарь для печати заголовка диаграммы и наименования файла
 dct_name = {
-    'водяной насос': 'Водяные насосы',
-    'компрессор': 'Компрессоры',
-    'турбокомпрессор': 'Турбокомпрессоры',
-    'масляный насос': 'Масляные насосы',
-    'Дата изготовления изделия': 'дате изготовления изделия',
-    'Месяц регистрации': 'дате сообщения',
-    'Пробег, наработка': 'пробегу в километрах',
-    'Обозначение изделия': 'обозначению изделия'
+    "водяной насос": "Водяные насосы",
+    "компрессор": "Компрессоры",
+    "турбокомпрессор": "Турбокомпрессоры",
+    "масляный насос": "Масляные насосы",
+    "Дата изготовления изделия": "дате изготовления изделия",
+    "Месяц регистрации": "дате сообщения",
+    "Пробег, наработка": "пробегу в километрах",
+    "Обозначение изделия": "обозначению изделия",
 }
 
 # заголовок диаграммы
-title = f'{dct_name[product]} {client.split()[0]}\nКоличество по {dct_name[value_column]}'
+title = (
+    f"{dct_name[product]} {client.split()[0]}\nКоличество по {dct_name[value_column]}"
+)
 
 # путь для сохранения файла
-path = f'//Server/otk/ОТЧЕТНОСТЬ БЗА/АНАЛИЗ дефектности БЗА/Диаграмма_{client.split()[0]}_по {dct_name[value_column]}' + '.pdf'
-print('Файл записан')
+path = (
+    f"//Server/otk/ОТЧЕТНОСТЬ БЗА/АНАЛИЗ дефектности БЗА/Диаграмма_{client.split()[0]}_по {dct_name[value_column]}"
+    + ".pdf"
+)
+print("Файл записан")
 
 show_stolb_graph(dct_defect, width=18, title_graph=title, path_out_file=None)
