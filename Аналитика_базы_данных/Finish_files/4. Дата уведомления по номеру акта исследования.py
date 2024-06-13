@@ -98,7 +98,7 @@ if __name__ == "__main__":
     product = "водяной насос"  # изделие по которому будет формироваться отчет
 
     # список актов исследования из претензий
-    nums_act = [912]
+    nums_act = [695, 701, 741]
 
     result = Date_to_act(2023, client, product, nums_act).get_frame()
     print(result)
