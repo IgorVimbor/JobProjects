@@ -4,6 +4,10 @@
 import pandas as pd
 from datetime import date
 import warnings
+import win32com.client
+import os
+from openpyxl import load_workbook
+from openpyxl.styles import Alignment, Font, Border, Side
 
 # Команда для удаления предупреждений Pandas в консоли
 warnings.simplefilter(action="ignore", category=Warning)
@@ -15,19 +19,23 @@ warnings.simplefilter(action="ignore", category=Warning)
 # --------------------- Вспомогательные функции и переменные ----------------------------
 
 year_now = str(date.today().year)  # текущий год
-file = (
-    "//Server/otk/1 ГАРАНТИЯ на сервере/" + str(year_now) + "-2019_ЖУРНАЛ УЧЁТА.xlsx"
-)  # имя файла с учетом текущего года
+# файл с базой данных с учетом текущего года
+file = "//Server/otk/1 ГАРАНТИЯ на сервере/" + str(year_now) + "-2019_ЖУРНАЛ УЧЁТА.xlsx"
+# файл для записи результата поиска
+file_out = "//Server/otk/Support_files_не_удалять!!!/Претензии_даты для ПЭО.xlsx"
 
 # ----------------------------------------------------------------------------------------
 
 
 class Date_to_act:
+    """класс формирует датафрейм с индексом - номер акта и двумя столбцами - дата акта и дата уведомления,
+    записывает датафрейм в файл Excel и редактирует стили таблицы в записанном файле"""
+
     def __init__(self, year: int, client: str, product: str, nums_act: list) -> None:
-        self.year = str(year)
-        self.client = client
-        self.product = product
-        self.acts = nums_act
+        self.year = str(year)  # год поиска по базе
+        self.client = client  # потребитель
+        self.product = product  # наименование изделия
+        self.acts = nums_act  # список номеров актов исследования
 
     @staticmethod
     def get_num(str_in):
@@ -35,7 +43,7 @@ class Date_to_act:
         return int(str(str_in).strip()[7:10])
 
     def get_frame(self):
-        """функция возвращает датафрейм с двумя столбцами: дата уведомления и номер акта"""
+        """функция возвращает датафрейм с индексом - номер акта и двумя столбцами - дата акта и дата уведомления"""
         # считываем файл Excel и создаем датафрейм
         df = pd.read_excel(
             file,
@@ -50,7 +58,7 @@ class Date_to_act:
             header=1,
         )
 
-        # делаем выборку из общей базы по наименованию потребителя и изделия
+        # делаем выборку из общей базы по наименованию потребителя и изделию
         df_client = df[
             (df["Период выявления дефекта (отказа)"] == self.client)
             & (df["Наименование изделия"] == self.product)
@@ -91,6 +99,75 @@ class Date_to_act:
 
         return res_df
 
+    def excel_close_write(self, df: pd.DataFrame):
+        """функция записывает итоговый датафрейм в файл Excel переменной file_out.
+        Если file_out (файл Excel) открыт, то перед записью файл закрывается и производится запись.
+        Args:
+            df (pd.DataFrame): итоговый датафрейм с номерами, датами актов и датами сообщений.
+        """
+        try:  # попытка обратится к файлу
+            # переименовываем файл по существующему имени, т.е. оставляем старое имя
+            os.rename(file_out, file_out)
+            df.to_excel(file_out)  # записываем в файл
+            print("Файл записан сразу.")
+        except PermissionError:  # если file_out (файл Excel) открыт
+            # закрываем файл с помощью win32com.client
+            excel = win32com.client.Dispatch("Excel.Application")
+            workbook = excel.Workbooks.Open(file_out)
+            workbook.Close(SaveChanges=False)  # без сохранения изменений
+            # excel.Quit()  # закрываем процесс Excel (все открытые файлы Excel закроются)
+            df.to_excel(file_out)  # записываем в файл
+            print("Файл закрыт и записан.")
+
+    def transform_excel(self, df: pd.DataFrame):
+        """функция редактирует файл Excel (file_out) - вставляет столбец перед столбцом с номерами актов,
+        изменяет высоту первой строки с названиями столбцов и их ширину, активирует перенос текста в ячейках
+        с названиями столбцов, выравнивает текст в ячейках таблицы по центру и рисует границы по всей таблице.
+        Args:
+            df (pd.DataFrame): итоговый датафрейм с номерами, датами актов и датами сообщений.
+        """
+        wb = load_workbook(file_out)  # открываем файл Excel
+        sheet = wb["Sheet1"]  # делаем активным Лист "Sheet1"
+
+        # вставляем столбец в позицию 1 (счет начинается с 1)
+        sheet.insert_cols(1)
+
+        # задаем высоту строки 1 (с названиями столбцов)
+        sheet.row_dimensions[1].height = 30
+
+        cols = "B", "C", "D"
+        for col in cols:
+            # задаем ширину столбцов B, C, D
+            sheet.column_dimensions[col].width = 18
+            # активируем перенос текста в ячейках B1, C1, D1 (с названиями столбцов) и выравниваем по центру
+            sheet[f"{col + str(1)}"].alignment = Alignment(
+                wrap_text=True, horizontal="center"
+            )
+
+        # определяем количество строк в таблице (длина итогового датафрейма)
+        len_table = len(df)
+
+        # изменяем шрифт в ячейках с номерами актов с жирного на обычный
+        # начинаем со 2 строки, т.к. строка 1 - это названия столбцов
+        for i in range(2, len_table + 2):
+            sheet[f"B{str(i)}"].font = Font(bold=False)
+
+        # рисуем границы в ячейках столбцов C и D (по количеству строк в таблице)
+        for i in ("C", "D"):
+            # начинаем со 2 строки, т.к. строка 1 - это названия столбцов
+            for j in range(2, len_table + 2):
+                # задаем стиль границы - тонкая линия и цвет черный
+                thins = Side(border_style="thin", color="000000")
+                # применяем заданный стиль границы к верхней, нижней, левой и правой границе ячеек по циклу
+                sheet[f"{i + str(j)}"].border = Border(
+                    top=thins, bottom=thins, left=thins, right=thins
+                )
+                # выравниваем текст в ячейках по центру
+                sheet[f"{i+str(j)}"].alignment = Alignment(horizontal="center")
+
+        # сохраняем изменения
+        wb.save(file_out)
+
 
 if __name__ == "__main__":
 
@@ -98,17 +175,16 @@ if __name__ == "__main__":
     product = "водяной насос"  # изделие по которому будет формироваться отчет
 
     # список актов исследования из претензий
-    nums_act = [695, 701, 741]
+    nums_act = [281, 282, 293]
 
-    result = Date_to_act(2023, client, product, nums_act).get_frame()
+    obj = Date_to_act(2024, client, product, nums_act)
+
+    # формируем итоговую таблицу (датафрейм)
+    result = obj.get_frame()
     print(result)
     print("Количество актов в списке -", len(result))
 
-    result.to_excel(
-        "//Server/otk/Support_files_не_удалять!!!/Претензии_даты для ПЭО.xlsx"
-    )
-    print("Файл записан")
-
-    # with open('///Server/otk/Support_files_не_удалять!!!/Претензии_даты для ПЭО.txt', 'w') as file:
-    #     print(result, file=file)
-    #     print('Файл записан')
+    # записываем в файл Excel (файл закрывается перед записью, если открыт)
+    obj.excel_close_write(result)
+    # редактируем стили таблицы в записанном файле Excel
+    obj.transform_excel(result)
