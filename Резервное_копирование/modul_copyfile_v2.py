@@ -72,13 +72,13 @@ class Copy_file:
 if __name__ == "__main__":
 
     files_to_copy = [
-        "D:/EDUCATION/ПЕРЕЧЕНЬ по Python.docx",
-        "D:/YMZ_month_json.txt",
-        "D:/YMZ_year_json.txt",
+        "E:/EDUCATION/ПЕРЕЧЕНЬ по Python.docx",
+        "E:/YMZ_month_json.txt",
+        "E:/YMZ_year_json.txt",
     ]
 
     # корневой каталог для копирования резервных копий файлов
-    path_2 = "D:/"
+    path_2 = "E:/"
 
     obj_2 = Copy_file(files_to_copy, path_2)
     result = obj_2.copy_file()
