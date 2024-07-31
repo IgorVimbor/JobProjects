@@ -31,9 +31,8 @@ pd.set_option("display.width", 300)
 analys_year = 2024  # год, по которому проводим анализ
 
 year_now = date.today().year  # текущий год
-
+# имя файла с базой данных с учетом текущего года
 file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
-# file_home = f"{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
 
 df = pd.read_excel(
     file,

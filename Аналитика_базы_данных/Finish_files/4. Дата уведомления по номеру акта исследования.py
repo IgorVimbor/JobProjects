@@ -20,7 +20,7 @@ warnings.simplefilter(action="ignore", category=Warning)
 
 year_now = str(date.today().year)  # текущий год
 # файл с базой данных с учетом текущего года
-file = "//Server/otk/1 ГАРАНТИЯ на сервере/" + str(year_now) + "-2019_ЖУРНАЛ УЧЁТА.xlsx"
+file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
 # файл для записи результата поиска
 file_out = "//Server/otk/Support_files_не_удалять!!!/Претензии_даты для ПЭО.xlsx"
 
