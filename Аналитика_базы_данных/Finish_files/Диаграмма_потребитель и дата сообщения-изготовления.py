@@ -1,25 +1,22 @@
 # Диаграмма - потребитель и вид изделия по месяцу регистрации или дате изготовления
 
 import pandas as pd
-from functions.out_dataframe import MyFrame
-from functions.stolb_diagram import show_stolb_graph
 import warnings
+import sys
 
+sys.path.insert(0, "E:/MyRepositories/JobProjects/Аналитика_базы_данных/functions/")
+from out_dataframe import MyFrame
+from stolb_diagram import show_stolb_graph
 
 # Команда для удаления предупреждений Pandas в консоли
 warnings.simplefilter(action="ignore", category=Warning)
-# То есть предупреждения типа:
-""" A value is trying to be set on a copy of a slice from a DataFrame.
-    Try using .loc[row_indexer,col_indexer] = value instead  """
-# не будут показываться
 
 
-# ----------------------------- Вводим данные ------------------------------------
-
-client = "ЯМЗ - эксплуатация"  # потребитель
+# вводим данные
+client = "ММЗ - эксплуатация"  # потребитель
 product = "водяной насос"  # изделие по которому будет формироваться диаграмма
 # наименование столбца по которому строим диаграмму
-value_column = "Дата изготовления изделия"
+value_column = "Месяц регистрации"
 # список столбцов датафрейма
 # ['Месяц регистрации',
 # 'Обозначение изделия',
@@ -32,14 +29,18 @@ value_column = "Дата изготовления изделия"
 # --------------------------------------------------------------------------------
 
 # создаем датафреймы по годам
-# df = MyFrame(2023, client, product).get_frame()
-data_2024 = MyFrame(2024, client, product).get_frame()
-data_2023 = MyFrame(2023, client, product).get_frame()
-data_2022 = MyFrame(2022, client, product).get_frame()
-data_2021 = MyFrame(2021, client, product).get_frame()
+df1 = MyFrame(2023, "ММЗ - эксплуатация", product).get_frame()
+df2 = MyFrame(2023, "ММЗ - АСП", product).get_frame()
+df3 = MyFrame(2024, "ММЗ - эксплуатация", product).get_frame()
+df4 = MyFrame(2024, "ММЗ - АСП", product).get_frame()
+# data_2024 = MyFrame(2024, client, product).get_frame()
+# data_2023 = MyFrame(2023, client, product).get_frame()
+# data_2022 = MyFrame(2022, client, product).get_frame()
+# data_2021 = MyFrame(2021, client, product).get_frame()
 
 # создаем сводный датафрейм из датафреймов по годам
-df = pd.concat([data_2024, data_2023, data_2022, data_2021])
+# df = pd.concat([data_2024, data_2023, data_2022, data_2021])
+df = pd.concat([df1, df2, df3, df4])
 
 # если выбран столбец 'Дата изготовления изделия', то в датафрейме удаляем строки, где нет даты
 if value_column == "Дата изготовления изделия":
@@ -78,6 +79,8 @@ path = (
     f"//Server/otk/ОТЧЕТНОСТЬ БЗА/АНАЛИЗ дефектности БЗА/Диаграмма_{client.split()[0]}_по {dct_name[value_column]}"
     + ".pdf"
 )
-print("Файл записан")
+print("График готов")
 
 show_stolb_graph(dct_defect, width=18, title_graph=title, path_out_file=None)
+# show_stolb_graph(dct_defect, width=18, size=8, title_graph=title, path_out_file=path)
+# print("Файл записан")

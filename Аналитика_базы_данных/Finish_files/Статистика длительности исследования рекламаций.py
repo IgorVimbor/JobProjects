@@ -1,3 +1,5 @@
+# Статистика по продолжительности исследования рекламаций
+
 import pandas as pd
 import numpy as np
 from datetime import date
