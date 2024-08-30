@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import date
 import matplotlib.pyplot as plt
+import seaborn as sns
 import warnings
 import reference_files.reference_data as rd
 
@@ -126,7 +127,52 @@ with open("ОТЧЕТЫ/Коленвал-ТНО - 2024 год.txt", "w", encodin
 
 print("\nОтчет по ТНО по детали записан.")
 
-# ----------------------------------- Датафрейм не-ТНО --------------------------------------------
+# ----------------------------------- Построение графиков --------------------------------------------
+# делаем выборку по конкретному коленвалу А29
+res_01 = res.loc[pd.IndexSlice[:, :, "А29.01.004", :], :]
 
+# Одиночный график
+"""
+plt.figure(figsize=(8, 5))
 
+sns.barplot(
+    res_01,
+    x=pd.IndexSlice["Дата акта"],
+    y=res_01["Количество"],
+    hue=pd.IndexSlice["ПРИЧИНА"],
+)
+plt.grid(True)
+plt.title("Списание коленвала А.29.01.004 в штуках")
+"""
+
+# Совмещенный график
+fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(12, 5))  # создаем фигуру и оси
+
+# создаем первый график barplot
+sns.barplot(
+    res_01,
+    x=pd.IndexSlice["Дата акта"],
+    y=res_01["Количество"],
+    hue=pd.IndexSlice["ПРИЧИНА"],
+    ax=axs[0],
+)
+
+# создаем второй график barplot
+sns.barplot(
+    res_01,
+    x=pd.IndexSlice["Дата акта"],
+    y=res_01["Сумма_по_акту"],
+    hue=pd.IndexSlice["ПРИЧИНА"],
+    ax=axs[1],
+)
+
+# устанавливаем заголовки графиков и сетку
+axs[0].set_title("Списание коленвала А.29.01.004 в штуках")
+axs[0].grid(True, axis="y")
+axs[1].set_title("Списание коленвала А.29.01.004 в рублях")
+axs[1].grid(True, axis="y")
+
+# Отображаем графики
+plt.tight_layout()  # для автоматической регулировки подграфиков
+plt.show()
 # -------------------------------------------------------------------------------------------------
