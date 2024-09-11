@@ -5,7 +5,7 @@ from openpyxl import load_workbook
 # Команда для удаления предупреждений Pandas в консоли
 warnings.simplefilter(action="ignore", category=Warning)
 
-file_bush = "C:/Users/BT-0529/Desktop/Литейный брак июль2024.xlsx"
+file_bush = "C:/Users/BT-0529/Desktop/Литейный брак август2024.xlsx"
 # колонки ['Брак', 'Наладка', 'гарант'] - Демидчик И.А.
 # колонки ['Литей', 'Втулка', 'стоимость забракованного литья', 'отк'] - Ларионова А.В.
 
