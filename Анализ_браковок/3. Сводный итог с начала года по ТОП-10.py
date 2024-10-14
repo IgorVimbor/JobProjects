@@ -102,7 +102,7 @@ print(df_top)
 
 # сохраняем в файл .txt по номеру года
 with open(
-    f"ОТЧЕТЫ/4.1 Сводный итог за {year} год по ТОП-10.txt", "w", encoding="utf-8"
+    f"ОТЧЕТЫ/3. Сводный итог за {year} год по ТОП-10.txt", "w", encoding="utf-8"
 ) as file:
     print(f"\tСводные данные за {year} год по ТОП-10 по месяцам года", file=file)
     file.write(df_top.to_string())
