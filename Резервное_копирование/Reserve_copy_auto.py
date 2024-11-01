@@ -19,9 +19,9 @@ file_logs = "D:/My Programs/Резервное копирование/Резер
 
 class Copy_file:
     def __init__(self, lst_file, dir_to_copy):
-        # корневой каталог, где будет находиться каталог с копиями файлов, например: 'D:/'
+        # путь до каталога, где будет находиться каталог с архивом копий файлов, например: 'D:/'
         self.path = dir_to_copy
-        # полный путь до каталога с копиями файлов с сегодняшней датой
+        # создаем каталог с сегодняшней датой в наименовании, где будет архив копий файлов
         self.path_full_name = f"{dir_to_copy}/АРХИВ резервных копий файлов_{data}/"
         # список файлов для копирования
         self.files = [file.strip() for file in lst_file]
@@ -31,7 +31,7 @@ class Copy_file:
         или создает такой каталог, если он отсутстует
         """
         dir_now = ""  # существующий каталог с копиями файлов
-        # циклом по объектам корневого каталога где будет находиться каталог с копиями файлов
+        # циклом по объектам корневого каталога, где будет находиться каталог с архивом копий файлов
         for it in os.scandir(self.path):
             # если объект является каталогом и содержит в названии слова 'АРХИВ резервных копий'
             if it.is_dir() and "АРХИВ резервных копий файлов" in it.name:
@@ -43,28 +43,44 @@ class Copy_file:
             os.mkdir(self.path_full_name)
 
     def copy_file(self):
-        """функция производит копирование файлов в переименованный (созданный) каталог
+        """функция создает архив копий файлов в переименованный (созданный) каталог
         с сегодняшней датой для копий файлов и записывает информацию в лог-файл
         """
         # если перечень файлов и каталог передан в аргументы, т.е. есть что и куда копировать
         try:
-            # если список файлов пустой или - выбрасывем ошибку
+            # если список файлов пустой или не выбран каталог для архивирования - выбрасывем ошибку
             if not self.files or not self.path:
                 raise
+
             # вызываем функцию для переименовывания (создания) каталога с сегодняшней датой
             self.make_dir()
+
+            # Создаем временный каталог для копирования файлов
+            temp_dir = f"{self.path_full_name}/temp_archive_dir/"
+            os.makedirs(temp_dir, exist_ok=True)
+
             # циклом по списку файлов для копирования
             for file in self.files:
                 # отсекаем название файла с расширением
-                f_name = file.split("/")[-1]
-                # копируем файл в каталог резевных копий
-                shutil.copy(file, f"{self.path_full_name}{f_name}")
+                file_name = os.path.basename(file)  # file.split("/")[-1]
+                # копируем файл во временный каталог копий файлов
+                shutil.copy(file, os.path.join(temp_dir, file_name))
+                # копируем файл в каталог резевных копий (если требуется, то РАСКОМЕНТИРОВАТЬ)
+                # shutil.copy(file, os.path.join(self.path_full_name, file_name))
+
+            # Создаем архив
+            archive_name = f"{self.path_full_name}Архив файлов_{data}"
+            shutil.make_archive(archive_name, "zip", temp_dir)
+            # Удаляем временный каталог копий файлов
+            shutil.rmtree(temp_dir)
+
             # записываем информацию в лог-файл
             with open(file_logs, "a", encoding="utf-8") as file:
                 print(
                     f"{datetime.now()}\n    ОК! Скопировано {len(self.files)} файл(а/ов) в каталог {self.path_full_name} ",
                     file=file,
                 )
+                print(f"    ОК! Архив файлов_{data}.zip успешно создан.", file=file)
             return True
         except:
             # записываем информацию об ошибке в лог-файл
@@ -98,10 +114,15 @@ for dr in dct_files["dirs"]:
 
 # вывод информационного окна о сохранении файлов или ошибке
 if all(lst_flag):  # если все флаги в списке True
-    print('\n\tРЕЗЕРВНЫЕ КОПИИ ФАЙЛОВ ЗАПИСАНЫ ПО РАСПИСАНИЮ.\n\n\tЗАКРОЙТЕ ОКНО ПРИЛОЖЕНИЯ.')
+    print(
+        "\n\tРЕЗЕРВНЫЕ КОПИИ ФАЙЛОВ ЗАПИСАНЫ ПО РАСПИСАНИЮ.\n\n\tЗАКРОЙТЕ ОКНО ПРИЛОЖЕНИЯ."
+    )
     time.sleep(300)
 else:
-    print('\nПРИ РЕЗЕРВНОМ КОПИРОВАНИИ ФАЙЛОВ ПО РАСПИСАНИЮ ПРОИЗОШЛА ОШИБКА!\nПРОВЕРЬТЕ СПИСОК ФАЙЛОВ!')
+    print(
+        "\nПРИ РЕЗЕРВНОМ КОПИРОВАНИИ ФАЙЛОВ ПО РАСПИСАНИЮ ПРОИЗОШЛА ОШИБКА!\nПРОВЕРЬТЕ СПИСОК ФАЙЛОВ!"
+    )
+
 
 # -------------------- вариант с окном Tkinter ----------------------------
 # from tkinter import Tk, Label
@@ -116,9 +137,8 @@ else:
 # screenwidth = window.winfo_screenwidth()
 # screenheight = window.winfo_screenheight()
 # window.geometry(
-#     "%dx%d+%d+%d" % (width, heigh,
-#                      (screenwidth - width) / 2,
-#                      (screenheight - heigh) / 2)
+#     "%dx%d+%d+%d"
+#     % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 2)
 # )
 
 # lst_flag = []  # список флагов при копировании в каждый каталог
@@ -128,7 +148,7 @@ else:
 #     obj = Copy_file(dct_files["files"], dr)
 #     flag = obj.copy_file()  # копируем файлы в указанный каталог
 #     lst_flag.append(flag)  # добавляем флаг в список флагов
-#     print(flag)
+# # print(lst_flag)
 
 # # вывод информационного окна о сохранении файлов или ошибке
 # if all(lst_flag):  # если все флаги в списке True
@@ -137,17 +157,18 @@ else:
 #         window,
 #         text="Резервные копии\nфайлов записаны\nпо расписанию.",
 #         font=("Arial Bold", 40),
-#         fg='green')
-#     # размещаем виджет в окне
-#     lbl.grid(column=0, row=0)
-#     window.mainloop()
+#         fg="green",
+#     )
 # else:  # иначе
 #     lbl = Label(
 #         window,
 #         text="При резервном копировании\nфайлов по расписанию\nпроизошла ошибка!\nПроверьте списки файлов!",
 #         font=("Arial Bold", 35),
-#         fg='red')
-#     # размещаем виджет в окне
-#     lbl.grid(column=0, row=0)
-#     window.mainloop()
+#         fg="red",
+#     )
+
+# # размещаем виджет в окне
+# lbl.grid(column=0, row=0)
+
+# window.mainloop()
 # --------------------------------------------------------------------------------------------------------
