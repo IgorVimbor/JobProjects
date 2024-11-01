@@ -8,7 +8,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.filedialog as fd
 from tkinter import messagebox
-from modul_copyfile_v2 import Copy_file
+from modul_copyfile_v3 import Copy_file
 
 # база данных - перечень резервных копий файлов и каталогов
 # располагается в каталоге проекта или приложения
@@ -93,7 +93,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         # название заголовка в окне приложения
-        self.title("РЕЗЕРВНОЕ КОПИРОВАНИЕ_v3")
+        self.title("РЕЗЕРВНОЕ КОПИРОВАНИЕ в архив .zip")
         # меняем логотип Tkinter на свой
         self.iconbitmap("IconGray_square.ico")
         # self.iconbitmap("//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconGray_square.ico")
