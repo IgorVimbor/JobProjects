@@ -11,12 +11,12 @@ file_logs = "Резервное копирование_logs.txt"
 
 
 class Copy_file:
-    def __init__(self, lst_file, path_to_base):
-        # корневой каталог, где будет находиться каталог с копиями файлов, например: 'D:/'
-        self.path = path_to_base
-        # полный путь до каталога с копиями файлов с сегодняшней датой
-        self.path_to = f"{path_to_base}/АРХИВ резервных копий файлов_{data}/"
-        # перечень (список) файлов для копирования
+    def __init__(self, lst_file, dir_to_copy):
+        # путь до каталога, где будет находиться каталог с архивом копий файлов, например: 'D:/'
+        self.path = dir_to_copy
+        # создаем каталог с сегодняшней датой в наименовании, где будет архив копий файлов
+        self.path_full_name = f"{dir_to_copy}/АРХИВ резервных копий файлов_{data}/"
+        # список файлов для копирования
         self.files = [file.strip() for file in lst_file]
 
     def make_dir(self):
@@ -24,40 +24,56 @@ class Copy_file:
         или создает такой каталог, если он отсутстует
         """
         dir_now = ""  # существующий каталог с копиями файлов
-        # циклом по объектам корневого каталога где будет находиться каталог с копиями файлов
+        # циклом по объектам корневого каталога, где будет находиться каталог с архивом копий файлов
         for it in os.scandir(self.path):
             # если объект является каталогом и содержит в названии слова 'АРХИВ резервных копий'
             if it.is_dir() and "АРХИВ резервных копий файлов" in it.name:
                 dir_now = it.name  # сохраняем название каталога в переменную
         if dir_now:  # если каталог существует
             # переименовываем его по сегодняшней дате
-            os.rename(f"{self.path}/{dir_now}/", self.path_to)
+            os.rename(f"{self.path}/{dir_now}/", self.path_full_name)
         else:  # если не существует - создаем
-            os.mkdir(self.path_to)
+            os.mkdir(self.path_full_name)
 
     def copy_file(self):
-        """функция производит копирование файлов в переименованный (созданный) каталог
+        """функция создает архив копий файлов в переименованный (созданный) каталог
         с сегодняшней датой для копий файлов и записывает информацию в лог-файл
         """
         # если перечень файлов и каталог передан в аргументы, т.е. есть что и куда копировать
         try:
-            # если список файлов пустой - выбрасывем ошибку
+            # если список файлов пустой или не выбран каталог для архивирования - выбрасывем ошибку
             if not self.files or not self.path:
                 raise
+
             # вызываем функцию для переименовывания (создания) каталога с сегодняшней датой
             self.make_dir()
-            # циклом по перечню файлов для копирования
+
+            # Создаем временный каталог для копирования файлов
+            temp_dir = f"{self.path_full_name}/temp_archive_dir/"
+            os.makedirs(temp_dir, exist_ok=True)
+
+            # циклом по списку файлов для копирования
             for file in self.files:
                 # отсекаем название файла с расширением
-                f_name = file.split("/")[-1]
-                # копируем файл в каталог резевных копий
-                shutil.copy(file, f"{self.path_to}{f_name}")
+                file_name = os.path.basename(file)  # file.split("/")[-1]
+                # копируем файл во временный каталог копий файлов
+                shutil.copy(file, os.path.join(temp_dir, file_name))
+                # копируем файл в каталог резевных копий (если требуется, то РАСКОМЕНТИРОВАТЬ)
+                # shutil.copy(file, os.path.join(self.path_full_name, file_name))
+
+            # Создаем архив
+            archive_name = f"{self.path_full_name}Архив файлов_{data}"
+            shutil.make_archive(archive_name, "zip", temp_dir)
+            # Удаляем временный каталог копий файлов
+            shutil.rmtree(temp_dir)
+
             # записываем информацию в лог-файл
             with open(file_logs, "a", encoding="utf-8") as file:
                 print(
-                    f"{datetime.now()}\n    ОК! Скопировано {len(self.files)} файл(а/ов) в каталог {self.path_to} ",
+                    f"{datetime.now()}\n    ОК! Скопировано {len(self.files)} файл(а/ов) в каталог {self.path_full_name} ",
                     file=file,
                 )
+                print(f"    ОК! Архив файлов_{data}.zip успешно создан.", file=file)
             return True
         except:
             # записываем информацию об ошибке в лог-файл
