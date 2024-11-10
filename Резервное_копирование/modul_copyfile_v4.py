@@ -61,7 +61,7 @@ class Copy_file:
                     shutil.copy(item, os.path.join(temp_dir, file_name))
                     # копируем файл в каталог резевных копий (если требуется, то РАСКОМЕНТИРОВАТЬ)
                     # shutil.copy(item, os.path.join(self.path_full_name, file_name))
-                elif os.path.isdir(item):  # если объект - это каталог и каталогов
+                elif os.path.isdir(item):  # если объект - это каталог
                     base_name = os.path.basename(item)  # отсекаем название каталога
                     # копируем каталог во временный каталог копий файлов и каталогов
                     shutil.copytree(item, os.path.join(temp_dir, base_name))

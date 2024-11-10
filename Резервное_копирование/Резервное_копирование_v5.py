@@ -1,7 +1,7 @@
-# ВЕРСИЯ 5
+# ВЕРСИЯ-5 2024-11-02
 # Создана общая база данных - файл "Резервное копирование_база данных.txt", в который записывается словарь .json
 # В базе данных по ключу "files" хранится перечень файлов для копирования, по ключу "dirs" - перечень каталогов.
-# Резервное архивирование производится в архив .zip в каталог по выбору пользователя
+# Резервное архивирование производится в архив .zip в каталоги по выбору пользователя
 
 import json
 import time
@@ -9,7 +9,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.filedialog as fd
 from tkinter import messagebox
-from modul_copyfile_v4 import Copy_file, data_now
+from modul_copyfile_v4 import Copy_file
 
 # база данных - перечень резервных копий файлов и каталогов
 # располагается в каталоге проекта или приложения
@@ -41,7 +41,7 @@ class ListFrame(tk.Frame):
         self.listbox.pack(side=tk.LEFT)
         self.scroll.pack(side=tk.LEFT, fill=tk.Y)
 
-        # добавляем в объект Listbox перечень файлов для копирования или каталогов
+        # добавляем в объект Listbox перечень файлов или каталогов для копирования
         if key == "files":
             self.listbox.insert(0, *[i.split("/")[-1] for i in data[self.key]])
         else:
@@ -92,7 +92,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         # название заголовка в окне приложения
-        self.title(f"РЕЗЕРВНОЕ КОПИРОВАНИЕ в архив_v{data_now}")
+        self.title(f"РЕЗЕРВНОЕ КОПИРОВАНИЕ в архив_v5_2024-11-02")
         # меняем логотип Tkinter на свой
         self.iconbitmap("IconGray_square.ico")
         # self.iconbitmap("//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconGray_square.ico")
