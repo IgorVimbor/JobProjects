@@ -268,3 +268,5 @@ class App(tk.Tk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+
+# pyinstaller --onefile --windowed --icon=IconGray_square.ico Резервное_копирование_v5.py
