@@ -67,7 +67,7 @@ class Copy_file:
                     shutil.copytree(item, os.path.join(temp_dir, base_name))
 
             # Создаем архив
-            archive_name = f"{self.path_full_name}Архив файлов_{data_now}"
+            archive_name = f"{self.path_full_name}Архив файлов"
             shutil.make_archive(archive_name, "zip", temp_dir)
             # Удаляем временный каталог копий файлов
             shutil.rmtree(temp_dir)

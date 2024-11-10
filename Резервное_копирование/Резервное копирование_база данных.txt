@@ -1,4 +1,10 @@
 ﻿{
-    "files": [],
-    "dirs": []
+    "files": [
+        "D:/API-ключи Яндекс.docx\n",
+        "D:/STEPIK_study/PyCharm_горячие клавиши.pdf\n",
+        "D:/PDF files\n"
+    ],
+    "dirs": [
+        "D:/"
+    ]
 }
