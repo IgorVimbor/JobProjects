@@ -36,7 +36,7 @@ def get_itog():
 
     # открываем файл
     wb = load_workbook(
-        f'//Server/otk/1 ГАРАНТИЯ на сервере/{str(datetime.now().year)}-2019_ЖУРНАЛ УЧЁТА.xlsx')
+        f'//Server/otk/1 ГАРАНТИЯ на сервере/{str(datetime.now().year)}-2019_ЖУРНАЛ УЧЁТА.xlsm')
     # открываем лист по номеру года
     sheet = wb[god]
 
