@@ -6,53 +6,73 @@ import time
 
 
 def data_copier():
+    """функция копирования отгрузки из файла ОСиМ в файл ОТК на Лист конкретного месяца,
+    а затем на лист "Гарантийный парк" и лист "Данные2" файла отчета"""
+
+    # копируем отгрузку из файла ОСиМ в файл ОТК на Лист конкретного месяца
+    pr = modul_copier.ExcelSheetCopier()
+
+    pr.copy_in_otk(3, 21, 1)  # ТКР
+    progress_bar["value"] += 10  # изменяем виджет загрузки
+    window.update()
+    pr.copy_in_otk(23, 40, 2)  # ПК
+    progress_bar["value"] += 10  # изменяем виджет загрузки
+    window.update()
+    pr.copy_in_otk(42, 59, 3)  # ВН
+    progress_bar["value"] += 10  # изменяем виджет загрузки
+    window.update()
+    pr.copy_in_otk(61, 75, 4)  # МН
+    progress_bar["value"] += 10  # изменяем виджет загрузки
+    window.update()
+    pr.copy_in_otk(77, 83, 5)  # ГП
+    progress_bar["value"] += 10  # изменяем виджет загрузки
+    window.update()
+    pr.copy_in_otk(85, 96, 6)  # ЦМФ
+    progress_bar["value"] += 10  # изменяем виджет загрузки
+    window.update()
+    pr.copy_in_otk(110, 114, 11)  # штанга и коромысло
+    progress_bar["value"] += 10  # изменяем виджет загрузки
+    window.update()
+
+    # копируем отгрузку по потребителям и изделиям на лист "Гарантийный парк" и лист "Данные2" файла отчета
+    grp = modul_copier.DataCopierGarant()
+    grp.copy_garant()
+    progress_bar["value"] += 10  # изменяем виджет загрузки
+    window.update()
+
+    progress_bar["value"] = 100  # изменяем виджет загрузки
+    window.update()
+
+    time.sleep(1)
+
+
+def on_button_click():
+    """функция запуска копирования и изменения поведения кнопки в процессе копирования"""
+
+    # делаем НЕ активной кнопку "КОПИРОВАТЬ" на время копирования и изменяем цвет текста кнопки
+    bnt_1.config(state="disabled", fg="black")
+
+    # попытка копирования данных по отгрузке
     try:
-        # копируем отгрузку из файла ОСиМ в файл ОТК на Лист конкретного месяца
-        pr = modul_copier.ExcelSheetCopier()
+        data_copier()  # запускаем функцию копирования данных
 
-        pr.copy_in_otk(3, 21, 1)  # ТКР
-        progress_bar["value"] += 10  # изменяем виджет загрузки
-        window.update()
-        pr.copy_in_otk(23, 40, 2)  # ПК
-        progress_bar["value"] += 10  # изменяем виджет загрузки
-        window.update()
-        pr.copy_in_otk(42, 59, 3)  # ВН
-        progress_bar["value"] += 10  # изменяем виджет загрузки
-        window.update()
-        pr.copy_in_otk(61, 75, 4)  # МН
-        progress_bar["value"] += 10  # изменяем виджет загрузки
-        window.update()
-        pr.copy_in_otk(77, 83, 5)  # ГП
-        progress_bar["value"] += 10  # изменяем виджет загрузки
-        window.update()
-        pr.copy_in_otk(85, 96, 6)  # ЦМФ
-        progress_bar["value"] += 10  # изменяем виджет загрузки
-        window.update()
-        pr.copy_in_otk(110, 114, 11)  # штанга и коромысло
-        progress_bar["value"] += 10  # изменяем виджет загрузки
-        window.update()
+        # возвращаем кнопку "КОПИРОВАТЬ" в активное состояние
+        bnt_1.config(state="normal", fg="green")
+        time.sleep(0.5)
 
-        # копируем отгрузку по потребителям и изделиям на лист "Гарантийный парк" и лист "Данные2" файла отчета
-        grp = modul_copier.DataCopierGarant()
-        grp.copy_garant()
-        progress_bar["value"] += 10  # изменяем виджет загрузки
-        window.update()
-
-        progress_bar["value"] = 100  # изменяем виджет загрузки
-        window.update()
-
+        # информируем пользователя об успешном завершении копирования и предлагаем закрыть приложение
         result = messagebox.askyesno(
             "СООБЩЕНИЕ",
             "Данные по отгрузке скопированы в файлы ОТК.\n\nЗакрыть программу?",
         )
-        if result:  # если согласие на закрытие программы
-            time.sleep(1)
+        if result:  # если ЕСТЬ согласие на закрытие программы
+            time.sleep(0.5)
             window.destroy()  # закрываем приложение
         else:  # если НЕТ согласия
             progress_bar["value"] = 0  # обнуляем виджет загрузки
 
+    # если возникла ошибка при копировании данных - выводим информационное окно и закрываем приложение
     except:
-        # # вывод информационного окна при возникновении ошибки
         messagebox.showinfo(
             "СООБЩЕНИЕ",
             "Возникла ОШИБКА при копировании!!!\n\n"
@@ -146,7 +166,7 @@ bnt_1 = tk.Button(
     font=("Arial Bold", 12),
     fg="green",
     relief=tk.SUNKEN,
-    command=data_copier,
+    command=on_button_click,
 )
 bnt_1.pack(padx=10)
 
