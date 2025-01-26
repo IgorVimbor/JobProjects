@@ -198,6 +198,7 @@ for _ in range(3):
     lbl_null.pack()
 
 lbl_4 = tk.Label(text="Интелектуальная собственность IGOR VASILENOK")
+# lbl_4 = tk.Label(text="Development by IGOR VASILENOK")
 lbl_4.pack(side=tk.RIGHT)
 
 window.mainloop()
