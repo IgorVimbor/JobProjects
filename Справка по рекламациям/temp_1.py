@@ -137,7 +137,10 @@ for i in range(8, 10):
     lbl_null.grid(row=i, column=0)
 
 # lbl_4 = tk.Label(text="Интелектуальная собственность IGOR VASILENOK")
-lbl_5 = tk.Label(window, text="Development by IGOR VASILENOK")
+lbl_5 = tk.Label(window, text="  Development by IGOR VASILENOK")
 lbl_5.grid(row=10, column=0, sticky="w")
+
+lbl_6 = tk.Label(window, text="v1_25-01-2025  ")
+lbl_6.grid(row=10, column=3, sticky="e")
 
 window.mainloop()
