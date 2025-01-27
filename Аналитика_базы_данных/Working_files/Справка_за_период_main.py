@@ -5,6 +5,8 @@ from tkinter import messagebox
 import tkinter.ttk as ttk
 import time
 
+# import data_files_modul as dfm
+
 
 def on_button_click():
     """функция запуска создания отчета и записи его в файл с изменением поведения кнопки в процессе"""
