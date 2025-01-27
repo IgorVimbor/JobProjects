@@ -89,7 +89,7 @@ window = tk.Tk()
 # меняем логотип Tkinter (перышко) на свой логотип
 window.iconbitmap("IconGreen.ico")
 # название заголовка в окне приложения
-window.title("КОПИРОВАНИЕ ДАННЫХ ПО ОТГРУЗКЕ В ФАЙЛЫ ОТК_v2_2025-01-25")
+window.title("КОПИРОВАНИЕ ДАННЫХ ПО ОТГРУЗКЕ В ФАЙЛЫ ОТК")
 # размер окна приложения
 width = 710  # ширина окна
 heigh = 380  # высота окна
@@ -164,7 +164,9 @@ lbl_null_2.pack()
 bnt_1 = tk.Button(
     text="КОПИРОВАТЬ",
     font=("Arial Bold", 12),
-    fg="green",
+    fg="green", 
+    bg="linen",  # цвет фона кнопки
+    activebackground="peach puff",  # цвет кнопки при нажатии на нее
     relief=tk.SUNKEN,
     command=on_button_click,
 )
@@ -197,8 +199,10 @@ for _ in range(3):
     lbl_null = tk.Label(text="")
     lbl_null.pack()
 
-lbl_4 = tk.Label(text="Интелектуальная собственность IGOR VASILENOK")
-# lbl_4 = tk.Label(text="Development by IGOR VASILENOK")
+
+# ------------------------------ Личная подпись -----------------------------------------
+lbl_4 = tk.Label(text="Development by IGOR VASILENOK  ")
 lbl_4.pack(side=tk.RIGHT)
+
 
 window.mainloop()
