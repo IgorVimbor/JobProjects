@@ -5,7 +5,7 @@ from tkinter import messagebox
 import tkinter.ttk as ttk
 import time
 
-# import data_files_modul as dfm
+import modul_data_files as mdf
 
 
 def on_button_click():
@@ -13,6 +13,34 @@ def on_button_click():
 
     # делаем НЕ активной кнопку "СОЗДАТЬ ОТЧЕТ" и изменяем цвет текста кнопки
     btn_1.config(state="disabled", fg="black")
+
+    obj = mdf.WriteResult()
+
+    # считываем значения из базы данных приложения (словаря файла TXT) и вставляем в поля
+    indexend = obj.index_end  # последний записанный индекс строки
+    dateend = obj.date_end  # последняя записанная дата
+
+    entry_1.insert(0, indexend)
+    entry_3.insert(0, dateend)
+
+    obj.get_result()  # получаем итоговый датафрейм
+
+    indexend_new = obj.index_end_new  # актуальная последняя строка базы рекламаций ОТК
+    entry_2.insert(0, indexend_new)
+    entry_4.insert(0, mdf.date_end_new)  # сегодняшняя дата
+
+    # записываем в словарь актуальные значения номера строки и сегодняшюю дату
+    obj.write_to_database()
+
+    time.sleep(1)
+    # записываем в файл TXT
+    obj.write_to_txt()
+
+    time.sleep(1)
+    # записываем в файл Excel
+    obj.write_to_excel()
+
+    entry_5.insert(0, "Файл Excel со справкой записан")
 
 
 # -------------------------- Создание окна приложения с заголовком ----------------------------
@@ -23,7 +51,7 @@ window.iconbitmap("IconBZA.ico")
 # название заголовка в окне приложения
 window.title("ПОДГОТОВКА СПРАВКИ О КОЛИЧЕСТВЕ РЕКЛАМАЦИЙ ЗА ПЕРИОД")
 # размер окна приложения
-width = 578  # ширина окна
+width = 566  # ширина окна
 heigh = 380  # высота окна
 # определяем координаты центра экрана и размещаем окно
 screenwidth = window.winfo_screenwidth()
@@ -57,15 +85,15 @@ lbl_1 = tk.Label(frm_1, text="Начала периода:", font=("Arial Bold",
 lbl_1.grid(row=1, column=0, sticky="e")
 
 # формируем и размещаем поле для вывода номера строки
-entry_1 = tk.Entry(frm_1, font=("Arial Bold", 20), width=8)
+entry_1 = tk.Entry(frm_1, font=("Arial Bold", 18), width=9)
 entry_1.grid(row=1, column=1)
 
 # формируем и размещаем во фрейме строку с текстом "Окончания периода:"
-lbl_2 = tk.Label(frm_1, text="      Окончания периода:", font=("Arial Bold", 12))
+lbl_2 = tk.Label(frm_1, text="     Окончания периода:", font=("Arial Bold", 12))
 lbl_2.grid(row=1, column=2, sticky="e")
 
 # формируем и размещаем поле для вывода номера строки
-entry_2 = tk.Entry(frm_1, font=("Arial Bold", 20), width=8)
+entry_2 = tk.Entry(frm_1, font=("Arial Bold", 18), width=9)
 entry_2.grid(row=1, column=3)
 
 
@@ -88,19 +116,19 @@ lbl_null_4 = tk.Label(frm_2, text="")
 lbl_null_4.grid(row=0, column=0)
 
 # формируем и размещаем во фрейме строку с текстом "Предыдущая:"
-lbl_3 = tk.Label(frm_2, text="      Предыдущая:", font=("Arial Bold", 12))
+lbl_3 = tk.Label(frm_2, text="   Предыдущая:", font=("Arial Bold", 12))
 lbl_3.grid(row=1, column=0, sticky="e")
 
-# формируем и размещаем поле для вывода номера строки
-entry_3 = tk.Entry(frm_2, font=("Arial Bold", 20), width=9)
+# формируем и размещаем поле для вывода предыдущей даты
+entry_3 = tk.Entry(frm_2, font=("Arial Bold", 18), width=10)
 entry_3.grid(row=1, column=1)
 
 # формируем и размещаем во фрейме строку с текстом "Сегодняшняя:"
-lbl_4 = tk.Label(frm_2, text="          Сегодняшняя:", font=("Arial Bold", 12))
+lbl_4 = tk.Label(frm_2, text="            Сегодняшняя:", font=("Arial Bold", 12))
 lbl_4.grid(row=1, column=2, sticky="e")
 
-# формируем и размещаем поле для вывода номера строки
-entry_4 = tk.Entry(frm_2, font=("Arial Bold", 20), width=9)
+# формируем и размещаем поле для вывода сегодняшней даты
+entry_4 = tk.Entry(frm_2, font=("Arial Bold", 18), width=10)
 entry_4.grid(row=1, column=3)
 
 
@@ -138,7 +166,6 @@ for i in range(8, 10):
     lbl_null = tk.Label(window, text="")
     lbl_null.grid(row=i, column=0)
 
-# lbl_4 = tk.Label(text="Интелектуальная собственность IGOR VASILENOK")
 lbl_5 = tk.Label(window, text="  Development by IGOR VASILENOK")
 lbl_5.grid(row=10, column=0, sticky="w")
 
