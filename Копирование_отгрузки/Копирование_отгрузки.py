@@ -1,8 +1,9 @@
-import modul_copier
 import tkinter as tk
 from tkinter import messagebox
 import tkinter.ttk as ttk
 import time
+
+import modul_copier
 
 
 def data_copier():
@@ -206,3 +207,5 @@ lbl_4.pack(side=tk.RIGHT)
 
 
 window.mainloop()
+
+# pyinstaller --onefile --windowed --icon=IconGreen.ico Копирование_отгрузки.py
