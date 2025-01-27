@@ -5,7 +5,7 @@ from tkinter import messagebox
 import tkinter.ttk as ttk
 import time
 
-import data_files_modul as dfm
+# import data_files_modul as dfm
 
 
 def on_button_click():
