@@ -10,24 +10,24 @@ warnings.simplefilter(action="ignore", category=Warning)
 
 # ---------------------------- Константы и размещение файлов используемых в приложении -------------------------------------
 # база данных номеров строк располагается в каталоге проекта или приложения
-database = "//Server/otk/Support_files_не_удалять!!!/Справка по рекламациям за период_база данных.txt"
-# database = "Справка по рекламациям за период_база данных.txt"
+# database = "//Server/otk/Support_files_не_удалять!!!/Справка по рекламациям за период_база данных.txt"
+database = "Справка по рекламациям за период_база данных.txt"
 
 year_now = datetime.today().year  # текущий год
 # дата составления отчета - сегодняшняя дата
 date_end_new = datetime.today().strftime("%d-%m-%Y")
 
 # файл базы рекламаций ОТК с учетом текущего года
-file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{year_now}-2019_ЖУРНАЛ УЧЁТА.xlsm"
-# file = f"{year_now}-2019_ЖУРНАЛ УЧЁТА.xlsm"
+# file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{year_now}-2019_ЖУРНАЛ УЧЁТА.xlsm"
+file = f"{year_now}-2019_ЖУРНАЛ УЧЁТА.xlsm"
 
 # Файл ТХТ в который будет записываться справка
-res_file_txt = "//Server/otk/Support_files_не_удалять!!!/Справка по рекламациям за период.txt"
-# res_file_txt = "Справка по рекламациям за период.txt"
+# res_file_txt = "//Server/otk/Support_files_не_удалять!!!/Справка по рекламациям за период.txt"
+res_file_txt = "Справка по рекламациям за период.txt"
 
 # Файл Excel в который будет записываться справка
-res_file_excel = f"//Server/otk/ПРОТОКОЛЫ совещаний по качеству/{year_now}/Справка по рекламациям за период.xlsx"
-# res_file_excel = "Справка по рекламациям за период.xlsx"
+# res_file_excel = f"//Server/otk/ПРОТОКОЛЫ совещаний по качеству/{year_now}/Справка по рекламациям за период.xlsx"
+res_file_excel = "Справка по рекламациям за период.xlsx"
 # ----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -153,16 +153,21 @@ class MakeResultDataframe(TextDatabaseLoader):
 
 
 class WriteResult(MakeResultDataframe):
-    """Класс для записи итогового датафрейма в файл TXT и файл Excel с последующим форматированием стиля справки"""
+    """Класс для записи итогового датафрейма в файл TXT (логирование) и файл Excel с последующим форматированием"""
 
     def __init__(self):
         super().__init__()
 
-    def write_to_txt(self):
-        # записываем в файл TXT
-        with open(res_file_txt, "w", encoding="utf-8") as f:
+    def write_to_txt(self):  # записываем в файл TXT (логируем)
+        # выделяем путь файла TXT - разбиваем наименование файла по точке
+        name_txt_file = res_file_txt.split(".")[0]
+        # создаем имя нового файла TXT с учетом нового ключа словаря (номера справки) и даты справки
+        file_txt = f"{name_txt_file}-{self.len_dct}_{date_end_new}.txt"
+
+        with open(file_txt, "w", encoding="utf-8") as f:
             print(
-                f"\n\n\tСправка по количеству рекламаций за период с {self.date_end} по {date_end_new}",
+                f"\n\n\tСправка по количеству рекламаций за период с {self.date_end} по {date_end_new}"
+                f"\n\tСтроки базы рекламаций ОТК: {int(self.index_end) + 1} - {self.index_end_new}",
                 file=f,
             )
             f.write(self.df_res.to_string())
