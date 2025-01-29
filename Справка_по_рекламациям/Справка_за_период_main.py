@@ -72,9 +72,12 @@ def on_button_click():
 window = tk.Tk()
 
 # меняем логотип Tkinter (перышко) на свой логотип
+# window.iconbitmap("//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconBZA.ico")
 window.iconbitmap("IconBZA.ico")
+
 # название заголовка в окне приложения
 window.title("ПОДГОТОВКА СПРАВКИ О КОЛИЧЕСТВЕ РЕКЛАМАЦИЙ ЗА ПЕРИОД")
+
 # размер окна приложения
 width = 566  # ширина окна
 heigh = 380  # высота окна
