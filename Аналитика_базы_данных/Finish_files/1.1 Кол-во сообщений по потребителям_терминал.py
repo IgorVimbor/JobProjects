@@ -16,9 +16,8 @@ warnings.simplefilter(action="ignore", category=Warning)
 
 
 year_now = date.today().year  # текущий год
-
 # имя файла с учетом текущего года
-file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
+file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsm"
 
 sheet = str(year_now)  # делаем активным лист базы ОТК по году поиска
 # читаем файл Excel и создаем датафрейм
