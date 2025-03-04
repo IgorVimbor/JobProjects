@@ -77,8 +77,7 @@ def on_button_click():
         messagebox.showinfo(
             "СООБЩЕНИЕ",
             "Возникла ОШИБКА при копировании!!!\n\n"
-            "Закройте программу и проверьте исходные файлы.\n"
-            "Файлы должны иметь расширение .xlsx.",
+            "Закройте программу и проверьте исходные файлы.",
         )
         time.sleep(0.5)
         window.destroy()  # закрываем приложение
@@ -165,7 +164,7 @@ lbl_null_2.pack()
 bnt_1 = tk.Button(
     text="КОПИРОВАТЬ",
     font=("Arial Bold", 12),
-    fg="green", 
+    fg="green",
     bg="linen",  # цвет фона кнопки
     activebackground="peach puff",  # цвет кнопки при нажатии на нее
     relief=tk.SUNKEN,

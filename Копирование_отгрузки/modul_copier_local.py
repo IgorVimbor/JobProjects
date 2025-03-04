@@ -4,7 +4,7 @@ from openpyxl.styles import PatternFill
 
 
 # открываем таблицу ОСиМ и нужный Лист
-file_osim = "Временная_папка/Отгрузка для ОТК УК_2025.xlsx"
+file_osim = "Временная_папка/Отгрузка для ОТК_текущий год.xlsx"
 # флаг True - считываем только значение ячейки
 wb1 = openpyxl.load_workbook(file_osim, data_only=True)
 name_list = wb1.sheetnames  # список имен всех Листов таблицы ОСиМ
@@ -12,7 +12,7 @@ name_osim = name_list[0]  # имя первого Листа
 ws1 = wb1[name_osim]  # открываем первый Лист таблицы ОСиМ по имени
 
 # открываем таблицу ОТК и нужный Лист
-file_otk = "Временная_папка/ОТГРУЗКА+ГАРАНТИЙНЫЙ ПАРК_2025_текущий год.xlsx"
+file_otk = "Временная_папка/ОТГРУЗКА+ГАРАНТИЙНЫЙ ПАРК_текущий год.xlsx"
 wb2 = openpyxl.load_workbook(file_otk)
 # используем title, чтобы имя Листа таблицы ОСиМ начиналось с большой буквы и по этому имени открываем Лист в файле ОТК
 name_otk = name_osim.title()
@@ -148,17 +148,14 @@ class DataCopierGarant:
         it_mmz_1 = iter(mmz)
 
         for i in range(6, 14):
-            ws2.cell(row=i, column=col_asp).value = next(
-                it_asp
-            )  # копируем значения по АСП
-            ws2.cell(row=i, column=col_zap).value = next(
-                it_zap
-            )  # копируем значения по ЗАПЧАСТИ
+            # копируем значения по АСП
+            ws2.cell(row=i, column=col_asp).value = next(it_asp)
+            # копируем значения по ЗАПЧАСТИ
+            ws2.cell(row=i, column=col_zap).value = next(it_zap)
 
         for i in range(41, 49):
-            ws2.cell(row=i, column=col_asp).value = next(
-                it_mmz_1
-            )  # копируем значения по ММЗ
+            # копируем значения по ММЗ
+            ws2.cell(row=i, column=col_asp).value = next(it_mmz_1)
 
         # копируем значения по МАЗ
         ws2.cell(row=71, column=col_asp).value = maz
@@ -218,7 +215,7 @@ class DataCopierGarant:
         # номера столбцов отличаются от номеров столбцов АСП на +26
         col_color = num_col[month] + 26
 
-        for row in range(2, 165):
+        for row in range(2, 155):
             # заливка белым цветом: : RGB (255, 255, 255), в шестнадцатиричном значении FFFFFF
             ws2.cell(row, col_color).fill = PatternFill(
                 fill_type="solid", fgColor="FFFFFF"
@@ -229,7 +226,7 @@ class DataCopierGarant:
 
         # ----------------- копируем цифры отгрузки по потребителям и изделиям на лист "Данные2" файла отчета -----------------
         # открываем файл отчета и лист "Данные2"
-        file_otchet = "Временная_папка/Отчет по дефектности БЗА_2025_текущий месяц.xlsx"
+        file_otchet = "Временная_папка/Отчет по дефектности БЗА_текущий месяц.xlsx"
         wb3 = openpyxl.load_workbook(file_otchet)
         ws3 = wb3["Данные2"]  # открываем Лист в файле ОТК
 

@@ -148,17 +148,14 @@ class DataCopierGarant:
         it_mmz_1 = iter(mmz)
 
         for i in range(6, 14):
-            ws2.cell(row=i, column=col_asp).value = next(
-                it_asp
-            )  # копируем значения по АСП
-            ws2.cell(row=i, column=col_zap).value = next(
-                it_zap
-            )  # копируем значения по ЗАПЧАСТИ
+            # копируем значения по АСП
+            ws2.cell(row=i, column=col_asp).value = next(it_asp)
+            # копируем значения по ЗАПЧАСТИ
+            ws2.cell(row=i, column=col_zap).value = next(it_zap)
 
         for i in range(41, 49):
-            ws2.cell(row=i, column=col_asp).value = next(
-                it_mmz_1
-            )  # копируем значения по ММЗ
+            # копируем значения по ММЗ
+            ws2.cell(row=i, column=col_asp).value = next(it_mmz_1)
 
         # копируем значения по МАЗ
         ws2.cell(row=71, column=col_asp).value = maz
@@ -218,7 +215,7 @@ class DataCopierGarant:
         # номера столбцов отличаются от номеров столбцов АСП на +26
         col_color = num_col[month] + 26
 
-        for row in range(2, 165):
+        for row in range(2, 155):
             # заливка белым цветом: : RGB (255, 255, 255), в шестнадцатиричном значении FFFFFF
             ws2.cell(row, col_color).fill = PatternFill(
                 fill_type="solid", fgColor="FFFFFF"
