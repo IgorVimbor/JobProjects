@@ -19,7 +19,7 @@ warnings.simplefilter(action="ignore", category=Warning)
 year_now = date.today().year  # текущий год
 
 # расположение базы ОТК и имя файла с учетом текущего года
-file_in = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
+file_in = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsm"
 
 # расположение файла в который будет сохраняться отчет
 file_out = "//Server/otk/ОТЧЕТНОСТЬ БЗА/АНАЛИЗ дефектности БЗА/Количество сообщений_по потребителям.txt"

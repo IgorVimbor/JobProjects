@@ -20,8 +20,7 @@ warnings.simplefilter(action="ignore", category=Warning)
 
 year_now = str(date.today().year)  # текущий год
 # файл с базой данных с учетом текущего года
-file = "//Server/otk/1 ГАРАНТИЯ на сервере/" + \
-    str(year_now) + "-2019_ЖУРНАЛ УЧЁТА.xlsx"
+file = "//Server/otk/1 ГАРАНТИЯ на сервере/" + str(year_now) + "-2019_ЖУРНАЛ УЧЁТА.xlsm"
 # файл для записи результата поиска
 file_out = "//Server/otk/Support_files_не_удалять!!!/Претензии_даты для ПЭО.xlsx"
 
@@ -71,9 +70,7 @@ class Date_to_act:
         df_cl = df_client.dropna(subset=["Номер акта исследования"])
 
         # переводим номер акта в числовой тип
-        df_cl["Номер акта исследования"] = df_cl["Номер акта исследования"].map(
-            self.get_num
-        )
+        df_cl["Номер акта исследования"] = df_cl["Номер акта исследования"].map(self.get_num)
 
         # датафрейм с датами уведомления и номерами актов исследования
         df_cl = df_cl[
@@ -85,20 +82,13 @@ class Date_to_act:
         ]
 
         # итоговый датафрейм с датами уведомления и номерами актов, сортированный по номеру акта
-        res_df = (
-            df_cl[df_cl["Номер акта исследования"].isin(self.acts)]
-            .sort_values("Номер акта исследования")
-            .set_index("Номер акта исследования")
-        )
+        res_df = df_cl[
+            df_cl["Номер акта исследования"].isin(self.acts)
+        ].sort_values("Номер акта исследования").set_index("Номер акта исследования")
 
         # изменяем вывод даты на '%d.%m.%Y'
-        res_df["Дата поступления сообщения в ОТК"] = pd.to_datetime(
-            res_df["Дата поступления сообщения в ОТК"]
-        ).dt.strftime("%d.%m.%Y")
-
-        res_df["Дата акта исследования"] = pd.to_datetime(
-            res_df["Дата акта исследования"]
-        ).dt.strftime("%d.%m.%Y")
+        res_df["Дата поступления сообщения в ОТК"] = pd.to_datetime(res_df["Дата поступления сообщения в ОТК"]).dt.strftime("%d.%m.%Y")
+        res_df["Дата акта исследования"] = pd.to_datetime(res_df["Дата акта исследования"]).dt.strftime("%d.%m.%Y")
 
         return res_df
 
@@ -143,9 +133,7 @@ class Date_to_act:
             # задаем ширину столбцов B, C, D
             sheet.column_dimensions[col].width = 18
             # активируем перенос текста в ячейках B1, C1, D1 (с названиями столбцов) и выравниваем по центру
-            sheet[f"{col + str(1)}"].alignment = Alignment(
-                wrap_text=True, horizontal="center"
-            )
+            sheet[f"{col + str(1)}"].alignment = Alignment(wrap_text=True, horizontal="center")
 
         # определяем количество строк в таблице (длина итогового датафрейма)
         len_table = len(df)
@@ -162,9 +150,7 @@ class Date_to_act:
                 # задаем стиль границы - тонкая линия и цвет черный
                 thins = Side(border_style="thin", color="000000")
                 # применяем заданный стиль границы к верхней, нижней, левой и правой границе ячеек по циклу
-                sheet[f"{i + str(j)}"].border = Border(
-                    top=thins, bottom=thins, left=thins, right=thins
-                )
+                sheet[f"{i + str(j)}"].border = Border(top=thins, bottom=thins, left=thins, right=thins)
                 # выравниваем текст в ячейках по центру
                 sheet[f"{i+str(j)}"].alignment = Alignment(horizontal="center")
 
@@ -179,7 +165,7 @@ if __name__ == "__main__":
 
     # ---------------- если акты одного календарного года --------------------
     # список актов исследования из претензий одного года
-    nums_act_1 = [785, 786, 787, 788, 789]
+    nums_act_1 = [768, 769]
     obj_1 = Date_to_act(2024, client, product, nums_act_1)
 
     # формируем итоговую таблицу (датафрейм)
@@ -188,7 +174,7 @@ if __name__ == "__main__":
 
     # --------- если акты разных годов или поиск по базам разных годов -------
     # # список актов исследования из претензий другого года
-    # nums_act_2 = [665]
+    # nums_act_2 = [889, 896, 897, 898, 899, 900, 901, 902, 903, 909, 945, 948, 949, 950]
     # obj_2 = Date_to_act(2023, client, product, nums_act_2)
 
     # # формируем итоговую таблицу (датафрейм)

@@ -14,13 +14,13 @@ warnings.simplefilter(action="ignore", category=Warning)
 # не будут показываться
 
 
-year = 2023  # год поиска
-client = "ЯМЗ - эксплуатация"  # Потребитель
+year = 2024  # год поиска
+client = "ММЗ - эксплуатация"  # Потребитель
 product = "водяной насос"  # изделие по которому будет формироваться отчет
 
 year_now = date.today().year  # текущий год
 # имя файла с учетом текущего года
-file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsx"
+file = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsm"
 
 sheet = str(year)  # делаем активным Лист базы ОТК по году поиска
 # читаем файл Excel и создаем датафрейм
@@ -36,9 +36,9 @@ all_count_defects = df[
 all_count = len(all_count_defects)
 
 # столбец 'Дата изготовления изделия' переводим в формат времени datetime
-all_count_defects["Дата изготовления изделия"] = pd.to_datetime(
-    all_count_defects["Дата изготовления изделия"], format="%m.%y"
-)
+# all_count_defects["Дата изготовления изделия"] = pd.to_datetime(
+#     all_count_defects["Дата изготовления изделия"], format="%m.%y"
+# )
 
 # убираем пустые ячейки
 defects = all_count_defects["Дата изготовления изделия"].dropna()
@@ -49,7 +49,7 @@ tp_defect = tuple(sorted(defects))
 # словарь дефектов: ключ - дата, значение - количество дефектов
 dct_defect = {}
 for t in tp_defect:
-    dct_defect.setdefault(t.strftime("%m.%y"), tp_defect.count(t))
+    dct_defect.setdefault(t, tp_defect.count(t))
 
 ln = len(dct_defect)  # длина словаря
 
