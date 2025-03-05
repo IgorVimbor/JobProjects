@@ -11,7 +11,7 @@ warnings.simplefilter(action="ignore", category=Warning)
 # "example_files/ЖУРНАЛ УЧЕТА актов о браке_2020-2024.xls"
 # считываем данные из файла Excel и создаем фрейм
 df = pd.read_excel(
-    "//Server/otk/2 ИННА/Списание БРАКА по ЦЕХАМ/ЖУРНАЛ УЧЕТА актов о браке_2020-2024.xlsx",
+    "//Server/otk/2 ИННА/Списание БРАКА по ЦЕХАМ/ЖУРНАЛ УЧЕТА актов о браке_2020-2025.xlsx",
     sheet_name="2024",
     usecols=[
         "Дата_регистрации_акта_НП",

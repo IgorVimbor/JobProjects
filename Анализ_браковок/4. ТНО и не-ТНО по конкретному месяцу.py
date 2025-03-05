@@ -10,8 +10,8 @@ warnings.simplefilter(action="ignore", category=Warning)
 # --------------------------------------- Подготовка датафрейма ---------------------------------
 # считываем данные из файла Excel и создаем фрейм
 df = pd.read_excel(
-    "//Server/otk/2 ИННА/Списание БРАКА по ЦЕХАМ/ЖУРНАЛ УЧЕТА актов о браке_2020-2024.xlsx",
-    sheet_name="2024",
+    "//Server/otk/2 ИННА/Списание БРАКА по ЦЕХАМ/ЖУРНАЛ УЧЕТА актов о браке_2020-2025.xlsx",
+    sheet_name="2025",
     usecols=[
         "Дата_регистрации_акта_НП",
         "Наименование_детали",
@@ -43,7 +43,7 @@ df[["Количество", "ПРИЧИНА", "ВИНОВНИК"]] = df[
 
 # ---------------------------- Выборка из датафрейма по номеру месяца ----------------------------
 # задаем номер месяца по которому делаем отчет
-num_month = 10  # ... июль = 7 и т.д.
+num_month = 1  # ... июль = 7 и т.д.
 
 # вспомогательный словарь номера и наименования месяца года
 dct = {
@@ -89,9 +89,9 @@ df_tno_group.loc[("ИТОГО", "", "")] = ["", sum_col]
 
 # сохраняем в файл .txt
 with open(
-    f"ОТЧЕТЫ/4. Отчет за {dct[num_month]} 2024 года - ТНО.txt", "w", encoding="utf-8"
+    f"ОТЧЕТЫ/4. Отчет за {dct[num_month]} 2025 года - ТНО.txt", "w", encoding="utf-8"
 ) as file:
-    print(f"\tОтчет за {dct[num_month]} 2024 года - ТНО", file=file)
+    print(f"\tОтчет за {dct[num_month]} 2025 года - ТНО", file=file)
     file.write(df_tno_group.to_string())
 
 print("\nОтчет по ТНО записан.")
@@ -111,9 +111,9 @@ df_no_tno_group.loc[(f"{'-'*16}", "", "")] = ["", f"{'-'*10}"]
 df_no_tno_group.loc[("ИТОГО", "", "")] = ["", sum_col]
 
 with open(
-    f"ОТЧЕТЫ/4. Отчет за {dct[num_month]} 2024 года - не ТНО.txt", "w", encoding="utf-8"
+    f"ОТЧЕТЫ/4. Отчет за {dct[num_month]} 2025 года - не ТНО.txt", "w", encoding="utf-8"
 ) as file:
-    print(f"\tОтчет за {dct[num_month]} 2024 года - не ТНО", file=file)
+    print(f"\tОтчет за {dct[num_month]} 2025 года - не ТНО", file=file)
     file.write(df_no_tno_group.to_string())
 
 print("\nОтчет по не-ТНО записан.\n")
