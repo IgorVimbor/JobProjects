@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import date
+from datetime import datetime, date
 import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
@@ -8,11 +8,18 @@ import reference_files.reference_data as rd
 # Команда для удаления предупреждений Pandas в консоли
 warnings.simplefilter(action="ignore", category=Warning)
 
+# -------------------------------------- Входные изменяемые данные ------------------------------
+
+year = 2025  # год по которому делаем анализ
+
 # --------------------------------------- Подготовка датафрейма ---------------------------------
+now = datetime.now()  # получаем текущую дату
+year_now = now.year  # сохраняем текущий год
+
 # считываем данные из файла Excel и создаем фрейм
 df = pd.read_excel(
-    "//Server/otk/2 ИННА/Списание БРАКА по ЦЕХАМ/ЖУРНАЛ УЧЕТА актов о браке_2020-2025.xlsx",
-    sheet_name="2024",
+    f"//Server/otk/2 ИННА/Списание БРАКА по ЦЕХАМ/ЖУРНАЛ УЧЕТА актов о браке_2020-{year_now}.xlsx",
+    sheet_name=str(year),
     usecols=[
         "Дата_регистрации_акта_НП",
         "Наименование_детали",
@@ -84,8 +91,8 @@ for d in data:
 df_un = pd.concat(dfs, ignore_index=False)
 
 # сохраняем в файл .txt
-with open("ОТЧЕТЫ/4.1 Сводный отчет ТНО - 2024 год.txt", "w", encoding="utf-8") as f:
-    print(f"\tСводный отчет ТНО - 2024 год", file=f)
+with open(f"ОТЧЕТЫ/4.1 Сводный отчет ТНО - {year_now} год.txt", "w", encoding="utf-8") as f:
+    print(f"\tСводный отчет ТНО - {year_now} год", file=f)
     f.write(df_un.to_string())
 
 print("\nОтчет по ТНО записан.")
@@ -126,13 +133,15 @@ for d in data:
 df_un_no = pd.concat(dfs_no, ignore_index=False)
 
 # сохраняем в файл .txt
-with open("ОТЧЕТЫ/4.1 Сводный отчет не-ТНО - 2024 год.txt", "w", encoding="utf-8") as f:
-    print(f"\tСводный отчет не-ТНО - 2024 год", file=f)
+with open(f"ОТЧЕТЫ/4.1 Сводный отчет не-ТНО - {year_now} год.txt", "w", encoding="utf-8") as f:
+    print(f"\tСводный отчет не-ТНО - {year_now} год", file=f)
     f.write(df_un_no.to_string())
 
 print("\nОтчет по не-ТНО записан.")
 
-# -------------------------------------------------------------------------------------------------
+
+# -------------------------------- Выборка по конкретному месяцу или детали ------------------------------
+
 # Мультииндекс сводного датафрейма из группированных датафреймов
 df_un.index
 """
@@ -144,7 +153,7 @@ MultiIndex([('01.24',     'корпус в/н',     '245-1307025',  8),
 """
 
 # делаем выборку - фильтруем по номеру месяца из первого стролбца мультииндекса
-df_07 = df_un.loc[pd.IndexSlice["07.24", :, :], :]
+df_07 = df_un.loc[pd.IndexSlice["02.25", :, :], :]
 
 sum_col = df_07["Сумма_по_акту"].sum()
 df_07.loc[("", "", "", f"{'-'*16}")] = ["", f"{'-'*10}"]
@@ -152,8 +161,8 @@ df_07.loc[("", "", "", "ИТОГО")] = ["", sum_col]
 # print(df_07)
 
 # сохраняем в файл .txt
-with open("ОТЧЕТЫ/Отчет по ТНО - июль 2024.txt", "w", encoding="utf-8") as f:
-    print(f"\tОтчет по ТНО - июль 2024", file=f)
+with open(f"ОТЧЕТЫ/Отчет по ТНО - февраль {year_now}.txt", "w", encoding="utf-8") as f:
+    print(f"\tОтчет по ТНО - февраль {year_now}", file=f)
     f.write(df_07.to_string())
 
 print("\nОтчет по ТНО за месяц записан.")
@@ -167,8 +176,8 @@ res.loc[("", "", "", "ИТОГО")] = ["", sum_col]
 # print(res)
 
 # сохраняем в файл .txt
-with open("ОТЧЕТЫ/Коленвал-ТНО - 2024 год.txt", "w", encoding="utf-8") as f:
-    print(f"\tКоленвал-ТНО - 2024 год", file=f)
+with open(f"ОТЧЕТЫ/Коленвал-ТНО - {year_now} год.txt", "w", encoding="utf-8") as f:
+    print(f"\tКоленвал-ТНО - {year_now} год", file=f)
     f.write(res.to_string())
 
 print("\nОтчет по ТНО по детали записан.")
