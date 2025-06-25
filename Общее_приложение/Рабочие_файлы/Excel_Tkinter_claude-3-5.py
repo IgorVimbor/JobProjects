@@ -196,25 +196,25 @@ class ExcelViewer(tk.Tk):
         statistics_menu.add_command(label="Корреляционный анализ",
                                   command=self.show_correlation_analysis)
 
-        # # Подменю агрегации
-        # aggregation_menu = tk.Menu(analysis_menu, tearoff=0)
-        # analysis_menu.add_cascade(label="Агрегация", menu=aggregation_menu)
-        # aggregation_menu.add_command(label="Группировка данных",
-        #                            command=self.show_grouping_dialog)
-        # aggregation_menu.add_command(label="Сводная таблица",
-        #                            command=self.show_pivot_dialog)
+        # Подменю агрегации
+        aggregation_menu = tk.Menu(analysis_menu, tearoff=0)
+        analysis_menu.add_cascade(label="Агрегация", menu=aggregation_menu)
+        aggregation_menu.add_command(label="Группировка данных",
+                                   command=self.show_grouping_dialog)
+        aggregation_menu.add_command(label="Сводная таблица",
+                                   command=self.show_pivot_dialog)
 
-        # # Подменю визуализации
-        # visualization_menu = tk.Menu(analysis_menu, tearoff=0)
-        # analysis_menu.add_cascade(label="Визуализация", menu=visualization_menu)
-        # visualization_menu.add_command(label="Гистограмма",
-        #                              command=lambda: self.show_plot_dialog('histogram'))
-        # visualization_menu.add_command(label="График рассеяния",
-        #                              command=lambda: self.show_plot_dialog('scatter'))
-        # visualization_menu.add_command(label="Линейный график",
-        #                              command=lambda: self.show_plot_dialog('line'))
-        # visualization_menu.add_command(label="Круговая диаграмма",
-        #                              command=lambda: self.show_plot_dialog('pie'))
+        # Подменю визуализации
+        visualization_menu = tk.Menu(analysis_menu, tearoff=0)
+        analysis_menu.add_cascade(label="Визуализация", menu=visualization_menu)
+        visualization_menu.add_command(label="Гистограмма",
+                                     command=lambda: self.show_plot_dialog('histogram'))
+        visualization_menu.add_command(label="График рассеяния",
+                                     command=lambda: self.show_plot_dialog('scatter'))
+        visualization_menu.add_command(label="Линейный график",
+                                     command=lambda: self.show_plot_dialog('line'))
+        visualization_menu.add_command(label="Круговая диаграмма",
+                                     command=lambda: self.show_plot_dialog('pie'))
 
     def show_descriptive_statistics(self):
         """Показывает окно с описательной статистикой"""
@@ -227,23 +227,41 @@ class ExcelViewer(tk.Tk):
         stats_window.title("Описательная статистика")
         stats_window.geometry("800x600")
 
-        # Создаем фрейм для выбора столбцов
+        # Создаем фрейм для выбора столбцов с вертикальной прокруткой
         selection_frame = ttk.LabelFrame(stats_window, text="Выбор столбцов")
-        selection_frame.pack(fill=tk.X, padx=5, pady=5)
+        selection_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # Создаем canvas и scrollbar для прокрутки
+        canvas = tk.Canvas(selection_frame)
+        scrollbar = ttk.Scrollbar(selection_frame, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
 
         # Создаем список числовых столбцов
         numeric_columns = self.original_data.select_dtypes(include=[np.number]).columns
 
-        # Создаем чекбоксы для выбора столбцов
+        # Создаем чекбоксы для выбора столбцов внутри scrollable_frame
         self.column_vars = {}
         for col in numeric_columns:
             var = tk.BooleanVar(value=True)
             self.column_vars[col] = var
-            ttk.Checkbutton(selection_frame, text=col, variable=var).pack(side=tk.LEFT, padx=5)
+            ttk.Checkbutton(scrollable_frame, text=col, variable=var).pack(anchor=tk.W, padx=5)
 
         # Создаем кнопку обновления
-        ttk.Button(selection_frame, text="Обновить",
-                  command=lambda: self.update_statistics(stats_window)).pack(side=tk.RIGHT, padx=5)
+        ttk.Button(stats_window, text="Обновить",
+                  command=lambda: self.update_statistics(stats_window)).pack(side=tk.RIGHT, padx=5, pady=5)
 
         # Создаем текстовое поле для вывода статистики
         self.stats_text = tk.Text(stats_window, wrap=tk.WORD, width=80, height=20)
@@ -335,6 +353,211 @@ class ExcelViewer(tk.Tk):
         # Добавляем кнопку сохранения
         ttk.Button(corr_window, text="Сохранить график",
                   command=lambda: self.save_plot(fig)).pack(pady=5)
+
+    def show_grouping_dialog(self):
+        """Показывает диалог для группировки данных"""
+        if self.original_data is None:
+            messagebox.showwarning("Предупреждение", "Нет данных для группировки")
+            return
+
+        dialog = tk.Toplevel(self)
+        dialog.title("Группировка данных")
+        dialog.geometry("400x300")
+
+        ttk.Label(dialog, text="Выберите столбцы для группировки:").pack(anchor=tk.W, padx=10, pady=5)
+
+        # Создаем canvas и scrollbar для прокрутки
+        canvas = tk.Canvas(dialog)
+        scrollbar = ttk.Scrollbar(dialog, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        group_vars = {}
+        for col in self.original_data.columns:
+            var = tk.BooleanVar(value=False)
+            group_vars[col] = var
+            ttk.Checkbutton(scrollable_frame, text=col, variable=var).pack(anchor=tk.W, padx=20)
+
+        ttk.Label(dialog, text="Выберите столбец для агрегации:").pack(anchor=tk.W, padx=10, pady=5)
+        agg_column_var = tk.StringVar()
+        agg_column_combo = ttk.Combobox(dialog, textvariable=agg_column_var, values=list(self.original_data.columns), state='readonly')
+        agg_column_combo.pack(fill=tk.X, padx=10)
+
+        ttk.Label(dialog, text="Выберите функцию агрегации:").pack(anchor=tk.W, padx=10, pady=5)
+        agg_func_var = tk.StringVar(value='sum')
+        agg_func_combo = ttk.Combobox(dialog, textvariable=agg_func_var, values=['sum', 'mean', 'count', 'min', 'max', 'median'], state='readonly')
+        agg_func_combo.pack(fill=tk.X, padx=10)
+
+        def perform_grouping():
+            selected_groups = [col for col, var in group_vars.items() if var.get()]
+            agg_col = agg_column_var.get()
+            agg_func = agg_func_var.get()
+
+            if not selected_groups:
+                messagebox.showwarning("Предупреждение", "Выберите хотя бы один столбец для группировки")
+                return
+            if not agg_col:
+                messagebox.showwarning("Предупреждение", "Выберите столбец для агрегации")
+                return
+
+            try:
+                grouped = self.original_data.groupby(selected_groups).agg({agg_col: agg_func}).reset_index()
+                self.display_data(grouped)
+                self.status_var.set(f'Данные сгруппированы по {", ".join(selected_groups)} с функцией {agg_func} для {agg_col}')
+                dialog.destroy()
+            except Exception as e:
+                messagebox.showerror("Ошибка", f"Ошибка при группировке: {str(e)}")
+
+        ttk.Button(dialog, text="Выполнить", command=perform_grouping).pack(pady=10)
+
+    def show_pivot_dialog(self):
+        """Показывает диалог для создания сводной таблицы"""
+        if self.original_data is None:
+            messagebox.showwarning("Предупреждение", "Нет данных для сводной таблицы")
+            return
+
+        dialog = tk.Toplevel(self)
+        dialog.title("Сводная таблица")
+        dialog.geometry("400x400")
+
+        ttk.Label(dialog, text="Выберите индексы (строки):").pack(anchor=tk.W, padx=10, pady=5)
+        index_vars = {}
+        for col in self.original_data.columns:
+            var = tk.BooleanVar(value=False)
+            index_vars[col] = var
+            ttk.Checkbutton(dialog, text=col, variable=var).pack(anchor=tk.W, padx=20)
+
+        ttk.Label(dialog, text="Выберите столбцы:").pack(anchor=tk.W, padx=10, pady=5)
+        column_vars = {}
+        for col in self.original_data.columns:
+            var = tk.BooleanVar(value=False)
+            column_vars[col] = var
+            ttk.Checkbutton(dialog, text=col, variable=var).pack(anchor=tk.W, padx=20)
+
+        ttk.Label(dialog, text="Выберите значения:").pack(anchor=tk.W, padx=10, pady=5)
+        value_var = tk.StringVar()
+        value_combo = ttk.Combobox(dialog, textvariable=value_var, values=list(self.original_data.columns), state='readonly')
+        value_combo.pack(fill=tk.X, padx=10)
+
+        ttk.Label(dialog, text="Выберите функцию агрегации:").pack(anchor=tk.W, padx=10, pady=5)
+        agg_func_var = tk.StringVar(value='sum')
+        agg_func_combo = ttk.Combobox(dialog, textvariable=agg_func_var, values=['sum', 'mean', 'count', 'min', 'max', 'median'], state='readonly')
+        agg_func_combo.pack(fill=tk.X, padx=10)
+
+        def perform_pivot():
+            indices = [col for col, var in index_vars.items() if var.get()]
+            columns = [col for col, var in column_vars.items() if var.get()]
+            values = value_var.get()
+            agg_func = agg_func_var.get()
+
+            if not indices:
+                messagebox.showwarning("Предупреждение", "Выберите хотя бы один индекс")
+                return
+            if not values:
+                messagebox.showwarning("Предупреждение", "Выберите столбец значений")
+                return
+
+            try:
+                pivot = pd.pivot_table(self.original_data, index=indices, columns=columns if columns else None,
+                                       values=values, aggfunc=agg_func, fill_value=0).reset_index()
+                self.display_data(pivot)
+                self.status_var.set(f'Создана сводная таблица с функцией {agg_func}')
+                dialog.destroy()
+            except Exception as e:
+                messagebox.showerror("Ошибка", f"Ошибка при создании сводной таблицы: {str(e)}")
+
+        ttk.Button(dialog, text="Выполнить", command=perform_pivot).pack(pady=10)
+
+    def show_plot_dialog(self, plot_type):
+        """Показывает диалог для визуализации данных"""
+        if self.original_data is None:
+            messagebox.showwarning("Предупреждение", "Нет данных для визуализации")
+            return
+
+        dialog = tk.Toplevel(self)
+        dialog.title(f"Визуализация: {plot_type.capitalize()}")
+        dialog.geometry("400x300")
+
+        ttk.Label(dialog, text="Выберите столбцы для визуализации:").pack(anchor=tk.W, padx=10, pady=5)
+        column_vars = {}
+        for col in self.original_data.columns:
+            var = tk.BooleanVar(value=False)
+            column_vars[col] = var
+            ttk.Checkbutton(dialog, text=col, variable=var).pack(anchor=tk.W, padx=20)
+
+        def perform_plot():
+            selected_cols = [col for col, var in column_vars.items() if var.get()]
+            if not selected_cols:
+                messagebox.showwarning("Предупреждение", "Выберите хотя бы один столбец")
+                return
+
+            try:
+                fig, ax = plt.subplots(figsize=(6, 4))
+                data = self.original_data[selected_cols]
+
+                if plot_type == 'histogram':
+                    data.plot(kind='hist', ax=ax, alpha=0.7, bins=20)
+                elif plot_type == 'scatter':
+                    if len(selected_cols) < 2:
+                        messagebox.showwarning("Предупреждение", "Для scatter plot выберите минимум 2 столбца")
+                        return
+                    ax.scatter(data[selected_cols[0]], data[selected_cols[1]])
+                    ax.set_xlabel(selected_cols[0])
+                    ax.set_ylabel(selected_cols[1])
+                elif plot_type == 'line':
+                    data.plot(kind='line', ax=ax)
+                elif plot_type == 'pie':
+                    if len(selected_cols) != 1:
+                        messagebox.showwarning("Предупреждение", "Для pie chart выберите ровно 1 столбец")
+                        return
+                    data[selected_cols[0]].value_counts().plot(kind='pie', ax=ax, autopct='%1.1f%%')
+                else:
+                    messagebox.showerror("Ошибка", f"Неизвестный тип графика: {plot_type}")
+                    return
+
+                ax.set_title(f"{plot_type.capitalize()} график")
+                plt.tight_layout()
+
+                # Создаем окно для отображения графика
+                plot_window = tk.Toplevel(self)
+                plot_window.title(f"График: {plot_type.capitalize()}")
+                canvas = FigureCanvasTkAgg(fig, master=plot_window)
+                canvas.draw()
+                canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+                # Кнопка сохранения графика
+                ttk.Button(plot_window, text="Сохранить график",
+                           command=lambda: self.save_plot(fig)).pack(pady=5)
+
+                dialog.destroy()
+
+            except Exception as e:
+                messagebox.showerror("Ошибка", f"Ошибка при построении графика: {str(e)}")
+
+        ttk.Button(dialog, text="Построить", command=perform_plot).pack(pady=10)
+
+    def save_plot(self, fig):
+        """Сохраняет график в файл"""
+        file_path = filedialog.asksaveasfilename(defaultextension=".png",
+                                                 filetypes=[("PNG files", "*.png"), ("All files", "*.*")])
+        if file_path:
+            try:
+                fig.savefig(file_path)
+                messagebox.showinfo("Информация", f"График сохранен в {file_path}")
+            except Exception as e:
+                messagebox.showerror("Ошибка", f"Ошибка при сохранении графика: {str(e)}")
 
     def create_top_panel(self):
         """Создает верхнюю панель с кнопками"""
@@ -494,7 +717,12 @@ class ExcelViewer(tk.Tk):
     def on_canvas_configure(self, event):
         """Обработчик изменения размера холста"""
         # Устанавливаем минимальный размер внутреннего фрейма
-        self.canvas.itemconfig(self.canvas_frame, width=event.width)
+        # Изменено: устанавливаем ширину окна в холсте равной максимальной из ширины видимой области и ширины таблицы
+        total_width = 0
+        for col in self.tree['columns']:
+            total_width += self.tree.column(col, option='width')
+        new_width = max(event.width, total_width)
+        self.canvas.itemconfig(self.canvas_frame, width=new_width)
 
     def on_frame_configure(self, event):
         """Обработчик изменения размера фрейма"""
@@ -553,8 +781,12 @@ class ExcelViewer(tk.Tk):
                 self.header_tree.heading(column, text=column)
                 self.header_tree.column(column, width=column_width, minwidth=50)
 
-            # Загружаем данные пакетами
+            # Устанавливаем высоту treeview равной количеству строк, но с ограничением максимума
             total_rows = len(df)
+            max_height = 40  # Максимальное количество видимых строк, чтобы не перегружать интерфейс
+            self.tree.config(height=min(total_rows, max_height))
+
+            # Загружаем данные пакетами
             for i in range(0, total_rows, BATCH_SIZE):
                 batch = df.iloc[i:i+BATCH_SIZE]
                 for index, row in batch.iterrows():
@@ -762,33 +994,33 @@ class ExcelViewer(tk.Tk):
 
     def on_filter(self, event=None):
         """Обработчик фильтрации данных"""
-        pass
-        # if self.original_data is None:
-        #     return
+        if self.original_data is None:
+            return
 
-        # filter_text = self.filter_text.GetValue().lower()
+        filter_text = self.filter_var.get().lower()
 
-        # if not filter_text:
-        #     self.display_data(self.original_data)
-        #     return
+        if not filter_text:
+            self.display_data(self.original_data)
+            self.status_var.set(f'Найдено записей: {len(self.original_data)}')
+            return
 
-        # # Фильтруем данные
-        # mask = self.original_data.astype(str).apply(lambda x: x.str.lower()).apply(
-        #     lambda x: x.str.contains(filter_text, na=False)).any(axis=1)
-        # filtered_data = self.original_data[mask]
+        # Фильтруем данные
+        mask = self.original_data.astype(str).apply(lambda x: x.str.lower()).apply(
+            lambda x: x.str.contains(filter_text, na=False)).any(axis=1)
+        filtered_data = self.original_data[mask]
 
-        # # Отображаем отфильтрованные данные
-        # self.display_data(filtered_data)
+        # Отображаем отфильтрованные данные
+        self.display_data(filtered_data)
 
-        # # Обновляем статус
-        # self.statusbar.SetStatusText(f'Найдено записей: {len(filtered_data)}')
+        # Обновляем статус
+        self.status_var.set(f'Найдено записей: {len(filtered_data)}')
 
     def clear_filter(self, event=None):
         """Обработчик сброса фильтра"""
-        self.filter_text.SetValue('')
+        self.filter_var.set('')
         if self.original_data is not None:
             self.display_data(self.original_data)
-            self.statusbar.SetStatusText('Фильтр сброшен')
+            self.status_var.set('Фильтр сброшен')
 
 # Часть 5 - функции загрузки и сохранения файлов:
 
@@ -1001,8 +1233,196 @@ if __name__ == '__main__':
     main()
 
 
-# Это первая часть реализации. Здесь добавлены:
+# Здесь добавлены:
     # Меню "Анализ" с подменю
     # Описательная статистика с возможностью выбора столбцов
     # Корреляционный анализ с визуализацией
 # Продолжить с реализацией агрегации и визуализации данных?
+
+# Часть 6 - реализация агрегации и визуализации данных:
+
+    # def show_grouping_dialog(self):
+    #     """Показывает диалог для группировки данных"""
+    #     if self.original_data is None:
+    #         messagebox.showwarning("Предупреждение", "Нет данных для группировки")
+    #         return
+
+    #     dialog = tk.Toplevel(self)
+    #     dialog.title("Группировка данных")
+    #     dialog.geometry("400x300")
+
+    #     ttk.Label(dialog, text="Выберите столбцы для группировки:").pack(anchor=tk.W, padx=10, pady=5)
+    #     group_vars = {}
+    #     for col in self.original_data.columns:
+    #         var = tk.BooleanVar(value=False)
+    #         group_vars[col] = var
+    #         ttk.Checkbutton(dialog, text=col, variable=var).pack(anchor=tk.W, padx=20)
+
+    #     ttk.Label(dialog, text="Выберите столбец для агрегации:").pack(anchor=tk.W, padx=10, pady=5)
+    #     agg_column_var = tk.StringVar()
+    #     agg_column_combo = ttk.Combobox(dialog, textvariable=agg_column_var, values=list(self.original_data.columns), state='readonly')
+    #     agg_column_combo.pack(fill=tk.X, padx=10)
+
+    #     ttk.Label(dialog, text="Выберите функцию агрегации:").pack(anchor=tk.W, padx=10, pady=5)
+    #     agg_func_var = tk.StringVar(value='sum')
+    #     agg_func_combo = ttk.Combobox(dialog, textvariable=agg_func_var, values=['sum', 'mean', 'count', 'min', 'max', 'median'], state='readonly')
+    #     agg_func_combo.pack(fill=tk.X, padx=10)
+
+    #     def perform_grouping():
+    #         selected_groups = [col for col, var in group_vars.items() if var.get()]
+    #         agg_col = agg_column_var.get()
+    #         agg_func = agg_func_var.get()
+
+    #         if not selected_groups:
+    #             messagebox.showwarning("Предупреждение", "Выберите хотя бы один столбец для группировки")
+    #             return
+    #         if not agg_col:
+    #             messagebox.showwarning("Предупреждение", "Выберите столбец для агрегации")
+    #             return
+
+    #         try:
+    #             grouped = self.original_data.groupby(selected_groups).agg({agg_col: agg_func}).reset_index()
+    #             self.display_data(grouped)
+    #             self.status_var.set(f'Данные сгруппированы по {", ".join(selected_groups)} с функцией {agg_func} для {agg_col}')
+    #             dialog.destroy()
+    #         except Exception as e:
+    #             messagebox.showerror("Ошибка", f"Ошибка при группировке: {str(e)}")
+
+    #     ttk.Button(dialog, text="Выполнить", command=perform_grouping).pack(pady=10)
+
+    # def show_pivot_dialog(self):
+    #     """Показывает диалог для создания сводной таблицы"""
+    #     if self.original_data is None:
+    #         messagebox.showwarning("Предупреждение", "Нет данных для сводной таблицы")
+    #         return
+
+    #     dialog = tk.Toplevel(self)
+    #     dialog.title("Сводная таблица")
+    #     dialog.geometry("400x400")
+
+    #     ttk.Label(dialog, text="Выберите индексы (строки):").pack(anchor=tk.W, padx=10, pady=5)
+    #     index_vars = {}
+    #     for col in self.original_data.columns:
+    #         var = tk.BooleanVar(value=False)
+    #         index_vars[col] = var
+    #         ttk.Checkbutton(dialog, text=col, variable=var).pack(anchor=tk.W, padx=20)
+
+    #     ttk.Label(dialog, text="Выберите столбцы:").pack(anchor=tk.W, padx=10, pady=5)
+    #     column_vars = {}
+    #     for col in self.original_data.columns:
+    #         var = tk.BooleanVar(value=False)
+    #         column_vars[col] = var
+    #         ttk.Checkbutton(dialog, text=col, variable=var).pack(anchor=tk.W, padx=20)
+
+    #     ttk.Label(dialog, text="Выберите значения:").pack(anchor=tk.W, padx=10, pady=5)
+    #     value_var = tk.StringVar()
+    #     value_combo = ttk.Combobox(dialog, textvariable=value_var, values=list(self.original_data.columns), state='readonly')
+    #     value_combo.pack(fill=tk.X, padx=10)
+
+    #     ttk.Label(dialog, text="Выберите функцию агрегации:").pack(anchor=tk.W, padx=10, pady=5)
+    #     agg_func_var = tk.StringVar(value='sum')
+    #     agg_func_combo = ttk.Combobox(dialog, textvariable=agg_func_var, values=['sum', 'mean', 'count', 'min', 'max', 'median'], state='readonly')
+    #     agg_func_combo.pack(fill=tk.X, padx=10)
+
+    #     def perform_pivot():
+    #         indices = [col for col, var in index_vars.items() if var.get()]
+    #         columns = [col for col, var in column_vars.items() if var.get()]
+    #         values = value_var.get()
+    #         agg_func = agg_func_var.get()
+
+    #         if not indices:
+    #             messagebox.showwarning("Предупреждение", "Выберите хотя бы один индекс")
+    #             return
+    #         if not values:
+    #             messagebox.showwarning("Предупреждение", "Выберите столбец значений")
+    #             return
+
+    #         try:
+    #             pivot = pd.pivot_table(self.original_data, index=indices, columns=columns if columns else None,
+    #                                    values=values, aggfunc=agg_func, fill_value=0).reset_index()
+    #             self.display_data(pivot)
+    #             self.status_var.set(f'Создана сводная таблица с функцией {agg_func}')
+    #             dialog.destroy()
+    #         except Exception as e:
+    #             messagebox.showerror("Ошибка", f"Ошибка при создании сводной таблицы: {str(e)}")
+
+    #     ttk.Button(dialog, text="Выполнить", command=perform_pivot).pack(pady=10)
+
+    # def show_plot_dialog(self, plot_type):
+    #     """Показывает диалог для визуализации данных"""
+    #     if self.original_data is None:
+    #         messagebox.showwarning("Предупреждение", "Нет данных для визуализации")
+    #         return
+
+    #     dialog = tk.Toplevel(self)
+    #     dialog.title(f"Визуализация: {plot_type.capitalize()}")
+    #     dialog.geometry("400x300")
+
+    #     ttk.Label(dialog, text="Выберите столбцы для визуализации:").pack(anchor=tk.W, padx=10, pady=5)
+    #     column_vars = {}
+    #     for col in self.original_data.columns:
+    #         var = tk.BooleanVar(value=False)
+    #         column_vars[col] = var
+    #         ttk.Checkbutton(dialog, text=col, variable=var).pack(anchor=tk.W, padx=20)
+
+    #     def perform_plot():
+    #         selected_cols = [col for col, var in column_vars.items() if var.get()]
+    #         if not selected_cols:
+    #             messagebox.showwarning("Предупреждение", "Выберите хотя бы один столбец")
+    #             return
+
+    #         try:
+    #             fig, ax = plt.subplots(figsize=(6, 4))
+    #             data = self.original_data[selected_cols]
+
+    #             if plot_type == 'histogram':
+    #                 data.plot(kind='hist', ax=ax, alpha=0.7, bins=20)
+    #             elif plot_type == 'scatter':
+    #                 if len(selected_cols) < 2:
+    #                     messagebox.showwarning("Предупреждение", "Для scatter plot выберите минимум 2 столбца")
+    #                     return
+    #                 ax.scatter(data[selected_cols[0]], data[selected_cols[1]])
+    #                 ax.set_xlabel(selected_cols[0])
+    #                 ax.set_ylabel(selected_cols[1])
+    #             elif plot_type == 'line':
+    #                 data.plot(kind='line', ax=ax)
+    #             elif plot_type == 'pie':
+    #                 if len(selected_cols) != 1:
+    #                     messagebox.showwarning("Предупреждение", "Для pie chart выберите ровно 1 столбец")
+    #                     return
+    #                 data[selected_cols[0]].value_counts().plot(kind='pie', ax=ax, autopct='%1.1f%%')
+    #             else:
+    #                 messagebox.showerror("Ошибка", f"Неизвестный тип графика: {plot_type}")
+    #                 return
+
+    #             ax.set_title(f"{plot_type.capitalize()} график")
+    #             plt.tight_layout()
+
+    #             # Создаем окно для отображения графика
+    #             plot_window = tk.Toplevel(self)
+    #             plot_window.title(f"График: {plot_type.capitalize()}")
+    #             canvas = FigureCanvasTkAgg(fig, master=plot_window)
+    #             canvas.draw()
+    #             canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+    #             # Кнопка сохранения графика
+    #             ttk.Button(plot_window, text="Сохранить график",
+    #                        command=lambda: self.save_plot(fig)).pack(pady=5)
+
+    #             dialog.destroy()
+
+    #         except Exception as e:
+    #             messagebox.showerror("Ошибка", f"Ошибка при построении графика: {str(e)}")
+
+    #     ttk.Button(dialog, text="Построить", command=perform_plot).pack(pady=10)
+
+    # def save_plot(self, fig):
+    #     """Сохраняет график в файл"""
+    #     file_path = filedialog.asksaveasfilename(defaultextension=".png",
+    #                                              filetypes=[("PNG files", "*.png"), ("All files", "*.*")])
+    #     if file_path:
+    #         try:
+    #             fig.savefig(file_path)
+    #             messagebox.showinfo("Информация", f"График сохранен в {file_path}")
+    #         except Exception as e:
+    #             messagebox.showerror("Ошибка", f"Ошибка при сохранении графика: {str(e)}")
