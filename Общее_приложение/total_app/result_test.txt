@@ -1,0 +1,30 @@
+/MyRepositories/JobProjects/Общее_приложение/test_excel_viewer.py
+F.Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Users\Z-Tech\AppData\Local\Programs\Python\Python38-32\lib\tkinter\__init__.py", line 1883, in __call__
+    return self.func(*args)
+TypeError: on_filter() takes from 1 to 2 positional arguments but 4 were given
+.F
+======================================================================
+FAIL: test_copy_paste_delete (__main__.TestExcelViewer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "d:/MyRepositories/JobProjects/Общее_приложение/test_excel_viewer.py", line 85, in test_copy_paste_delete
+    self.assertEqual(len(self.app.tree.get_children()), 3)
+AssertionError: 2 != 3
+
+======================================================================
+FAIL: test_undo_redo (__main__.TestExcelViewer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "d:/MyRepositories/JobProjects/Общее_приложение/test_excel_viewer.py", line 70, in test_undo_redo
+    self.assertEqual(self.app.tree.set(first_item, 'Col1'), '15')
+AssertionError: '10' != '15'
+- 10
++ 15
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.873s
+
+FAILED (failures=2)
