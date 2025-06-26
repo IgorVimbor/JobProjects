@@ -11,6 +11,7 @@ from file_handler import ExcelFileHandler
 from undo_redo_manager import UndoRedoManager
 from context_menu import ContextMenuManager
 from analysis_dialogs import AnalysisDialogs
+from out_dataframe import MyFrame
 
 """
 Модули включают:
@@ -529,7 +530,9 @@ class ExcelViewer(tk.Tk):
 
             self.update()
 
-            self.original_data = pd.read_excel(self.current_file, sheet_name=sheet_name)
+            # self.original_data = pd.read_excel(self.current_file, sheet_name=sheet_name)
+            self.original_data = MyFrame(self.current_file, sheet_name).get_frame()
+
 
             self.display_data(self.original_data)
 
