@@ -5,6 +5,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image, ImageTk
 import os
 
+from backup.backup_app_v5 import *
+
+
 class MainApplication:
     def __init__(self, root):
         self.root = root
@@ -27,29 +30,23 @@ class MainApplication:
 
         # Стиль для кнопок - шрифт Arial, размер 10, жирный
         self.style.configure('Custom.TButton',
-                           padding=10,
-                           font=('Arial', 10, 'bold'))
+                            padding=10,
+                            font=('Arial', 10, 'bold'))
 
         # Стиль для заголовков LabelFrame (Приложение и Описание)
         self.style.configure('Header.TLabel',
-                           font=('Arial', 12, 'bold'),
-                           padding=10)
+                            font=('Arial', 12, 'bold'),
+                            padding=10)
 
         # Стиль для заголовка LabelFrame описаний
         self.style.configure('Desc.TLabelframe.Label',
-                             font=('Arial', 10, 'bold'))
+                            font=('Arial', 10, 'bold'))
 
         # Стиль для текста описания действий
         self.style.configure('Description.TLabel',
-                           font=('Arial', 9),
-                           padding=5,
-                           wraplength=650)
-
-        # Стиль для нижней строки, чтобы совпадал шрифт и цвет с заголовком окна
-        # self.style.configure('Footer.TLabel',
-        #                      font=('Arial', 10),
-        #                      background=self.root.cget('bg'),
-        #                      foreground='SystemWindowText')
+                            font=('Arial', 9),
+                            padding=5,
+                            wraplength=650)
 
         # Создаем главное меню
         self.menubar = tk.Menu(root)
@@ -69,8 +66,7 @@ class MainApplication:
         self.main_frame.pack(fill='both', expand=True, padx=20, pady=10)
 
         # Создаем строку внизу основного окна с текстом "Development by IGOR VASILENOK"
-        self.footer_label = ttk.Label(root, text="Development by IGOR VASILENOK - версия 1.0  ", anchor='e') # style='Footer.TLabel',
-        # self.footer_label = ttk.Label(root, text="Development by IGOR VASILENOK - версия 1.0  ", style='Footer.TLabel', anchor='e') # стиль Footer.TLabel
+        self.footer_label = ttk.Label(root, text="Development by IGOR VASILENOK - версия 1.0  ", anchor='e')
         self.footer_label.pack(side='bottom', fill='x', pady=5)
 
         # Создаем заголовки
@@ -255,9 +251,12 @@ class MainApplication:
         window.geometry("600x400")
 
     def open_backup_window(self):
-        window = tk.Toplevel(self.root)
-        window.title("Резервное копирование")
-        window.geometry("600x400")
+        # window = tk.Toplevel(self.root)
+        # window.title("Резервное копирование")
+        # window.geometry("600x400")
+        backup_app = App()
+        backup_app.winfo_toplevel()
+        backup_app.mainloop()
 
     def open_database_prep_window(self):
         window = tk.Toplevel(self.root)
