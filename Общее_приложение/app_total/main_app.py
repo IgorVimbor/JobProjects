@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 import os
 
 from backup.backup_app import App
+from db_search.db_search_app import AppSearch
 
 
 class MainApplication:
@@ -171,75 +172,31 @@ class MainApplication:
                                 justify='left')
             desc_label.pack(fill='x', padx=5, pady=5)
 
+
     def on_canvas_configure(self, event):
         self.canvas.itemconfig(self.canvas_frame, width=event.width)
 
-    # [Остальные методы остаются без изменений]
+
     def open_analytics_window(self):
-        window = tk.Toplevel(self.root)
-        window.title("Аналитика базы ОТК")
-        window.geometry("800x600")
-        # Делаем окно активным
-        window.lift()
-        window.focus_set()
+        # window = tk.Toplevel(self.root)
+        # window.title("Аналитика базы ОТК")
+        # window.geometry("800x600")
+        # # Делаем окно активным
+        # window.lift()
+        # window.focus_set()
+        messagebox.showinfo(
+            "Аналитика базы ОТК",
+            "ПРИЛОЖЕНИЕ В РАЗРАБОТКЕ"
+        )
 
-        # Создаем вкладки
-        notebook = ttk.Notebook(window)
-        notebook.pack(fill='both', expand=True, pady=10, padx=10)
-
-        # Вкладка статистики
-        stats_frame = ttk.Frame(notebook)
-        notebook.add(stats_frame, text="Статистика")
-
-        # График
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.bar(['Янв', 'Фев', 'Мар', 'Апр'], [10, 15, 13, 17])
-        ax.set_title('Количество рекламаций по месяцам')
-
-        canvas = FigureCanvasTkAgg(fig, stats_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack(pady=10)
-
-        # Вкладка с таблицей
-        table_frame = ttk.Frame(notebook)
-        notebook.add(table_frame, text="Данные")
-
-        # Создаем таблицу
-        columns = ('Дата', 'Номер акта', 'Статус', 'Длительность')
-        tree = ttk.Treeview(table_frame, columns=columns, show='headings')
-
-        for col in columns:
-            tree.heading(col, text=col)
-            tree.column(col, width=100)
-
-        # Добавляем тестовые данные
-        for i in range(10):
-            tree.insert('', 'end', values=(f'2024-{i+1:02d}-01', f'АКТ-{i+1}', 'В работе', f'{i+5} дней'))
-
-        tree.pack(pady=10, padx=10, fill='both', expand=True)
 
     def open_search_window(self):
         """метод для запуска приложения Поиск_по_базе_ОТК"""
-        window = tk.Toplevel(self.root)
-        window.title("Поиск по базе ОТК")
-        window.geometry("600x400")
+        db_search_app = AppSearch(self.root)
         # Делаем окно активным
-        window.lift()
-        window.focus_set()
+        db_search_app.lift()
+        db_search_app.focus_set()
 
-        # Создаем форму поиска
-        search_frame = ttk.LabelFrame(window, text="Параметры поиска", padding=20)
-        search_frame.pack(fill='x', pady=10, padx=10)
-
-        ttk.Label(search_frame, text="Номер двигателя:").grid(row=0, column=0, pady=5)
-        engine_entry = ttk.Entry(search_frame)
-        engine_entry.grid(row=0, column=1, pady=5)
-
-        ttk.Label(search_frame, text="Номер акта:").grid(row=1, column=0, pady=5)
-        act_entry = ttk.Entry(search_frame)
-        act_entry.grid(row=1, column=1, pady=5)
-
-        ttk.Button(search_frame, text="Поиск", style='Custom.TButton').grid(row=2, column=0, columnspan=2, pady=20)
 
     def open_search_by_product_window(self):
         window = tk.Toplevel(self.root)
@@ -249,6 +206,7 @@ class MainApplication:
         window.lift()
         window.focus_set()
 
+
     def open_claims_report_window(self):
         window = tk.Toplevel(self.root)
         window.title("Справка по рекламациям")
@@ -256,6 +214,7 @@ class MainApplication:
         # Делаем окно активным
         window.lift()
         window.focus_set()
+
 
     def open_defects_analysis_window(self):
         # window = tk.Toplevel(self.root)
@@ -269,6 +228,7 @@ class MainApplication:
             "ПРИЛОЖЕНИЕ В РАЗРАБОТКЕ"
         )
 
+
     def open_shipping_copy_window(self):
         window = tk.Toplevel(self.root)
         window.title("Копирование отгрузки")
@@ -276,6 +236,7 @@ class MainApplication:
         # Делаем окно активным
         window.lift()
         window.focus_set()
+
 
     def open_backup_window(self):
         """метод для запуска приложения Резервное_копирование"""
@@ -285,6 +246,7 @@ class MainApplication:
         backup_app.lift()
         backup_app.focus_set()
 
+
     def open_database_prep_window(self):
         window = tk.Toplevel(self.root)
         window.title("Очистка и подготовка базы ОТК")
@@ -293,10 +255,13 @@ class MainApplication:
         window.lift()
         window.focus_set()
 
+
     def show_about(self):
         messagebox.showinfo("О программе",
-                          "Система анализа рекламаций\nВерсия 1.0\n\n" +
-                          "Программа для анализа и обработки данных по рекламациям")
+                          "Аналитическая система Управления качества БЗА\nВерсия 1.0\n\n" +
+                          "Система состоит из приложений для анализа и обработки данных по рекламациям.\n\n\n" +
+                          "Идея и реализация - Василёнок Игорь")
+
 
 def main():
     root = tk.Tk()
