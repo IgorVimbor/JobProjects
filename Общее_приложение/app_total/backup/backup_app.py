@@ -10,7 +10,7 @@ from backup.backup_modul_copyfile_v4 import *
 
 # база данных - перечень резервных копий файлов и каталогов
 # располагается в каталоге проекта или приложения
-database = "Резервное_копирование_база_данных.txt"
+database = "АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК/Резервное_копирование_база_данных.txt"
 
 try:  # если база данных уже существует
     # открываем базу данных, считываем файл json и сохраняем словарь в переменную
@@ -89,11 +89,11 @@ class App(tk.Toplevel):
     # Наследуемся от tk.Toplevel, чтобы создать новое окно поверх окна основного приложения
     # Ранее было class App(tk.Tk) - при таком наследовании окно приложения не становилось активным
     def __init__(self, master=None):
-        super().__init__(master)
+        super().__init__(master)  # Вызываем конструктор родительского класса
         # название заголовка в окне приложения
         self.title(f"РЕЗЕРВНОЕ КОПИРОВАНИЕ в архив_v8_28-06-2025")
         # меняем логотип Tkinter на свой
-        self.iconbitmap("app_total/backup/backup_IconGray_square.ico")
+        self.iconbitmap("app_total/IconBZA.ico")
         # self.iconbitmap("//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconGray_square.ico")
 
         width = 540  # ширина окна

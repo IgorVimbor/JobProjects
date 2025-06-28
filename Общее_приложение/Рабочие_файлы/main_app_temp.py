@@ -5,19 +5,16 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image, ImageTk
 import os
 
-from backup.backup_app import App
+# from backup.backup_app import App
 
 
 class MainApplication:
     def __init__(self, root):
         self.root = root
-        # Меняем логотип Tkinter на логотип БЗА
-        self.root.iconbitmap('app_total/IconBZA.ico')
-        # Заголовок приложения
-        self.root.title("АНАЛИТИЧЕСКАЯ СИСТЕМА УПРАВЛЕНИЯ КАЧЕСТВА")
+        self.root.title("Система анализа рекламаций")
 
-        # размер окна приложения
         # self.root.geometry("1000x700")
+        # размер окна приложения
         width = 1000  # ширина окна
         heigh = 700  # высота окна
         # определяем координаты центра экрана и размещаем окно по центру экрана
@@ -219,7 +216,6 @@ class MainApplication:
         tree.pack(pady=10, padx=10, fill='both', expand=True)
 
     def open_search_window(self):
-        """метод для запуска приложения Поиск_по_базе_ОТК"""
         window = tk.Toplevel(self.root)
         window.title("Поиск по базе ОТК")
         window.geometry("600x400")
@@ -277,13 +273,12 @@ class MainApplication:
         window.lift()
         window.focus_set()
 
-    def open_backup_window(self):
-        """метод для запуска приложения Резервное_копирование"""
-        # Открываем окно приложения "Резервное копирование", как дочернее окно главного приложения
-        backup_app = App(self.root)
-        # Делаем окно активным
-        backup_app.lift()
-        backup_app.focus_set()
+    # def open_backup_window(self):
+    #     # Открываем окно приложения "Резервное копирование", как дочернее окно главного приложения
+    #     backup_app = App(self.root)
+    #     # Делаем окно активным
+    #     backup_app.lift()
+    #     backup_app.focus_set()
 
     def open_database_prep_window(self):
         window = tk.Toplevel(self.root)
