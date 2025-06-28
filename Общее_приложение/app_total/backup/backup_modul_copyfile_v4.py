@@ -7,7 +7,7 @@ year_now = str(date.today().year)  # текущий год
 data_now = date.today()  # сегодняшняя дата
 
 # файл для логирования (располагается в каталоге проекта или приложения)
-file_logs = "Резервное копирование_logs.txt"
+file_logs = "Резервное_копирование_logs.txt"
 
 
 class Copy_file:

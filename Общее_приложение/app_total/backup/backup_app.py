@@ -1,19 +1,16 @@
-# ВЕРСИЯ-5 2024-11-02
-# Создана общая база данных - файл "Резервное копирование_база данных.txt", в который записывается словарь .json
-# В базе данных по ключу "files" хранится перечень файлов для копирования, по ключу "dirs" - перечень каталогов.
-# Резервное архивирование производится в архив .zip в каталоги по выбору пользователя
-
 import json
 import time
 import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.filedialog as fd
 from tkinter import messagebox
+
 from backup.backup_modul_copyfile_v4 import *
+
 
 # база данных - перечень резервных копий файлов и каталогов
 # располагается в каталоге проекта или приложения
-database = "Резервное копирование_база данных.txt"
+database = "Резервное_копирование_база_данных.txt"
 
 try:  # если база данных уже существует
     # открываем базу данных, считываем файл json и сохраняем словарь в переменную
@@ -88,11 +85,13 @@ class ListFrame(tk.Frame):
             json.dump(dct, file, ensure_ascii=False, indent=4)
 
 
-class App(tk.Tk):
-    def __init__(self):
-        super().__init__()
+class App(tk.Toplevel):
+    # Наследуемся от tk.Toplevel, чтобы создать новое окно поверх окна основного приложения
+    # Ранее было class App(tk.Tk) - при таком наследовании окно приложения не становилось активным
+    def __init__(self, master=None):
+        super().__init__(master)
         # название заголовка в окне приложения
-        self.title(f"РЕЗЕРВНОЕ КОПИРОВАНИЕ в архив_v5_2024-11-02")
+        self.title(f"РЕЗЕРВНОЕ КОПИРОВАНИЕ в архив_v8_28-06-2025")
         # меняем логотип Tkinter на свой
         self.iconbitmap("app_total/backup/backup_IconGray_square.ico")
         # self.iconbitmap("//Server/otk/Support_files_не_удалять!!!/Значки_Логотипы/IconGray_square.ico")
@@ -176,7 +175,7 @@ class App(tk.Tk):
         )
 
         # подпись приложения
-        self.text = tk.Label(self, text="Интелектуальная собственность IGOR VASILENOK")
+        self.text = tk.Label(self, text="Development by IGOR VASILENOK")
         # пустая строка
         self.text_zero = tk.Label(self, text="")
 
@@ -204,19 +203,19 @@ class App(tk.Tk):
         """функция для выбора файла или каталога из окна Проводника"""
         if x == "Добавить файл":
             # выбираем файл из открывшегося окна Проводника
-            filename = fd.askopenfilename(title="Открыть файл", initialdir="/")
+            filename = fd.askopenfilename(title="Открыть файл", initialdir="/", parent=self)
             if filename:  # если файл выбран
                 # добавляем файл в список файлов для копирования
                 self.frame_a.insert_to_listbox(filename)
         elif x == "Добавить каталог":
             # выбираем каталог из открывшегося окна Проводника
-            fl_dir = fd.askdirectory(title="Открыть каталог")
+            fl_dir = fd.askdirectory(title="Открыть каталог", parent=self)
             if fl_dir:  # если каталог выбран
                 # добавляем каталог в список каталогов для копирования
                 self.frame_a.insert_to_listbox(fl_dir)
         elif x == "Выбрать каталог":
             # выбираем каталог из открывшегося окна Проводника
-            fl_pap = fd.askdirectory(title="Открыть каталог")
+            fl_pap = fd.askdirectory(title="Открыть каталог", parent=self)
             if fl_pap:  # если каталог выбран
                 # добавляем каталог в список каталогов для копирования
                 self.frame_b.insert_to_listbox(fl_pap)
@@ -233,12 +232,14 @@ class App(tk.Tk):
 
     def start_copy(self):
         """функция для копирования во все каталоги и вывода информационного окна"""
+        # в методы showerror и askyesno передаются параметр parent=self, чтобы диалоговые окна были поверх окна программы
         flag_error = False
         # если список файлов или каталогов пустой - выводим информационное окно об ошибке
         if not all([v for v in data.values()]):
             messagebox.showerror(
                 "ВНИМАНИЕ!",
                 "Произошла ошибка!\nФайлы или каталоги для копирования не выбраны!",
+                parent=self
             )
             flag_error = True
 
@@ -249,7 +250,7 @@ class App(tk.Tk):
             # создаем экземпляр класса Copy_file из кастомного модуля modul_copyfile
             obj = Copy_file(data["files"], dr)
             flag = obj.copy_file()  # копируем файлы в указанный каталог
-            print(flag)
+            # print(flag)
             if flag:  # если копирование завершено без ошибок и copy_file вернула True
                 self.change_progress()  # старт виджета загрузки
 
@@ -258,15 +259,9 @@ class App(tk.Tk):
             result = messagebox.askyesno(
                 "СООБЩЕНИЕ",
                 "Все файлы скопированы в указанные каталоги.\nВернуться в главное меню?",
+                parent=self
             )
             if result:  # если согласие на закрытие программы
                 self.destroy()  # закрываем приложение
             else:  # если НЕТ согласия
                 self.progress_bar["value"] = 0  # обнуляем виджет загрузки
-
-
-if __name__ == "__main__":
-    app = App()
-    app.mainloop()
-
-# pyinstaller --onefile --windowed --icon=IconGray_square.ico Резервное_копирование_v5.py

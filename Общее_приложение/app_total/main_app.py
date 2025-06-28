@@ -5,7 +5,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image, ImageTk
 import os
 
-from backup.backup_app_v5 import *
+from backup.backup_app import App
 
 
 class MainApplication:
@@ -31,7 +31,8 @@ class MainApplication:
         # Стиль для кнопок - шрифт Arial, размер 10, жирный
         self.style.configure('Custom.TButton',
                             padding=10,
-                            font=('Arial', 10, 'bold'))
+                            font=('Arial', 10, 'bold'),
+                            background='green')
 
         # Стиль для заголовков LabelFrame (Приложение и Описание)
         self.style.configure('Header.TLabel',
@@ -73,7 +74,7 @@ class MainApplication:
         self.headers_frame = ttk.Frame(self.main_frame)
         self.headers_frame.pack(fill='x', pady=5)
 
-        ttk.Label(self.headers_frame, text="Приложение", style='Header.TLabel').pack(side='left', padx=(0, 400))
+        ttk.Label(self.headers_frame, text="Приложение", style='Header.TLabel').pack(side='left', padx=(50, 350))
         ttk.Label(self.headers_frame, text="Описание", style='Header.TLabel').pack(side='left')
 
         # Создаем контейнер для содержимого с прокруткой
@@ -150,10 +151,10 @@ class MainApplication:
             btn_frame.pack(side='left', padx=(0, 20))
 
             button = ttk.Button(btn_frame,
-                              text=btn_text,
-                              style='Custom.TButton',
-                              command=command,
-                              width=30)
+                                text=btn_text,
+                                style='Custom.TButton',
+                                command=command,
+                                width=30)
             button.pack(padx=5, pady=5)
 
             # Создаем LabelFrame для описания
@@ -162,9 +163,9 @@ class MainApplication:
             desc_frame.pack(side='left', fill='x', expand=True)
 
             desc_label = ttk.Label(desc_frame,
-                                 text=description,
-                                 style='Description.TLabel',
-                                 justify='left')
+                                text=description,
+                                style='Description.TLabel',
+                                justify='left')
             desc_label.pack(fill='x', padx=5, pady=5)
 
     def on_canvas_configure(self, event):
@@ -175,6 +176,9 @@ class MainApplication:
         window = tk.Toplevel(self.root)
         window.title("Аналитика базы ОТК")
         window.geometry("800x600")
+        # Делаем окно активным
+        window.lift()
+        window.focus_set()
 
         # Создаем вкладки
         notebook = ttk.Notebook(window)
@@ -215,6 +219,9 @@ class MainApplication:
         window = tk.Toplevel(self.root)
         window.title("Поиск по базе ОТК")
         window.geometry("600x400")
+        # Делаем окно активным
+        window.lift()
+        window.focus_set()
 
         # Создаем форму поиска
         search_frame = ttk.LabelFrame(window, text="Параметры поиска", padding=20)
@@ -234,34 +241,48 @@ class MainApplication:
         window = tk.Toplevel(self.root)
         window.title("Поиск двигателя по изделию")
         window.geometry("600x400")
+        # Делаем окно активным
+        window.lift()
+        window.focus_set()
 
     def open_claims_report_window(self):
         window = tk.Toplevel(self.root)
         window.title("Справка по рекламациям")
         window.geometry("600x400")
+        # Делаем окно активным
+        window.lift()
+        window.focus_set()
 
     def open_defects_analysis_window(self):
         window = tk.Toplevel(self.root)
         window.title("Анализ браковок")
         window.geometry("600x400")
+        # Делаем окно активным
+        window.lift()
+        window.focus_set()
 
     def open_shipping_copy_window(self):
         window = tk.Toplevel(self.root)
         window.title("Копирование отгрузки")
         window.geometry("600x400")
+        # Делаем окно активным
+        window.lift()
+        window.focus_set()
 
     def open_backup_window(self):
-        # window = tk.Toplevel(self.root)
-        # window.title("Резервное копирование")
-        # window.geometry("600x400")
-        backup_app = App()
-        backup_app.winfo_toplevel()
-        backup_app.mainloop()
+        # Открываем окно приложения "Резервное копирование", как дочернее окно главного приложения
+        backup_app = App(self.root)
+        # Делаем окно активным
+        backup_app.lift()
+        backup_app.focus_set()
 
     def open_database_prep_window(self):
         window = tk.Toplevel(self.root)
         window.title("Очистка и подготовка базы ОТК")
         window.geometry("600x400")
+        # Делаем окно активным
+        window.lift()
+        window.focus_set()
 
     def show_about(self):
         messagebox.showinfo("О программе",
