@@ -5,7 +5,7 @@ from tkinter import messagebox
 from openpyxl import load_workbook
 
 import db_search.db_search_modul as t
-import paths  # импортируем файл с путями до файлов
+import paths  # импортируем файл с путями до базы данных, отчетов и др.
 
 
 class AppSearch(tk.Toplevel):

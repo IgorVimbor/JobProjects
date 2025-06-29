@@ -1,3 +1,5 @@
+# Основной модуль приложения <Справка за период>
+
 import tkinter as tk
 from tkinter import messagebox
 import time

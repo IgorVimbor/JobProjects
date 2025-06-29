@@ -1,3 +1,5 @@
+# Основной модуль приложения <Копирование отгрузки>
+
 import tkinter as tk
 from tkinter import messagebox
 import tkinter.ttk as ttk

@@ -1,3 +1,5 @@
+# Вспомогательный модуль приложения <Копирование отгрузки>
+
 import openpyxl
 import xlwings
 from openpyxl.styles import PatternFill

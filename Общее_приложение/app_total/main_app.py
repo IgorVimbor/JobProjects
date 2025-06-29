@@ -1,3 +1,5 @@
+# Основной исполняемый модуль приложения <Аналитическая система УК>
+
 import tkinter as tk
 from tkinter import ttk, messagebox
 

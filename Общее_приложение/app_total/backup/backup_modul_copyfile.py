@@ -1,14 +1,16 @@
+# Вспомогательный модуль приложения <Резервное копирование>
+
 import os
 import shutil
 from datetime import date, datetime
 
-import paths  # импортируем файл с путями до файлов
+import paths  # импортируем файл с путями до базы данных, отчетов и др.
 
 
 year_now = str(date.today().year)  # текущий год
 data_now = date.today()  # сегодняшняя дата
 
-# импортируем файл для логирования резервного копирования
+# импортируем путь до файла для логирования резервного копирования
 file_logs = paths.buckup_logs
 
 

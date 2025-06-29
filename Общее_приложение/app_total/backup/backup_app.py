@@ -1,3 +1,5 @@
+# Основной модуль приложения <Резервное копирование>
+
 import json
 import time
 import tkinter as tk
@@ -6,7 +8,7 @@ import tkinter.filedialog as fd
 from tkinter import messagebox
 
 import backup.backup_modul_copyfile as bmc
-import paths  # импортируем файл с путями до файлов
+import paths  # импортируем файл с путями до базы данных, отчетов и др.
 
 
 # импортируем файл базы данных резервного копирования
