@@ -1,15 +1,13 @@
 from datetime import datetime
 import pandas as pd
-
 import warnings
 warnings.simplefilter(action="ignore", category=Warning)
 
+import paths  # импортируем файл с путями до базы данных, отчетов и др.
 
-year_now = datetime.today().year  # текущий год
 
-# имя файла базы рекламаций ОТК с учетом текущего года
-# file = "//Server/otk/1 ГАРАНТИЯ на сервере/" + str(year_now) + "-2019_ЖУРНАЛ УЧЁТА.xlsm"
-file = f"D:/РАБОТА/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsm"
+year_now = paths.year_now  # текущий год
+file = paths.file_database  # импортируем файл базы рекламаций ОТК с учетом текущего года
 
 # ------------------------------- Создаем датафрейм из файла Excel базы ОТК -----------------------------------
 df = pd.read_excel(
@@ -42,14 +40,12 @@ df.rename(
     inplace=True,
 )
 
-# ------------------------------ вариант 1 - компактный с распаковкой словаря (**) -------------------------------
-
-vin_columns = ['вин-БЗА', 'вин-Потребитель', 'вин-ТУ', 'вин-НЕТ']
-
 # Создаем временную копию только на время операций
 df_temp = df.copy()
 
 # Выполняем все преобразования в одном блоке:
+vin_columns = ['вин-БЗА', 'вин-Потребитель', 'вин-ТУ', 'вин-НЕТ']
+
 # - рассчитываем значение для суммирования (количество * флаг), используя метод eq()
 for col in vin_columns:
     df_temp[f"{col}_value"] = df_temp['Количество'] * df_temp[col].eq('+').astype(int)
@@ -88,51 +84,4 @@ with open(file_txt, "w", encoding="utf-8") as f:
     )
     f.write(res_df.to_string())
 
-print("Справка в файл TXT записана")
-
-# print(res_df)
-
-
-# ------------------------------------ вариант 2 - подробный ---------------------------------------
-
-# # Список колонок с префиксом "вин-"
-# vin_columns = ['вин-БЗА', 'вин-Потребитель', 'вин-ТУ', 'вин-НЕТ']
-
-# # Создаем копию DataFrame для обработки
-# df_temp = df.copy()
-
-# # 1. Создаем временные столбцы для каждой вин-колонки
-# for col in vin_columns:
-#     # Создаем флаговый столбец: 1 если "+", иначе 0
-#     flag_col = f"{col}_flag"
-#     df_temp[flag_col] = df_temp[col].apply(lambda x: 1 if x == '+' else 0)
-
-#     # Рассчитываем значение для суммирования (флаг * количество)
-#     value_col = f"{col}_value"
-#     df_temp[value_col] = df_temp[flag_col] * df_temp['Количество']
-
-# # 2. Список всех столбцов для суммирования
-# sum_columns = ['Количество'] + [f"{col}_value" for col in vin_columns]
-
-# # 3. Группируем и суммируем
-# result_df = df_temp.groupby(['Потребитель', 'Изделие'])[sum_columns].sum().reset_index()
-
-# # 4. Переименовываем временные столбцы в исходные названия
-# rename_dict = {}
-# for col in vin_columns:
-#     rename_dict[f"{col}_value"] = col
-
-# result_df = result_df.rename(columns=rename_dict)
-
-# # 5. Преобразуем типы данных в int
-# int_columns = ['Количество'] + vin_columns
-# result_df[int_columns] = result_df[int_columns].astype(int)
-
-# # 6. Выбираем только нужные столбцы
-# final_columns = ['Потребитель', 'Изделие', 'Количество'] + vin_columns
-# result_df = result_df[final_columns]
-
-# # Удаляем временный датафрейм (опционально)
-# del df_temp
-
-# # ... далее как в варианте 1 ...
+# print("Справка в файл TXT записана")

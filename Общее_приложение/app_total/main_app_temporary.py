@@ -1,4 +1,4 @@
-# Основной исполняемый модуль приложения <Аналитическая система УК>
+# Основной исполняемый модуль приложения <Аналитическая система УК> с исправленным центрированием окна
 
 import tkinter as tk
 from tkinter import ttk, messagebox
@@ -8,25 +8,27 @@ from db_search.db_search_app import AppSearch
 from engine_search.engine_search_app import SearchEngine
 from enquiry_period.enquiry_period_app import EnquiryPeriod
 from copier.copier_app import CopierData
-from analytics.analytics_app import AnalyticsApp
 
 
-class MainApplication:
-    def __init__(self, root):
-        self.root = root
+class MainApplication(tk.Tk):
+    def __init__(self):
+        super().__init__()
 
-        # self.root.iconbitmap("app_total/IconBZA.ico")  # Меняем логотип Tkinter на логотип БЗА
-        self.root.title("АНАЛИТИЧЕСКАЯ СИСТЕМА УПРАВЛЕНИЯ КАЧЕСТВА")  # Заголовок приложения
+        # self.iconbitmap("app_total/IconBZA.ico")  # Меняем логотип Tkinter на логотип БЗА
+        self.title("АНАЛИТИЧЕСКАЯ СИСТЕМА УПРАВЛЕНИЯ КАЧЕСТВА")  # Заголовок приложения
 
         # Размер окна приложения
-        # self.root.geometry("1000x700")
+        # self.geometry("1000x700")
         width = 1000  # ширина окна
         heigh = 840  # высота окна
 
         # Определяем координаты центра экрана и размещаем окно по центру экрана
-        screenwidth = self.root.winfo_screenwidth()
-        screenheight = self.root.winfo_screenheight()
-        self.root.geometry("%dx%d+%d+%d" % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 3))
+        screenwidth = self.winfo_screenwidth()
+        screenheight = self.winfo_screenheight()
+        self.geometry(
+            "%dx%d+%d+%d"
+            % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 3)
+        )
 
         # Настройка стилей
         self.style = ttk.Style()
@@ -53,8 +55,8 @@ class MainApplication:
                             wraplength=650)
 
         # Создаем главное меню
-        self.menubar = tk.Menu(root)
-        self.root.config(menu=self.menubar)
+        self.menubar = tk.Menu(self)
+        self.config(menu=self.menubar)
 
         self.file_menu = tk.Menu(self.menubar, tearoff=0)
         self.help_menu = tk.Menu(self.menubar, tearoff=0)
@@ -62,15 +64,15 @@ class MainApplication:
         self.menubar.add_cascade(label="Файл", menu=self.file_menu)
         self.menubar.add_cascade(label="Справка", menu=self.help_menu)
 
-        self.file_menu.add_command(label="Выход", command=root.quit)
+        self.file_menu.add_command(label="Выход", command=self.quit)
         self.help_menu.add_command(label="О программе", command=self.show_about)
 
         # Создаем основной контейнер
-        self.main_frame = ttk.Frame(root)
+        self.main_frame = ttk.Frame(self)
         self.main_frame.pack(fill='both', expand=True, padx=20, pady=10)
 
         # Создаем строку внизу основного окна с текстом "Development by IGOR VASILENOK"
-        self.footer_label = ttk.Label(root, text="Development by IGOR VASILENOK - версия 1.0  ", anchor='e')
+        self.footer_label = ttk.Label(self, text="Development by IGOR VASILENOK - версия 1.0  ", anchor='e')
         self.footer_label.pack(side='bottom', fill='x', pady=5)
 
         # Создаем заголовки
@@ -177,16 +179,22 @@ class MainApplication:
 
 
     def open_analytics_window(self):
-        """метод для запуска приложения <Аналитика базы ОТК>"""
-        analytic_app = AnalyticsApp(self.root)
+        window = tk.Toplevel(self)
+        window.title("Аналитика базы ОТК")
+        window.geometry("600x400")
         # Делаем окно активным
-        analytic_app.lift()
-        analytic_app.focus_set()
+        window.lift()
+        window.focus_set()
+
+        # messagebox.showinfo(
+        #     "Аналитика базы ОТК",
+        #     "ПРИЛОЖЕНИЕ В РАЗРАБОТКЕ"
+        # )
 
 
     def open_search_window(self):
         """метод для запуска приложения <Поиск по базе ОТК>"""
-        db_search_app = AppSearch(self.root)
+        db_search_app = AppSearch(self)
         # Делаем окно активным
         db_search_app.lift()
         db_search_app.focus_set()
@@ -194,7 +202,7 @@ class MainApplication:
 
     def open_search_by_product_window(self):
         """метод для запуска приложения <Поиск двигателя по изделию>"""
-        engine_search_app = SearchEngine(self.root)
+        engine_search_app = SearchEngine(self)
         # Делаем окно активным
         engine_search_app.lift()
         engine_search_app.focus_set()
@@ -202,14 +210,14 @@ class MainApplication:
 
     def open_claims_report_window(self):
         """метод для запуска приложения <Справка за период>"""
-        enquiry_period_app = EnquiryPeriod(self.root)
+        enquiry_period_app = EnquiryPeriod(self)
         # Делаем окно активным
         enquiry_period_app.lift()
         enquiry_period_app.focus_set()
 
 
     def open_defects_analysis_window(self):
-        # window = tk.Toplevel(self.root)
+        # window = tk.Toplevel(self)
         # window.title("Анализ браковок")
         # window.geometry("600x400")
         # # Делаем окно активным
@@ -223,7 +231,7 @@ class MainApplication:
 
     def open_shipping_copy_window(self):
         """метод для запуска приложения <Копирование отгрузки>"""
-        copier = CopierData(self.root)
+        copier = CopierData(self)
         # Делаем окно активным
         copier.lift()
         copier.focus_set()
@@ -231,14 +239,14 @@ class MainApplication:
 
     def open_backup_window(self):
         """метод для запуска приложения <Резервное_копирование>"""
-        backup_app = App(self.root)
+        backup_app = App(self)
         # Делаем окно активным
         backup_app.lift()
         backup_app.focus_set()
 
 
     def open_database_prep_window(self):
-        window = tk.Toplevel(self.root)
+        window = tk.Toplevel(self)
         window.title("Очистка и подготовка базы ОТК")
         window.iconbitmap("app_total/IconBZA.ico")
 
@@ -272,10 +280,6 @@ class MainApplication:
                           "Идея и реализация - Василёнок Игорь")
 
 
-def main():
-    root = tk.Tk()
-    app = MainApplication(root)
-    root.mainloop()
-
 if __name__ == "__main__":
-    main()
+    app = MainApplication()
+    app.mainloop()
