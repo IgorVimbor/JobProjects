@@ -13,25 +13,19 @@ from copier.copier_app import CopierData
 class MainApplication:
     def __init__(self, root):
         self.root = root
-        # Меняем логотип Tkinter на логотип БЗА
-        self.root.iconbitmap("app_total/IconBZA.ico")
-        # Заголовок приложения
-        self.root.title("АНАЛИТИЧЕСКАЯ СИСТЕМА УПРАВЛЕНИЯ КАЧЕСТВА")
+
+        # self.root.iconbitmap("app_total/IconBZA.ico")  # Меняем логотип Tkinter на логотип БЗА
+        self.root.title("АНАЛИТИЧЕСКАЯ СИСТЕМА УПРАВЛЕНИЯ КАЧЕСТВА")  # Заголовок приложения
 
         # Размер окна приложения
         # self.root.geometry("1000x700")
         width = 1000  # ширина окна
-        heigh = 700  # высота окна
+        heigh = 840  # высота окна
 
-        # Обновляем задачи, чтобы получить корректные размеры экрана
-        self.root.update_idletasks()
         # Определяем координаты центра экрана и размещаем окно по центру экрана
         screenwidth = self.root.winfo_screenwidth()
         screenheight = self.root.winfo_screenheight()
-        self.root.geometry(
-            "%dx%d+%d+%d"
-            % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 3)
-        )
+        self.root.geometry("%dx%d+%d+%d" % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 3))
 
         # Настройка стилей
         self.style = ttk.Style()
@@ -251,7 +245,17 @@ class MainApplication:
     def open_database_prep_window(self):
         window = tk.Toplevel(self.root)
         window.title("Очистка и подготовка базы ОТК")
-        window.geometry("400x250")
+        window.iconbitmap("app_total/IconBZA.ico")
+
+        # window.geometry("400x190")
+        width = 400  # ширина окна
+        heigh = 190  # высота окна
+
+        # Определяем координаты центра экрана и размещаем окно по центру экрана
+        screenwidth = window.winfo_screenwidth()
+        screenheight = window.winfo_screenheight()
+        window.geometry("%dx%d+%d+%d" % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 3))
+
         # Делаем окно активным
         window.lift()
         window.focus_set()
@@ -259,9 +263,12 @@ class MainApplication:
         search_frame = ttk.LabelFrame(window, text="Для входа в приложение введите пароль", padding=20)
         search_frame.pack(fill='x', pady=10, padx=10)
 
-        ttk.Label(search_frame, text="Пароль:").grid(row=0, column=0, pady=5)
-        engine_entry = ttk.Entry(search_frame)
-        engine_entry.grid(row=0, column=1, pady=5)
+        ttk.Label(search_frame, text="Пароль:").grid(row=0, column=0, padx=20, pady=5)
+        password_entry = ttk.Entry(search_frame)
+        password_entry.grid(row=0, column=1, pady=5)
+
+        ttk.Button(search_frame, text="Отправить", style='Custom.TButton').grid(row=0, column=2, padx=20, pady=20)
+
 
     def show_about(self):
         messagebox.showinfo("О программе",

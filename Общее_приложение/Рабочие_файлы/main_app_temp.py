@@ -16,7 +16,7 @@ class MainApplication:
         # self.root.geometry("1000x700")
         # размер окна приложения
         width = 1000  # ширина окна
-        heigh = 700  # высота окна
+        heigh = 840  # высота окна
         # определяем координаты центра экрана и размещаем окно по центру экрана
         screenwidth = self.root.winfo_screenwidth()
         screenheight = self.root.winfo_screenheight()
@@ -273,12 +273,13 @@ class MainApplication:
         window.lift()
         window.focus_set()
 
-    # def open_backup_window(self):
-    #     # Открываем окно приложения "Резервное копирование", как дочернее окно главного приложения
-    #     backup_app = App(self.root)
-    #     # Делаем окно активным
-    #     backup_app.lift()
-    #     backup_app.focus_set()
+    def open_backup_window(self):
+        pass
+        # # Открываем окно приложения "Резервное копирование", как дочернее окно главного приложения
+        # backup_app = App(self.root)
+        # # Делаем окно активным
+        # backup_app.lift()
+        # backup_app.focus_set()
 
     def open_database_prep_window(self):
         window = tk.Toplevel(self.root)
