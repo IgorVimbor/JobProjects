@@ -1,9 +1,5 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from PIL import Image, ImageTk
-import os
 
 from backup.backup_app import App
 from db_search.db_search_app import AppSearch
@@ -13,7 +9,7 @@ class MainApplication:
     def __init__(self, root):
         self.root = root
         # Меняем логотип Tkinter на логотип БЗА
-        self.root.iconbitmap('app_total/IconBZA.ico')
+        self.root.iconbitmap("app_total/IconBZA.ico")
         # Заголовок приложения
         self.root.title("АНАЛИТИЧЕСКАЯ СИСТЕМА УПРАВЛЕНИЯ КАЧЕСТВА")
 

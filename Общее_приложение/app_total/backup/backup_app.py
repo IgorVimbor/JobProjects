@@ -5,12 +5,12 @@ import tkinter.ttk as ttk
 import tkinter.filedialog as fd
 from tkinter import messagebox
 
-from backup.backup_modul_copyfile_v4 import *
+import backup.backup_modul_copyfile as bmc
+import paths  # импортируем файл с путями до файлов
 
 
-# база данных - перечень резервных копий файлов и каталогов
-# располагается в каталоге проекта или приложения
-database = "АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК/Резервное_копирование_база_данных.txt"
+# импортируем файл базы данных резервного копирования
+database = paths.buckup_database
 
 try:  # если база данных уже существует
     # открываем базу данных, считываем файл json и сохраняем словарь в переменную
@@ -248,7 +248,7 @@ class App(tk.Toplevel):
             self.progress_bar["value"] = 0  # обнуляем виджет загрузки
 
             # создаем экземпляр класса Copy_file из кастомного модуля modul_copyfile
-            obj = Copy_file(data["files"], dr)
+            obj = bmc.Copy_file(data["files"], dr)
             flag = obj.copy_file()  # копируем файлы в указанный каталог
             # print(flag)
             if flag:  # если копирование завершено без ошибок и copy_file вернула True

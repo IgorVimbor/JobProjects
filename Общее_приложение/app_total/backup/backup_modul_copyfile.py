@@ -2,12 +2,14 @@ import os
 import shutil
 from datetime import date, datetime
 
+import paths  # импортируем файл с путями до файлов
+
 
 year_now = str(date.today().year)  # текущий год
 data_now = date.today()  # сегодняшняя дата
 
-# файл для логирования (располагается в каталоге проекта или приложения)
-file_logs = "АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК/Резервное_копирование_logs.txt"
+# импортируем файл для логирования резервного копирования
+file_logs = paths.buckup_logs
 
 
 class Copy_file:

@@ -4,6 +4,7 @@ from openpyxl import load_workbook
 from datetime import datetime
 
 import db_search.db_search_modul as t
+import paths  # импортируем файл с путями до файлов
 
 
 class AppSearch(tk.Toplevel):
@@ -11,13 +12,11 @@ class AppSearch(tk.Toplevel):
         super().__init__(master)
         self.year_now = datetime.today().year  # текущий год
 
-        # файл базы рекламаций ОТК с учетом текущего года
-        # self.file_database = "//Server/otk/1 ГАРАНТИЯ на сервере/" + str(year_now) + "-2019_ЖУРНАЛ УЧЁТА.xlsm"
-        self.file_database = f"D:/РАБОТА/{str(self.year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsm"
+        # импортируем файл базы рекламаций ОТК с учетом текущего года
+        self.file_database = paths.file_database
 
-        # файл отчета по результатам поиска
-        # self.file_report = "//Server/otk/Support_files_не_удалять!!!/Отчет по результатам поиска по базе ОТК.txt"
-        self.file_report = "АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК/Отчет по результатам поиска по базе ОТК.txt"
+        # импортируем файл отчета по результатам поиска
+        self.file_report = paths.file_report
 
         self.title('ПОИСК ПО БАЗЕ РЕКЛАМАЦИЙ ОТК')
         self.geometry('650x630')    # размер окна приложения
