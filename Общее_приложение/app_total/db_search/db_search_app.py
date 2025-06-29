@@ -1,7 +1,8 @@
+# Основной модуль приложения <Поиск по базе ОТК>
+
 import tkinter as tk
 from tkinter import messagebox
 from openpyxl import load_workbook
-from datetime import datetime
 
 import db_search.db_search_modul as t
 import paths  # импортируем файл с путями до файлов
@@ -10,7 +11,6 @@ import paths  # импортируем файл с путями до файло�
 class AppSearch(tk.Toplevel):
     def __init__(self, master=None):
         super().__init__(master)
-        self.year_now = datetime.today().year  # текущий год
 
         # импортируем файл базы рекламаций ОТК с учетом текущего года
         self.file_database = paths.file_database

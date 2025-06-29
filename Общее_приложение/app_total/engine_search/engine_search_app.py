@@ -1,3 +1,5 @@
+# Основной модуль приложения <Поиск двигателя по изделию>
+
 import tkinter as tk
 from tkinter import messagebox
 
