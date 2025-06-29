@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 
 from backup.backup_app import App
 from db_search.db_search_app import AppSearch
+from engine_search.engine_search_app import SearchEngine
 
 
 class MainApplication:
@@ -187,7 +188,7 @@ class MainApplication:
 
 
     def open_search_window(self):
-        """метод для запуска приложения Поиск_по_базе_ОТК"""
+        """метод для запуска приложения <Поиск по базе ОТК>"""
         db_search_app = AppSearch(self.root)
         # Делаем окно активным
         db_search_app.lift()
@@ -195,12 +196,11 @@ class MainApplication:
 
 
     def open_search_by_product_window(self):
-        window = tk.Toplevel(self.root)
-        window.title("Поиск двигателя по изделию")
-        window.geometry("600x400")
+        """метод для запуска приложения <Поиск двигателя по изделию>"""
+        engine_search_app = SearchEngine(self.root)
         # Делаем окно активным
-        window.lift()
-        window.focus_set()
+        engine_search_app.lift()
+        engine_search_app.focus_set()
 
 
     def open_claims_report_window(self):
