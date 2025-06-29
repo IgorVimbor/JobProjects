@@ -3,7 +3,7 @@ from tkinter import messagebox
 import tkinter.ttk as ttk
 import time
 
-import modul_copier_local
+import modul_copier
 
 
 def data_copier():
@@ -11,7 +11,7 @@ def data_copier():
     а затем на лист "Гарантийный парк" и лист "Данные2" файла отчета"""
 
     # копируем отгрузку из файла ОСиМ в файл ОТК на Лист конкретного месяца
-    pr = modul_copier_local.ExcelSheetCopier()
+    pr = modul_copier.ExcelSheetCopier()
 
     pr.copy_in_otk(3, 21, 1)  # ТКР
     progress_bar["value"] += 10  # изменяем виджет загрузки
@@ -36,7 +36,7 @@ def data_copier():
     window.update()
 
     # копируем отгрузку по потребителям и изделиям на лист "Гарантийный парк" и лист "Данные2" файла отчета
-    grp = modul_copier_local.DataCopierGarant()
+    grp = modul_copier.DataCopierGarant()
     grp.copy_garant()
     progress_bar["value"] += 10  # изменяем виджет загрузки
     window.update()
