@@ -16,7 +16,7 @@ class AppSearch(tk.Toplevel):
         self.file_database = paths.file_database
 
         # импортируем файл отчета по результатам поиска
-        self.file_report = paths.file_report
+        self.file_report = paths.db_search_report
 
         self.title('ПОИСК ПО БАЗЕ РЕКЛАМАЦИЙ ОТК')
         self.geometry('650x630')    # размер окна приложения
