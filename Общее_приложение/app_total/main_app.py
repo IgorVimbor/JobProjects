@@ -4,6 +4,8 @@ from tkinter import ttk, messagebox
 from backup.backup_app import App
 from db_search.db_search_app import AppSearch
 from engine_search.engine_search_app import SearchEngine
+from enquiry_period.enquiry_period_app import EnquiryPeriod
+from copier.copier_app import CopierData
 
 
 class MainApplication:
@@ -204,12 +206,11 @@ class MainApplication:
 
 
     def open_claims_report_window(self):
-        window = tk.Toplevel(self.root)
-        window.title("Справка по рекламациям")
-        window.geometry("600x400")
+        """метод для запуска приложения <Справка за период>"""
+        enquiry_period_app = EnquiryPeriod(self.root)
         # Делаем окно активным
-        window.lift()
-        window.focus_set()
+        enquiry_period_app.lift()
+        enquiry_period_app.focus_set()
 
 
     def open_defects_analysis_window(self):
@@ -226,17 +227,15 @@ class MainApplication:
 
 
     def open_shipping_copy_window(self):
-        window = tk.Toplevel(self.root)
-        window.title("Копирование отгрузки")
-        window.geometry("600x400")
+        """метод для запуска приложения <Копирование отгрузки>"""
+        copier = CopierData(self.root)
         # Делаем окно активным
-        window.lift()
-        window.focus_set()
+        copier.lift()
+        copier.focus_set()
 
 
     def open_backup_window(self):
-        """метод для запуска приложения Резервное_копирование"""
-        # Открываем окно приложения "Резервное копирование", как дочернее окно главного приложения
+        """метод для запуска приложения <Резервное_копирование>"""
         backup_app = App(self.root)
         # Делаем окно активным
         backup_app.lift()
