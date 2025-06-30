@@ -3,8 +3,6 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 import pandas as pd
-import warnings
-warnings.simplefilter(action="ignore", category=Warning)
 
 import paths # импортируем файл с путями до базы данных, отчетов и др.
 
@@ -127,7 +125,7 @@ class AcceptDefect(tk.Toplevel):
 
             # Показываем сообщение
             answer = messagebox.askyesno(
-                "Информация",
+                "ИНФОРМАЦИЯ",
                 f"Справка успешно создана и сохранена в файл:\n\n{self.file_txt}\n\nОткрыть файл?",
                 parent=self
             )
@@ -141,7 +139,7 @@ class AcceptDefect(tk.Toplevel):
         except Exception as e:
             self.label.config(text="Ошибка обработки!")
             messagebox.showerror(
-                "Ошибка",
+                "ОШИБКА",
                 f"Произошла ошибка при работе приложения:\n\n{e}",
                 parent=self
             )

@@ -1,5 +1,5 @@
 # Основной модуль приложения <Поиск по базе ОТК>
-
+import os
 import tkinter as tk
 from tkinter import messagebox
 from openpyxl import load_workbook
@@ -376,6 +376,38 @@ class AppSearch(tk.Toplevel):
                         print('-' * 80, file=res_file)
                         print(file=res_file)
 
-        # вывод информационного окна о сохранении отчета
-        messagebox.showinfo(
-            'ИНФОРМАЦИЯ', 'ОТЧЕТ СОХРАНЕН.', parent=self)
+        try:
+            # Показываем сообщение о создании и сохранении файла и вопросом об его открытии
+            answer = messagebox.askyesno(
+                "ИНФОРМАЦИЯ",
+                f"Отчет успешно создан и сохранен в файл:\n\n{self.file_report}\n\nОткрыть файл?",
+                parent=self
+            )
+
+            if answer:  # Если пользователь нажал "Да"
+                self._open_file(self.file_report)
+
+            # Закрываем окно после успешного завершения
+            self.destroy()
+
+        except:
+            messagebox.showinfo(
+                "СООБЩЕНИЕ",
+                "Возникла ОШИБКА в работе приложения!!!\n\n"
+                "Возможно, отсутствуют данные для составления отчета.\n"
+                "Обратитесь к разработчику приложения!",
+                parent=self
+            )
+
+            self.destroy()
+
+    def _open_file(self, file_path):
+        """Открывает файл с помощью стандартного приложения Windows"""
+        try:
+            os.startfile(file_path)
+        except Exception as e:
+            messagebox.showwarning(
+                "Ошибка открытия",
+                f"Не удалось открыть файл:\n{str(e)}",
+                parent=self
+            )

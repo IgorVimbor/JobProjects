@@ -1,12 +1,8 @@
 # Вспомогательный модуль приложения <Справка за период>
-
 import json
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Font, Border, Side
-
-import warnings
-warnings.simplefilter(action="ignore", category=Warning)
 
 import paths  # импортируем файл с путями до базы данных, отчетов и др.
 

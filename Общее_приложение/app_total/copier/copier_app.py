@@ -1,5 +1,5 @@
 # Основной модуль приложения <Копирование отгрузки>
-
+import os
 import tkinter as tk
 from tkinter import messagebox
 import tkinter.ttk as ttk
@@ -178,21 +178,33 @@ class CopierData(tk.Toplevel):
 
             result = messagebox.askyesno(
                 "СООБЩЕНИЕ",
-                "Данные по отгрузке скопированы в файлы ОТК.\n\nВернуться в главное меню?",
+                f"Данные по отгрузке скопированы в файл {cm.file_otk}.\n\nОткрыть файл?",
                 parent=self
             )
-            if result:
-                time.sleep(0.5)
+
+            if result:  # Если пользователь нажал "Да"
+                self._open_file(cm.file_otk)
+
+                # Закрываем окно после успешного завершения
                 self.destroy()
             else:
                 self.progress_bar["value"] = 0
 
-        except:
-            messagebox.showinfo(
-                "СООБЩЕНИЕ",
-                "Возникла ОШИБКА при копировании!!!\n\n"
-                "Закройте программу и проверьте исходные файлы.",
+        except Exception as e:
+            messagebox.showerror(
+                "ОШИБКА",
+                f"Произошла ошибка при работе приложения:\n\n{e}",
                 parent=self
             )
-            time.sleep(0.5)
             self.destroy()
+
+    def _open_file(self, file_path):
+        """Открывает файл с помощью стандартного приложения Windows"""
+        try:
+            os.startfile(file_path)
+        except Exception as e:
+            messagebox.showwarning(
+                "Ошибка открытия",
+                f"Не удалось открыть файл:\n{str(e)}",
+                parent=self
+            )
