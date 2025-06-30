@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import font
 
 from analytics.accept_defect_app import AcceptDefect
+from analytics.length_study_app_v3 import LengthStudyWindow
 
 
 class AnalyticsApp(tk.Toplevel):
@@ -98,9 +99,9 @@ class AnalyticsApp(tk.Toplevel):
         new_window.focus_set()
 
     def open_duration_study(self):
-        new_window = tk.Toplevel(self)
-        new_window.title("Длительность исследования рекламаций")
-        new_window.geometry("600x400")
+        new_window = LengthStudyWindow(self)
+        new_window.lift()
+        new_window.focus_set()
 
     def open_not_reports(self):
         new_window = tk.Toplevel(self)

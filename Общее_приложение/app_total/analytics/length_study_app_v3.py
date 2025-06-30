@@ -1,0 +1,272 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import ttk
+
+import paths  # импортируем файл с путями до базы данных, отчетов и др.
+
+
+class LengthStudyAnalysis:
+    """Класс для анализа данных (без GUI)"""
+    def __init__(self):
+        self.year_now = paths.year_now  # текущий год
+        self.date_new = paths.date_new  # сегодняшняя дата
+        self.file = paths.file_database  # путь к базе рекламаций ОТК
+        self.file_out = paths.folder_reports  # путь к каталогу для сохранения отчетов
+
+        self.load_data()
+        self.process_data()
+
+
+    def load_data(self):
+        """метод для загрузки данных из базы рекламаций ОТК"""
+        self.df = pd.read_excel(
+            self.file,
+            sheet_name=str(self.year_now),
+            usecols=[
+                "Дата поступления сообщения в ОТК",
+                "Период выявления дефекта (отказа)",
+                "Наименование изделия",
+                "Обозначение изделия",
+                "Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия",
+                "Дата рекламационного акта ПРИОБРЕТАТЕЛЯ изделия",
+                "Дата поступления изделия",
+                "Номер накладной прихода изделия",
+                "Дата акта исследования",
+            ],
+            header=1,
+        )
+        # Переименовываем столбцы для удобства
+        self.df.columns = [
+            "Дата сообщения", "Потребитель", "Наименование", "Обозначение",
+            "Номер РА", "Дата РА", "Дата прихода", "Номер накладной", "Дата исследования"
+        ]
+
+
+    def process_data(self):
+        """метод для подготовки и обработки данных"""
+        # Удаляем строки, где отсутствует даты в столбцах "Дата прихода" и "Дата исследования" (оба столбца пустые)
+        self.df = self.df.dropna(subset=["Дата прихода", "Дата исследования"], how='all')
+
+        # Заполняем отсутствующие значения в столбце Дата прихода на значения из столбца Дата сообщения, при условии,
+        # что в столбце Номер накладной стоит "фото", иначе заполняем на None
+        self.df["Дата прихода"] = self.df["Дата прихода"].where(
+            self.df["Дата прихода"].notnull(),
+            self.df["Дата сообщения"].where(self.df["Номер накладной"].str.contains("фото"), None))
+
+        # Переводим тип данных в столбцах в datetime64
+        self.df[["Дата РА", "Дата прихода", "Дата исследования"]] = self.df[["Дата РА", "Дата прихода", "Дата исследования"]].apply(pd.to_datetime)
+
+        # Расчитываем статистику
+        self.calculate_statistics()
+
+
+    def save_missing_acts_reports(self):
+        """метод для создания датафреймов с отсутствующими актами по АСП и ГП и сохранения в файлы"""
+        # датафрейм изделий АСП по которым нет актов исследования
+        df_asp_not_act = self.df[
+            (self.df["Потребитель"].str.contains("АСП") == True)
+            & (self.df["Дата исследования"].isnull())
+        ][
+            ["Потребитель", "Наименование", "Обозначение", "Номер РА", "Дата РА", "Дата прихода"]
+        ]
+
+        # датафрейм изделий ГП по которым нет актов исследования
+        df_gp_not_act = self.df[
+            (self.df["Потребитель"].str.contains("эксплуатация") == True)
+            & (self.df["Дата исследования"].isnull())
+        ][
+            ["Потребитель", "Наименование", "Обозначение", "Номер РА", "Дата РА", "Дата прихода"]
+        ]
+
+        # Сохранение в файлы
+        try:
+            # сохраняем в файл txt таблицу с отсутствующими актами по АСП
+            with open(f"{self.file_out}НЕТ актов АСП_{self.date_new}.txt", "w", encoding="utf-8") as f:
+                print(f"\n\tПеречень актов рекламаций по которым НЕТ актов исследования на {self.date_new}\n\n", file=f)
+                f.write(df_asp_not_act.to_string())
+
+            # сохраняем в файл txt таблицу с отсутствующими актами по ГП
+            with open(f"{self.file_out}НЕТ актов ГП_{self.date_new}.txt", "w", encoding="utf-8") as f:
+                print(f"\n\tПеречень актов рекламаций по которым НЕТ актов исследования ГП на {self.date_new}\n\n", file=f)
+                f.write(df_gp_not_act.to_string())
+
+            messagebox.showinfo("Успешно", f"Отчеты сохранены в каталоге:\n\n{self.file_out}")
+
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось сохранить файлы: {str(e)}")
+
+
+    def calculate_statistics(self):
+        """метод для подсчета статистики"""
+        # В столбце "Дата исследования" заменяем отсутствующие данные сегодняшней датой
+        self.df["Дата исследования"] = self.df["Дата исследования"].fillna(self.date_new).apply(pd.to_datetime)
+
+        # Удаляем строки с сегодняшним приходом
+        self.df = self.df[self.df["Дата прихода"].dt.day != self.date_new]
+
+        # Создаем новый столбец в разницей между датой акта исследования и датой поступления
+        self.df["DIFF"] = (self.df["Дата исследования"] - self.df["Дата прихода"]) / np.timedelta64(1, "D")
+
+        # Общая статистика - находим общее среднее и медианное значение
+        self.df_mean = round(self.df["DIFF"].mean(), 2)
+        self.df_median = round(self.df["DIFF"].median(), 2)
+
+        # Статистика по АСП
+        self.df_asp = self.df[self.df["Потребитель"].str.contains("АСП") == True]
+        # находим среднее и медианное значение по АСП
+        self.df_asp_mean = round(self.df_asp["DIFF"].mean(), 2)
+        self.df_asp_median = round(self.df_asp["DIFF"].median(), 2)
+
+        # Статистика по ГП
+        self.df_gp = self.df[self.df["Потребитель"].str.contains("эксплуатация") == True]
+        # находим среднее и медианное значение по ГП
+        self.df_gp_mean = round(self.df_gp["DIFF"].mean(), 2)
+        self.df_gp_median = round(self.df_gp["DIFF"].median(), 2)
+
+        self.result_df = pd.DataFrame(
+            [
+                [self.df_mean, self.df_asp_mean, self.df_gp_mean],
+                [self.df_median, self.df_asp_median, self.df_gp_median]
+            ],
+            index=["Среднее значение", "Медианное значение"],
+            columns=["В целом", "Конвейер", "Эксплуатация"]
+        )
+
+    def create_plots(self):
+        fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+
+        # Общая гистограмма
+        axes[0].hist(self.df["DIFF"], self.df["DIFF"].count(), color='skyblue', edgecolor='black')
+        axes[0].set_title("Общая статистика")
+        axes[0].set_xlim(-2, 40)
+        # axes[0].set_ylim(0, 200)
+        # axes[0].set_xlabel("Количество дней")
+        axes[0].set_ylabel("Количество исследований")
+
+        # Гистограмма АСП
+        axes[1].hist(self.df_asp["DIFF"], self.df_asp["DIFF"].count(), color='salmon', edgecolor='black')
+        axes[1].set_title("Исследование по АСП")
+        axes[1].set_xlim(-1, 40)
+        # axes[1].set_ylim(0, 30)
+        axes[1].set_xlabel("Количество дней")
+        # axes[1].set_ylabel("Количество исследований")
+
+        # Гистограмма ГП
+        axes[2].hist(self.df_gp["DIFF"], self.df_gp["DIFF"].count(), color='lightgreen', edgecolor='black')
+        axes[2].set_title("Исследование по ГП")
+        axes[2].set_xlim(-1, 40)
+        # axes[2].set_ylim(0, 100)
+        # axes[2].set_xlabel("Количество дней")
+        # axes[2].set_ylabel("Количество исследований")
+
+        # добавляем заголовок
+        fig.suptitle(f"{self.year_now} год", fontsize=16)
+
+        plt.tight_layout()
+
+        return fig
+
+
+class LengthStudyWindow(tk.Toplevel):
+    """Главное окно анализа с вкладками"""
+    def __init__(self, master=None):
+        super().__init__(master)
+
+        # Блокируем взаимодействие с родительским окном
+        self.grab_set()
+        self.transient(master)
+
+        self.title("Анализ длительности исследований")
+        width = 1000
+        heigh = 500
+        screenwidth = self.winfo_screenwidth()
+        screenheight = self.winfo_screenheight()
+        self.geometry("%dx%d+%d+%d" % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 3))
+
+        # Создаем анализатор данных
+        self.analysis = LengthStudyAnalysis()
+
+        # Создаем Notebook (вкладки)
+        self.notebook = ttk.Notebook(self)
+        self.notebook.pack(fill=tk.BOTH, expand=True)
+
+        # Вкладка с таблицей
+        self.create_stats_tab()
+
+        # Вкладка с графиками
+        self.create_plots_tab()
+
+        # По умолчанию показываем первую вкладку
+        self.notebook.select(0)
+
+
+    def create_stats_tab(self):
+        """метод для создания вкладки с таблицей статистики, пояснением и кнопкой сохранения"""
+        tab_stats = ttk.Frame(self.notebook)
+        self.notebook.add(tab_stats, text="Статистика")
+
+        # Основной фрейм с белым фоном
+        main_frame = tk.Frame(tab_stats, bg='white')
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10, anchor='nw')
+
+        # Фрейм для кнопки (выравниваем по правому краю)
+        button_frame = tk.Frame(main_frame, bg='white')
+        button_frame.pack(fill=tk.X, pady=(0, 10))
+
+        # Кнопка "Сохранить в файл"
+        save_btn = ttk.Button(
+            button_frame,
+            text="Сохранить в файл",
+            command=self.analysis.save_missing_acts_reports, # вызов метода сохранения в файлы
+            style='Accent.TButton'  # Стиль для выделенной кнопки
+        )
+        save_btn.pack(side=tk.RIGHT, padx=5)
+
+        # Пояснительный текст
+        info_label = tk.Label(
+            main_frame,
+            text=f"Представленные в таблице данные рассчитаны по состоянию на {self.analysis.date_new}.\n\n"\
+                "Длительность исследований рассчитывалась, как разница между датами акта исследования и прихода изделия на завод,\n"\
+                "за исключением приходов сегодняшнего дня.",
+            font=('Arial', 10, 'italic'),
+            bg='white',
+            anchor='w',
+            justify='left'
+        )
+        info_label.pack(fill=tk.X, pady=(0, 10), anchor='w')
+
+        # Пустая строка
+        tk.Label(main_frame, text="", bg='white').pack(anchor='w')
+
+        # Текст с результатами (таблица статистики)
+        text = tk.Text(
+            main_frame,
+            wrap=tk.NONE,
+            font=('Courier New', 12),
+            bg='white',
+            padx=5,
+            pady=5,
+            height=10,
+            width=60
+        )
+        text.insert(tk.END, self.analysis.result_df.to_string())
+        text.config(state=tk.DISABLED)
+        text.pack(fill=tk.BOTH, expand=True, anchor='nw')
+
+
+    def create_plots_tab(self):
+        """метод для создания вкладки с графиками"""
+        tab_plots = ttk.Frame(self.notebook)
+        self.notebook.add(tab_plots, text="Гистограммы")
+
+        # Создаем графики
+        figure = self.analysis.create_plots()
+
+        # Встраиваем график в Tkinter
+        canvas = FigureCanvasTkAgg(figure, master=tab_plots)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)

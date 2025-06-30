@@ -179,14 +179,15 @@ class MainApplication:
     def open_analytics_window(self):
         """метод для запуска приложения <Аналитика базы ОТК>"""
         analytic_app = AnalyticsApp(self.root)
+        # Помещаем окно на передний план, поверх других окон
         analytic_app.lift()
+        # Устанавливаем фокус ввода на окно
         analytic_app.focus_set()
 
 
     def open_search_window(self):
         """метод для запуска приложения <Поиск по базе ОТК>"""
         db_search_app = AppSearch(self.root)
-        # Делаем окно активным
         db_search_app.lift()
         db_search_app.focus_set()
 
@@ -194,7 +195,6 @@ class MainApplication:
     def open_search_by_product_window(self):
         """метод для запуска приложения <Поиск двигателя по изделию>"""
         engine_search_app = SearchEngine(self.root)
-        # Делаем окно активным
         engine_search_app.lift()
         engine_search_app.focus_set()
 
@@ -202,18 +202,11 @@ class MainApplication:
     def open_claims_report_window(self):
         """метод для запуска приложения <Справка за период>"""
         enquiry_period_app = EnquiryPeriod(self.root)
-        # Делаем окно активным
         enquiry_period_app.lift()
         enquiry_period_app.focus_set()
 
 
     def open_defects_analysis_window(self):
-        # window = tk.Toplevel(self.root)
-        # window.title("Анализ браковок")
-        # window.geometry("600x400")
-        # # Делаем окно активным
-        # window.lift()
-        # window.focus_set()
         messagebox.showinfo(
             "Анализ браковок",
             "ПРИЛОЖЕНИЕ В РАЗРАБОТКЕ"
@@ -223,7 +216,6 @@ class MainApplication:
     def open_shipping_copy_window(self):
         """метод для запуска приложения <Копирование отгрузки>"""
         copier = CopierData(self.root)
-        # Делаем окно активным
         copier.lift()
         copier.focus_set()
 
@@ -231,7 +223,6 @@ class MainApplication:
     def open_backup_window(self):
         """метод для запуска приложения <Резервное_копирование>"""
         backup_app = App(self.root)
-        # Делаем окно активным
         backup_app.lift()
         backup_app.focus_set()
 
