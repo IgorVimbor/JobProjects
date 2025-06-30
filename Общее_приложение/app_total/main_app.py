@@ -8,7 +8,7 @@ from db_search.db_search_app import AppSearch
 from engine_search.engine_search_app import SearchEngine
 from enquiry_period.enquiry_period_app import EnquiryPeriod
 from copier.copier_app import CopierData
-from analytics.analytics_app import AnalyticsApp
+from analytics.analytics_app_v2 import AnalyticsApp
 
 
 class MainApplication:
@@ -44,7 +44,7 @@ class MainApplication:
 
         # Стиль для заголовка LabelFrame описаний
         self.style.configure('Desc.TLabelframe.Label',
-                            font=('Arial', 10, 'bold'))
+                            font=('Arial', 11, 'bold'))
 
         # Стиль для текста описания действий
         self.style.configure('Description.TLabel',
@@ -169,7 +169,7 @@ class MainApplication:
                                 text=description,
                                 style='Description.TLabel',
                                 justify='left')
-            desc_label.pack(fill='x', padx=5, pady=5)
+            desc_label.pack(fill='x', padx=5)
 
 
     def on_canvas_configure(self, event):
@@ -179,7 +179,6 @@ class MainApplication:
     def open_analytics_window(self):
         """метод для запуска приложения <Аналитика базы ОТК>"""
         analytic_app = AnalyticsApp(self.root)
-        # Делаем окно активным
         analytic_app.lift()
         analytic_app.focus_set()
 
