@@ -12,9 +12,15 @@ class SearchEngine(tk.Toplevel):
 
         self.iconbitmap('app_total/IconBZA.ico')  # меняем логотип Tkinter
         self.title('ПОИСК ДВИГАТЕЛЯ ПО НОМЕРУ ИЗДЕЛИЯ')
-        self.geometry('500x400')  # размер окна приложения (ширина-высота)
 
-        # Делаем окно растягивающимся с центрированием по центру
+        # self.geometry('500x400')  # размер окна приложения (ширина-высота)
+        width = 500
+        heigh = 400
+        screenwidth = self.winfo_screenwidth()
+        screenheight = self.winfo_screenheight()
+        self.geometry("%dx%d+%d+%d" % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 3))
+
+        # Делаем окно растягивающимся
         self.columnconfigure(0, weight=1, minsize=250)
         self.rowconfigure([0, 10], weight=1, minsize=100)
 

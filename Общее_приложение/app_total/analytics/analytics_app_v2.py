@@ -4,6 +4,7 @@ from tkinter import font
 
 from analytics.accept_defect_app import AcceptDefect
 from analytics.length_study_app_v3 import LengthStudyWindow
+from analytics.not_acts_app import NotActsWindow
 
 
 class AnalyticsApp(tk.Toplevel):
@@ -104,9 +105,9 @@ class AnalyticsApp(tk.Toplevel):
         new_window.focus_set()
 
     def open_not_reports(self):
-        new_window = tk.Toplevel(self)
-        new_window.title("Не закрытые акты рекламаций")
-        new_window.geometry("600x400")
+        new_window = NotActsWindow(self)
+        new_window.lift()
+        new_window.focus_set()
 
     def open_diagrams(self):
         new_window = tk.Toplevel(self)

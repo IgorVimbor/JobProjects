@@ -19,12 +19,17 @@ class AppSearch(tk.Toplevel):
         self.file_report = paths.db_search_report
 
         self.title('ПОИСК ПО БАЗЕ РЕКЛАМАЦИЙ ОТК')
-        self.geometry('650x630')    # размер окна приложения
-
         # меняем логотип Tkinter (перышко) на логотип БЗА
         self.iconbitmap('app_total/IconBZA.ico')
 
-        # Делаем окно растягивающимся с центрированием по центру
+        # self.geometry('650x630')  # размер окна приложения
+        width = 650
+        heigh = 630
+        screenwidth = self.winfo_screenwidth()
+        screenheight = self.winfo_screenheight()
+        self.geometry("%dx%d+%d+%d" % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 3))
+
+        # Делаем окно растягивающимся
         self.columnconfigure(0, weight=1, minsize=250)
         self.rowconfigure([0, 10], weight=1, minsize=100)
 

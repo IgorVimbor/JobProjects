@@ -1,7 +1,4 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
@@ -15,15 +12,11 @@ file = paths.file_database  # путь к базе рекламаций ОТК
 file_out = paths.folder_reports  # путь к каталогу для сохранения отчетов
 
 
-class LengthStudyAnalysis:
-    """Класс для анализа данных (без GUI)"""
-    def __init__(self):
-        self.load_data()
-        self.process_data()
+class NotActsApp:
+    """Класс для подготовки информации по не закрытым актам рекламаций (без GUI)"""
 
-
-    def load_data(self):
-        """метод для загрузки данных из базы рекламаций ОТК"""
+    def make_frame_not_act(self):
+        """метод для подсчета статистики"""
         self.df = pd.read_excel(
             file,
             sheet_name=str(year_now),
@@ -46,63 +39,47 @@ class LengthStudyAnalysis:
             "Номер РА", "Дата РА", "Дата прихода", "Номер накладной", "Дата исследования"
         ]
 
+        # --------------------------------- Обработка значений столбцов датафрейма ---------------------------------------
 
-    def process_data(self):
-        """метод для подготовки и обработки данных"""
         # Удаляем строки, где отсутствует даты в столбцах "Дата прихода" и "Дата исследования" (оба столбца пустые)
         self.df = self.df.dropna(subset=["Дата прихода", "Дата исследования"], how='all')
 
         # Заполняем отсутствующие значения в столбце Дата прихода на значения из столбца Дата сообщения, при условии,
-        # что в столбце Номер накладной стоит "фото", иначе заполняем на None
+        # что в столбце Номер накладной стоит "фото", иначе заполняем None
         self.df["Дата прихода"] = self.df["Дата прихода"].where(
             self.df["Дата прихода"].notnull(),
-            self.df["Дата сообщения"].where(self.df["Номер накладной"].str.contains("фото"), None))
+            self.df["Дата сообщения"].where(self.df["Номер накладной"].str.contains("фото"), None)
+            )
 
-        # Переводим тип данных в столбцах в datetime64
+        # переводим тип данных в столбцах в datetime64
         self.df[["Дата РА", "Дата прихода", "Дата исследования"]] = self.df[["Дата РА", "Дата прихода", "Дата исследования"]].apply(pd.to_datetime)
 
-        # Расчитываем статистику
-        self.calculate_statistics()
+        # приводим нумерацию строк в датафрейме как в базе рекламаций
+        self.df.index = self.df.index + 3
+        # присваиваем индексу строк датафрейма наименование "Строка базы"
+        self.df.index.name = "Строка базы"
 
+        # --------------------------- Датафрейм изделий по АСП по которым НЕТ актов --------------------------------
 
-    def save_missing_acts_reports(self):
-        """метод для создания датафреймов с отсутствующими актами по АСП и ГП и сохранения в файлы"""
-        # датафрейм изделий АСП по которым нет актов исследования
-        df_asp_not_act = self.df[
-            (self.df["Потребитель"].str.contains("АСП") == True)
-            & (self.df["Дата исследования"].isnull())
+        self.df_asp = self.df[
+            (self.df["Потребитель"].str.contains("АСП") == True) & (self.df["Дата исследования"].isnull())
         ][
             ["Потребитель", "Наименование", "Обозначение", "Номер РА", "Дата РА", "Дата прихода"]
         ]
 
-        # датафрейм изделий ГП по которым нет актов исследования
-        df_gp_not_act = self.df[
-            (self.df["Потребитель"].str.contains("эксплуатация") == True)
-            & (self.df["Дата исследования"].isnull())
+        # --------------------------- Датафрейм изделий по ГП по которым НЕТ актов ----------------------------------
+
+        self.df_gp = self.df[
+            (self.df["Потребитель"].str.contains("эксплуатация") == True) & (self.df["Дата исследования"].isnull())
         ][
             ["Потребитель", "Наименование", "Обозначение", "Номер РА", "Дата РА", "Дата прихода"]
         ]
 
-        # Сохранение в файлы
-        try:
-            # сохраняем в файл txt таблицу с отсутствующими актами по АСП
-            with open(f"{file_out}НЕТ актов АСП_{date_new}.txt", "w", encoding="utf-8") as f:
-                print(f"\n\tПеречень актов рекламаций по которым НЕТ актов исследования на {date_new}\n\n", file=f)
-                f.write(df_asp_not_act.to_string())
-
-            # сохраняем в файл txt таблицу с отсутствующими актами по ГП
-            with open(f"{file_out}НЕТ актов ГП_{date_new}.txt", "w", encoding="utf-8") as f:
-                print(f"\n\tПеречень актов рекламаций по которым НЕТ актов исследования ГП на {date_new}\n\n", file=f)
-                f.write(df_gp_not_act.to_string())
-
-            return True, f"Отчеты сохранены в каталоге:\n\n{file_out}"
-
-        except Exception as e:
-            return False, f"Не удалось сохранить файлы: {str(e)}"
+        return self.df_asp, self.df_gp
 
 
-class LengthStudyWindow(tk.Toplevel):
-    """Главное окно анализа с вкладками"""
+class NotActsWindow(tk.Toplevel):
+    """Главное окно с вкладками"""
     def __init__(self, master=None):
         super().__init__(master)
 
@@ -110,90 +87,145 @@ class LengthStudyWindow(tk.Toplevel):
         self.grab_set()
         self.transient(master)
 
-        self.title("Анализ длительности исследований")
+        # Настройка окна
+        self.title("Перечень не закрытых актов рекламаций")
+        # self.iconbitmap("app_total/IconBZA.ico")
+
         width = 1000
         heigh = 500
         screenwidth = self.winfo_screenwidth()
         screenheight = self.winfo_screenheight()
         self.geometry("%dx%d+%d+%d" % (width, heigh, (screenwidth - width) / 2, (screenheight - heigh) / 3))
 
-        # Создаем анализатор данных
-        self.analysis = LengthStudyAnalysis()
+        # Создаем анализатор данных и получаем датафреймы по АСП и ГП
+        self.analysis = NotActsApp()
+        self.df_asp, self.df_gp = self.analysis.make_frame_not_act()
 
         # Создаем Notebook (вкладки)
         self.notebook = ttk.Notebook(self)
         self.notebook.pack(fill=tk.BOTH, expand=True)
 
-        # Вкладка с таблицей
-        self.create_stats_tab()
+        # Вкладка с таблицей по АСП
+        self.create_stats_asp()
 
-        # Вкладка с графиками
-        self.create_plots_tab()
+        # Вкладка с таблицей по ГП
+        self.create_stats_gp()
 
         # По умолчанию показываем первую вкладку
         self.notebook.select(0)
 
 
-    def create_stats_tab(self):
-        """метод для создания вкладки с таблицей статистики, пояснением и кнопкой сохранения"""
+    def create_stats_asp(self):
+        """метод для создания вкладки с таблицей по АСП и кнопкой сохранения"""
         tab_stats = ttk.Frame(self.notebook)
-        self.notebook.add(tab_stats, text="Статистика")
+        self.notebook.add(tab_stats, text="АСП")
 
-        # Основной фрейм с белым фоном
-        main_frame = tk.Frame(tab_stats, bg='white')
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10, anchor='nw')
+        # Текст (таблица) с результатами по АСП
+        text = tk.Text(tab_stats, wrap=tk.NONE, font=('Courier New', 11))
+        text.insert(tk.END, self.df_asp.to_string())
+        text.config(state=tk.DISABLED)
+
+        # Полосы прокрутки
+        scroll_x = ttk.Scrollbar(tab_stats, orient=tk.HORIZONTAL, command=text.xview)
+        scroll_y = ttk.Scrollbar(tab_stats, orient=tk.VERTICAL, command=text.yview)
+        text.configure(xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
 
         # Фрейм для кнопки (выравниваем по правому краю)
-        button_frame = tk.Frame(main_frame, bg='white')
+        button_frame = tk.Frame(tab_stats, bg='white')
         button_frame.pack(fill=tk.X, pady=(0, 10))
 
         # Кнопка "Сохранить в файл"
         save_btn = ttk.Button(
             button_frame,
             text="Сохранить в файл",
-            command=self.save_reports_handler,
+            command=self.save_reports_asp,
             style='Accent.TButton'  # Стиль для выделенной кнопки
         )
         save_btn.pack(side=tk.RIGHT, padx=5)
 
         # Пояснительный текст
         info_label = tk.Label(
-            main_frame,
-            text=f"Представленные в таблице данные рассчитаны за {year_now} год по состоянию на {date_new}.\n\n"\
-                "Длительность исследований рассчитывалась, как разница между датами акта исследования и прихода изделия на завод,\n"\
-                "за исключением приходов сегодняшнего дня.",
-            font=('Arial', 10, 'italic'),
+            button_frame,
+            text=f"Перечень актов рекламаций на АСП, по которым НЕТ актов исследования на {date_new}",
+            font=('Arial', 10, 'bold'),
             bg='white',
-            anchor='w',
-            justify='left'
+            justify='center'
         )
-        info_label.pack(fill=tk.X, pady=(0, 10), anchor='w')
+        info_label.pack(fill=tk.X, pady=(5, 10))
 
-        # Пустая строка
-        tk.Label(main_frame, text="", bg='white').pack(anchor='w')
+        # Размещаем элементы
+        scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
+        scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
+        text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        # Текст с результатами (таблица статистики)
-        text = tk.Text(
-            main_frame,
-            wrap=tk.NONE,
-            font=('Courier New', 12),
-            bg='white',
-            padx=5,
-            pady=5,
-            height=10,
-            width=60
-        )
-        text.insert(tk.END, self.analysis.result_df.to_string())
+
+    def save_reports_asp(self):
+        """Обработчик кнопки сохранения таблицы по АСП с уведомлениями"""
+        try:
+            # сохраняем отчет по АСП в файл txt
+            with open(f"{file_out}НЕТ актов АСП_{date_new}.txt", "w", encoding="utf-8") as f:
+                print(f"\n\n\tПеречень актов рекламаций на АСП, по которым НЕТ актов исследования на {date_new}\n\n\n", file=f)
+                f.write(self.df_asp.to_string())
+
+            messagebox.showinfo("Успешно", f"Отчет с данными по АСП сохранен в каталоге:\n\n{file_out}", parent=self)
+
+        except Exception as e:
+            messagebox.showerror("Ошибка", "Не удалось сохранить отчет", parent=self)
+
+
+    def create_stats_gp(self):
+        """метод для создания вкладки с таблицей по ГП и кнопкой сохранения"""
+        tab_stats = ttk.Frame(self.notebook)
+        self.notebook.add(tab_stats, text="Эксплуатация")
+
+        # Текст (таблтца) с результатами по ГП
+        text = tk.Text(tab_stats, wrap=tk.NONE, font=('Courier New', 11))
+        text.insert(tk.END, self.df_gp.to_string())
         text.config(state=tk.DISABLED)
-        text.pack(fill=tk.BOTH, expand=True, anchor='nw')
+
+        # Полосы прокрутки
+        scroll_x = ttk.Scrollbar(tab_stats, orient=tk.HORIZONTAL, command=text.xview)
+        scroll_y = ttk.Scrollbar(tab_stats, orient=tk.VERTICAL, command=text.yview)
+        text.configure(xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
+
+        # Фрейм для кнопки (выравниваем по правому краю)
+        button_frame = tk.Frame(tab_stats, bg='white')
+        button_frame.pack(fill=tk.X, pady=(0, 10))
+
+        # Кнопка "Сохранить в файл"
+        save_btn = ttk.Button(
+            button_frame,
+            text="Сохранить в файл",
+            command=self.save_reports_gp,
+            style='Accent.TButton'  # Стиль для выделенной кнопки
+        )
+        save_btn.pack(side=tk.RIGHT, padx=5)
+
+        # Пояснительный текст
+        info_label = tk.Label(
+            button_frame,
+            text=f"Перечень актов рекламаций из Эксплуатации, по которым НЕТ актов исследования на {date_new}",
+            font=('Arial', 10, 'bold'),
+            bg='white',
+            justify='center'
+        )
+        info_label.pack(fill=tk.X, pady=(5, 10))
+
+        # Размещаем элементы
+        scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
+        scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
+        text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 
-    def save_reports_handler(self):
-        """Обработчик кнопки сохранения таблицы с уведомлениями"""
-        # вызываем метод сохранения в файлы
-        success, message = self.analysis.save_missing_acts_reports()
+    def save_reports_gp(self):
+        """Обработчик кнопки сохранения таблицы по ГП с уведомлениями"""
+        try:
+            # сохраняем отчет по ГП в файл txt
+            with open(f"{file_out}НЕТ актов ГП_{date_new}.txt", "w", encoding="utf-8") as f:
+                print(f"\n\n\tПеречень актов рекламаций из Эксплуатации, по которым НЕТ актов исследования на {date_new}\n\n\n", file=f)
+                f.write(self.df_gp.to_string())
 
-        if success:
-            messagebox.showinfo("Успешно", message, parent=self)
-        else:
-            messagebox.showerror("Ошибка", message, parent=self)
+            messagebox.showinfo("Успешно", f"Отчет с данными по ГП сохранен в каталоге:\n\n{file_out}", parent=self)
+
+        except Exception as e:
+            messagebox.showerror("Ошибка", "Не удалось сохранить отчет", parent=self)
