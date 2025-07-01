@@ -7,7 +7,7 @@ year_now = datetime.today().year  # текущий год
 date_new = datetime.today().strftime("%d-%m-%Y")  # сегодняшняя дата
 
 # файл базы рекламаций ОТК с учетом текущего года
-# file_database = "//Server/otk/1 ГАРАНТИЯ на сервере/" + str(year_now) + "-2019_ЖУРНАЛ УЧЁТА.xlsm"
+# file_database = f"//Server/otk/1 ГАРАНТИЯ на сервере/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsm"
 file_database = f"D:/РАБОТА/{str(year_now)}-2019_ЖУРНАЛ УЧЁТА.xlsm"
 
 # каталог для сохранения отчетов, таблиц и баз данных приложений
