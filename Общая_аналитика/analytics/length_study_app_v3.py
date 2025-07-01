@@ -259,7 +259,8 @@ class LengthStudyWindow(tk.Toplevel):
         """Обработчик кнопки сохранения графика с уведомлениями"""
 
         try:
-            self.figure.savefig(f"{file_out}График длительности исследований_{date_new}.pdf")
+            # Сохраняем график в файл с автоматической обрезкой пустых полей вокруг графика, оставляя только область с данными и подписями
+            self.figure.savefig(f"{file_out}График длительности исследований_{date_new}.png", dpi=300, bbox_inches='tight')
             messagebox.showinfo("Успешно", f"График сохранен в каталоге:\n\n{file_out}", parent=self)
         except Exception as e:
             messagebox.showerror("Ошибка", "Не удалось сохранить график", parent=self)
