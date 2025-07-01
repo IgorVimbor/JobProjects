@@ -1,0 +1,42 @@
+Структура проекта:
+
+app_total
+|
+|---analytics
+|   |---__init__.py
+|   |---accept_app.py
+|   |---analytics_app_v2.py
+|   |---lenght_app.py
+|   |---not_act_app.py
+|
+|---backup
+|   |---__init__.py
+|   |---backup_app.py
+|   |---backup_modul.py
+|
+|---copier
+|   |---__init__.py
+|   |---copier_app.py
+|   |---copier_modul.py
+|
+|---db_search
+|   |---__init__.py
+|   |---db_search_app.py
+|   |---db_search_modul.py
+|
+|---engine_search
+|   |---__init__.py
+|   |---engine_search_app.py
+|   |---engine_search_modul.py
+|
+|---period
+|   |---__init__.py
+|   |---period_app.py
+|   |---period_modul.py
+|
+|---IconBZA.ico
+|---main_app.py
+|---paths.py
+|---requirements.txt
+
+pyinstaller --onefile --windowed --icon=IconBZA.ico --add-data "analytics;analytics" --add-data "backup;backup" --add-data "copier;copier" --add-data "db_search;db_search" --add-data "engine_search;engine_search" --add-data "period;period" --hidden-import=analytics.accept_app --hidden-import=backup.backup_app --hidden-import=copier.copier_modul main_app.py
