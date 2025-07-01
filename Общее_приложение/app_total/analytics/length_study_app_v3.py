@@ -9,14 +9,15 @@ from tkinter import ttk
 import paths  # импортируем файл с путями до базы данных, отчетов и др.
 
 
+year_now = paths.year_now  # текущий год
+date_new = paths.date_new  # сегодняшняя дата
+file = paths.file_database  # путь к базе рекламаций ОТК
+file_out = paths.folder_reports  # путь к каталогу для сохранения отчетов
+
+
 class LengthStudyAnalysis:
     """Класс для анализа данных (без GUI)"""
     def __init__(self):
-        self.year_now = paths.year_now  # текущий год
-        self.date_new = paths.date_new  # сегодняшняя дата
-        self.file = paths.file_database  # путь к базе рекламаций ОТК
-        self.file_out = paths.folder_reports  # путь к каталогу для сохранения отчетов
-
         self.load_data()
         self.process_data()
 
@@ -24,8 +25,8 @@ class LengthStudyAnalysis:
     def load_data(self):
         """метод для загрузки данных из базы рекламаций ОТК"""
         self.df = pd.read_excel(
-            self.file,
-            sheet_name=str(self.year_now),
+            file,
+            sheet_name=str(year_now),
             usecols=[
                 "Дата поступления сообщения в ОТК",
                 "Период выявления дефекта (отказа)",
@@ -85,28 +86,28 @@ class LengthStudyAnalysis:
         # Сохранение в файлы
         try:
             # сохраняем в файл txt таблицу с отсутствующими актами по АСП
-            with open(f"{self.file_out}НЕТ актов АСП_{self.date_new}.txt", "w", encoding="utf-8") as f:
-                print(f"\n\tПеречень актов рекламаций по которым НЕТ актов исследования на {self.date_new}\n\n", file=f)
+            with open(f"{file_out}НЕТ актов АСП_{date_new}.txt", "w", encoding="utf-8") as f:
+                print(f"\n\tПеречень актов рекламаций по которым НЕТ актов исследования на {date_new}\n\n", file=f)
                 f.write(df_asp_not_act.to_string())
 
             # сохраняем в файл txt таблицу с отсутствующими актами по ГП
-            with open(f"{self.file_out}НЕТ актов ГП_{self.date_new}.txt", "w", encoding="utf-8") as f:
-                print(f"\n\tПеречень актов рекламаций по которым НЕТ актов исследования ГП на {self.date_new}\n\n", file=f)
+            with open(f"{file_out}НЕТ актов ГП_{date_new}.txt", "w", encoding="utf-8") as f:
+                print(f"\n\tПеречень актов рекламаций по которым НЕТ актов исследования ГП на {date_new}\n\n", file=f)
                 f.write(df_gp_not_act.to_string())
 
-            messagebox.showinfo("Успешно", f"Отчеты сохранены в каталоге:\n\n{self.file_out}")
+            return True, f"Отчеты сохранены в каталоге:\n\n{file_out}"
 
         except Exception as e:
-            messagebox.showerror("Ошибка", f"Не удалось сохранить файлы: {str(e)}")
+            return False, f"Не удалось сохранить файлы: {str(e)}"
 
 
     def calculate_statistics(self):
         """метод для подсчета статистики"""
         # В столбце "Дата исследования" заменяем отсутствующие данные сегодняшней датой
-        self.df["Дата исследования"] = self.df["Дата исследования"].fillna(self.date_new).apply(pd.to_datetime)
+        self.df["Дата исследования"] = self.df["Дата исследования"].fillna(date_new).apply(pd.to_datetime)
 
         # Удаляем строки с сегодняшним приходом
-        self.df = self.df[self.df["Дата прихода"].dt.day != self.date_new]
+        self.df = self.df[self.df["Дата прихода"].dt.day != date_new]
 
         # Создаем новый столбец в разницей между датой акта исследования и датой поступления
         self.df["DIFF"] = (self.df["Дата исследования"] - self.df["Дата прихода"]) / np.timedelta64(1, "D")
@@ -164,7 +165,7 @@ class LengthStudyAnalysis:
         # axes[2].set_ylabel("Количество исследований")
 
         # добавляем заголовок
-        fig.suptitle(f"{self.year_now} год", fontsize=16)
+        fig.suptitle(f"{year_now} год", fontsize=16)
 
         plt.tight_layout()
 
@@ -221,7 +222,7 @@ class LengthStudyWindow(tk.Toplevel):
         save_btn = ttk.Button(
             button_frame,
             text="Сохранить в файл",
-            command=self.analysis.save_missing_acts_reports, # вызов метода сохранения в файлы
+            command=self.save_reports_handler,
             style='Accent.TButton'  # Стиль для выделенной кнопки
         )
         save_btn.pack(side=tk.RIGHT, padx=5)
@@ -229,7 +230,7 @@ class LengthStudyWindow(tk.Toplevel):
         # Пояснительный текст
         info_label = tk.Label(
             main_frame,
-            text=f"Представленные в таблице данные рассчитаны по состоянию на {self.analysis.date_new}.\n\n"\
+            text=f"Представленные в таблице данные рассчитаны за {year_now} год по состоянию на {date_new}.\n\n"\
                 "Длительность исследований рассчитывалась, как разница между датами акта исследования и прихода изделия на завод,\n"\
                 "за исключением приходов сегодняшнего дня.",
             font=('Arial', 10, 'italic'),
@@ -258,15 +259,49 @@ class LengthStudyWindow(tk.Toplevel):
         text.pack(fill=tk.BOTH, expand=True, anchor='nw')
 
 
+    def save_reports_handler(self):
+        """Обработчик кнопки сохранения таблицы с уведомлениями"""
+        # вызываем метод сохранения в файлы
+        success, message = self.analysis.save_missing_acts_reports()
+
+        if success:
+            messagebox.showinfo("Успешно", message, parent=self)
+        else:
+            messagebox.showerror("Ошибка", message, parent=self)
+
+
     def create_plots_tab(self):
         """метод для создания вкладки с графиками"""
         tab_plots = ttk.Frame(self.notebook)
         self.notebook.add(tab_plots, text="Гистограммы")
 
+        # Фрейм для кнопки (выравниваем по правому краю)
+        button_frame = tk.Frame(tab_plots)
+        button_frame.pack(fill=tk.X, pady=(0, 10))
+
+        # Кнопка "Сохранить в файл"
+        save_btn = ttk.Button(
+            button_frame,
+            text="Сохранить в файл",
+            command=self.save_plots_handler,
+            style='Accent.TButton'  # Стиль для выделенной кнопки
+        )
+        save_btn.pack(side=tk.RIGHT, padx=5)
+
         # Создаем графики
-        figure = self.analysis.create_plots()
+        self.figure = self.analysis.create_plots()
 
         # Встраиваем график в Tkinter
-        canvas = FigureCanvasTkAgg(figure, master=tab_plots)
+        canvas = FigureCanvasTkAgg(self.figure, master=tab_plots)
         canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+
+    def save_plots_handler(self):
+        """Обработчик кнопки сохранения графика с уведомлениями"""
+
+        try:
+            self.figure.savefig(f"{file_out}График длительности исследований_{date_new}.pdf")
+            messagebox.showinfo("Успешно", f"График сохранен в каталоге:\n\n{file_out}", parent=self)
+        except Exception as e:
+            messagebox.showerror("Ошибка", "Не удалось сохранить график", parent=self)
