@@ -183,12 +183,14 @@ class CopierData(tk.Toplevel):
             )
 
             if result:  # Если пользователь нажал "Да"
-                self._open_file(cm.file_otk)
-
                 # Закрываем окно после успешного завершения
                 self.destroy()
+                # Открываем файл Excel
+                self._open_file(cm.file_otk)
             else:
                 self.progress_bar["value"] = 0
+                # Закрываем окно
+                self.destroy()
 
         except Exception as e:
             messagebox.showerror(
