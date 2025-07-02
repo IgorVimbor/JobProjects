@@ -39,4 +39,4 @@ app_total
 |---paths.py
 |---requirements.txt
 
-pyinstaller --onefile --windowed --icon=IconBZA.ico --add-data "analytics;analytics" --add-data "backup;backup" --add-data "copier;copier" --add-data "db_search;db_search" --add-data "engine_search;engine_search" --add-data "enquiry_period;enquiry_period" main_app.py
+pyinstaller --onefile --windowed --icon=IconBZA.ico --add-data "analytics;analytics" --add-data "backup;backup" --add-data "copier;copier" --add-data "db_search;db_search" --add-data "engine_search;engine_search" --add-data "enquiry_period;enquiry_period" app_main_h-020725.py
