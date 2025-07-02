@@ -4,17 +4,17 @@ import openpyxl
 import xlwings
 from openpyxl.styles import PatternFill
 
-import paths  # импортируем файл с путями до базы данных, отчетов и др.
+import paths_home  # импортируем файл с путями до базы данных, отчетов и др.
 
 
 # импортируем путь до файла ОСиМ с таблицей отгрузок
-file_osim = paths.copier_osim
+file_osim = paths_home.copier_osim
 
 # импортируем путь до файла ОТК с таблицей отгрузок и гарантийным парком
-file_otk = paths.copier_otk
+file_otk = paths_home.copier_otk
 
 # импортируем путь до файла отчета ОТК по дефектности
-file_otchet = paths.copier_otchet
+file_otchet = paths_home.copier_otchet
 
 # открываем файл ОСиМ и нужный Лист
 wb1 = openpyxl.load_workbook(file_osim, data_only=True)  # флаг True - считываем только значение ячейки

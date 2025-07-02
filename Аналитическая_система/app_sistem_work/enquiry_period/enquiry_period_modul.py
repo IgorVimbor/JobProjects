@@ -4,24 +4,24 @@ import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Font, Border, Side
 
-import paths  # импортируем файл с путями до базы данных, отчетов и др.
+import paths_work  # импортируем файл с путями до базы данных, отчетов и др.
 
 
 # ---------------------------- Константы и файлы используемые в приложении -------------------------------------
-year_now = paths.year_now  # текущий год
-date_end_new = paths.date_new  # дата составления отчета - сегодняшняя дата
+year_now = paths_work.year_now  # текущий год
+date_end_new = paths_work.date_new  # дата составления отчета - сегодняшняя дата
 
 # импортируем путь до файла базы данных номеров строк
-database = paths.enquiry_period_database
+database = paths_work.enquiry_period_database
 
 # импортируем путь до файла базы рекламаций ОТК с учетом текущего года
-file = paths.file_database
+file = paths_work.file_database
 
 # импортируем путь до файла ТХТ в который будет записываться справка
-res_file_txt = paths.enquiry_period_txt
+res_file_txt = paths_work.enquiry_period_txt
 
 # импортируем путь до файла Excel в который будет записываться справка
-res_file_excel = paths.enquiry_period_excel
+res_file_excel = paths_work.enquiry_period_excel
 # ----------------------------------------------------------------------------------------------------------------------------
 
 class TextDatabaseLoader:

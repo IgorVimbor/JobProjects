@@ -3,13 +3,13 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 
-import paths  # импортируем файл с путями до базы данных, отчетов и др.
+import paths_home  # импортируем файл с путями до базы данных, отчетов и др.
 
 
-year_now = paths.year_now  # текущий год
-date_new = paths.date_new  # сегодняшняя дата
-file = paths.file_database  # путь к базе рекламаций ОТК
-file_out = paths.folder_reports  # путь к каталогу для сохранения отчетов
+year_now = paths_home.year_now  # текущий год
+date_new = paths_home.date_new  # сегодняшняя дата
+file = paths_home.file_database  # путь к базе рекламаций ОТК
+file_out = paths_home.folder_reports  # путь к каталогу для сохранения отчетов
 
 
 class NotActsApp:

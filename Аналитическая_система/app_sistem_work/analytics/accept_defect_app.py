@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkinter import ttk
 import pandas as pd
 
-import paths # импортируем файл с путями до базы данных, отчетов и др.
+import paths_work # импортируем файл с путями до базы данных, отчетов и др.
 
 
 class AcceptDefect(tk.Toplevel):
@@ -52,11 +52,11 @@ class AcceptDefect(tk.Toplevel):
 
     def process_data(self):
         """Обработка данных из базы данных ОТК и вывод результата"""
-        # Импортируем переменные из модуля paths
-        self.year_now = paths.year_now  # текущий год
-        self.date_new = paths.date_new  # сегодняшняя дата
-        self.file = paths.file_database  # путь к базе данных ОТК
-        self.file_txt = paths.accept_defect_otchet  # путь к файлу с отчетом
+        # Импортируем переменные из модуля paths_home
+        self.year_now = paths_work.year_now  # текущий год
+        self.date_new = paths_work.date_new  # сегодняшняя дата
+        self.file = paths_work.file_database  # путь к базе данных ОТК
+        self.file_txt = paths_work.accept_defect_otchet  # путь к файлу с отчетом
 
         try:
             # Обновляем статус в окне приложения

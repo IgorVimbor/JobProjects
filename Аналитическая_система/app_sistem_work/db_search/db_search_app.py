@@ -5,18 +5,18 @@ from tkinter import messagebox
 from openpyxl import load_workbook
 
 import db_search.db_search_modul as t
-import paths  # импортируем файл с путями до базы данных, отчетов и др.
+import paths_work  # импортируем файл с путями до базы данных, отчетов и др.
 
 
 class AppSearch(tk.Toplevel):
     def __init__(self, master=None):
         super().__init__(master)
 
-        # импортируем файл базы рекламаций ОТК с учетом текущего года
-        self.file_database = paths.file_database
+        # импортируем путь до файла базы рекламаций ОТК с учетом текущего года
+        self.file_database = paths_work.file_database
 
-        # импортируем файл отчета по результатам поиска
-        self.file_report = paths.db_search_report
+        # импортируем путь до файла отчета по результатам поиска
+        self.file_report = paths_work.db_search_report
 
         self.title('ПОИСК ПО БАЗЕ РЕКЛАМАЦИЙ ОТК')
         # меняем логотип Tkinter (перышко) на логотип БЗА

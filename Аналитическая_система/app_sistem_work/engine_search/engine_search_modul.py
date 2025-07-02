@@ -3,11 +3,7 @@
 
 import pandas as pd
 
-import paths  # импортируем файл с путями до базы данных, отчетов и др.
-
-
-# импортируем путь до файла базы рекламаций ОТК с учетом текущего года
-file = paths.file_database
+from paths_work import file_database # путь до файла базы рекламаций ОТК с учетом текущего года
 
 
 # класс для определения номера двигателя и акта рекламации по номеру изделия
@@ -18,7 +14,7 @@ class Search:
         self.num_prod = tuple()
         sheet = self.year        # делаем активным Лист базы ОТК по году поиска
         # читаем файл Excel и создаем датафрейм
-        self.df = pd.read_excel(file, sheet_name=sheet, header=1)
+        self.df = pd.read_excel(file_database, sheet_name=sheet, header=1)
 
     def all_num_prod(self):
         k = 3  # поправочный коэффициент нумерации строк

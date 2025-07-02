@@ -8,11 +8,11 @@ import tkinter.filedialog as fd
 from tkinter import messagebox
 
 import backup.backup_modul as bmc
-import paths  # импортируем файл с путями до базы данных, отчетов и др.
+import paths_work  # импортируем файл с путями до базы данных, отчетов и др.
 
 
 # импортируем файл базы данных резервного копирования
-database = paths.buckup_database
+database = paths_work.buckup_database
 
 try:  # если база данных уже существует
     # открываем базу данных, считываем файл json и сохраняем словарь в переменную
