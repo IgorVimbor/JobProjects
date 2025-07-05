@@ -99,5 +99,5 @@ pyinstaller --onefile --windowed --icon=IconBZA.ico --add-data "analytics;analyt
 ------------------ Создание ехе из подпапки app_sistem_home/ ------------------
 
 1. Создаем файл app_main_h-020725.spec
-2. Переходим в папку app_sistem_work/
+2. Переходим в папку app_sistem_home/
 3. В консоли вводим команду: pyinstaller app_main_h-020725.spec

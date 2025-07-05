@@ -5,6 +5,7 @@ from tkinter import font
 from analytics.accept_defect_app import AcceptDefect
 from analytics.length_study_app import LengthStudyWindow
 from analytics.not_acts_app import NotActsWindow
+from analytics.pretence.pretence_app import PretenceDateAct
 
 
 class AnalyticsApp(tk.Toplevel):
@@ -115,6 +116,6 @@ class AnalyticsApp(tk.Toplevel):
         new_window.geometry("600x400")
 
     def open_date_notification(self):
-        new_window = tk.Toplevel(self)
-        new_window.title("Даты уведомления по рекламациям")
-        new_window.geometry("600x400")
+        new_window = PretenceDateAct(self)
+        new_window.lift()
+        new_window.focus_set()
