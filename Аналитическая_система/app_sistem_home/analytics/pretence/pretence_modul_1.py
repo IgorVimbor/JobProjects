@@ -18,10 +18,18 @@ class Date_to_act:
     Класс формирует датафрейм с индексом - номер акта и двумя столбцами - дата акта и дата уведомления,
     записывает датафрейм в файл Excel и редактирует стили таблицы в записанном файле
     """
-    def __init__(self, client: str, product: str, new_acts: str) -> None:
-        self.client = client  # потребитель
-        self.product = product.split(", ") if "," in product else [product]  # наименование (-я) изделия (-ий)
-        self.new_acts = new_acts.split() # if " " in new_acts else [new_acts]  # список номеров актов исследования
+    def __init__(self, client: str, product: str, acts_claim: str, acts_research: str) -> None:
+        """
+        Параметры:
+            client (str): потребитель (например, ЯМЗ - эксплуатация)
+            product (str): наименование (-я) изделия (-ий) (например, водяной насос)
+            acts_claim (_type_): номер (-а) акта (-ов) рекламаций потребителя
+            acts_research (list): номер (-а) акта (-ов) исследования
+        """
+        self.client = client
+        self.product = product.split(", ") if "," in product else [product]
+        self.acts_claim = acts_claim.split() if acts_claim else ""
+        self.acts_research = acts_research.split()
 
         # Путь к файлу с базой данных с учетом текущего года
         self.file_database = paths_home.file_database
@@ -36,7 +44,7 @@ class Date_to_act:
         self.sheet_name = f"{client.split()[0]} {paths_home.year_now}"
 
         # Получаем результаты работы класса ActsFromJournal из tmp_2
-        self.acts_checker = ActsFromJournal(self.sheet_name, self.new_acts)
+        self.acts_checker = ActsFromJournal(self.sheet_name, self.acts_research)
         _, self.numbers_acts, self.years_list_acts = self.acts_checker.calculate_results()
         # годы поиска по базе - ключи словаря self.years_list_acts, списки номеров актов по годам - значения словаря
 
@@ -66,6 +74,7 @@ class Date_to_act:
                 self.file_database,
                 sheet_name=value,
                 usecols=[
+                    "Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия",
                     "Дата поступления сообщения в ОТК",
                     "Период выявления дефекта (отказа)",
                     "Наименование изделия",
@@ -97,15 +106,30 @@ class Date_to_act:
         # Датафрейм с датами уведомления и номерами актов исследования
         df_client = df_client[
             [
+                "Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия",
                 "Номер акта исследования",
                 "Дата акта исследования",
                 "Дата поступления сообщения в ОТК",
             ]
         ]
         # Итоговый датафрейм с номерами актов и датами уведомления, сортированный по номеру акта
-        res_df = df_client[df_client["Номер акта исследования"].isin(self.numbers_acts)].sort_values("Номер акта исследования")
+        # Если номера актов рекламаций введены, то формируем датафрейм по номерам актов рекламаций и исследования
+        if self.acts_claim:
+            res_df = df_client[
+                (df_client["Номер акта исследования"].isin(self.numbers_acts))
+                & (df_client["Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия"].isin(self.acts_claim))
+                ].sort_values("Номер акта исследования")
+        else:  # Иначе, только по номерам исследования
+            res_df = df_client[df_client["Номер акта исследования"].isin(self.numbers_acts)].sort_values("Номер акта исследования")
+
+        # Изменяем название столбца с номером актов рекламаций
+        res_df.rename(columns={"Номер рекламационного акта ПРИОБРЕТАТЕЛЯ изделия": "Номер акта рекламации"}, inplace=True)
+
+        # Устанавливаем индексом столбец Номер акта рекламации
+        res_df.set_index("Номер акта рекламации", inplace=True)
+
         # Т.к. некоторые акты исследования составлены на много рекламаций, то убираем дублирование - оставляем только одну строку
-        res_df = res_df.drop_duplicates(subset=["Номер акта исследования", "Дата акта исследования"]).set_index("Номер акта исследования")
+        # res_df = res_df.drop_duplicates(subset=["Номер акта исследования", "Дата акта исследования"])
 
         # Изменяем формат вывода даты на 'dd.mm.yyyy'
         for col in ["Дата поступления сообщения в ОТК", "Дата акта исследования"]:
@@ -118,7 +142,7 @@ class Date_to_act:
         years = pd.to_datetime(res_df['Дата акта исследования']).dt.year.astype(str)
 
         # Получаем индексы (номера актов) как отдельный Series
-        act_numbers = res_df.index.to_series()
+        act_numbers = res_df["Номер акта исследования"]
 
         # Создаем маску: для каждого года и номера акта проверяем соответствие по словарю self.years_list_acts
         mask = [act_num in self.years_list_acts.get(year, [])
@@ -166,11 +190,11 @@ class Date_to_act:
         # Задаем высоту строки 1 (с названиями столбцов)
         sheet.row_dimensions[1].height = 30
 
-        cols = ("B", "C", "D")
+        cols = ("B", "C", "D", "E")
         for col in cols:
-            # Задаем ширину столбцов B, C, D
+            # Задаем ширину столбцов B, C, D, Е
             sheet.column_dimensions[col].width = 18
-            # Активируем перенос текста в ячейках B1, C1, D1 и выравниваем по центру
+            # Активируем перенос текста в ячейках B1, C1, D1, Е1 и выравниваем по центру
             sheet[f"{col}1"].alignment = Alignment(wrap_text=True, horizontal="center")
 
         # Определяем количество строк в таблице (длина итогового датафрейма)
@@ -181,8 +205,8 @@ class Date_to_act:
         for i in range(2, len_table + 2):
             sheet[f"B{i}"].font = Font(bold=False)
 
-        # Рисуем границы в ячейках столбцов C и D (по количеству строк в таблице)
-        for col in ("C", "D"):
+        # Рисуем границы в ячейках столбцов C, D, Е (по количеству строк в таблице)
+        for col in ("C", "D", "E"):
             for row in range(2, len_table + 2):
                 thins = Side(border_style="thin", color="000000")
                 sheet[f"{col}{row}"].border = Border(top=thins, bottom=thins, left=thins, right=thins)
@@ -207,6 +231,7 @@ class Date_to_act:
 
         # Создаем новый датафрейм с нужными столбцами для вывода на экран приложения
         df_journal = pd.DataFrame({
+            "Номер акта рекламации": temp_df["Номер акта рекламации"],
             "Номер и дата акта исследования": temp_df["comb_data"],
             "Дата уведомления": temp_df["Дата поступления сообщения в ОТК"]
         })

@@ -42,14 +42,18 @@ class PretenceDateAct(tk.Toplevel):
         ttk.Label(input_frame, text="Изделие:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
         self.product_entry = ttk.Entry(input_frame, width=100)
         self.product_entry.grid(row=1, column=1, sticky=tk.EW, padx=5, pady=5)
-        self.product_entry.insert(0, "водяной насос")
+        self.product_entry.insert(0, "водяной насос, компрессор, турбокомпрессор")
 
-        ttk.Label(input_frame, text="Акты исследования для проверки:").grid(row=2, column=0, sticky=tk.NW, padx=5, pady=5)
-        self.acts_text = tk.Text(input_frame, height=5, width=100)
-        self.acts_text.grid(row=2, column=1, sticky=tk.EW, padx=5, pady=5)
+        ttk.Label(input_frame, text="Акты рекламаций:").grid(row=2, column=0, sticky=tk.NW, padx=5, pady=5)
+        self.acts_text_1 = tk.Text(input_frame, height=4, width=100)
+        self.acts_text_1.grid(row=2, column=1, sticky=tk.EW, padx=5, pady=5)
+
+        ttk.Label(input_frame, text="Акты исследования:").grid(row=3, column=0, sticky=tk.NW, padx=5, pady=5)
+        self.acts_text_2 = tk.Text(input_frame, height=5, width=100)
+        self.acts_text_2.grid(row=3, column=1, sticky=tk.EW, padx=5, pady=5) # добавить row
 
         button_container = ttk.Frame(input_frame)
-        button_container.grid(row=3, column=1, pady=10, sticky=tk.E)
+        button_container.grid(row=4, column=1, pady=10, sticky=tk.E) # добавить row
 
         process_button = ttk.Button(button_container, text="Обработать данные", command=self.process_data)
         process_button.pack(side=tk.LEFT, padx=(0, 10))
@@ -82,7 +86,8 @@ class PretenceDateAct(tk.Toplevel):
     def clear_input_fields(self):
         self.client_entry.delete(0, tk.END)
         self.product_entry.delete(0, tk.END)
-        self.acts_text.delete("1.0", tk.END)
+        self.acts_text_1.delete("1.0", tk.END)
+        self.acts_text_2.delete("1.0", tk.END)
 
 
     def clear_result_field(self):
@@ -91,25 +96,26 @@ class PretenceDateAct(tk.Toplevel):
 
     def acts_from_journal_print_results(self, acts_checker):
         """
-        Перенос print_results() из класса ActsFromJournal с выводом в текстовое поле
+        Вывод результатов из класса ActsFromJournal (используется в методе date_to_act_print_results)
         """
+        # self.write_to_result_text("\nСписок актов: " + str(acts_checker.numbers_acts))
+        self.write_to_result_text("Введено актов исследования: " + str(len(acts_checker.numbers_acts)))
+
+        for year, acts in acts_checker.years_list_acts.items():
+            self.write_to_result_text(f"Акты исследования {year} года: {acts}")
+
+
         if acts_checker.acts_in_journal:
-            self.write_to_result_text(f"\nАкты, которые есть в Журнале {acts_checker.sheet_name} года:")
+            self.write_to_result_text(f"\nАкты исследования, которые есть в Журнале {acts_checker.sheet_name} года:")
             for act in acts_checker.acts_in_journal:
                 self.write_to_result_text(act)
         else:
-            self.write_to_result_text(f"\nУказанных актов в Журнале {acts_checker.sheet_name} года нет.")
-
-        self.write_to_result_text("\nСписок актов: " + str(acts_checker.numbers_acts))
-        self.write_to_result_text("Всего актов: " + str(len(acts_checker.numbers_acts)))
-
-        for year, acts in acts_checker.years_list_acts.items():
-            self.write_to_result_text(f"Акты {year} года: {acts}")
+            self.write_to_result_text(f"\nУказанных актов исследования в Журнале {acts_checker.sheet_name} года нет.")
 
 
     def date_to_act_print_results(self):
         """
-        Перенос print_results() из класса Date_to_act с выводом в текстовое поле
+        Вывод в текстовое поле приложения общих результатов из классов ActsFromJournal и Date_to_act
         """
         # Итоговый датафрейм класса ActsFromJournal с развернутыми датами актов и уведомлений
         self.date_to_act_obj.result = self.date_to_act_obj.get_frame()
@@ -129,24 +135,32 @@ class PretenceDateAct(tk.Toplevel):
         self.write_to_result_text("")
 
         # Выводим результаты класса Date_to_act
+        self.write_to_result_text("Введено актов рекламаций - " + str(len(self.date_to_act_obj.acts_claim)))
         self.write_to_result_text("Количество актов в таблице - " + str(len(self.date_to_act_obj.result)))
         self.write_to_result_text("")
         # Выводим итоговый датафрейм с короткими датами актов и уведомлений
-        self.write_to_result_text(str(self.date_to_act_obj.df_journal.set_index("Номер и дата акта исследования")))
+        self.write_to_result_text(str(self.date_to_act_obj.df_journal.set_index("Номер акта рекламации")))
 
 
     def process_data(self):
+        """
+        Обработка входных данных методами классов Date_to_act и ActsFromJournal и вывод результата в текстовое поле приложения
+        """
         client = self.client_entry.get().strip()
         product = self.product_entry.get().strip()
-        acts_raw = self.acts_text.get("1.0", tk.END).strip()
+        acts_claim = self.acts_text_1.get("1.0", tk.END).strip()
+        acts_raw = self.acts_text_2.get("1.0", tk.END).strip()
 
-        self.date_to_act_obj = Date_to_act(client, product, acts_raw)
+        self.date_to_act_obj = Date_to_act(client, product, acts_claim, acts_raw)
 
-        self.result_text.delete("1.0", tk.END)
-        self.date_to_act_print_results()
+        self.result_text.delete("1.0", tk.END)  # Очищаем текстовое поле перед выводом результата
+        self.date_to_act_print_results()  # Вывод в текстовое поле приложения общих результатов
 
 
     def save_and_write(self):
+        """
+        Сохраняет результаты в файлы Excel методом close_journal_write_value класса Date_to_act
+        """
         if self.date_to_act_obj is None:
             messagebox.showwarning("Внимание", "Сначала обработайте данные.", parent=self)
             return
