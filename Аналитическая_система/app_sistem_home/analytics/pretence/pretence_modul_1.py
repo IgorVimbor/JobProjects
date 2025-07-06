@@ -192,29 +192,6 @@ class Date_to_act:
         wb.save(self.file_out)
 
 
-    def print_results(self) -> None:
-        """
-        Выводит результаты проверки присутствия актов в Журнале претензий и датафрейм с датами исследования и уведомления.
-        """
-        self.result = self.get_frame()  # Итоговый датафрейм с развернутыми датами актов и уведомлений
-        self.df_journal = self.get_small_frame()  # Итоговый датафрейм с короткими датами актов и уведомлений
-
-        # Записываем в файл Excel (файл закрывается перед записью, если открыт)
-        self.excel_close_write(self.result)
-        # Редактируем стили таблицы в записанном файле Excel
-        self.transform_excel(self.result)
-
-        # Выводим результаты класса ActsFromJournal из tmp_2
-        self.acts_checker.print_results()
-        print()
-
-        print(self.result)  # Выводим итоговый датафрейм с развернутыми датами актов и уведомлений
-        print("Количество актов в таблице -", len(self.result))
-        print()
-
-        print(self.df_journal.set_index("Номер и дата акта исследования"))  # Выводим итоговый датафрейм с короткими датами актов и уведомлений
-
-
     def get_small_frame(self):
         """
         Метод возвращает датафрейм, в котором даты актов исследования и даты уведомления приведены к виду дд.мм.гг
@@ -267,40 +244,28 @@ class Date_to_act:
         wb.save(self.file_journal_pretence)
         # print("Номера и даты актов исследования и даты уведомлений внесены в Журнал.")
 
+        # Открываем Журнал претензий после записи данных
+        os.startfile(self.file_journal_pretence)
+
 
     def close_journal_write_value(self):
         """Метод вызывает функцию записи данных в Журнал претензий. Перед записью проверяет открыт Журнал или закрыт.
         Если открыт, то закрывает его записывает в него данные и открывает файл после записи"""
         try:
+            # Пытаемся открыть файл Журнала претензий в режиме записи, чтобы проверить доступность
+            with open(self.file_journal_pretence, 'a') as f:
+                pass
             # Если Журнал претензий (файл Excel) закрыт, то сразу обрабатываем его
             self.write_journal()
 
         except PermissionError:
             # Если файл открыт, закрываем его через COM и записываем данные
             excel = win32com.client.Dispatch("Excel.Application")
-            workbook = excel.Workbooks.Open(self.file_out)
-            workbook.Close(SaveChanges=True)  # Закрываем с сохранением
-
-            excel.Quit()
+            workbook = excel.Workbooks.Open(self.file_journal_pretence)
+            workbook.Save()  # Сохраняем перед закрытием (можно заменить на workbook.Close(False) для отмены сохранения)
+            workbook.Close()  # Закрываем файл
 
             # Даем небольшую паузу, чтобы Excel успел освободить файл
             time.sleep(1)
             # Теперь обрабатываем файл
             self.write_journal()
-
-            # Открываем Журнал претензий после обработки
-            os.startfile(self.file_journal_pretence)
-
-
-if __name__ == "__main__":
-
-    client = "ЯМЗ - эксплуатация"  # Потребитель
-    product = "водяной насос, компрессор"  # Изделие по которому будет формироваться отчет
-    # product = "водяной насос"  # Изделие по которому будет формироваться отчет
-
-    new_acts = '90-30-01-25 79-30-01-25 1350-17-12-24 475-19-03-25 376-28-02-25 ' \
-    '1352-17-12-24 1284-26-11-24 1192-14-11-24 858-01-07-25'
-
-    obj = Date_to_act(client, product, new_acts)
-    obj.print_results()
-    obj.close_journal_write_value()

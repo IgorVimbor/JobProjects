@@ -62,32 +62,3 @@ class ActsFromJournal:
             self.years_list_acts[f"20{year}"] = sorted(int(act.split("-")[0]) for act in self.new_acts if act.endswith(year))
 
         return self.acts_in_journal, self.numbers_acts, self.years_list_acts
-
-
-    def print_results(self) -> None:
-        """
-        Выводит результаты проверки актов.
-        """
-        if self.acts_in_journal:
-            print(f"\nАкты, которые есть в Журнале {self.sheet_name} года:")
-            for act in self.acts_in_journal:
-                print(act)
-        else:
-            print(f"\nУказанных актов в Журнале {self.sheet_name} года нет.")
-
-        print("\nСписок актов:", self.numbers_acts)
-        print("Всего актов:", len(self.numbers_acts))
-
-        for year, acts in self.years_list_acts.items():
-            print(f"Акты {year} года: {acts}")
-
-
-if __name__ == "__main__":
-    sheet_name = "ЯМЗ 2025"
-    new_acts = [
-        '402-23-04-24', '660-05-11-25', '595-21-06-24', '935-30-09-24', '1052-23-12-24', '875-18-03-25', '956-27-12-24'
-    ]
-
-    acts_checker = ActsFromJournal(sheet_name, new_acts)
-    acts_checker.calculate_results()
-    acts_checker.print_results()

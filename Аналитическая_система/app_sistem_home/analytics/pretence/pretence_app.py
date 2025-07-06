@@ -152,9 +152,3 @@ class PretenceDateAct(tk.Toplevel):
             return
 
         self.date_to_act_obj.close_journal_write_value()
-
-        messagebox.showinfo(
-            "Информация",
-            "Номера и даты актов исследования и даты уведомлений внесены в Журнал претензий.",
-            parent=self
-        )
