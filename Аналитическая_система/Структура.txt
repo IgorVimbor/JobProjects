@@ -1,11 +1,15 @@
---------------- Структура проекта на 02.07.2025 ---------------
+--------------- Структура проекта на 05.07.2025 ---------------
 
 analytic_sistem
 |
-|---app_sistem_home
+|---app_sistem_home (app_sistem_work)
 |   |
 |   |---analytics
 |   |   |---__init__.py
+|   |   |---pretence
+|   |   |   |---pretence_app.py
+|   |   |   |---pretence_modul_1.py
+|   |   |   |---pretence_modul_2.py
 |   |   |---accept_defect_app.py
 |   |   |---analytics_app.py
 |   |   |---lenght_study_app.py
@@ -36,68 +40,25 @@ analytic_sistem
 |   |   |---enquiry_period_app.py
 |   |   |---enquiry_period_modul.py
 |   |
-|   |---app_main_h-020725.py
+|   |---app_main_h-050725.py  (app_main_wk-050725.py)
 |   |---IconBZA.ico
-|   |---paths_home.py
+|   |---paths_home.py  (paths_work.py)
 |
 |
 |---app_sistem_work
 |   |
-|   |---analytics
-|   |   |---__init__.py
-|   |   |---accept_defect_app.py
-|   |   |---analytics_app.py
-|   |   |---lenght_study_app.py
-|   |   |---not_acts_app.py
-|   |
-|   |---backup
-|   |   |---__init__.py
-|   |   |---backup_app.py
-|   |   |---backup_modul.py
-|   |
-|   |---copier
-|   |   |---__init__.py
-|   |   |---copier_app.py
-|   |   |---copier_modul.py
-|   |
-|   |---db_search
-|   |   |---__init__.py
-|   |   |---db_search_app.py
-|   |   |---db_search_modul.py
-|   |
-|   |---engine_search
-|   |   |---__init__.py
-|   |   |---engine_search_app.py
-|   |   |---engine_search_modul.py
-|   |
-|   |---enquiry_period
-|   |   |---__init__.py
-|   |   |---enquiry_period_app.py
-|   |   |---enquiry_period_modul.py
-|   |
-|   |---app_main_wk-020725.py
-|   |---IconBZA.ico
-|   |---paths_work.py
-|
+|   аналогичная структура как и в app_sistem_home, только в названиях _work
 |
 |---requirements.txt
 
 
 ------------------- Создание ехе из корневой папки проекта -------------------
------------------- (если проект в одной папке без подпапок) ------------------
 
 pyinstaller --onefile --windowed --icon=IconBZA.ico --add-data "analytics;analytics" --add-data "backup;backup" --add-data "copier;copier" --add-data "db_search;db_search" --add-data "engine_search;engine_search" --add-data "enquiry_period;enquiry_period" app_main.py
 
 
------------------- Создание ехе из подпапки app_sistem_work/ ------------------
+------------------ Создание ехе из подпапки (например, app_sistem_work/) ------------------
 
 1. Создаем файл app_main_wk-020725.spec
 2. Находясь в виртуальном окружении переходим в папку app_sistem_work/ (через консоль: cd app_sistem_work)
 3. В консоли вводим команду: pyinstaller app_main_wk-020725.spec
-
-
------------------- Создание ехе из подпапки app_sistem_home/ ------------------
-
-1. Создаем файл app_main_h-020725.spec
-2. Переходим в папку app_sistem_home/
-3. В консоли вводим команду: pyinstaller app_main_h-020725.spec
