@@ -254,13 +254,13 @@ class Date_to_act:
         # Заполняем нужные ячейки
         # Для столбца "Номер и дата акта исследования"
         value = self.df_journal["Номер и дата акта исследования"]
-        ws.cell(row=last_row, column=6).value = '\n'.join(map(str, value.to_list()))
-        ws.cell(row=last_row, column=6).alignment = Alignment(wrap_text=True)
+        ws.cell(row=last_row, column=8).value = '\n'.join(map(str, value.to_list()))
+        ws.cell(row=last_row, column=8).alignment = Alignment(wrap_text=True)
 
         # Для столбца "Дата уведомления"
         value = self.df_journal["Дата уведомления"]
-        ws.cell(row=last_row, column=7).value = '\n'.join(map(str, value.to_list()))
-        ws.cell(row=last_row, column=7).alignment = Alignment(wrap_text=True)
+        ws.cell(row=last_row, column=9).value = '\n'.join(map(str, value.to_list()))
+        ws.cell(row=last_row, column=9).alignment = Alignment(wrap_text=True)
 
         # Автоматически подгоняем высоту строки
         ws.row_dimensions[last_row].height = None   # Сбрасываем фиксированную высоту
@@ -270,7 +270,10 @@ class Date_to_act:
         # print("Номера и даты актов исследования и даты уведомлений внесены в Журнал.")
 
         # Открываем Журнал претензий после записи данных
-        os.startfile(self.file_journal_pretence)
+        # Нормализация пути (устраняет проблемы с косыми чертами)
+        normalized_path = os.path.abspath(self.file_journal_pretence)
+        os.startfile(normalized_path)
+        # os.startfile(self.file_journal_pretence)
 
 
     def close_journal_write_value(self):

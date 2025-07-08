@@ -25,7 +25,7 @@ added_files = [
 ]
 
 a = Analysis(
-    ['app_main_wk-050725.py'],
+    ['app_main_wk-080725.py'],
     pathex=['.'],  # добавляем текущую директорию в путь
     binaries=[],
     datas=added_files,
@@ -52,7 +52,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='app_main_wk-050725',
+    name='app_main_wk-080725',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

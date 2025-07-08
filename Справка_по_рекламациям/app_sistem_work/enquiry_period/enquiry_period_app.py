@@ -181,7 +181,10 @@ class EnquiryPeriod(tk.Toplevel):
     def _open_file(self, file_path):
         """Открывает файл с помощью стандартного приложения Windows"""
         try:
-            os.startfile(file_path)
+            # Нормализация пути (устраняет проблемы с косыми чертами)
+            normalized_path = os.path.abspath(file_path)
+            os.startfile(normalized_path)
+            # os.startfile(file_path)
         except Exception as e:
             messagebox.showwarning(
                 "Ошибка открытия",
