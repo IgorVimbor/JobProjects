@@ -294,6 +294,6 @@ class Date_to_act:
             workbook.Close()  # Закрываем файл
 
             # Даем небольшую паузу, чтобы Excel успел освободить файл
-            time.sleep(1)
+            # time.sleep(1)
             # Теперь обрабатываем файл
             self.write_journal()
