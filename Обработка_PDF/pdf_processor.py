@@ -9,7 +9,7 @@ class PDFProcessor:
     def __init__(self, pdf_path):
         self.pdf_path = pdf_path
         # Для Windows укажите путь к исполняемому файлу tesseract
-        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        # pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
     def preprocess_image(self, image):
         """Предобработка изображения для улучшения качества распознавания"""
