@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, ttk, scrolledtext, messagebox
-from temp_1 import PDFProcessor
+from pdf_processor_ymz import PDFProcessorYMZ
 from excel_handler import ExcelHandler
 
 class MainApplication:
@@ -88,7 +88,7 @@ class MainApplication:
 
         # Создаем стиль для увеличенного шрифта
         style = ttk.Style()
-        style.configure("Treeview", font=('TkDefaultFont', 10))  # Увеличиваем шрифт на 2 пункта
+        style.configure("Treeview", font=('TkDefaultFont', 11))  # Увеличиваем шрифт на 2 пункта
         style.configure("Treeview.Heading", font=('TkDefaultFont', 10, 'bold'))  # Для заголовков
 
         # Создаем Treeview с двумя колонками
@@ -128,7 +128,7 @@ class MainApplication:
     def process_file(self):
         """Обработка PDF файла"""
         if self.pdf_path:
-            pdf_processor = PDFProcessor(self.pdf_path)
+            pdf_processor = PDFProcessorYMZ(self.pdf_path)
 
             # Получаем распознанный текст
             raw_text = pdf_processor.get_raw_text()
@@ -168,7 +168,7 @@ class MainApplication:
 
         # Создаем стиль для меток
         label_font = ('TkDefaultFont', 10)
-        entry_font = ('TkDefaultFont', 10)
+        entry_font = ('TkDefaultFont', 11)
 
         # Определяем максимальную ширину для полей ввода
         entry_width = 35  # Устанавливаем одинаковую ширину для всех полей

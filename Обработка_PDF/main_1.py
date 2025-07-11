@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import filedialog, ttk, scrolledtext
-from temp_1 import PDFProcessor
+from tkinter import filedialog, ttk, scrolledtext, messagebox
+from temp_1 import PDFProcessorYMZ
 from excel_handler import ExcelHandler
 
 class MainApplication:
@@ -86,8 +86,15 @@ class MainApplication:
         self.table_container = ttk.Frame(self.table_frame)
         self.table_container.pack(fill='both', expand=True, padx=10, pady=10)
 
+        # Создаем стиль для увеличенного шрифта
+        style = ttk.Style()
+        style.configure("Treeview", font=('TkDefaultFont', 11))  # Увеличиваем шрифт на 2 пункта
+        style.configure("Treeview.Heading", font=('TkDefaultFont', 10, 'bold'))  # Для заголовков
+
         # Создаем Treeview с двумя колонками
-        self.tree = ttk.Treeview(self.table_container, columns=('Поле', 'Значение'), show='headings')
+        self.tree = ttk.Treeview(self.table_container, columns=('Поле', 'Значение'),
+                                show='headings',
+                                style="Treeview")
 
         # Настраиваем заголовки колонок
         self.tree.heading('Поле', text='Поле')
@@ -95,7 +102,7 @@ class MainApplication:
 
         # Настраиваем ширину колонок
         self.tree.column('Поле', width=150)
-        self.tree.column('Значение', width=250)
+        self.tree.column('Значение', width=300)
 
         # Добавляем полосу прокрутки
         scrollbar = ttk.Scrollbar(self.table_container, orient='vertical', command=self.tree.yview)
@@ -121,7 +128,7 @@ class MainApplication:
     def process_file(self):
         """Обработка PDF файла"""
         if self.pdf_path:
-            pdf_processor = PDFProcessor(self.pdf_path)
+            pdf_processor = PDFProcessorYMZ(self.pdf_path)
 
             # Получаем распознанный текст
             raw_text = pdf_processor.get_raw_text()
@@ -153,32 +160,76 @@ class MainApplication:
         # Создаем новое окно для редактирования
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Редактирование данных")
-        edit_window.geometry("400x300")
+        edit_window.geometry("600x400")  # Увеличиваем размер окна
+
+        # Создаем основной фрейм с отступами
+        main_frame = ttk.Frame(edit_window, padding="10")
+        main_frame.pack(fill='both', expand=True)
+
+        # Создаем стиль для меток
+        label_font = ('TkDefaultFont', 10)
+        entry_font = ('TkDefaultFont', 11)
+
+        # Определяем максимальную ширину для полей ввода
+        entry_width = 35  # Устанавливаем одинаковую ширину для всех полей
 
         # Создаем и размещаем элементы управления
+        row = 0
+        entries = {}
         for key, value in self.extracted_data.items():
-            frame = ttk.Frame(edit_window)
-            frame.pack(fill='x', padx=5, pady=2)
+            frame = ttk.Frame(main_frame)
+            frame.pack(fill='x', pady=5)
 
-            ttk.Label(frame, text=key).pack(side='left')
-            entry = ttk.Entry(frame)
+            # Метка с фиксированной шириной
+            label = ttk.Label(frame, text=key, font=label_font, width=25)
+            label.pack(side='left', padx=(0, 10))
+
+            # Поле ввода
+            entry = ttk.Entry(frame, font=entry_font, width=entry_width)
             entry.insert(0, value)
-            entry.pack(side='right', expand=True, fill='x')
+            entry.pack(side='left', fill='x', expand=True)
+
+            entries[key] = entry
+            row += 1
+
+        # Фрейм для кнопок
+        button_frame = ttk.Frame(main_frame)
+        button_frame.pack(pady=20, fill='x')
 
         def save_changes():
             # Сохраняем измененные данные
             new_data = {}
-            for child in edit_window.winfo_children():
-                if isinstance(child, ttk.Frame):
-                    key = child.winfo_children()[0]['text']
-                    value = child.winfo_children()[1].get()
-                    new_data[key] = value
+            for key, entry in entries.items():
+                new_data[key] = entry.get()
 
             self.extracted_data = new_data
             self.update_table_preview()
             edit_window.destroy()
 
-        ttk.Button(edit_window, text="Сохранить", command=save_changes).pack(pady=10)
+        # Кнопка сохранения с увеличенным шрифтом
+        save_button = ttk.Button(
+            button_frame,
+            text="Сохранить",
+            command=save_changes,
+            style='Large.TButton'
+        )
+        save_button.pack(pady=10)
+
+        # Создаем стиль для кнопки
+        style = ttk.Style()
+        style.configure('Large.TButton', font=('TkDefaultFont', 10))
+
+        # Центрируем окно относительно главного окна
+        edit_window.transient(self.root)
+        edit_window.grab_set()
+
+        # Размещаем окно по центру главного окна
+        edit_window.update_idletasks()
+        width = edit_window.winfo_width()
+        height = edit_window.winfo_height()
+        x = self.root.winfo_x() + (self.root.winfo_width() // 2) - (width // 2)
+        y = self.root.winfo_y() + (self.root.winfo_height() // 2) - (height // 2)
+        edit_window.geometry(f'+{x}+{y}')
 
     def save_to_excel(self):
         """Сохранение данных в Excel"""
@@ -190,7 +241,7 @@ class MainApplication:
             if excel_path:
                 excel_handler = ExcelHandler(excel_path)
                 excel_handler.write_data(self.extracted_data)
-                tk.messagebox.showinfo("Успех", "Данные успешно сохранены в Excel")
+                messagebox.showinfo("Успех", "Данные успешно сохранены в Excel")
 
 if __name__ == "__main__":
     root = tk.Tk()
