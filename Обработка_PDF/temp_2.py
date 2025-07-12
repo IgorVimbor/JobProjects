@@ -12,6 +12,10 @@ class PDFProcessingError(Exception):
     """Пользовательское исключение для обработки ошибок PDF"""
     pass
 
+class ExcelError(Exception):
+    """Пользовательское исключение для обработки ошибок Excel"""
+    pass
+
 
 class PDFProcessor:
     """Базовый класс для обработки PDF документов"""
@@ -232,17 +236,12 @@ class PDFProcessorYMZ(PDFProcessor):
         if act_match:
             self.data["Номер акта"] = act_match.group(1)
             self.data["Дата акта"] = act_match.group(2)
-        # else:
-        #     self.data["Номер акта"] = "Не найдено"
-        #     self.data["Дата акта"] = "Не найдено"
 
         # Извлечение сервисного предприятия
         service_match = re.search(self.SERVICE_PATTERN, text)
         text_service_match = service_match.group(1)
         if len(text_service_match) <= 30:
             self.data["Сервисное предприятие"] = text_service_match
-        # else:
-        #     self.data["Сервисное предприятие"] = "Не найдено"
 
         # Извлечение данных о двигателе
         engine_match = re.search(self.ENGINE_PATTERN, text, re.DOTALL)
@@ -262,12 +261,6 @@ class PDFProcessorYMZ(PDFProcessor):
             elif len(filtered_groups) == 2:
                 self.data["Модель двигателя"] = filtered_groups[0]
                 self.data["Номер двигателя"] = filtered_groups[1]
-        #     else:
-        #         self.data["Модель двигателя"] = "Не найдено"
-        #         self.data["Номер двигателя"] = "Не найдено"
-        # else:
-        #     self.data["Модель двигателя"] = "Не найдено"
-        #     self.data["Номер двигателя"] = "Не найдено"
 
         # Извлечение пробега
         mileage_match = re.search(self.MILEAGE_PATTERN, text, re.DOTALL)
@@ -281,10 +274,6 @@ class PDFProcessorYMZ(PDFProcessor):
             if mileage.isdigit() and 1 <= len(mileage) <= 7:
             # if mileage.isdigit() and 0 <= int(mileage) <= 999999:
                 self.data["Пробег/наработка"] = f'{mileage} км'
-        #     else:
-        #         self.data["Пробег (км)"] = "Не найдено"
-        # else:
-        #     self.data["Пробег (км)"] = "Не найдено"
 
 
 class PDFProcessorRSM(PDFProcessor):
@@ -297,9 +286,10 @@ class PDFProcessorRSM(PDFProcessor):
         'сентября': '09', 'октября': '10', 'ноября': '11', 'декабря': '12'
     }
 
-    # Регулярные выражения
-    ACT_PATTERN = r'Рекламационный акт\s*№\s*(\d+)\s*от\s*[""«]?(\d+)[""»]?\s+([а-яА-Я]+)\s+(\d{4})'
-
+    # Паттерн для номера и даты акта
+    ACT_PATTERN = r'Рек[лп]амационный [аa][кr][тr]\s*№\s*(\d+)\s*[оo][тr]\s*[""“«]?(\d+)[""“»]?\s+([а-яА-Я]+)\s+(\d{4})'
+    # Паттерн для названия сервисного предприятия (текст между двумя вхождениями "Наименование организации")
+    SERVICE_PATTERN = r'Наименование организации\s*(.*?)\s*Наименование организации'
 
     def __init__(self, pdf_path):
         super().__init__(pdf_path, lang='rus+eng')
@@ -317,6 +307,84 @@ class PDFProcessorRSM(PDFProcessor):
 
             self.data["Номер акта"] = act_number
             self.data["Дата акта"] = f"{day}.{month}.{year}"
-        # else:
-        #     self.data["Номер акта"] = "Не найдено"
-        #     self.data["Дата акта"] = "Не найдено"
+
+        # Извлечение сервисного предприятия
+        self.data["Сервисное предприятие"] = self.extract_service_name(text)
+
+
+    def extract_service_name(self, text):
+        """Извлечение названия сервисного предприятия"""
+        # Ищем текст между двумя вхождениями "Наименование организации"
+        service_match = re.search(self.SERVICE_PATTERN, text, re.DOTALL)
+
+        if not service_match:
+            return ""
+
+        # Получаем весь текст между маркерами
+        service_text = service_match.group(1)
+
+        # Разбиваем на группы и фильтруем
+        groups = service_text.split()
+        filtered_groups = self.filter_groups(groups)
+
+        if not filtered_groups:
+            return ""
+
+        # Собираем название организации из первых групп
+        # Ищем группы, идущие подряд и содержащие организационно-правовую форму или кавычки
+        org_name = []
+        for group in filtered_groups:
+            if (any(form in group for form in ['ООО', 'АО', 'ПАО', 'КФХ', 'ИП']) or
+                any(quote in group for quote in '"«»"') or
+                group.isupper() or
+                (org_name and (group.isupper() or '.' in group))):
+                org_name.append(group)
+            elif org_name:  # если уже начали собирать название и встретили что-то другое
+                break
+
+        return ' '.join(org_name) if org_name else filtered_groups[0]
+
+
+class PDFProcessorMAZ(PDFProcessor):
+    def extract_data(self):
+        """
+        Переопределяем метод для формы МАЗ
+        Возвращаем пустой словарь для ручного заполнения
+        """
+        return self.data
+
+    def get_raw_text(self):
+        """
+        Переопределяем метод, так как распознавание текста не требуется
+        """
+        return ""
+
+
+class PDFProcessorMAZ_2(PDFProcessor):
+    def extract_data(self):
+        """
+        Переопределяем метод для формы МАЗ-2
+        Возвращаем пустой словарь для ручного заполнения
+        """
+        return self.data
+
+    def get_raw_text(self):
+        """
+        Переопределяем метод, так как распознавание текста не требуется
+        """
+        return ""
+
+
+class PDFProcessorAnother(PDFProcessor):
+    def extract_data(self):
+        """
+        Переопределяем метод для формы Другая
+        Возвращаем пустой словарь для ручного заполнения
+        """
+        return self.data
+
+    def get_raw_text(self):
+        """
+        Переопределяем метод, так как распознавание текста не требуется
+        """
+        return ""

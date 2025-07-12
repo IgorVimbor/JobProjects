@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, ttk, scrolledtext, messagebox
-from temp_2 import ExcelError, PDFProcessorYMZ, PDFProcessorRSM, PDFProcessorMAZ, PDFProcessorMAZ_2, PDFProcessorAnother
+from temp_2 import PDFProcessorYMZ, PDFProcessorRSM
 from excel_handler import ExcelHandler
 
 
@@ -65,10 +65,10 @@ class MainApplication:
             padding=5
         )
 
-        # Переменная для чек-боксов
+        # Переменные для чек-боксов
         self.selected_form = tk.StringVar()
 
-        # Создаем радиокнопки
+        # Создаем чек-боксы
         forms = ["Группа ГАЗ", "Ростсельмаш", "СЦ МАЗ", "СЦ МАЗ ///", "Другая"]
         for form in forms:
             rb = ttk.Radiobutton(
@@ -132,36 +132,9 @@ class MainApplication:
         )
         self.edit_button.pack(side='right', padx=5)
 
-        # Добавляем отслеживание нажатия кнопок чек-боксов
-        # Метод trace_add должен вызываться после создания всех кнопок
-        self.selected_form.trace_add('write', self.on_form_select)
-
         # Инициализация переменных
         self.pdf_path = None
         self.extracted_data = None
-
-
-    def on_form_select(self, *args):
-        """Обработчик выбора формы"""
-        selected = self.selected_form.get()
-        if selected in ["СЦ МАЗ", "СЦ МАЗ ///", "Другая"]:
-            # Для форм МАЗ, МАЗ/// и Другая активируем кнопку редактирования
-            self.edit_button.config(state='normal')
-            # Деактивируем кнопку распознавания
-            self.process_button.config(state='disabled')
-            # Инициализируем пустые данные для форм МАЗ, МАЗ/// и Другая
-            processors = {
-                "СЦ МАЗ": PDFProcessorMAZ,
-                "СЦ МАЗ ///": PDFProcessorMAZ_2,
-                "Другая": PDFProcessorAnother
-            }
-            processor = processors[selected]("")  # Пустой путь к файлу, так как он не нужен
-            self.extracted_data = processor.data
-        else:
-            # Для других форм возвращаем стандартное поведение
-            self.edit_button.config(state='disabled')
-            self.process_button.config(state='normal' if self.pdf_path else 'disabled')
-            self.extracted_data = None  # Сбрасываем данные
 
 
     def create_table_preview(self):
@@ -203,43 +176,32 @@ class MainApplication:
             filetypes=[("PDF files", "*.pdf")]
         )
         if self.pdf_path:
-            selected = self.selected_form.get()
-            if selected not in ["СЦ МАЗ", "СЦ МАЗ ///", "Другая"]:
-                # Активируем кнопку распознавания только для ЯМЗ и РСМ форм
-                self.process_button.config(state='normal')
-
+            self.process_button.config(state='normal')
             # Очищаем предыдущие данные
             self.text_preview.delete('1.0', tk.END)
             self.tree.delete(*self.tree.get_children())
             self.save_button.config(state='disabled')
+            self.edit_button.config(state='disabled')
 
 
     def process_file(self):
         """Обработка PDF файла"""
         if self.pdf_path:
-            # Словарь соответствия форм и процессоров
+            # Выбираем соответствующий процессор в зависимости от выбранной формы
             processors = {
                 "Группа ГАЗ": PDFProcessorYMZ,
                 "Ростсельмаш": PDFProcessorRSM,
-                "СЦ МАЗ": PDFProcessorMAZ,
-                "СЦ МАЗ ///": PDFProcessorMAZ_2,
-                "Другая": PDFProcessorAnother,
+                # Добавим остальные процессоры позже
             }
 
-            selected_form = self.selected_form.get()
-            processor_class = processors.get(selected_form)
-
+            processor_class = processors.get(self.selected_form.get())
             if not processor_class:
+                messagebox.showinfo("Информация", "Обработка данной формы пока не реализована")
                 return
 
             processor = processor_class(self.pdf_path)
 
-            # Для форм МАЗ, МАЗ/// и Другая обработка не требуется,
-            # так как данные инициализированы в on_form_select()
-            if selected_form in ["СЦ МАЗ", "СЦ МАЗ ///", "Другая"]:
-                return
-
-            # Для остальных форм - обычная обработка
+            # Получаем распознанный текст
             raw_text = processor.get_raw_text()
             self.text_preview.delete('1.0', tk.END)
             self.text_preview.insert('1.0', raw_text)
@@ -266,6 +228,83 @@ class MainApplication:
                 self.tree.insert('', 'end', values=(key, value))
 
 
+    # def enable_editing(self):
+    #     """Включение режима редактирования данных"""
+    #     # Создаем новое окно для редактирования
+    #     edit_window = tk.Toplevel(self.root)
+    #     edit_window.title("Редактирование данных")
+    #     edit_window.geometry("600x400")  # Увеличиваем размер окна
+
+    #     # Создаем основной фрейм с отступами
+    #     main_frame = ttk.Frame(edit_window, padding="10")
+    #     main_frame.pack(fill='both', expand=True)
+
+    #     # Создаем стиль для меток
+    #     label_font = ('TkDefaultFont', 10)
+    #     entry_font = ('TkDefaultFont', 11)
+
+    #     # Определяем максимальную ширину для полей ввода
+    #     entry_width = 35  # Устанавливаем одинаковую ширину для всех полей
+
+    #     # Создаем и размещаем элементы управления
+    #     row = 0
+    #     entries = {}
+    #     for key, value in self.extracted_data.items():
+    #         frame = ttk.Frame(main_frame)
+    #         frame.pack(fill='x', pady=5)
+
+    #         # Метка с фиксированной шириной
+    #         label = ttk.Label(frame, text=key, font=label_font, width=25)
+    #         label.pack(side='left', padx=(0, 10))
+
+    #         # Поле ввода
+    #         entry = ttk.Entry(frame, font=entry_font, width=entry_width)
+    #         entry.insert(0, value)
+    #         entry.pack(side='left', fill='x', expand=True)
+
+    #         entries[key] = entry
+    #         row += 1
+
+    #     # Фрейм для кнопок
+    #     button_frame = ttk.Frame(main_frame)
+    #     button_frame.pack(pady=20, fill='x')
+
+    #     def save_changes():
+    #         # Сохраняем измененные данные
+    #         new_data = {}
+    #         for key, entry in entries.items():
+    #             new_data[key] = entry.get()
+
+    #         self.extracted_data = new_data
+    #         self.update_table_preview()
+    #         edit_window.destroy()
+
+    #     # Кнопка сохранения с увеличенным шрифтом
+    #     save_button = ttk.Button(
+    #         button_frame,
+    #         text="Сохранить",
+    #         command=save_changes,
+    #         style='Large.TButton'
+    #     )
+    #     save_button.pack(pady=10)
+
+    #     # Создаем стиль для кнопки
+    #     style = ttk.Style()
+    #     style.configure('Large.TButton', font=('TkDefaultFont', 10))
+
+    #     # Центрируем окно относительно главного окна
+    #     edit_window.transient(self.root)
+    #     edit_window.grab_set()
+
+    #     # Размещаем окно по центру главного окна
+    #     edit_window.update_idletasks()
+    #     width = edit_window.winfo_width()
+    #     height = edit_window.winfo_height()
+    #     x = self.root.winfo_x() + (self.root.winfo_width() // 2) - (width // 2)
+    #     y = self.root.winfo_y() + (self.root.winfo_height() // 2) - (height // 2)
+    #     edit_window.geometry(f'+{x}+{y}')
+
+
     def enable_editing(self):
         """Включение режима редактирования данных"""
         # Создаем новое окно для редактирования
@@ -287,8 +326,8 @@ class MainApplication:
             with open('engine_models.txt', 'r', encoding='utf-8') as file:
                 self.engine_models = sorted(line.strip() for line in file.readlines())
         except Exception as e:
-            self.engine_models = ["53435", "534450", "53435-А02", "53445.1000140-АЗ2"]
-            raise ExcelError(f"Ошибка при загрузке списка моделей: {str(e)}")
+            print(f"Ошибка при загрузке списка моделей: {e}")
+            self.engine_models = ["534450", "53445.1000140-АЗ2", "5344.1000186"]
 
         # Создаем и размещаем элементы управления
         entries = {}
@@ -309,6 +348,22 @@ class MainApplication:
                     values=self.engine_models
                 )
                 entry.set(value)
+
+                def add_new_value(event):
+                    current_value = entry.get()
+                    if current_value and current_value not in self.engine_models:
+                        self.engine_models.append(current_value)
+                        self.engine_models.sort()
+                        # entry.configure(values=self.engine_models)
+                        # entry.config(values=tuple(self.engine_models))
+
+                # Привязываем обработчик к событиям
+                # entry.bind('<FocusOut>', add_new_value)
+                entry.bind('<Return>', add_new_value)
+
+                # # Устанавливаем фокус на поле ввода
+                # entry.focus_set()
+
             else:
                 # Для остальных полей используем обычные Entry
                 entry = ttk.Entry(frame, font=entry_font, width=entry_width)
@@ -322,14 +377,6 @@ class MainApplication:
         button_frame.pack(pady=20, fill='x')
 
         def save_changes():
-            # Сначала обрабатываем модель двигателя, если она новая
-            engine_entry = entries.get("Модель двигателя")
-            if engine_entry:
-                current_value = engine_entry.get()
-                if current_value and current_value not in self.engine_models:
-                    self.engine_models.append(current_value)
-                    self.engine_models.sort()
-
             # Сохраняем измененные данные
             new_data = {}
             for key, entry in entries.items():
@@ -343,10 +390,7 @@ class MainApplication:
                 with open('engine_models.txt', 'w', encoding='utf-8') as file:
                     file.write('\n'.join(self.engine_models))
             except Exception as e:
-                raise ExcelError(f"Ошибка при сохранении списка моделей: {str(e)}")
-
-            # Активируем кнопку "Сохранить в Excel"
-            self.save_button.config(state='normal')
+                print(f"Ошибка при сохранении списка моделей: {e}")
 
             edit_window.destroy()
 
@@ -371,18 +415,15 @@ class MainApplication:
 
     def save_to_excel(self):
         """Сохранение данных в Excel"""
-        try:
-            if self.extracted_data:
-                excel_path = filedialog.asksaveasfilename(
-                    defaultextension=".xlsx",
-                    filetypes=[("Excel files", "*.xlsx")]
-                )
-                if excel_path:
-                    excel_handler = ExcelHandler(excel_path)
-                    excel_handler.write_data(self.extracted_data)
-                    messagebox.showinfo("Успех", "Данные успешно сохранены в Excel")
-        except Exception as e:
-            messagebox.showerror("Ошибка", f"Ошибка при сохранении в ЖУРНАЛ УЧЕТА рекламаций: {str(e)}")
+        if self.extracted_data:
+            excel_path = filedialog.asksaveasfilename(
+                defaultextension=".xlsx",
+                filetypes=[("Excel files", "*.xlsx")]
+            )
+            if excel_path:
+                excel_handler = ExcelHandler(excel_path)
+                excel_handler.write_data(self.extracted_data)
+                messagebox.showinfo("Успех", "Данные успешно сохранены в Excel")
 
 
 if __name__ == "__main__":
