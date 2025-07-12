@@ -24,8 +24,9 @@ class PDFProcessor:
         self.pdf_path = pdf_path
         # Словарь для хранения извлеченных данных
         self.data = {
-            "Номер акта": "",
+            "Номер акта рекламации": "",
             "Дата акта": "",
+            "Страна": "Россия",
             "Сервисное предприятие": "",
             "Модель двигателя": "",
             "Номер двигателя": "",
@@ -234,7 +235,7 @@ class PDFProcessorYMZ(PDFProcessor):
         # Извлечение номера и даты акта
         act_match = re.search(self.ACT_PATTERN, text)
         if act_match:
-            self.data["Номер акта"] = act_match.group(1)
+            self.data["Номер акта рекламации"] = act_match.group(1)
             self.data["Дата акта"] = act_match.group(2)
 
         # Извлечение сервисного предприятия
@@ -264,7 +265,6 @@ class PDFProcessorYMZ(PDFProcessor):
 
         # Извлечение пробега
         mileage_match = re.search(self.MILEAGE_PATTERN, text, re.DOTALL)
-        # mileage_match = re.search(self.MILEAGE_PATTERN, text)
         # print(f"Найдено совпадение по пробегу: {bool(mileage_match)}")
         if mileage_match:
             # Дата в group(1), пробег в group(2)
@@ -290,6 +290,8 @@ class PDFProcessorRSM(PDFProcessor):
     ACT_PATTERN = r'Рек[лп]амационный [аa][кr][тr]\s*№\s*(\d+)\s*[оo][тr]\s*[""“«]?(\d+)[""“»]?\s+([а-яА-Я]+)\s+(\d{4})'
     # Паттерн для названия сервисного предприятия (текст между двумя вхождениями "Наименование организации")
     SERVICE_PATTERN = r'Наименование организации\s*(.*?)\s*Наименование организации'
+    # Паттерн для транспортного средства
+    VEHICLE_PATTERN = r'((?:NOVA|KSU|ACROS).*?)(?=\sR[0O])'
 
     def __init__(self, pdf_path):
         super().__init__(pdf_path, lang='rus+eng')
@@ -305,11 +307,18 @@ class PDFProcessorRSM(PDFProcessor):
             month = self.MONTHS.get(act_match.group(3).lower(), '00')
             year = act_match.group(4)
 
-            self.data["Номер акта"] = act_number
+            self.data["Номер акта рекламации"] = act_number
             self.data["Дата акта"] = f"{day}.{month}.{year}"
 
         # Извлечение сервисного предприятия
         self.data["Сервисное предприятие"] = self.extract_service_name(text)
+
+        # Извлечение данных о транспортном средстве
+        vehicle_match = re.search(self.VEHICLE_PATTERN, text)
+        # print(f"Найденный текст: {vehicle_match.group() if vehicle_match else 'Не найдено'}")  # для отладки
+        if vehicle_match:
+            # Берем первую группу (до текста, который начинается с "RO")
+            self.data["Транспортное средство"] = vehicle_match.group(1).strip()
 
 
     def extract_service_name(self, text):
@@ -347,44 +356,29 @@ class PDFProcessorRSM(PDFProcessor):
 
 class PDFProcessorMAZ(PDFProcessor):
     def extract_data(self):
-        """
-        Переопределяем метод для формы МАЗ
-        Возвращаем пустой словарь для ручного заполнения
-        """
+        """Переопределяем метод для МАЗ. Возвращаем пустой словарь для ручного заполнения"""
         return self.data
 
     def get_raw_text(self):
-        """
-        Переопределяем метод, так как распознавание текста не требуется
-        """
+        """Переопределяем метод, так как распознавание текста не требуется"""
         return ""
 
 
 class PDFProcessorMAZ_2(PDFProcessor):
     def extract_data(self):
-        """
-        Переопределяем метод для формы МАЗ-2
-        Возвращаем пустой словарь для ручного заполнения
-        """
+        """Переопределяем метод для МАЗ-2. Возвращаем пустой словарь для ручного заполнения"""
         return self.data
 
     def get_raw_text(self):
-        """
-        Переопределяем метод, так как распознавание текста не требуется
-        """
+        """Переопределяем метод, так как распознавание текста не требуется"""
         return ""
 
 
 class PDFProcessorAnother(PDFProcessor):
     def extract_data(self):
-        """
-        Переопределяем метод для формы Другая
-        Возвращаем пустой словарь для ручного заполнения
-        """
+        """Переопределяем метод для Другая. Возвращаем пустой словарь для ручного заполнения"""
         return self.data
 
     def get_raw_text(self):
-        """
-        Переопределяем метод, так как распознавание текста не требуется
-        """
+        """Переопределяем метод, так как распознавание текста не требуется"""
         return ""

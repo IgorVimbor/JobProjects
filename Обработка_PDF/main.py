@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import filedialog, ttk, scrolledtext, messagebox
-from temp_2 import ExcelError, PDFProcessorYMZ, PDFProcessorRSM, PDFProcessorMAZ, PDFProcessorMAZ_2, PDFProcessorAnother
+from temp_2 import (
+    ExcelError, PDFProcessorYMZ, PDFProcessorRSM,
+    PDFProcessorMAZ, PDFProcessorMAZ_2, PDFProcessorAnother
+    )
 from excel_handler import ExcelHandler
 
 
@@ -136,6 +139,10 @@ class MainApplication:
         # Метод trace_add должен вызываться после создания всех кнопок
         self.selected_form.trace_add('write', self.on_form_select)
 
+        # Создаем строку внизу основного окна с текстом "Development by IGOR VASILENOK"
+        self.footer_label = ttk.Label(root, text=f"   Development by IGOR VASILENOK", anchor='w')
+        self.footer_label.pack(side='bottom', fill='x', pady=5)
+
         # Инициализация переменных
         self.pdf_path = None
         self.extracted_data = None
@@ -149,6 +156,12 @@ class MainApplication:
             self.edit_button.config(state='normal')
             # Деактивируем кнопку распознавания
             self.process_button.config(state='disabled')
+
+            # Очищаем предыдущие данные
+            self.text_preview.delete('1.0', tk.END)
+            self.tree.delete(*self.tree.get_children())
+            self.save_button.config(state='disabled')
+
             # Инициализируем пустые данные для форм МАЗ, МАЗ/// и Другая
             processors = {
                 "СЦ МАЗ": PDFProcessorMAZ,
@@ -271,7 +284,7 @@ class MainApplication:
         # Создаем новое окно для редактирования
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Редактирование данных")
-        edit_window.geometry("600x400")
+        edit_window.geometry("600x450")
 
         # Создаем основной фрейм с отступами
         main_frame = ttk.Frame(edit_window, padding="10")
@@ -355,7 +368,7 @@ class MainApplication:
             button_frame,
             text="Сохранить",
             command=save_changes,
-            style='Large.TButton'
+            style='Custom.TButton'
         ).pack(pady=10)
 
         # Центрируем окно
