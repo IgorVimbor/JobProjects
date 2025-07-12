@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog, ttk, scrolledtext, messagebox
-from temp_1 import PDFProcessorYMZ
+from temp_2 import PDFProcessorYMZ, PDFProcessorRSM
 from excel_handler import ExcelHandler
+
 
 class MainApplication:
     def __init__(self, root):
@@ -187,12 +188,18 @@ class MainApplication:
         """Обработка PDF файла"""
         if self.pdf_path:
             # Выбираем соответствующий процессор в зависимости от выбранной формы
-            if self.selected_form.get() == "Группа ГАЗ":
-                processor = PDFProcessorYMZ(self.pdf_path)
-            else:
-                # Здесь будут добавлены другие процессоры
+            processors = {
+                "Группа ГАЗ": PDFProcessorYMZ,
+                "Ростсельмаш": PDFProcessorRSM,
+                # Добавим остальные процессоры позже
+            }
+
+            processor_class = processors.get(self.selected_form.get())
+            if not processor_class:
                 messagebox.showinfo("Информация", "Обработка данной формы пока не реализована")
                 return
+
+            processor = processor_class(self.pdf_path)
 
             # Получаем распознанный текст
             raw_text = processor.get_raw_text()

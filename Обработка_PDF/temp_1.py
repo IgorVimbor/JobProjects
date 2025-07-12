@@ -24,13 +24,25 @@ class PDFProcessorYMZ:
         pdf_path: Путь к PDF файлу
         """
         self.pdf_path = pdf_path
-        self.data = {}  # Словарь для хранения извлеченных данных
+        # Словарь для хранения извлеченных данных
+        self.data = {
+            "Номер акта": "",
+            "Дата акта": "",
+            "Сервисное предприятие": "",
+            "Модель двигателя": "",
+            "Номер двигателя": "",
+            "Транспортное средство": "",
+            "Пробег/наработка": "",
+            "Заявленный дефект": "течь",
+            "Требование покупателя": "исследование"
+        }
+
         # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 
     def preprocess_image(self, image, enhance_quality=False):
         """
-        Предобработка изображения для улучшения качества распознавания
+        Общий метод предобработки изображения для улучшения качества распознавания
         image: Исходное изображение
         enhance_quality: Флаг для дополнительного улучшения качества
         """
@@ -69,7 +81,7 @@ class PDFProcessorYMZ:
 
     def enhance_image_quality(self, image):
         """
-        Расширенные методы улучшения качества изображения
+        Общий метод улучшения качества изображения с использованием расширенных методов
         """
         try:
             # Конвертируем в numpy array
@@ -113,7 +125,7 @@ class PDFProcessorYMZ:
 
     def get_raw_text(self, enhance_quality=False):
         """
-        Получение необработанного текста из PDF
+        Общий метод получения необработанного текста из PDF
         enhance_quality: Флаг для применения расширенной обработки изображения
         """
         try:
@@ -151,7 +163,7 @@ class PDFProcessorYMZ:
 
     def filter_groups(self, groups):
         """
-        Фильтрация групп с учетом специфики данных
+        Общий метод фильтрации групп с учетом специфики сырых считанных данных
         """
         filtered = []
         stop_words = {'и', 'в', 'на', 'по', 'от', 'тс', 'знак'}
@@ -191,17 +203,17 @@ class PDFProcessorYMZ:
         if act_match:
             self.data["Номер акта"] = act_match.group(1)
             self.data["Дата акта"] = act_match.group(2)
-        else:
-            self.data["Номер акта"] = "Не найдено"
-            self.data["Дата акта"] = "Не найдено"
+        # else:
+        #     self.data["Номер акта"] = "Не найдено"
+        #     self.data["Дата акта"] = "Не найдено"
 
         # Извлечение сервисного предприятия
         service_match = re.search(self.SERVICE_PATTERN, text)
         text_service_match = service_match.group(1)
         if len(text_service_match) <= 30:
             self.data["Сервисное предприятие"] = text_service_match
-        else:
-            self.data["Сервисное предприятие"] = "Не найдено"
+        # else:
+        #     self.data["Сервисное предприятие"] = "Не найдено"
 
         # Извлечение данных о двигателе
         engine_match = re.search(self.ENGINE_PATTERN, text, re.DOTALL)
@@ -221,12 +233,12 @@ class PDFProcessorYMZ:
             elif len(filtered_groups) == 2:
                 self.data["Модель двигателя"] = filtered_groups[0]
                 self.data["Номер двигателя"] = filtered_groups[1]
-            else:
-                self.data["Модель двигателя"] = "Не найдено"
-                self.data["Номер двигателя"] = "Не найдено"
-        else:
-            self.data["Модель двигателя"] = "Не найдено"
-            self.data["Номер двигателя"] = "Не найдено"
+        #     else:
+        #         self.data["Модель двигателя"] = "Не найдено"
+        #         self.data["Номер двигателя"] = "Не найдено"
+        # else:
+        #     self.data["Модель двигателя"] = "Не найдено"
+        #     self.data["Номер двигателя"] = "Не найдено"
 
 
         # Извлечение пробега
@@ -240,11 +252,11 @@ class PDFProcessorYMZ:
             # Проверяем, что значение похоже на пробег (только цифры и разумная длина)
             if mileage.isdigit() and 1 <= len(mileage) <= 7:
             # if mileage.isdigit() and 0 <= int(mileage) <= 999999:
-                self.data["Пробег (км)"] = mileage
-            else:
-                self.data["Пробег (км)"] = "Не найдено"
-        else:
-            self.data["Пробег (км)"] = "Не найдено"
+                self.data["Пробег/наработка"] = f'{mileage} км'
+        #     else:
+        #         self.data["Пробег (км)"] = "Не найдено"
+        # else:
+        #     self.data["Пробег (км)"] = "Не найдено"
 
 
     def extract_data(self):

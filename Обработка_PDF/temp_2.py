@@ -1,128 +1,322 @@
-import tkinter as tk
-from tkinter import filedialog, ttk, scrolledtext, messagebox
-from temp_1 import PDFProcessorYMZ
-from excel_handler import ExcelHandler
+# pdf_processor.py
 
-class MainApplication:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("PDF to Excel Converter")
-        self.root.geometry("800x600")
-
-        # Настраиваем стили
-        style = ttk.Style()
-
-        # Вариант 1: Современный объемный стиль
-        style.configure(
-            'Custom.TButton',
-            background='#4a90e2',
-            foreground='black',
-            padding=(5, 5),  # горизонтальный и вертикальный отступы
-            font=('Arial', 8, 'bold'),
-            relief='solid',  # 'raised', 'sunken', 'flat', 'ridge', 'solid', or 'groove'
-            borderwidth=2
-        )
-
-        # Вариант 2: Более классический объемный стиль
-        # style.configure(
-        #     'Custom.TButton',
-        #     padding=(5, 5),
-        #     font=('Arial', 8, 'bold'),
-        #     background='#e1e1e1',
-        #     relief='raised',
-        #     borderwidth=2
-        # )
-        # style.map('Custom.TButton',
-        #     background=[('active', '#d1d1d1')],
-        #     relief=[('pressed', 'sunken')],
-        #     borderwidth=[('pressed', 3)]
-        # )
-
-        # # Настройка стиля при наведении
-        # style.map('Custom.TButton',
-        #     background=[('active', '#357abd')],
-        #     relief=[('pressed', 'sunken')]
-        # )
-
-        # # Вариант 3: Минималистичный стиль
-        # style.configure(
-        #     'Custom.TButton',
-        #     padding=(5, 5),
-        #     font=('Arial', 8),
-        #     background='#ffffff',
-        #     relief='flat',
-        #     borderwidth=1
-        # )
-        # style.map('Custom.TButton',
-        #     background=[('active', '#f0f0f0')],
-        #     borderwidth=[('active', 2)]
-        # )
-
-        # Создаем верхний фрейм для кнопок и радиокнопок
-        self.top_frame = ttk.Frame(root)
-        self.top_frame.pack(pady=10, padx=10, fill='x')
-
-        # Кнопки
-        self.select_button = ttk.Button(
-            self.top_frame,
-            text="Выбрать PDF файл",
-            command=self.select_pdf,
-            style='Custom.TButton'
-        )
-        self.select_button.pack(side='left', padx=5)
-
-        self.process_button = ttk.Button(
-            self.top_frame,
-            text="Распознать текст",
-            command=self.process_file,
-            state='disabled',
-            style='Custom.TButton'
-        )
-        self.process_button.pack(side='left', padx=5)
-
-        # Создаем фрейм для радиокнопок
-        self.radio_frame = ttk.LabelFrame(
-            self.top_frame,
-            text="Выберите стандартную форму акта рекламации:",
-            padding=(10, 5)
-        )
-        self.radio_frame.pack(side='left', padx=20, fill='x', expand=True)
-
-        # Стиль для радиокнопок
-        style.configure(
-            'Custom.TRadiobutton',
-            font=('Arial', 9),
-            padding=5
-        )
-
-        # Переменная для радиокнопок
-        self.selected_form = tk.StringVar()
-
-        # Создаем радиокнопки
-        forms = ["Группа ГАЗ", "Ростсельмаш", "СЦ МАЗ", "СЦ МАЗ ///"]
-        for form in forms:
-            rb = ttk.Radiobutton(
-                self.radio_frame,
-                text=form,
-                value=form,
-                variable=self.selected_form,
-                style='Custom.TRadiobutton'
-            )
-            rb.pack(side='left', padx=10)
-
-        # По умолчанию выбираем первую форму
-        self.selected_form.set("Группа ГАЗ")
+from pdf2image import convert_from_path
+import pytesseract
+import re
+from PIL import Image
+import cv2
+import numpy as np
 
 
-    def select_pdf(self):
-        pass
+class PDFProcessingError(Exception):
+    """Пользовательское исключение для обработки ошибок PDF"""
+    pass
 
 
-    def process_file(self):
-        pass
+class PDFProcessor:
+    """Базовый класс для обработки PDF документов"""
+
+    def __init__(self, pdf_path, lang='rus'):
+        self.pdf_path = pdf_path
+        # Словарь для хранения извлеченных данных
+        self.data = {
+            "Номер акта": "",
+            "Дата акта": "",
+            "Сервисное предприятие": "",
+            "Модель двигателя": "",
+            "Номер двигателя": "",
+            "Транспортное средство": "",
+            "Пробег/наработка": "",
+            "Заявленный дефект": "течь",
+            "Требование покупателя": "исследование"
+        }
+        self.lang = lang  # язык для распознавания OCR
+
+        # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = MainApplication(root)
-    root.mainloop()
+    def preprocess_image(self, image, enhance_quality=False):
+        """
+        Общий метод предобработки изображения для улучшения качества распознавания
+        image: Исходное изображение
+        enhance_quality: Флаг для дополнительного улучшения качества
+        """
+        try:
+            # Конвертируем в numpy array
+            img_array = np.array(image)
+
+            # Конвертируем в градации серого
+            gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
+
+            if enhance_quality:
+                # Улучшение качества для плохих изображений
+
+                # Увеличение резкости
+                kernel_sharpening = np.array([[-1,-1,-1],
+                                            [-1, 9,-1],
+                                            [-1,-1,-1]])
+                gray = cv2.filter2D(gray, -1, kernel_sharpening)
+
+                # Улучшение контраста
+                alpha = 1.5 # Коэффициент контраста (1.0-3.0)
+                beta = 10   # Коэффициент яркости (0-100)
+                gray = cv2.convertScaleAbs(gray, alpha=alpha, beta=beta)
+
+                # Уменьшение шума (если изображение зашумлено)
+                gray = cv2.GaussianBlur(gray, (3,3), 0)
+
+            # Применяем бинаризацию Оцу
+            _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+            return Image.fromarray(binary)
+
+        except Exception as e:
+            raise PDFProcessingError(f"Ошибка при предобработке изображения: {str(e)}")
+
+
+    def enhance_image_quality(self, image):
+        """Общий метод улучшения качества изображения с использованием расширенных методов"""
+        try:
+            # Конвертируем в numpy array
+            img_array = np.array(image)
+
+            # Автоматическая коррекция гаммы
+            def adjust_gamma(image, gamma=1.0):
+                inv_gamma = 1.0 / gamma
+                table = np.array([((i / 255.0) ** inv_gamma) * 255
+                    for i in np.arange(0, 256)]).astype("uint8")
+                return cv2.LUT(image, table)
+
+            # Пробуем разные значения гаммы
+            gamma_variants = [0.5, 0.8, 1.2, 1.5]
+            best_gamma = 1.0
+            max_variance = 0
+
+            for gamma in gamma_variants:
+                adjusted = adjust_gamma(img_array, gamma)
+                variance = np.var(adjusted)
+                if variance > max_variance:
+                    max_variance = variance
+                    best_gamma = gamma
+
+            # Применяем лучшее значение гаммы
+            img_array = adjust_gamma(img_array, best_gamma)
+
+            # Автоматическое выравнивание гистограммы
+            lab = cv2.cvtColor(img_array, cv2.COLOR_RGB2LAB)
+            l, a, b = cv2.split(lab)
+            clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+            l = clahe.apply(l)
+            lab = cv2.merge((l,a,b))
+            img_array = cv2.cvtColor(lab, cv2.COLOR_LAB2RGB)
+
+            return Image.fromarray(img_array)
+
+        except Exception as e:
+            raise PDFProcessingError(f"Ошибка при улучшении качества изображения: {str(e)}")
+
+
+    def get_raw_text(self, enhance_quality=False):
+        """
+        Общий метод получения необработанного текста из PDF
+        enhance_quality: Флаг для применения расширенной обработки изображения
+        """
+        try:
+            # Конвертируем только первую страницу PDF
+            images = convert_from_path(self.pdf_path, first_page=1, last_page=1)
+
+            if not images:
+                raise PDFProcessingError("Не удалось получить изображения из PDF")
+
+            if enhance_quality:
+                # Улучшаем качество изображения
+                enhanced_image = self.enhance_image_quality(images[0])
+                # Применяем предобработку с улучшением качества
+                processed_image = self.preprocess_image(enhanced_image, enhance_quality=True)
+            else:
+                # Обычная предобработка
+                processed_image = self.preprocess_image(images[0])
+
+            # Распознаем текст
+            text = pytesseract.image_to_string(processed_image, lang=self.lang)
+            # text = pytesseract.image_to_string(processed_image, lang='rus')
+
+            if not text.strip():
+                raise PDFProcessingError("Не удалось распознать текст в документе")
+
+            return text
+
+        except Exception as e:
+            raise PDFProcessingError(f"Ошибка при распознавании текста: {str(e)}")
+
+
+    def filter_groups(self, groups):
+        """Общий метод фильтрации групп с учетом специфики сырых считанных данных"""
+        filtered = []
+        stop_words = {'и', 'в', 'на', 'по', 'от', 'тс', 'знак'}
+
+        for group in groups:
+            # Очистка от лишних символов
+            cleaned_group = re.sub(r'[^\w\s.-]', '', group).strip()
+
+            # Пропускаем пустые строки и короткие группы
+            if not cleaned_group or len(cleaned_group) <= 1:
+                continue
+
+            # Пропускаем группы из спецсимволов
+            if all(not c.isalnum() for c in cleaned_group):
+                continue
+
+            # Пропускаем стоп-слова
+            if cleaned_group.lower() in stop_words:
+                continue
+
+            filtered.append(cleaned_group)
+
+            # Прекращаем после десяти групп
+            if len(filtered) == 10:
+                break
+
+        # print(f"Отфильтрованные группы: {filtered}")
+        return filtered
+
+
+    def count_not_found(self):
+        """Общий метод подсчета ненайденных значений"""
+        return sum(1 for value in self.data.values() if value == "")
+
+
+    def parse_text(self, text):
+        """Абстрактный метод разбора текста"""
+        raise NotImplementedError("В дочерних подклассах должен быть реализован метод parse_text")
+
+
+    def extract_data(self):
+        """Общий метод извлечения структурированных данных из распознанного текста"""
+        try:
+            # Получаем текст с обычной обработкой
+            text = self.get_raw_text(enhance_quality=False)
+            self.parse_text(text)
+
+            # Если много "Не найдено", пробуем расширенную обработку
+            if self.count_not_found() > 4:
+                text = self.get_raw_text(enhance_quality=True)
+                self.parse_text(text)
+
+            return self.data
+
+        except Exception as e:
+            return {"Ошибка": str(e)}
+
+
+class PDFProcessorYMZ(PDFProcessor):
+    """Класс для обработки формы ЯМЗ"""
+
+    # Регулярные выражения специфичные для ЯМЗ
+    ACT_PATTERN = r".*?А[кК][тгрТ].*?арантийног.*?емонта.*?(\d+).*?(\d{2}.\d{2}.\d{4})"  # .*? - любые символы (нежадный поиск)
+    ENGINE_PATTERN = r"(?:Рег\.)?\s*(?i)знак ТС[^A-Za-zА-Яа-я\d_]*?(.*?)(?:ФИО|Номер|Адрес|Контактный)"  # паттерн для номера двигателя
+    SERVICE_PATTERN = r'["“”]([^"“”]+)["“”]'  # паттерн для сервисного предприятия (текст между любыми кавычками)
+    # MILEAGE_PATTERN = r'Дата начала гарант.*?(\d{2}.\d{2}.\d{4})\s*[^0-9]*(\d{4,7}).*?писание неисправност'  # паттерн для пробега
+    MILEAGE_PATTERN = r'Дата начала гарант.*?(\d{2}.\d{2}.\d{4})\s*[^0-9]*(\d{4,7})[^0-9]'
+    # MILEAGE_PATTERN = r'Дата начала гарантии.*?(\d{2}.\d{2}.\d{4}).*?[\n\s](\d{4,7})[\s|]'
+
+
+    def __init__(self, pdf_path):
+        super().__init__(pdf_path, lang='rus')
+
+
+    def parse_text(self, text):
+        """Реализация парсинга текста и заполнение словаря данных для формы ЯМЗ"""
+        # Извлечение номера и даты акта
+        act_match = re.search(self.ACT_PATTERN, text)
+        if act_match:
+            self.data["Номер акта"] = act_match.group(1)
+            self.data["Дата акта"] = act_match.group(2)
+        # else:
+        #     self.data["Номер акта"] = "Не найдено"
+        #     self.data["Дата акта"] = "Не найдено"
+
+        # Извлечение сервисного предприятия
+        service_match = re.search(self.SERVICE_PATTERN, text)
+        text_service_match = service_match.group(1)
+        if len(text_service_match) <= 30:
+            self.data["Сервисное предприятие"] = text_service_match
+        # else:
+        #     self.data["Сервисное предприятие"] = "Не найдено"
+
+        # Извлечение данных о двигателе
+        engine_match = re.search(self.ENGINE_PATTERN, text, re.DOTALL)
+        # print(f"Найдено совпадение по двигателю: {bool(engine_match)}")
+        if engine_match:
+            full_text = engine_match.group(1)
+            all_groups = [g.strip() for g in full_text.split()]
+            filtered_groups = self.filter_groups(all_groups)
+            # print(filtered_groups)
+
+            if len(filtered_groups) > 4:
+                self.data["Модель двигателя"] = filtered_groups[2]
+                self.data["Номер двигателя"] = filtered_groups[3]
+            elif 2 < len(filtered_groups) <= 4:
+                self.data["Модель двигателя"] = filtered_groups[1]
+                self.data["Номер двигателя"] = filtered_groups[2]
+            elif len(filtered_groups) == 2:
+                self.data["Модель двигателя"] = filtered_groups[0]
+                self.data["Номер двигателя"] = filtered_groups[1]
+        #     else:
+        #         self.data["Модель двигателя"] = "Не найдено"
+        #         self.data["Номер двигателя"] = "Не найдено"
+        # else:
+        #     self.data["Модель двигателя"] = "Не найдено"
+        #     self.data["Номер двигателя"] = "Не найдено"
+
+        # Извлечение пробега
+        mileage_match = re.search(self.MILEAGE_PATTERN, text, re.DOTALL)
+        # mileage_match = re.search(self.MILEAGE_PATTERN, text)
+        # print(f"Найдено совпадение по пробегу: {bool(mileage_match)}")
+        if mileage_match:
+            # Дата в group(1), пробег в group(2)
+            mileage = mileage_match.group(2)
+            # print(f"Извлеченный текст о пробеге: {mileage_match.group(1)}, {mileage}")
+            # Проверяем, что значение похоже на пробег (только цифры и разумная длина)
+            if mileage.isdigit() and 1 <= len(mileage) <= 7:
+            # if mileage.isdigit() and 0 <= int(mileage) <= 999999:
+                self.data["Пробег/наработка"] = f'{mileage} км'
+        #     else:
+        #         self.data["Пробег (км)"] = "Не найдено"
+        # else:
+        #     self.data["Пробег (км)"] = "Не найдено"
+
+
+class PDFProcessorRSM(PDFProcessor):
+    """Класс для обработки формы РСМ"""
+
+    # Словарь для преобразования месяцев
+    MONTHS = {
+        'января': '01', 'февраля': '02', 'марта': '03', 'апреля': '04',
+        'мая': '05', 'июня': '06', 'июля': '07', 'августа': '08',
+        'сентября': '09', 'октября': '10', 'ноября': '11', 'декабря': '12'
+    }
+
+    # Регулярные выражения
+    ACT_PATTERN = r'Рекламационный акт\s*№\s*(\d+)\s*от\s*[""«]?(\d+)[""»]?\s+([а-яА-Я]+)\s+(\d{4})'
+
+
+    def __init__(self, pdf_path):
+        super().__init__(pdf_path, lang='rus+eng')
+
+
+    def parse_text(self, text):
+        """Реализация разбора текста для формы РСМ"""
+        # Извлечение номера и даты акта
+        act_match = re.search(self.ACT_PATTERN, text)
+        if act_match:
+            act_number = act_match.group(1)
+            day = act_match.group(2)
+            month = self.MONTHS.get(act_match.group(3).lower(), '00')
+            year = act_match.group(4)
+
+            self.data["Номер акта"] = act_number
+            self.data["Дата акта"] = f"{day}.{month}.{year}"
+        # else:
+        #     self.data["Номер акта"] = "Не найдено"
+        #     self.data["Дата акта"] = "Не найдено"
