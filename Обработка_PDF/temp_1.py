@@ -1,7 +1,6 @@
-# pdf_processor.py
+# импортируемый модуль pdf_processor.py
 
 import json
-import os
 from pdf2image import convert_from_path
 import pytesseract
 import re

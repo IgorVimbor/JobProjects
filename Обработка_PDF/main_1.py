@@ -11,7 +11,7 @@ from excel_handler import ExcelHandler
 class MainApplication:
     def __init__(self, root):
         self.root = root
-        self.root.title("PDF to Excel Converter")
+        self.root.title("Акты рекламаций - Обработка и учет")
         self.root.geometry("850x650")
 
         # Загружаем конфигурацию из config.json
@@ -362,7 +362,7 @@ class MainApplication:
         # Создаем новое окно для редактирования
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Редактирование данных")
-        edit_window.geometry("600x450")
+        edit_window.geometry("600x480")
 
         # Создаем основной фрейм с отступами
         main_frame = ttk.Frame(edit_window, padding="10")
@@ -437,7 +437,7 @@ class MainApplication:
             text="Сохранить",
             command=save_changes,
             style='Custom.TButton'
-        ).pack(pady=10)
+        ).pack()
 
         # Центрируем окно
         edit_window.transient(self.root)
@@ -454,16 +454,54 @@ class MainApplication:
         """Сохранение данных в Excel"""
         try:
             if self.extracted_data:
-                excel_path = filedialog.asksaveasfilename(
-                    defaultextension=".xlsx",
-                    filetypes=[("Excel files", "*.xlsx")]
+                # Показываем простое окно с сообщением
+                indicator_window = tk.Toplevel(self.root)
+                indicator_window.title("Сохранение")
+
+                # Размер и положение окна
+                window_width = 300
+                window_height = 100
+                screen_width = indicator_window.winfo_screenwidth()
+                screen_height = indicator_window.winfo_screenheight()
+                x = (screen_width - window_width) // 2
+                y = (screen_height - window_height) // 2
+                indicator_window.geometry(f'{window_width}x{window_height}+{x}+{y}')
+
+                # Настройка окна
+                indicator_window.transient(self.root)
+                indicator_window.grab_set()
+                indicator_window.focus_set()
+                indicator_window.resizable(False, False)
+
+                # Добавляем текст
+                label = ttk.Label(
+                    indicator_window,
+                    text="Сохранение данных в ЖУРНАЛ УЧЕТА...",
+                    font=('TkDefaultFont', 10)
                 )
-                if excel_path:
-                    excel_handler = ExcelHandler(excel_path)
+                label.pack(pady=20)
+
+                # Обновляем окно
+                self.root.update()
+
+                try:
+                    # Сохраняем данные
+                    excel_handler = ExcelHandler(self.config['excel_path'])
                     excel_handler.write_data(self.extracted_data)
-                    messagebox.showinfo("Успех", "Данные успешно сохранены в Excel")
+
+                    # Закрываем окно индикации
+                    indicator_window.destroy()
+
+                    # Показываем сообщение об успехе
+                    messagebox.showinfo("Сообщение", "Данные успешно сохранены в ЖУРНАЛ УЧЕТА")
+
+                except Exception as e:
+                    # В случае ошибки закрываем окно индикации
+                    indicator_window.destroy()
+                    raise e
+
         except Exception as e:
-            messagebox.showerror("Ошибка", f"Ошибка при сохранении в ЖУРНАЛ УЧЕТА рекламаций: {str(e)}")
+            messagebox.showerror("Ошибка", str(e))
 
 
 if __name__ == "__main__":
