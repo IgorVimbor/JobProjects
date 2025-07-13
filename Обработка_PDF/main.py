@@ -14,7 +14,28 @@ class MainApplication:
     def __init__(self, root):
         self.root = root
         self.root.title("Акты рекламаций - Обработка и учет")
-        self.root.geometry("850x650")
+        self.root.iconbitmap("IconGreen.ico")
+
+        # Устанавливаем размеры окна
+        window_width = 820
+        window_height = 650
+        # self.root.geometry("820x650")
+
+        # Получаем размеры экрана
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+
+        # Отступы от краев экрана (в пикселях)
+        padding_right = 30  # справа
+        # padding_bottom = 200  # снизу
+
+        # Вычисляем координаты для правого нижнего угла
+        x = screen_width - window_width - padding_right
+        # y = screen_height - window_height - padding_bottom
+        y = int((screen_height - window_height) / 3)  # центрируем по вертикали
+
+        # Устанавливаем позицию и размеры окна
+        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
         # Загружаем конфигурацию из config.json
         with open('config.json', 'r', encoding='utf-8') as file:
