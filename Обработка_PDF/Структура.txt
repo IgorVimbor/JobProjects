@@ -1,8 +1,12 @@
 
 main.py - основной файл с GUI
-pdf_processor.py - модуль для обработки PDF
-excel_handler.py - модуль для работы с Excel
-
+config.json - файл конфигурации (используемые приложением переменные)
+pdf_processor.py - модуль для обработки PDF (две вкладки на главном окне)
+excel_handler.py - модуль для записи обработанных данных в Excel
+invoice_form.py - модуль для приложения ввода данных накладной прихода (третья вкладка)
+invoice_proccessor.py - модуль для поиска строк в Exsel для накладной прихода
+IconGreen.ico - иконка приложения
+requirements.txt - файл с зависимостями для работы приложения (нужные библиотеки)
 
 
 
@@ -48,4 +52,4 @@ def ensure_config_exists(self):
 
 pyinstaller --onefile --windowed --icon=IconGreen.ico --name="act_processing_140725" main.py
 
-pyinstaller act_Processing_140725.spec
+pyinstaller act_processing_140725.spec
