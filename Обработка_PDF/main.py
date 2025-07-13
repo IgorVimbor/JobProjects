@@ -8,6 +8,7 @@ from pdf_processor import (
     PDFProcessorMAZ, PDFProcessorMAZ_2, PDFProcessorAnother
     )
 from excel_handler import ExcelHandler
+from invoice_form import InvoiceForm
 
 
 class MainApplication:
@@ -152,10 +153,6 @@ class MainApplication:
         self.text_frame = ttk.Frame(self.notebook)
         self.notebook.add(self.text_frame, text='Распознанный текст', padding=5)
 
-        # Вкладка с информацией о программе
-        self.about_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.about_frame, text='О программе', padding=5)
-
         # Текстовое поле для просмотра распознанного текста
         self.text_preview = scrolledtext.ScrolledText(
             self.text_frame,
@@ -164,6 +161,14 @@ class MainApplication:
             height=20
         )
         self.text_preview.pack(padx=10, pady=10, fill='both', expand=True)
+
+        # Вкладка для ввода накладных
+        self.invoice_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.invoice_frame, text='Ввод накладной', padding=5)
+
+        # Вкладка с информацией о программе
+        self.about_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.about_frame, text='О программе', padding=5)
 
         # Текстовое поле для информации о программе
         self.about_text = scrolledtext.ScrolledText(
@@ -244,6 +249,11 @@ class MainApplication:
             self.about_text.insert('1.0', text)
             # Делаем поле только для чтения
             self.about_text.configure(state='disabled')
+
+        elif tab_text == 'Ввод накладной':
+            # Вызываем форму ввода накладных
+            self.open_invoice_form()
+
         else:
             # Возвращаем возможность редактирования для других вкладок
             self.text_preview.configure(state='normal')
@@ -525,6 +535,11 @@ class MainApplication:
 
         except Exception as e:
             messagebox.showerror("Ошибка", str(e))
+
+
+    def open_invoice_form(self):
+        """Открытие формы для ввода данных накладной"""
+        InvoiceForm(self.root, self.config)
 
 
 if __name__ == "__main__":
