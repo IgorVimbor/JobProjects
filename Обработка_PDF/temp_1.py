@@ -1,5 +1,7 @@
 # pdf_processor.py
 
+import json
+import os
 from pdf2image import convert_from_path
 import pytesseract
 import re
@@ -22,20 +24,12 @@ class PDFProcessor:
 
     def __init__(self, pdf_path, lang='rus'):
         self.pdf_path = pdf_path
-        # Словарь для хранения извлеченных данных
-        self.data = {
-            "Номер акта рекламации": "",
-            "Дата акта": "",
-            "Страна": "Россия",
-            "Сервисное предприятие": "",
-            "Модель двигателя": "",
-            "Номер двигателя": "",
-            "Транспортное средство": "",
-            "Пробег/наработка": "",
-            "Заявленный дефект": "течь",
-            "Требование покупателя": "исследование"
-        }
         self.lang = lang  # язык для распознавания OCR
+
+        # Словарь для хранения извлеченных данных загружаем из config.json
+        with open('config.json', 'r', encoding='utf-8') as file:
+            config = json.load(file)
+            self.data = config['default_data'].copy()
 
         # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 

@@ -1,6 +1,10 @@
+import json
 import tkinter as tk
 from tkinter import filedialog, ttk, scrolledtext, messagebox
-from temp_2 import PDFProcessorYMZ, PDFProcessorRSM
+from temp_2 import (
+    ExcelError, PDFProcessorYMZ, PDFProcessorRSM,
+    PDFProcessorMAZ, PDFProcessorMAZ_2, PDFProcessorAnother
+    )
 from excel_handler import ExcelHandler
 
 
@@ -8,7 +12,16 @@ class MainApplication:
     def __init__(self, root):
         self.root = root
         self.root.title("PDF to Excel Converter")
-        self.root.geometry("800x600")
+        self.root.geometry("850x650")
+
+        # Загружаем конфигурацию из config.json
+        with open('config.json', 'r', encoding='utf-8') as file:
+            self.config = json.load(file)
+
+        # Инициализация переменных
+        self.pdf_path = None  # путь до PDF-файла
+        self.extracted_data = None  # словарь извлеченных данных из PDF
+        self.engine_models: list = self.config.get('engine_models', [])  # список моделей из конфига
 
         # Создаем верхний фрейм для кнопок и чек-боксов
         self.top_frame = ttk.Frame(root)
@@ -65,16 +78,17 @@ class MainApplication:
             padding=5
         )
 
-        # Переменные для чек-боксов
+        # Переменная для чек-боксов
         self.selected_form = tk.StringVar()
 
-        # Создаем чек-боксы
+        # Создаем радиокнопки
         forms = ["Группа ГАЗ", "Ростсельмаш", "СЦ МАЗ", "СЦ МАЗ ///", "Другая"]
         for form in forms:
             rb = ttk.Radiobutton(
                 self.checkbox_frame,
                 text=form,
                 value=form,
+                style='Custom.TRadiobutton',
                 variable=self.selected_form
             )
             rb.pack(side='left', padx=7)
@@ -90,13 +104,34 @@ class MainApplication:
         self.notebook = ttk.Notebook(self.preview_frame)
         self.notebook.pack(fill='both', expand=True)
 
+        # Настраиваем стиль для вкладок
+        style = ttk.Style()
+
+        # Настройка стиля вкладок
+        style.configure(
+            "Custom.TNotebook.Tab",
+            padding=[10, 5],  # отступы текста внутри вкладки
+            font=('TkDefaultFont', 9),  # шрифт текста вкладки
+            background='#e1e1e1',  # цвет фона неактивной вкладки
+            foreground='#333333',  # цвет текста
+            borderwidth=1,  # ширина границы
+            relief='sunken'  # тип границы 'raised', 'sunken', 'flat', 'ridge', 'solid', or 'groove'
+        )
+
+        # Применяем стиль к notebook
+        self.notebook.configure(style="Custom.TNotebook")
+
         # Вкладка с данными таблицы
         self.table_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.table_frame, text='Данные таблицы')
+        self.notebook.add(self.table_frame, text='Данные таблицы', padding=5)
 
         # Вкладка с распознанным текстом
         self.text_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.text_frame, text='Распознанный текст')
+        self.notebook.add(self.text_frame, text='Распознанный текст', padding=5)
+
+        # Вкладка с информацией о программе
+        self.about_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.about_frame, text='О программе', padding=5)
 
         # Текстовое поле для просмотра распознанного текста
         self.text_preview = scrolledtext.ScrolledText(
@@ -106,6 +141,18 @@ class MainApplication:
             height=20
         )
         self.text_preview.pack(padx=10, pady=10, fill='both', expand=True)
+
+        # Текстовое поле для информации о программе
+        self.about_text = scrolledtext.ScrolledText(
+            self.about_frame,
+            wrap=tk.WORD,
+            width=70,
+            height=20
+        )
+        self.about_text.pack(padx=10, pady=10, fill='both', expand=True)
+
+        # Обработчик события переключения вкладок
+        self.notebook.bind('<<NotebookTabChanged>>', self.on_tab_changed)
 
         # Таблица для просмотра данных
         self.create_table_preview()
@@ -132,9 +179,80 @@ class MainApplication:
         )
         self.edit_button.pack(side='right', padx=5)
 
-        # Инициализация переменных
-        self.pdf_path = None
-        self.extracted_data = None
+        # Добавляем отслеживание нажатия кнопок чек-боксов
+        # Метод trace_add должен вызываться после создания всех кнопок
+        self.selected_form.trace_add('write', self.on_form_select)
+
+        # Создаем строку внизу основного окна с текстом "Development by IGOR VASILENOK"
+        self.footer_label = ttk.Label(root, text=f"   Development by IGOR VASILENOK", anchor='w')
+        self.footer_label.pack(side='bottom', fill='x', pady=5)
+
+
+    def on_tab_changed(self, event):
+        """Обработчик события смены вкладки"""
+        current_tab = self.notebook.select()
+        tab_text = self.notebook.tab(current_tab, "text")
+
+        if tab_text == 'О программе':
+            # Очищаем текстовое поле
+            self.about_text.configure(state='normal')
+            self.about_text.delete('1.0', tk.END)
+
+            # Формируем текст О программе из конфига
+            about_info = self.config['about_info']
+
+            text = f"\nПрограмма: {about_info['Программа']}"
+            text += f"\nВерсия: {about_info['Версия']}"
+            text += f"\nНазначение: {about_info['Назначение']}\n\n"
+
+            text += "Возможности:\n"
+            for form in about_info['Возможности']:
+                text += f"• {form}\n"
+
+            text += "\nОсобенности:\n"
+            for feature in about_info['Особенности']:
+                text += f"• {feature}\n"
+
+            text += f"\nИдея: {about_info['Идея']}"
+            text += f"\nРазработчик: {about_info['Разработчик']}"
+            text += f"\nКонтакты: {about_info['Контакты']}"
+
+            # Вставляем текст О программе
+            self.about_text.insert('1.0', text)
+            # Делаем поле только для чтения
+            self.about_text.configure(state='disabled')
+        else:
+            # Возвращаем возможность редактирования для других вкладок
+            self.text_preview.configure(state='normal')
+
+
+    def on_form_select(self, *args):
+        """Обработчик выбора формы"""
+        selected = self.selected_form.get()
+        if selected in ["СЦ МАЗ", "СЦ МАЗ ///", "Другая"]:
+            # Для форм МАЗ, МАЗ/// и Другая активируем кнопку редактирования
+            self.edit_button.config(state='normal')
+            # Деактивируем кнопку распознавания
+            self.process_button.config(state='disabled')
+
+            # Очищаем предыдущие данные
+            self.text_preview.delete('1.0', tk.END)
+            self.tree.delete(*self.tree.get_children())
+            self.save_button.config(state='disabled')
+
+            # Инициализируем пустые данные для форм МАЗ, МАЗ/// и Другая
+            processors = {
+                "СЦ МАЗ": PDFProcessorMAZ,
+                "СЦ МАЗ ///": PDFProcessorMAZ_2,
+                "Другая": PDFProcessorAnother
+            }
+            processor = processors[selected]("")  # Пустой путь к файлу, так как он не нужен
+            self.extracted_data = processor.data
+        else:
+            # Для других форм возвращаем стандартное поведение
+            self.edit_button.config(state='disabled')
+            self.process_button.config(state='normal' if self.pdf_path else 'disabled')
+            self.extracted_data = None  # Сбрасываем данные
 
 
     def create_table_preview(self):
@@ -176,32 +294,43 @@ class MainApplication:
             filetypes=[("PDF files", "*.pdf")]
         )
         if self.pdf_path:
-            self.process_button.config(state='normal')
+            selected = self.selected_form.get()
+            if selected not in ["СЦ МАЗ", "СЦ МАЗ ///", "Другая"]:
+                # Активируем кнопку распознавания только для ЯМЗ и РСМ форм
+                self.process_button.config(state='normal')
+
             # Очищаем предыдущие данные
             self.text_preview.delete('1.0', tk.END)
             self.tree.delete(*self.tree.get_children())
             self.save_button.config(state='disabled')
-            self.edit_button.config(state='disabled')
 
 
     def process_file(self):
         """Обработка PDF файла"""
         if self.pdf_path:
-            # Выбираем соответствующий процессор в зависимости от выбранной формы
+            # Словарь соответствия форм и процессоров
             processors = {
                 "Группа ГАЗ": PDFProcessorYMZ,
                 "Ростсельмаш": PDFProcessorRSM,
-                # Добавим остальные процессоры позже
+                "СЦ МАЗ": PDFProcessorMAZ,
+                "СЦ МАЗ ///": PDFProcessorMAZ_2,
+                "Другая": PDFProcessorAnother,
             }
 
-            processor_class = processors.get(self.selected_form.get())
+            selected_form = self.selected_form.get()
+            processor_class = processors.get(selected_form)
+
             if not processor_class:
-                messagebox.showinfo("Информация", "Обработка данной формы пока не реализована")
                 return
 
             processor = processor_class(self.pdf_path)
 
-            # Получаем распознанный текст
+            # Для форм МАЗ, МАЗ/// и Другая обработка не требуется,
+            # так как данные инициализированы в on_form_select()
+            if selected_form in ["СЦ МАЗ", "СЦ МАЗ ///", "Другая"]:
+                return
+
+            # Для остальных форм - обычная обработка
             raw_text = processor.get_raw_text()
             self.text_preview.delete('1.0', tk.END)
             self.text_preview.insert('1.0', raw_text)
@@ -228,89 +357,12 @@ class MainApplication:
                 self.tree.insert('', 'end', values=(key, value))
 
 
-    # def enable_editing(self):
-    #     """Включение режима редактирования данных"""
-    #     # Создаем новое окно для редактирования
-    #     edit_window = tk.Toplevel(self.root)
-    #     edit_window.title("Редактирование данных")
-    #     edit_window.geometry("600x400")  # Увеличиваем размер окна
-
-    #     # Создаем основной фрейм с отступами
-    #     main_frame = ttk.Frame(edit_window, padding="10")
-    #     main_frame.pack(fill='both', expand=True)
-
-    #     # Создаем стиль для меток
-    #     label_font = ('TkDefaultFont', 10)
-    #     entry_font = ('TkDefaultFont', 11)
-
-    #     # Определяем максимальную ширину для полей ввода
-    #     entry_width = 35  # Устанавливаем одинаковую ширину для всех полей
-
-    #     # Создаем и размещаем элементы управления
-    #     row = 0
-    #     entries = {}
-    #     for key, value in self.extracted_data.items():
-    #         frame = ttk.Frame(main_frame)
-    #         frame.pack(fill='x', pady=5)
-
-    #         # Метка с фиксированной шириной
-    #         label = ttk.Label(frame, text=key, font=label_font, width=25)
-    #         label.pack(side='left', padx=(0, 10))
-
-    #         # Поле ввода
-    #         entry = ttk.Entry(frame, font=entry_font, width=entry_width)
-    #         entry.insert(0, value)
-    #         entry.pack(side='left', fill='x', expand=True)
-
-    #         entries[key] = entry
-    #         row += 1
-
-    #     # Фрейм для кнопок
-    #     button_frame = ttk.Frame(main_frame)
-    #     button_frame.pack(pady=20, fill='x')
-
-    #     def save_changes():
-    #         # Сохраняем измененные данные
-    #         new_data = {}
-    #         for key, entry in entries.items():
-    #             new_data[key] = entry.get()
-
-    #         self.extracted_data = new_data
-    #         self.update_table_preview()
-    #         edit_window.destroy()
-
-    #     # Кнопка сохранения с увеличенным шрифтом
-    #     save_button = ttk.Button(
-    #         button_frame,
-    #         text="Сохранить",
-    #         command=save_changes,
-    #         style='Large.TButton'
-    #     )
-    #     save_button.pack(pady=10)
-
-    #     # Создаем стиль для кнопки
-    #     style = ttk.Style()
-    #     style.configure('Large.TButton', font=('TkDefaultFont', 10))
-
-    #     # Центрируем окно относительно главного окна
-    #     edit_window.transient(self.root)
-    #     edit_window.grab_set()
-
-    #     # Размещаем окно по центру главного окна
-    #     edit_window.update_idletasks()
-    #     width = edit_window.winfo_width()
-    #     height = edit_window.winfo_height()
-    #     x = self.root.winfo_x() + (self.root.winfo_width() // 2) - (width // 2)
-    #     y = self.root.winfo_y() + (self.root.winfo_height() // 2) - (height // 2)
-    #     edit_window.geometry(f'+{x}+{y}')
-
-
     def enable_editing(self):
         """Включение режима редактирования данных"""
         # Создаем новое окно для редактирования
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Редактирование данных")
-        edit_window.geometry("600x400")
+        edit_window.geometry("600x450")
 
         # Создаем основной фрейм с отступами
         main_frame = ttk.Frame(edit_window, padding="10")
@@ -320,14 +372,6 @@ class MainApplication:
         label_font = ('TkDefaultFont', 10)
         entry_font = ('TkDefaultFont', 11)
         entry_width = 35
-
-        # Загружаем список моделей двигателей
-        try:
-            with open('engine_models.txt', 'r', encoding='utf-8') as file:
-                self.engine_models = sorted(line.strip() for line in file.readlines())
-        except Exception as e:
-            print(f"Ошибка при загрузке списка моделей: {e}")
-            self.engine_models = ["534450", "53445.1000140-АЗ2", "5344.1000186"]
 
         # Создаем и размещаем элементы управления
         entries = {}
@@ -348,22 +392,6 @@ class MainApplication:
                     values=self.engine_models
                 )
                 entry.set(value)
-
-                def add_new_value(event):
-                    current_value = entry.get()
-                    if current_value and current_value not in self.engine_models:
-                        self.engine_models.append(current_value)
-                        self.engine_models.sort()
-                        # entry.configure(values=self.engine_models)
-                        # entry.config(values=tuple(self.engine_models))
-
-                # Привязываем обработчик к событиям
-                # entry.bind('<FocusOut>', add_new_value)
-                entry.bind('<Return>', add_new_value)
-
-                # # Устанавливаем фокус на поле ввода
-                # entry.focus_set()
-
             else:
                 # Для остальных полей используем обычные Entry
                 entry = ttk.Entry(frame, font=entry_font, width=entry_width)
@@ -377,6 +405,14 @@ class MainApplication:
         button_frame.pack(pady=20, fill='x')
 
         def save_changes():
+            # Сначала обрабатываем модель двигателя, если она новая
+            engine_entry = entries.get("Модель двигателя")
+            if engine_entry:
+                current_value = engine_entry.get()
+                if current_value and current_value not in self.engine_models:
+                    self.engine_models.append(current_value)
+                    self.engine_models.sort()
+
             # Сохраняем измененные данные
             new_data = {}
             for key, entry in entries.items():
@@ -385,12 +421,13 @@ class MainApplication:
             self.extracted_data = new_data
             self.update_table_preview()
 
-            # Сохраняем обновленный список моделей в файл
-            try:
-                with open('engine_models.txt', 'w', encoding='utf-8') as file:
-                    file.write('\n'.join(self.engine_models))
-            except Exception as e:
-                print(f"Ошибка при сохранении списка моделей: {e}")
+            # Обновляем список моделей в конфиге
+            self.config['engine_models'] = self.engine_models
+            with open('config.json', 'w', encoding='utf-8') as file:
+                json.dump(self.config, file, indent=4, ensure_ascii=False)
+
+            # Активируем кнопку "Сохранить в Excel"
+            self.save_button.config(state='normal')
 
             edit_window.destroy()
 
@@ -399,7 +436,7 @@ class MainApplication:
             button_frame,
             text="Сохранить",
             command=save_changes,
-            style='Large.TButton'
+            style='Custom.TButton'
         ).pack(pady=10)
 
         # Центрируем окно
@@ -415,15 +452,18 @@ class MainApplication:
 
     def save_to_excel(self):
         """Сохранение данных в Excel"""
-        if self.extracted_data:
-            excel_path = filedialog.asksaveasfilename(
-                defaultextension=".xlsx",
-                filetypes=[("Excel files", "*.xlsx")]
-            )
-            if excel_path:
-                excel_handler = ExcelHandler(excel_path)
-                excel_handler.write_data(self.extracted_data)
-                messagebox.showinfo("Успех", "Данные успешно сохранены в Excel")
+        try:
+            if self.extracted_data:
+                excel_path = filedialog.asksaveasfilename(
+                    defaultextension=".xlsx",
+                    filetypes=[("Excel files", "*.xlsx")]
+                )
+                if excel_path:
+                    excel_handler = ExcelHandler(excel_path)
+                    excel_handler.write_data(self.extracted_data)
+                    messagebox.showinfo("Успех", "Данные успешно сохранены в Excel")
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка при сохранении в ЖУРНАЛ УЧЕТА рекламаций: {str(e)}")
 
 
 if __name__ == "__main__":

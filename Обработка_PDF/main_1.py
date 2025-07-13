@@ -1,3 +1,4 @@
+import json
 import tkinter as tk
 from tkinter import filedialog, ttk, scrolledtext, messagebox
 from temp_1 import (
@@ -11,7 +12,16 @@ class MainApplication:
     def __init__(self, root):
         self.root = root
         self.root.title("PDF to Excel Converter")
-        self.root.geometry("800x600")
+        self.root.geometry("850x650")
+
+        # Загружаем конфигурацию из config.json
+        with open('config.json', 'r', encoding='utf-8') as file:
+            self.config = json.load(file)
+
+        # Инициализация переменных
+        self.pdf_path = None  # путь до PDF-файла
+        self.extracted_data = None  # словарь извлеченных данных из PDF
+        self.engine_models: list = self.config.get('engine_models', [])  # список моделей из конфига
 
         # Создаем верхний фрейм для кнопок и чек-боксов
         self.top_frame = ttk.Frame(root)
@@ -78,6 +88,7 @@ class MainApplication:
                 self.checkbox_frame,
                 text=form,
                 value=form,
+                style='Custom.TRadiobutton',
                 variable=self.selected_form
             )
             rb.pack(side='left', padx=7)
@@ -93,13 +104,34 @@ class MainApplication:
         self.notebook = ttk.Notebook(self.preview_frame)
         self.notebook.pack(fill='both', expand=True)
 
+        # Настраиваем стиль для вкладок
+        style = ttk.Style()
+
+        # Настройка стиля вкладок
+        style.configure(
+            "Custom.TNotebook.Tab",
+            padding=[10, 5],  # отступы текста внутри вкладки
+            font=('TkDefaultFont', 9),  # шрифт текста вкладки
+            background='#e1e1e1',  # цвет фона неактивной вкладки
+            foreground='#333333',  # цвет текста
+            borderwidth=1,  # ширина границы
+            relief='sunken'  # тип границы 'raised', 'sunken', 'flat', 'ridge', 'solid', or 'groove'
+        )
+
+        # Применяем стиль к notebook
+        self.notebook.configure(style="Custom.TNotebook")
+
         # Вкладка с данными таблицы
         self.table_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.table_frame, text='Данные таблицы')
+        self.notebook.add(self.table_frame, text='Данные таблицы', padding=5)
 
         # Вкладка с распознанным текстом
         self.text_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.text_frame, text='Распознанный текст')
+        self.notebook.add(self.text_frame, text='Распознанный текст', padding=5)
+
+        # Вкладка с информацией о программе
+        self.about_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.about_frame, text='О программе', padding=5)
 
         # Текстовое поле для просмотра распознанного текста
         self.text_preview = scrolledtext.ScrolledText(
@@ -109,6 +141,18 @@ class MainApplication:
             height=20
         )
         self.text_preview.pack(padx=10, pady=10, fill='both', expand=True)
+
+        # Текстовое поле для информации о программе
+        self.about_text = scrolledtext.ScrolledText(
+            self.about_frame,
+            wrap=tk.WORD,
+            width=70,
+            height=20
+        )
+        self.about_text.pack(padx=10, pady=10, fill='both', expand=True)
+
+        # Обработчик события переключения вкладок
+        self.notebook.bind('<<NotebookTabChanged>>', self.on_tab_changed)
 
         # Таблица для просмотра данных
         self.create_table_preview()
@@ -143,9 +187,43 @@ class MainApplication:
         self.footer_label = ttk.Label(root, text=f"   Development by IGOR VASILENOK", anchor='w')
         self.footer_label.pack(side='bottom', fill='x', pady=5)
 
-        # Инициализация переменных
-        self.pdf_path = None
-        self.extracted_data = None
+
+    def on_tab_changed(self, event):
+        """Обработчик события смены вкладки"""
+        current_tab = self.notebook.select()
+        tab_text = self.notebook.tab(current_tab, "text")
+
+        if tab_text == 'О программе':
+            # Очищаем текстовое поле
+            self.about_text.configure(state='normal')
+            self.about_text.delete('1.0', tk.END)
+
+            # Формируем текст О программе из конфига
+            about_info = self.config['about_info']
+
+            text = f"\nПрограмма: {about_info['Программа']}"
+            text += f"\nВерсия: {about_info['Версия']}"
+            text += f"\nНазначение: {about_info['Назначение']}\n\n"
+
+            text += "Возможности:\n"
+            for form in about_info['Возможности']:
+                text += f"• {form}\n"
+
+            text += "\nОсобенности:\n"
+            for feature in about_info['Особенности']:
+                text += f"• {feature}\n"
+
+            text += f"\nИдея: {about_info['Идея']}"
+            text += f"\nРазработчик: {about_info['Разработчик']}"
+            text += f"\nКонтакты: {about_info['Контакты']}"
+
+            # Вставляем текст О программе
+            self.about_text.insert('1.0', text)
+            # Делаем поле только для чтения
+            self.about_text.configure(state='disabled')
+        else:
+            # Возвращаем возможность редактирования для других вкладок
+            self.text_preview.configure(state='normal')
 
 
     def on_form_select(self, *args):
@@ -295,14 +373,6 @@ class MainApplication:
         entry_font = ('TkDefaultFont', 11)
         entry_width = 35
 
-        # Загружаем список моделей двигателей
-        try:
-            with open('engine_models.txt', 'r', encoding='utf-8') as file:
-                self.engine_models = sorted(line.strip() for line in file.readlines())
-        except Exception as e:
-            self.engine_models = ["53435", "534450", "53435-А02", "53445.1000140-АЗ2"]
-            raise ExcelError(f"Ошибка при загрузке списка моделей: {str(e)}")
-
         # Создаем и размещаем элементы управления
         entries = {}
         for key, value in self.extracted_data.items():
@@ -351,12 +421,10 @@ class MainApplication:
             self.extracted_data = new_data
             self.update_table_preview()
 
-            # Сохраняем обновленный список моделей в файл
-            try:
-                with open('engine_models.txt', 'w', encoding='utf-8') as file:
-                    file.write('\n'.join(self.engine_models))
-            except Exception as e:
-                raise ExcelError(f"Ошибка при сохранении списка моделей: {str(e)}")
+            # Обновляем список моделей в конфиге
+            self.config['engine_models'] = self.engine_models
+            with open('config.json', 'w', encoding='utf-8') as file:
+                json.dump(self.config, file, indent=4, ensure_ascii=False)
 
             # Активируем кнопку "Сохранить в Excel"
             self.save_button.config(state='normal')
