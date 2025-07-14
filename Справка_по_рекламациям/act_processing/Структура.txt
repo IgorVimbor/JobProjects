@@ -12,7 +12,7 @@ requirements.txt - файл с зависимостями для работы п
 "excel_path": "D:/РАБОТА/2025-2019_ЖУРНАЛ УЧЁТА.xlsm"
 "excel_path": "//Server/otk/1 ГАРАНТИЯ на сервере/2025-2019_ЖУРНАЛ УЧЁТА.xlsm"
 
-
+pip install tkinterdnd2
 --------------------------------------------------------------------------------------
 
 pip install –r requirements.txt
