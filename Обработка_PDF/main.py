@@ -3,7 +3,7 @@
 import json
 import tkinter as tk
 from tkinter import filedialog, ttk, scrolledtext, messagebox
-from pdf_processor import (
+from pdf_processor_fitz import (
     ExcelError, PDFProcessorYMZ, PDFProcessorRSM,
     PDFProcessorMAZ, PDFProcessorMAZ_2, PDFProcessorAnother
     )
