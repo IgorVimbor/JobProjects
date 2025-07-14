@@ -49,6 +49,7 @@ def ensure_config_exists(self):
             json.dump(default_config, f, indent=4, ensure_ascii=False)
 --------------------------------------------------------------------------------------
 
+pip install –r requirements.txt
 
 pyinstaller --onefile --windowed --icon=IconGreen.ico --name="act_processing_140725" main.py
 
