@@ -12,14 +12,16 @@ requirements.txt - файл с зависимостями для работы п
 "excel_path": "D:/РАБОТА/2025-2019_ЖУРНАЛ УЧЁТА.xlsm"
 "excel_path": "//Server/otk/1 ГАРАНТИЯ на сервере/2025-2019_ЖУРНАЛ УЧЁТА.xlsm"
 
-pip install tkinterdnd2
+
 --------------------------------------------------------------------------------------
 
 pip install –r requirements.txt
 
-pyinstaller --onefile --windowed --icon=IconGreen.ico --name="act_processing_140725" main.py
+pyinstaller --onefile --windowed --icon=IconGreen.ico --name="act_processing_150725" main_150725.py
 
-pyinstaller act_processing_140725.spec
+pyinstaller act_processing_150725.spec
+
+pyinstaller --onefile --windowed --add-data "E:\MyRepositories\JobProjects\Справка_по_рекламациям\spravka_venv\Lib\site-packages\tkinterdnd2;tkinterdnd2" --hidden-import tkinterdnd2 --name="act_processing_150725" main_150725.py
 
 --------------------------------------------------------------------------------------
 
@@ -69,145 +71,3 @@ ________________________________________
 Поместите файл в папку tessdata
 
 --------------------------------------------------------------------------------------------
-
-
-Оптимизированный вариант класса PDFProcessor с использованием PyMuPDF и обработкой изображений для черно-белых PDF:
-
-import fitz  # PyMuPDF
-import json
-import cv2
-import numpy as np
-import pytesseract
-from PIL import Image
-import re
-
-class PDFProcessingError(Exception):
-    pass
-
-class PDFProcessor:
-    """Класс для обработки PDF документов с оптимизированной предобработкой изображений"""
-
-    def __init__(self, pdf_path, lang='rus', tesseract_path=r'C:\Tesseract-OCR\tesseract.exe'):
-        self.pdf_path = pdf_path
-        self.lang = lang
-        self.doc = None
-
-        # Загрузка конфигурации
-        with open('config.json', 'r', encoding='utf-8') as file:
-            config = json.load(file)
-            self.data = config['default_data'].copy()
-
-        pytesseract.pytesseract.tesseract_cmd = tesseract_path
-
-    def __enter__(self):
-        """Контекстный менеджер для безопасного открытия файла"""
-        self.doc = fitz.open(self.pdf_path)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Автоматическое закрытие документа при выходе из контекста"""
-        if self.doc:
-            self.doc.close()
-
-    def render_page(self, page_num=0, dpi=300):
-        """Рендеринг страницы PDF в изображение"""
-        if not self.doc:
-            self.doc = fitz.open(self.pdf_path)
-
-        if page_num >= len(self.doc):
-            raise PDFProcessingError(f"Страница {page_num} не существует")
-
-        page = self.doc.load_page(page_num)
-        zoom = dpi / 72
-        matrix = fitz.Matrix(zoom, zoom)
-        pix = page.get_pixmap(matrix=matrix)
-        return Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-
-    def preprocess_image(self, image, enhance_quality=False):
-        """
-        Оптимизированная предобработка изображения для черно-белых PDF
-        """
-        try:
-            # Конвертация в numpy array и градации серого
-            img_array = np.array(image)
-            if len(img_array.shape) == 3:
-                gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
-            else:
-                gray = img_array
-
-            # Дополнительная обработка только при необходимости
-            if enhance_quality:
-                # Улучшение контраста
-                gray = cv2.convertScaleAbs(gray, alpha=1.5, beta=10)
-
-                # Легкое уменьшение шума
-                gray = cv2.GaussianBlur(gray, (3, 3), 0)
-
-                # Морфологическое закрытие для улучшения текста
-                kernel = np.ones((1, 1), np.uint8)
-                gray = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
-
-            # Всегда применяем бинаризацию Оцу - критически важно для OCR
-            _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-            return Image.fromarray(binary)
-
-        except Exception as e:
-            raise PDFProcessingError(f"Ошибка при предобработке изображения: {str(e)}")
-
-    def is_text_quality_good(self, text):
-        """Проверка качества распознанного текста"""
-        if not text.strip():
-            return False
-
-        # Проверка количества слов
-        words = re.findall(r'\b\w{3,}\b', text)
-        if len(words) < 5:
-            return False
-
-        # Проверка на избыток "мусорных" символов
-        garbage_chars = r'[@#$%^&*_+=\|\\<>~]'
-        garbage_count = len(re.findall(garbage_chars, text))
-        if garbage_count / len(text) > 0.03:  # >3% мусора
-            return False
-
-        # Проверка соотношения букв и цифр (для текстовых документов)
-        letters = sum(c.isalpha() for c in text)
-        digits = sum(c.isdigit() for c in text)
-        if letters > 0 and digits / (letters + digits) > 0.3:  # >30% цифр
-            return False
-
-        return True
-
-    def get_raw_text(self, page_num=0, dpi=300, fallback_enhance=True):
-        """
-        Получение текста из PDF с интеллектуальной обработкой
-        :param page_num: номер страницы (0-based)
-        :param dpi: разрешение для рендеринга
-        :param fallback_enhance: использовать улучшенную обработку при плохом качестве
-        :return: распознанный текст
-        """
-        try:
-            # Рендерим страницу
-            img = self.render_page(page_num, dpi)
-
-            # Первая попытка: базовая предобработка
-            processed_img = self.preprocess_image(img)
-            text = pytesseract.image_to_string(processed_img, lang=self.lang)
-
-            # Если качество плохое и разрешено улучшение
-            if not self.is_text_quality_good(text) and fallback_enhance:
-                processed_img = self.preprocess_image(img, enhance_quality=True)
-                enhanced_text = pytesseract.image_to_string(processed_img, lang=self.lang)
-
-                # Используем улучшенный вариант только если он лучше
-                if self.is_text_quality_good(enhanced_text):
-                    return enhanced_text
-
-            return text
-
-        except Exception as e:
-            raise PDFProcessingError(f"Ошибка при распознавании текста: {str(e)}")
-
-# дальше по коду pdf_processor ...
------------------------------------------------------------------------------------------------

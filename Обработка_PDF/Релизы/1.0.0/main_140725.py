@@ -1,11 +1,8 @@
 # main.py - основной исполняемый модуль приложения
 
-import os
 import json
 import tkinter as tk
 from tkinter import filedialog, ttk, scrolledtext, messagebox
-from tkinterdnd2 import *
-
 from pdf_processor import (
     ExcelError, PDFProcessorYMZ, PDFProcessorRSM,
     PDFProcessorMAZ, PDFProcessorMAZ_2, PDFProcessorAnother
@@ -49,9 +46,6 @@ class MainApplication:
         self.pdf_path = None  # путь до PDF-файла
         self.extracted_data = None  # словарь извлеченных данных из PDF
         self.engine_models: list = self.config.get('engine_models', [])  # список моделей из конфига
-
-
-        # ------------------------------- Создаем основные элементы окна приложения -------------------------------
 
         # Создаем верхний фрейм для кнопок и чек-боксов
         self.top_frame = ttk.Frame(root)
@@ -213,37 +207,14 @@ class MainApplication:
         )
         self.edit_button.pack(side='right', padx=5)
 
-        self.clear_button = ttk.Button(
-            self.control_frame,
-            text="Очистить",
-            command=self.clear_data,
-            style='Custom.TButton'
-        )
-        self.clear_button.pack(side='left', padx=10)
-
         # Добавляем отслеживание нажатия кнопок чек-боксов
         # Метод trace_add должен вызываться после создания всех кнопок
         self.selected_form.trace_add('write', self.on_form_select)
-
-        # Настраиваем drag and drop
-        self.root.drop_target_register(DND_FILES)
-        self.root.dnd_bind('<<Drop>>', self.handle_drop)
-
-        # Добавляем метку с подсказкой о drag and drop
-        self.drag_drop_label = ttk.Label(
-            self.preview_frame,
-            text="Перетащите PDF файл сюда или используйте кнопку выбора файла",
-            font=('TkDefaultFont', 10, 'italic'),
-            foreground='gray'
-        )
-        self.drag_drop_label.pack(pady=10)
 
         # Создаем строку внизу основного окна с текстом "Development by IGOR VASILENOK"
         self.footer_label = ttk.Label(root, text=f"   Development by IGOR VASILENOK", anchor='w')
         self.footer_label.pack(side='bottom', fill='x', pady=5)
 
-
-    # ------------------------------ Методы класса MainApplication ------------------------------
 
     def on_tab_changed(self, event):
         """Обработчик события смены вкладки"""
@@ -356,16 +327,7 @@ class MainApplication:
             filetypes=[("PDF files", "*.pdf")]
         )
         if self.pdf_path:
-            # Обновляем текст метки
-            file_name = os.path.basename(self.pdf_path)
-            self.drag_drop_label.config(
-                text=f"Выбран файл: {file_name}",
-                foreground='blue',
-                font=('TkDefaultFont', 10)
-            )
-
             selected = self.selected_form.get()
-
             if selected not in ["СЦ МАЗ", "СЦ МАЗ ///", "Другая"]:
                 # Активируем кнопку распознавания только для ЯМЗ и РСМ форм
                 self.process_button.config(state='normal')
@@ -374,44 +336,6 @@ class MainApplication:
             self.text_preview.delete('1.0', tk.END)
             self.tree.delete(*self.tree.get_children())
             self.save_button.config(state='disabled')
-
-
-    def handle_drop(self, event):
-        """Обработка события перетаскивания файла drag-and-drop"""
-        file_path = event.data
-
-        # В Windows путь может быть в фигурных скобках
-        if file_path.startswith('{') and file_path.endswith('}'):
-            file_path = file_path[1:-1]
-
-        # Проверяем расширение файла
-        if file_path.lower().endswith('.pdf'):
-            self.pdf_path = file_path
-
-            # Обновляем текст метки
-            file_name = os.path.basename(file_path)
-            self.drag_drop_label.config(
-                text=f"Выбран файл: {file_name}",
-                foreground='blue',
-                font=('TkDefaultFont', 10)
-            )
-
-            # Активируем кнопку распознавания если это не форма МАЗ
-            selected = self.selected_form.get()
-            if selected not in ["СЦ МАЗ", "СЦ МАЗ ///", "Другая"]:
-                self.process_button.config(state='normal')
-
-            # Очищаем предыдущие данные
-            self.text_preview.delete('1.0', tk.END)
-            self.tree.delete(*self.tree.get_children())
-            self.save_button.config(state='disabled')
-        else:
-            messagebox.showerror("Ошибка", "Можно перетаскивать только PDF файлы")
-            self.drag_drop_label.config(
-                text="Перетащите PDF файл сюда или используйте кнопку выбора файла",
-                foreground='gray',
-                font=('TkDefaultFont', 10, 'italic')
-            )
 
 
     def process_file(self):
@@ -439,8 +363,12 @@ class MainApplication:
             if selected_form in ["СЦ МАЗ", "СЦ МАЗ ///", "Другая"]:
                 return
 
-            # Для остальных форм - обычная обработка
-            raw_text = processor.get_raw_text()
+            try:
+                # Для остальных форм - обычная обработка
+                raw_text = processor.get_raw_text()
+            except Exception as e:
+                messagebox.showerror("Ошибка", str(e))
+
             self.text_preview.delete('1.0', tk.END)
             self.text_preview.insert('1.0', raw_text)
 
@@ -613,36 +541,12 @@ class MainApplication:
             messagebox.showerror("Ошибка", str(e))
 
 
-    def clear_data(self):
-        """Очистка всех данных и возврат к исходному состоянию"""
-        # Очищаем путь к файлу
-        self.pdf_path = None
-
-        # Очищаем текстовое поле
-        self.text_preview.delete('1.0', tk.END)
-
-        # Очищаем таблицу
-        self.tree.delete(*self.tree.get_children())
-
-        # Деактивируем кнопки
-        self.save_button.config(state='disabled')
-        self.edit_button.config(state='disabled')
-        self.process_button.config(state='disabled')
-
-        # Возвращаем метку drag-and-drop в исходное состояние
-        self.drag_drop_label.config(
-            text="Перетащите PDF файл сюда или используйте кнопку выбора файла",
-            foreground='gray',
-            font=('TkDefaultFont', 10, 'italic')
-        )
-
-
     def open_invoice_form(self):
         """Открытие формы для ввода данных накладной"""
         InvoiceForm(self.root, self.config)
 
 
 if __name__ == "__main__":
-    root = TkinterDnD.Tk()  # Вместо tk.Tk()
+    root = tk.Tk()
     app = MainApplication(root)
     root.mainloop()
