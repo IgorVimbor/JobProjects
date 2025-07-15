@@ -1,4 +1,5 @@
-# импортируемый модуль pdf_processor.py
+# модуль с попытками улучшить качество считывыания текста (добавлено Исправление наклона).
+# метод get_raw_text использует все три метода улучшения ... но работает хуже чем pdf_processor_2image
 
 import json
 from pdf2image import convert_from_path
@@ -72,6 +73,32 @@ class PDFProcessor:
             raise PDFProcessingError(f"Ошибка при предобработке изображения: {str(e)}")
 
 
+    def deskew(self, image):
+        """
+        Исправление наклона изображения (deskew) для улучшения OCR
+        """
+        try:
+            img_array = np.array(image.convert('L'))  # конвертируем в градации серого
+            thresh = cv2.threshold(img_array, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
+            coords = np.column_stack(np.where(thresh > 0))
+            angle = cv2.minAreaRect(coords)[-1]
+
+            if angle < -45:
+                angle = -(90 + angle)
+            else:
+                angle = -angle
+
+            (h, w) = img_array.shape[:2]
+            center = (w // 2, h // 2)
+            M = cv2.getRotationMatrix2D(center, angle, 1.0)
+            rotated = cv2.warpAffine(img_array, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+
+            return Image.fromarray(rotated)
+        except Exception as e:
+            raise PDFProcessingError(f"Ошибка при исправлении наклона изображения: {str(e)}")
+
+
     def enhance_image_quality(self, image):
         """Общий метод улучшения качества изображения с использованием расширенных методов"""
         try:
@@ -126,18 +153,29 @@ class PDFProcessor:
             if not images:
                 raise PDFProcessingError("Не удалось получить изображения из PDF")
 
+            # Пробуем разные варианты обработки
+            text = ""
             if enhance_quality:
-                # Улучшаем качество изображения
-                enhanced_image = self.enhance_image_quality(images[0])
-                # Применяем предобработку с улучшением качества
-                processed_image = self.preprocess_image(enhanced_image, enhance_quality=True)
+                try:
+                    # Пробуем с улучшением качества и исправлением наклона
+                    enhanced_image = self.enhance_image_quality(images[0])
+                    deskewed_image = self.deskew(enhanced_image)
+                    processed_image = self.preprocess_image(deskewed_image, enhance_quality=True)
+                    text = pytesseract.image_to_string(processed_image, lang=self.lang)
+                except:
+                    # Если не получилось, пробуем без исправления наклона
+                    try:
+                        enhanced_image = self.enhance_image_quality(images[0])
+                        processed_image = self.preprocess_image(enhanced_image, enhance_quality=True)
+                        text = pytesseract.image_to_string(processed_image, lang=self.lang)
+                    except:
+                        # Если и это не помогло, пробуем базовый вариант
+                        processed_image = self.preprocess_image(images[0])
+                        text = pytesseract.image_to_string(processed_image, lang=self.lang)
             else:
-                # Обычная предобработка
+                # Базовый вариант обработки
                 processed_image = self.preprocess_image(images[0])
-
-            # Распознаем текст
-            text = pytesseract.image_to_string(processed_image, lang=self.lang)
-            # text = pytesseract.image_to_string(processed_image, lang='rus')
+                text = pytesseract.image_to_string(processed_image, lang=self.lang)
 
             if not text.strip():
                 raise PDFProcessingError("Не удалось распознать текст в документе")
@@ -197,7 +235,7 @@ class PDFProcessor:
             self.parse_text(text)
 
             # Если много "Не найдено", пробуем расширенную обработку
-            if self.count_not_found() > 2:
+            if self.count_not_found() > 4:
                 text = self.get_raw_text(enhance_quality=True)
                 self.parse_text(text)
 
