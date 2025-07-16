@@ -19,7 +19,7 @@ pip install –r requirements.txt
 
 pyinstaller --onefile --windowed --icon=IconGreen.ico --name="act_processing_150725" main_150725.py
 
-pyinstaller act_processing_150725.spec
+pyinstaller act_processing_160725.spec
 
 pyinstaller --onefile --windowed --add-data "E:\MyRepositories\JobProjects\Справка_по_рекламациям\spravka_venv\Lib\site-packages\tkinterdnd2;tkinterdnd2" --hidden-import tkinterdnd2 --name="act_processing_150725" main_150725.py
 
