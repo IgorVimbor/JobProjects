@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='act_processing_150725',
+    name='act_processing_2image',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

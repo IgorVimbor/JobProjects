@@ -1,8 +1,7 @@
 # импортируемый модуль pdf_processor.py
 
 import json
-import fitz  # PyMuPDF
-# from pdf2image import convert_from_path
+from pdf2image import convert_from_path
 import pytesseract
 import re
 from PIL import Image
@@ -31,7 +30,7 @@ class PDFProcessor:
             config = json.load(file)
             self.data = config['default_data'].copy()
 
-        # pytesseract.pytesseract.tesseract_cmd = r'C:\Tesseract-OCR\tesseract.exe'
+        # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 
     def preprocess_image(self, image, enhance_quality=False):
@@ -117,34 +116,28 @@ class PDFProcessor:
 
     def get_raw_text(self, enhance_quality=False):
         """
-        Переписанный метод с использованием PyMuPDF
+        Общий метод получения необработанного текста из PDF
+        enhance_quality: Флаг для применения расширенной обработки изображения
         """
         try:
-            # Открываем PDF с помощью PyMuPDF
-            doc = fitz.open(self.pdf_path)
+            # Конвертируем только первую страницу PDF
+            images = convert_from_path(self.pdf_path, first_page=1, last_page=1)
 
-            # Проверяем, есть ли хотя бы одна страница
-            if doc.page_count == 0:
-                raise PDFProcessingError("PDF не содержит страниц")
-
-            # Получаем первую страницу (индекс 0)
-            page = doc.load_page(0)
-
-            # Рендерим страницу в изображение с высоким разрешением
-            # Matrix(3, 3) = 300 DPI (72*3 ≈ 216, но фактическое значение зависит от zoom)
-            pix = page.get_pixmap(matrix=fitz.Matrix(3, 3))
-
-            # Конвертируем в PIL Image
-            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            if not images:
+                raise PDFProcessingError("Не удалось получить изображения из PDF")
 
             if enhance_quality:
-                enhanced_image = self.enhance_image_quality(img)
+                # Улучшаем качество изображения
+                enhanced_image = self.enhance_image_quality(images[0])
+                # Применяем предобработку с улучшением качества
                 processed_image = self.preprocess_image(enhanced_image, enhance_quality=True)
             else:
-                processed_image = self.preprocess_image(img)
+                # Обычная предобработка
+                processed_image = self.preprocess_image(images[0])
 
             # Распознаем текст
             text = pytesseract.image_to_string(processed_image, lang=self.lang)
+            # text = pytesseract.image_to_string(processed_image, lang='rus')
 
             if not text.strip():
                 raise PDFProcessingError("Не удалось распознать текст в документе")
@@ -153,10 +146,6 @@ class PDFProcessor:
 
         except Exception as e:
             raise PDFProcessingError(f"Ошибка при распознавании текста: {str(e)}")
-
-        finally:
-            if 'doc' in locals():
-                doc.close()  # Всегда закрываем документ
 
 
     def filter_groups(self, groups):
@@ -208,7 +197,7 @@ class PDFProcessor:
             self.parse_text(text)
 
             # Если много "Не найдено", пробуем расширенную обработку
-            if self.count_not_found() > 4:
+            if self.count_not_found() > 3:
                 text = self.get_raw_text(enhance_quality=True)
                 self.parse_text(text)
 
