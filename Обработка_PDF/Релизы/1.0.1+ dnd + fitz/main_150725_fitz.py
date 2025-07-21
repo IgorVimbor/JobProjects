@@ -17,7 +17,7 @@ import tkinter as tk
 from tkinter import filedialog, ttk, scrolledtext, messagebox
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
-from pdf_processor_2image import (
+from pdf_processor import (
     ExcelError, PDFProcessorYMZ, PDFProcessorRSM,
     PDFProcessorMAZ, PDFProcessorMAZ_2, PDFProcessorAnother
     )

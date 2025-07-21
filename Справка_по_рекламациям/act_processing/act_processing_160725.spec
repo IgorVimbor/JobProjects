@@ -28,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='Обработка_актов_150725_fitz',
+    name='Обработка_актов_160725_2image',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

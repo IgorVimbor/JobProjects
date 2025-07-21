@@ -115,6 +115,7 @@ if __name__ == "__main__":
     client = "ММЗ - эксплуатация"
     product = "водяной насос"  # наименование изделия по которому делается датафрейм
 
+    data_2025 = MyFrame(2025, client, product).get_frame()
     data_2024 = MyFrame(2024, client, product).get_frame()
     data_2023 = MyFrame(2023, client, product).get_frame()
     data_2022 = MyFrame(2022, client, product).get_frame()
@@ -123,5 +124,6 @@ if __name__ == "__main__":
     print("2023:", data_2023.shape)  # (236, 7)
     print("2022:", data_2022.shape)  # (210, 7)
 
-    df = pd.concat([data_2024, data_2023, data_2022])
+    df = pd.concat([data_2025, data_2024, data_2023, data_2022])
     print(df.head())
+    print(df.info())
