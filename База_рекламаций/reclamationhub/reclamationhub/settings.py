@@ -41,7 +41,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "debug_toolbar",
-    "reclamations",
+    "products.apps.ProductsConfig",
+    "reclamations.apps.ReclamationsConfig",
+    "investigations.apps.InvestigationsConfig",
+    "claims.apps.ClaimsConfig",
+    "reports.apps.ReportsConfig",
 ]
 
 MIDDLEWARE = [
