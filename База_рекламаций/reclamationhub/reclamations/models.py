@@ -164,7 +164,6 @@ class Reclamation(models.Model):
         max_length=200,
         null=True,
         blank=True,
-        related_name="sent_products",
         verbose_name="Организация-отправитель изделия",
     )
     receipt_invoice_number = models.CharField(
