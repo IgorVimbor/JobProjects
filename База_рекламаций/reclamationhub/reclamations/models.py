@@ -1,51 +1,74 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from products.models import PeriodDefect, Product, EngineTransport
-from investigations.models import Investigation
-from claims.models import Claim
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
-
-class ReclamationAct(models.Model):
-    number = models.CharField(max_length=100, verbose_name="Номер рекламационного акта")
-    date = models.DateField(verbose_name="Дата рекламационного акта")
-    organization = models.ForeignKey(
-        PeriodDefect,
-        on_delete=models.PROTECT,
-        related_name="reclamation_acts",
-        verbose_name="Организация",
-    )
-
-    class Meta:
-        db_table = "reclamation_act"
-        verbose_name = "Рекламационный акт"
-        verbose_name_plural = "Рекламационные акты"
-        unique_together = ["number", "organization"]
-
-    def __str__(self):
-        return f"Акт №{self.number} от {self.date}"
+from sourcebook.models import PeriodDefect, Product
 
 
 class Reclamation(models.Model):
-    STATUS_CHOICES = [
-        ("NEW", "Новая"),
-        ("IN_PROGRESS", "В работе"),
-        ("INVESTIGATION", "На исследовании"),
-        ("CLOSED", "Закрыта"),
-    ]
+    """
+    Модель рекламации на изделие.
 
-    RETURN_CONDITION_CHOICES = [
-        ("REPAIRED", "Отремонтировано"),
-        ("REPLACED", "Заменено на новое"),
-        ("RETURNED_AS_IS", "Возвращено как есть"),
-        ("DISPOSED", "Утилизировано"),
-    ]
+    Содержит информацию о рекламации, включая:
+    - Данные о поступившем сообщении
+    - Информацию об изделии
+    - Акты приобретателя и конечного потребителя
+    - Информацию о дефекте
+    - Принятые меры
+    - Поступление изделия на завод
+    """
 
-    # Основная информация
-    incoming_number = models.CharField(max_length=100, verbose_name="Входящий № по ОТК")
-    message_received_date = models.DateField(
-        verbose_name="Дата поступления сообщения в ОТК"
+    # Определяем класс Status внутри модели
+    class Status:
+        NEW = "NEW"
+        IN_PROGRESS = "IN_PROGRESS"
+        CLOSED = "CLOSED"
+
+        CHOICES = [
+            (NEW, "Новая"),
+            (IN_PROGRESS, "В работе"),
+            (CLOSED, "Закрыта"),
+        ]
+
+    # Используем Status.CHOICES в поле модели
+    status = models.CharField(
+        max_length=50, choices=Status.CHOICES, default=Status.NEW, verbose_name="Статус"
     )
-    sender = models.CharField(max_length=200, verbose_name="Кто отправил сообщение")
+
+    # Методы для изменения статуса
+    def start_processing(self):
+        """Перевести рекламацию в работу"""
+        self.status = self.Status.IN_PROGRESS
+        self.save()
+
+    def close_reclamation(self):
+        """Закрыть рекламацию"""
+        self.status = self.Status.CLOSED
+        self.save()
+
+    # Методы для проверки статуса
+    def is_new(self):
+        return self.status == self.Status.NEW
+
+    def is_in_progress(self):
+        return self.status == self.Status.IN_PROGRESS
+
+    def is_closed(self):
+        return self.status == self.Status.CLOSED
+
+    # -------------------------------------------------------------------------------
+
+    # Информация о поступившем сообщении
+    incoming_number = models.CharField(
+        max_length=100, blank=True, null=True, verbose_name="Входящий № по ОТК"
+    )
+    message_received_date = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата поступления сообщения в ОТК"
+    )
+    sender = models.TextField(
+        blank=True, null=True, verbose_name="Кто отправил сообщение"
+    )
     sender_outgoing_number = models.CharField(
         max_length=100, null=True, blank=True, verbose_name="Исходящий № отправителя"
     )
@@ -53,13 +76,50 @@ class Reclamation(models.Model):
         null=True, blank=True, verbose_name="Дата отправления сообщения"
     )
 
-    # Период выявления дефекта
-    defect_detection_period = models.ForeignKey(
+    # Период выявления дефекта (связанный объект)
+    defect_period = models.ForeignKey(
         PeriodDefect,
         on_delete=models.PROTECT,
         related_name="reclamations",
         verbose_name="Период выявления дефекта",
     )
+
+    # Изделие (связанный объект)
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.PROTECT,
+        related_name="reclamations",
+        verbose_name="Изделие",
+    )
+
+    product_number = models.CharField(
+        max_length=10, null=True, blank=True, verbose_name="Заводской номер изделия"
+    )
+    manufacture_date = models.CharField(
+        max_length=10, null=True, blank=True, verbose_name="Дата изготовления изделия"
+    )
+
+    # ---------------------------- Рекламационный акт -------------------------------
+
+    # Рекламационный акт приобретателя изделия
+    purchaser = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name="Организация-приобретатель изделия",
+    )
+    consumer_act_number = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Номер рекламационного акта приобретателя изделия",
+    )
+    consumer_act_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Дата рекламационного акта приобретателя изделия",
+    )
+
     country_rejected = models.CharField(
         max_length=100,
         null=True,
@@ -67,50 +127,39 @@ class Reclamation(models.Model):
         verbose_name="Государство, где забраковано изделие",
     )
 
-    # Связанные объекты
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.PROTECT,
-        related_name="reclamations",
-        verbose_name="Изделие",
-    )
-    purchaser = models.CharField(
-        max_length=200,
-        null=True,
-        blank=True,
-        verbose_name="Организация-приобретатель",
-    )
+    # Рекламационный акт конечного потребителя
     end_consumer = models.CharField(
         max_length=200, null=True, blank=True, verbose_name="Конечный потребитель"
     )
-    vehicle = models.ForeignKey(
-        EngineTransport,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="reclamations",
-        verbose_name="Транспортное средство",
-    )
-
-    # Рекламационные акты
-    purchaser_act = models.ForeignKey(
-        ReclamationAct,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="purchaser_reclamations",
-        verbose_name="Рекламационный акт приобретателя",
-    )
-    consumer_act_number = models.CharField(
+    end_consumer_act_number = models.CharField(
         max_length=100,
         null=True,
         blank=True,
         verbose_name="Номер рекламационного акта конечного потребителя",
     )
-    consumer_act_date = models.DateField(
+    end_consumer_act_date = models.DateField(
         null=True,
         blank=True,
         verbose_name="Дата рекламационного акта конечного потребителя",
+    )
+    # Ниже в методе clean() проверяем, что либо purchaser, либо end_consumer не пусты
+    # --------------------------------------------------------------------------------
+
+    # Информация о двигателе и транспортном средстве
+    engine_brand = models.CharField(
+        max_length=50, null=True, blank=True, verbose_name="Марка двигателя"
+    )
+    engine_number = models.CharField(
+        max_length=50, null=True, blank=True, verbose_name="Номер двигателя"
+    )
+    transport_name = models.CharField(
+        max_length=200, null=True, blank=True, verbose_name="Транспортное средство"
+    )
+    transport_number = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Номер транспортного средства",
     )
 
     # Информация о дефекте
@@ -125,7 +174,15 @@ class Reclamation(models.Model):
         null=True, blank=True, verbose_name="Требование потребителя"
     )
 
-    # Принятые меры
+    products_count = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        default=1,
+        validators=[MinValueValidator(1)],
+        verbose_name="Количество предъявленных изделий",
+    )
+
+    # Принятые меры по сообщению о дефекте
     measures_taken = models.TextField(
         null=True, blank=True, verbose_name="Принятые меры по сообщению"
     )
@@ -175,94 +232,13 @@ class Reclamation(models.Model):
     receipt_invoice_date = models.DateField(
         null=True, blank=True, verbose_name="Дата накладной прихода изделия"
     )
-    products_quantity = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        validators=[MinValueValidator(1)],
-        verbose_name="Количество предъявленных изделий",
-    )
+
     reclamation_documents = models.TextField(
         null=True, blank=True, verbose_name="Документы по рекламационному изделию"
     )
-
-    # Исследование
-    investigation = models.OneToOneField(
-        Investigation,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="reclamation",
-        verbose_name="Исследование",
-    )
-
-    # ПКД (Предупреждающие и корректирующие действия)
-    pkd_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Номер ПКД"
-    )
-    pkd_completion_mark = models.BooleanField(
-        default=False, verbose_name="Отметка о выполнении ПКД"
-    )
-
-    # Утилизация
-    disposal_act_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Номер акта утилизации"
-    )
-    disposal_act_date = models.DateField(
-        null=True, blank=True, verbose_name="Дата акта утилизации"
-    )
-    volume_removal_reference = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        verbose_name="Номер и месяц справки снятия с объёмов",
-    )
-
-    # Возврат изделия
-    recipient = models.CharField(
-        max_length=200, null=True, blank=True, verbose_name="Получатель"
-    )
-    shipment_date = models.DateField(
-        null=True, blank=True, verbose_name="Дата отправки"
-    )
-    shipment_invoice_number = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        verbose_name="Номер накладной отгрузки изделия потребителю",
-    )
-    shipment_invoice_date = models.DateField(
-        null=True,
-        blank=True,
-        verbose_name="Дата накладной отгрузки изделия потребителю",
-    )
-    return_condition = models.CharField(
-        max_length=50,
-        choices=RETURN_CONDITION_CHOICES,
-        null=True,
-        blank=True,
-        verbose_name="Состояние возвращаемого потребителю изделия",
-    )
-    return_condition_explanation = models.TextField(
-        null=True,
-        blank=True,
-        verbose_name="Пояснения по состоянию возвращаемого изделия",
-    )
-
-    # Претензия
-    claim = models.ForeignKey(
-        Claim,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="reclamations",
-        verbose_name="Претензия",
-    )
+    # ------------------------------------------------------------------------------------------
 
     # Системные поля
-    status = models.CharField(
-        max_length=50, choices=STATUS_CHOICES, default="NEW", verbose_name="Статус"
-    )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
     class Meta:
@@ -270,10 +246,13 @@ class Reclamation(models.Model):
         verbose_name = "Рекламация"
         verbose_name_plural = "Рекламации"
         ordering = ["-message_received_date"]
+        indexes = [
+            models.Index(fields=["status"]),
+            models.Index(fields=["defect_period"]),
+            models.Index(fields=["product", "status"]),
+        ]
 
-    def __str__(self):
-        return f"Рекламация №{self.incoming_number} от {self.message_received_date}"
-
+    # Дополнительные аргументы экземпляра класса Reclamation
     @property
     def registration_month(self):
         """Вычисляемое поле - месяц регистрации из даты"""
@@ -284,5 +263,57 @@ class Reclamation(models.Model):
         )
 
     @property
-    def status_display(self):
-        return dict(self.STATUS_CHOICES).get(self.status, self.status)
+    def has_investigation(self):
+        """Проверка наличия исследования"""
+        return hasattr(self, "investigation")
+
+    @property
+    def days_without_investigation(self):
+        """
+        Количество дней с даты поступления изделия, если нет акта исследования.
+        Возвращает:
+        - None, если дата поступления не указана
+        - None, если есть акт исследования
+        - количество дней с даты поступления, если акта исследования нет
+        """
+        # Проверяем наличие акта исследования
+        if self.has_investigation:
+            return None
+
+        # Проверяем наличие даты поступления
+        if not self.product_received_date:
+            return None
+
+        # Получаем текущую дату
+        today = timezone.now().date()
+
+        # Вычисляем разницу в днях
+        delta = (today - self.product_received_date).days
+
+        return delta
+
+    @property
+    def has_claim(self):
+        """Проверка наличия претензии"""
+        return hasattr(self, "claim")
+
+    def clean(self):
+        """
+        Метод для базовой проверки данных на уровне модели
+        """
+        # Проверяем, что заполнена хотя бы одна пара по акту рекламации (приобретателя или конечного потребителя)
+        # Первая пара полей
+        has_consumer_act = bool(self.consumer_act_number and self.consumer_act_date)
+        # Вторая пара
+        has_end_consumer_act = bool(
+            self.end_consumer_act_number and self.end_consumer_act_date
+        )
+        # Проверяем, что хотя бы одна пара заполнена
+        if not has_consumer_act and not has_end_consumer_act:
+            raise ValidationError(
+                "Необходимо заполнить хотя бы один акт (приобретателя или конечного потребителя)"
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # обязательно нужен для запуска валидации
+        super().save(*args, **kwargs)

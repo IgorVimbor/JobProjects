@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "debug_toolbar",
-    "products.apps.ProductsConfig",
+    "sourcebook.apps.SourcebookConfig",
     "reclamations.apps.ReclamationsConfig",
     "investigations.apps.InvestigationsConfig",
     "claims.apps.ClaimsConfig",
@@ -64,7 +64,7 @@ ROOT_URLCONF = "reclamationhub.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],  # добавляем эту строку
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -146,17 +146,17 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# после авторизации пользователь попадает на главную страницу
-LOGIN_REDIRECT_URL = "home"
+# # после авторизации пользователь попадает на главную страницу
+# LOGIN_REDIRECT_URL = "home"
 
-# после выхода пользователь попадает на страницу авторизации
-LOGOUT_REDIRECT_URL = "users:login"
+# # после выхода пользователь попадает на страницу авторизации
+# LOGOUT_REDIRECT_URL = "users:login"
 
-# при попытке перейти на закрытую страницу неавторизованный пользователь будет перенаправлен
-LOGIN_URL = "users:login"
+# # при попытке перейти на закрытую страницу неавторизованный пользователь будет перенаправлен
+# LOGIN_URL = "users:login"
 
-# авторизация пользователей
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",  # стандартно по логину (username) и паролю (password)
-    "users.authentication.EmailAuthBackend",  # по e-mail (кастомный бэкенд)
-]
+# # авторизация пользователей
+# AUTHENTICATION_BACKENDS = [
+#     "django.contrib.auth.backends.ModelBackend",  # стандартно по логину (username) и паролю (password)
+#     "users.authentication.EmailAuthBackend",  # по e-mail (кастомный бэкенд)
+# ]
