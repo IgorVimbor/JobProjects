@@ -31,3 +31,9 @@ if settings.DEBUG:
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
     ]
+
+# Изменяем заголовок админ-панели
+admin.site.site_header = "Панель администрирования"
+
+# Изменяем второй заголовок (над виджетами)
+admin.site.index_title = "База рекламаций ОТК"

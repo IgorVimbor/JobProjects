@@ -67,6 +67,11 @@ class Product(models.Model):
         return f"{self.product_type} {self.nomenclature}"
 
     @property
+    def total_reclamations_count(self):
+        """Общее количество рекламаций"""
+        return self.reclamations.count()
+
+    @property
     def active_reclamations_count(self):
-        """Количество активных рекламаций"""
+        """Количество активных (не закрытых) рекламаций"""
         return self.reclamations.exclude(status="CLOSED").count()

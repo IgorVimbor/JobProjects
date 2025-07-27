@@ -70,7 +70,7 @@ class Reclamation(models.Model):
         blank=True, null=True, verbose_name="Кто отправил сообщение"
     )
     sender_outgoing_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Исходящий № отправителя"
+        max_length=100, null=True, blank=True, verbose_name="Исх. № отправителя"
     )
     message_sent_date = models.DateField(
         null=True, blank=True, verbose_name="Дата отправления сообщения"
@@ -93,10 +93,10 @@ class Reclamation(models.Model):
     )
 
     product_number = models.CharField(
-        max_length=10, null=True, blank=True, verbose_name="Заводской номер изделия"
+        max_length=10, null=True, blank=True, verbose_name="Номер изделия"
     )
     manufacture_date = models.CharField(
-        max_length=10, null=True, blank=True, verbose_name="Дата изготовления изделия"
+        max_length=10, null=True, blank=True, verbose_name="Дата изготовления"
     )
 
     # ---------------------------- Рекламационный акт -------------------------------
@@ -112,12 +112,12 @@ class Reclamation(models.Model):
         max_length=100,
         null=True,
         blank=True,
-        verbose_name="Номер рекламационного акта приобретателя изделия",
+        verbose_name="Номер акта приобретателя изделия",
     )
     consumer_act_date = models.DateField(
         null=True,
         blank=True,
-        verbose_name="Дата рекламационного акта приобретателя изделия",
+        verbose_name="Дата акта приобретателя изделия",
     )
 
     country_rejected = models.CharField(
@@ -135,12 +135,12 @@ class Reclamation(models.Model):
         max_length=100,
         null=True,
         blank=True,
-        verbose_name="Номер рекламационного акта конечного потребителя",
+        verbose_name="Номер акта конечного потребителя",
     )
     end_consumer_act_date = models.DateField(
         null=True,
         blank=True,
-        verbose_name="Дата рекламационного акта конечного потребителя",
+        verbose_name="Дата акта конечного потребителя",
     )
     # Ниже в методе clean() проверяем, что либо purchaser, либо end_consumer не пусты
     # --------------------------------------------------------------------------------
@@ -196,7 +196,7 @@ class Reclamation(models.Model):
         max_length=200,
         null=True,
         blank=True,
-        verbose_name="Способ отправления письма по принятым мерам",
+        verbose_name="Способ отправки принятых мер",
     )
 
     # Ответ потребителя
