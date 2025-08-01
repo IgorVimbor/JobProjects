@@ -7,6 +7,7 @@ from django.urls import path
 from django.db.models import Q
 
 from .models import Reclamation
+from sourcebook.models import Product
 
 
 # Форма для ввода номеров отправителя (ПСА), актов и номера накладной
@@ -72,6 +73,44 @@ class ReclamationAdminForm(forms.ModelForm):
             for field in text_fields
         }
 
+    # Метод __init__ в ReclamationAdminForm отвечает за фильтрацию списка продуктов (Product)
+    # в зависимости от выбранного наименования изделия (ProductType)
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+
+    #     # Настраиваем поле product
+    #     self.fields["product"] = forms.ModelChoiceField(
+    #         queryset=Product.objects.filter(product_type_id=1).order_by("nomenclature"),
+    #         label="Обозначение изделия",
+    #         required=True,
+    #     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print("Form initialization")
+        print(f"Form data: {self.data}")  # смотрим, что приходит в форму
+
+        if self.data.get("product_name"):
+            product_name_id = self.data.get("product_name")
+            print(f"Got product_name_id from data: {product_name_id}")
+        elif self.instance.pk and self.instance.product_name:
+            product_name_id = self.instance.product_name.id
+            print(f"Got product_name_id from instance: {product_name_id}")
+        else:
+            product_name_id = 1
+            print("Using default product_name_id: 1")
+
+        filtered_queryset = Product.objects.filter(
+            product_type_id=product_name_id
+        ).order_by("nomenclature")
+
+        print(f"Filtered queryset count: {filtered_queryset.count()}")
+        print(f"SQL query: {filtered_queryset.query}")
+
+        self.fields["product"] = forms.ModelChoiceField(
+            queryset=filtered_queryset, label="Обозначение изделия", required=True
+        )
+
 
 @admin.register(Reclamation)
 class ReclamationAdmin(admin.ModelAdmin):
@@ -86,7 +125,8 @@ class ReclamationAdmin(admin.ModelAdmin):
     list_display = [
         "status_colored",  # статус рекламации (Новая, В работе, Закрыта)
         "sender_outgoing_number",  # исходящий № отправителя
-        "product",  # наименование и обозначение изделия
+        "product_name",  # наименование изделия
+        "product",  # обозначение изделия
         "product_number",  # заводской номер изделия
         "claimed_defect",  # дефект
         "consumer_act_number",  # номер акта приобретателя изделия
@@ -117,6 +157,7 @@ class ReclamationAdmin(admin.ModelAdmin):
             "Информация об изделии",
             {
                 "fields": [
+                    "product_name",
                     "product",
                     "product_number",
                     "manufacture_date",
@@ -212,12 +253,39 @@ class ReclamationAdmin(admin.ModelAdmin):
     # Поиск
     search_fields = [
         "sender_outgoing_number",  # по Исходящему № отправителя
-        "product__product_type__name",  # по Типу изделия
+        "product_name__name",  # по Наименованию изделия
+        "product__nomenclature",  # по Обозначению изделия
         "product_number",  # по Номеру изделия
         "consumer_act_number",  # по Номеру акта приобретателя изделия
+        "end_consumer_act_number",  # по Номеру акта конечного потребителя
     ]
 
+    # Метод get_queryset с select_related используется для оптимизации запросов к базе данных.
+    # Без select_related будет N+1 запросов (1 запрос для списка рекламаций + N запросов для связанных данных)
+    # С select_related будет только 1 запрос
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("product_name", "product", "defect_period")
+        )
+
     # Вспомогательные методы для отображения
+
+    # def claimed_defect_display(self, obj):
+    #     """Метод для сокращения длинного текста дефекта"""
+    #     if len(obj.claimed_defect) > 50:
+    #         return f"{obj.claimed_defect[:50]}..."
+    #     return obj.claimed_defect
+
+    # claimed_defect_display.short_description = "Дефект"
+
+    # И заменим в list_display (список вверху)
+    # list_display = [
+    #     # ...
+    #     "claimed_defect_display",  # вместо "claimed_defect"
+    #     # ...
+    # ]
 
     def status_colored(self, obj):
         """Метод для цветового отображения статуса рекламации"""
@@ -237,7 +305,10 @@ class ReclamationAdmin(admin.ModelAdmin):
     has_investigation_icon.short_description = "Исследование"
 
     # Автозаполнение для связанных полей
-    autocomplete_fields = ["product"]
+    autocomplete_fields = ["product_name", "product"]
+
+    # Быстрый поиск по ID
+    raw_id_fields = ["product_name", "product"]
 
     # Сортировка по умолчанию
     ordering = ["-message_received_date"]

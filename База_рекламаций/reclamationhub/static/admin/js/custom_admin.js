@@ -36,3 +36,14 @@ window.addEventListener('load', function() {
         });
     }
 });
+
+// Код для создания списков обозначений изделий в зависимости от наименования
+window.addEventListener('load', function() {
+    var productNameSelect = document.getElementById('id_product_name');
+    if (productNameSelect) {
+        productNameSelect.addEventListener('change', function() {
+            // Находим форму и отправляем её
+            this.form.submit();
+        });
+    }
+});

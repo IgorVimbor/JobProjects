@@ -61,6 +61,19 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
+# Для разработки
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+
+# Или если используете другой порт
+# CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
+
+# Для продакшена добавьте ваш домен
+# CSRF_TRUSTED_ORIGINS = ['https://your-domain.com']
+
+# Это необходимо для безопасной обработки AJAX-запросов.
+# Django использует CSRF-защиту, и эта настройка указывает, каким источникам можно доверять.
+# После добавления этой строки перезапустите сервер Django.
+
 ROOT_URLCONF = "reclamationhub.urls"
 
 TEMPLATES = [

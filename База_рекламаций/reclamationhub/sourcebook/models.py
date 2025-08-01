@@ -50,8 +50,8 @@ class Product(models.Model):
 
     class Meta:
         db_table = "product"
-        verbose_name = "Изделие"
-        verbose_name_plural = "Изделия"
+        verbose_name = "Обозначение изделия"
+        verbose_name_plural = "Обозначения изделий"
         ordering = ["nomenclature"]
         indexes = [
             models.Index(fields=["nomenclature"]),
@@ -59,7 +59,7 @@ class Product(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.product_type} {self.nomenclature}"
+        return f"{self.nomenclature}"
 
     @property
     def full_name(self):

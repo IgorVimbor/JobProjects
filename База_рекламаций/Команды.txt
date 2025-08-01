@@ -13,6 +13,9 @@ python manage.py startapp <название приложения>
 3. Создание и применение миграций
 python manage.py makemigrations
 python manage.py migrate
+
+   Обновление статических файлов после их изменения
+python manage.py collectstatic
 -----------------------------------------------------------------------------------
 
 4. Создание суперпользователя

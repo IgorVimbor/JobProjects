@@ -3,7 +3,12 @@ from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-from sourcebook.models import PeriodDefect, Product
+from sourcebook.models import PeriodDefect, ProductType, Product
+
+
+def get_default_product_type():
+    """Метод для получения id водяного насоса из БД таблицы product_type"""
+    return ProductType.objects.get(name="водяной насос").id
 
 
 class Reclamation(models.Model):
@@ -84,12 +89,21 @@ class Reclamation(models.Model):
         verbose_name="Период выявления дефекта",
     )
 
-    # Изделие (связанный объект)
+    # Наименование изделия (связанный объект)
+    product_name = models.ForeignKey(
+        ProductType,
+        on_delete=models.PROTECT,
+        related_name="reclamations",
+        verbose_name="Наименование изделия",
+        default=get_default_product_type,  # по умолчанию ID водяного насоса
+    )
+
+    # Обозначение изделия (связанный объект)
     product = models.ForeignKey(
         Product,
         on_delete=models.PROTECT,
         related_name="reclamations",
-        verbose_name="Изделие",
+        verbose_name="Обозначение изделия",
     )
 
     product_number = models.CharField(
