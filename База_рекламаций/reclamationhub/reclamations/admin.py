@@ -65,6 +65,7 @@ class ReclamationAdminForm(forms.ModelForm):
             "consumer_response",
             "reclamation_documents",
         ]
+
         # устанавливаем высоту полей "rows" и ширину "cols", отключаем возможность изменения размера поля мышкой
         widgets = {
             field: forms.Textarea(
@@ -73,53 +74,58 @@ class ReclamationAdminForm(forms.ModelForm):
             for field in text_fields
         }
 
-    # Метод __init__ в ReclamationAdminForm отвечает за фильтрацию списка продуктов (Product)
-    # в зависимости от выбранного наименования изделия (ProductType)
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-
-    #     # Настраиваем поле product
-    #     self.fields["product"] = forms.ModelChoiceField(
-    #         queryset=Product.objects.filter(product_type_id=1).order_by("nomenclature"),
-    #         label="Обозначение изделия",
-    #         required=True,
-    #     )
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print("Form initialization")
-        print(f"Form data: {self.data}")  # смотрим, что приходит в форму
 
-        if self.data.get("product_name"):
-            product_name_id = self.data.get("product_name")
-            print(f"Got product_name_id from data: {product_name_id}")
+        # Определяем тип изделия
+        if self.data and "product_name" in self.data:
+            # Если форма отправлена, берем тип из данных формы
+            product_type_id = self.data.get("product_name")
         elif self.instance.pk and self.instance.product_name:
-            product_name_id = self.instance.product_name.id
-            print(f"Got product_name_id from instance: {product_name_id}")
+            # Если редактируем существующую запись
+            product_type_id = self.instance.product_name.id
         else:
-            product_name_id = 1
-            print("Using default product_name_id: 1")
+            # По умолчанию - водяные насосы
+            product_type_id = 1
 
+        # Фильтруем queryset в соответствии с типом изделия
         filtered_queryset = Product.objects.filter(
-            product_type_id=product_name_id
+            product_type_id=product_type_id
         ).order_by("nomenclature")
 
-        print(f"Filtered queryset count: {filtered_queryset.count()}")
-        print(f"SQL query: {filtered_queryset.query}")
-
         self.fields["product"] = forms.ModelChoiceField(
-            queryset=filtered_queryset, label="Обозначение изделия", required=True
+            queryset=filtered_queryset,
+            label="Обозначение изделия",
+            required=True,
+            empty_label="---------",
         )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Проверяем соответствие продукта выбранному типу
+        product = cleaned_data.get("product")
+        product_name = cleaned_data.get("product_name")
+
+        if product and product_name:
+            if product.product_type_id != product_name.id:
+                self.add_error(
+                    "product", "Выбранное изделие не соответствует выбранному типу"
+                )
+
+        return cleaned_data
 
 
 @admin.register(Reclamation)
 class ReclamationAdmin(admin.ModelAdmin):
-
     class Media:
         css = {"all": ("admin/css/custom_admin.css",)}
         js = ("admin/js/custom_admin.js",)
 
     form = ReclamationAdminForm
+
+    # Отображение кнопок сохранения сверху и снизу формы
+    save_on_top = True
 
     # Основные поля для отображения в списке
     list_display = [
@@ -361,15 +367,31 @@ class ReclamationAdmin(admin.ModelAdmin):
                     filter_q |= Q(end_consumer_act_number__in=end_consumer_list)
 
                 filtered_queryset = self.model.objects.filter(filter_q)
-                updated_count = filtered_queryset.update(
-                    receipt_invoice_number=invoice_number,
-                    receipt_invoice_date=invoice_date,
-                )
 
-                self.message_user(
-                    request, f"Обновлены данные накладной для {updated_count} записей"
-                )
-                return HttpResponseRedirect("../")
+                # Проверяем, найдены ли записи
+                if filtered_queryset.exists():
+                    # Если записи найдены, обновляем их
+                    updated_count = filtered_queryset.update(
+                        receipt_invoice_number=invoice_number,
+                        receipt_invoice_date=invoice_date,
+                    )
+                    self.message_user(
+                        request,
+                        f"Обновлены данные накладной для {updated_count} записей",
+                    )
+                    return HttpResponseRedirect("../")
+                else:
+                    # Если записи не найдены, возвращаем форму с сообщением
+                    return render(
+                        request,
+                        "admin/update_invoice_number.html",
+                        {
+                            "title": "Добавление данных накладной",
+                            "form": form,
+                            "search_result": "Указанные номера актов рекламаций в базе данных отсутствуют.",
+                            "found_records": False,
+                        },
+                    )
         else:
             form = UpdateInvoiceNumberForm()
 

@@ -39,11 +39,31 @@ window.addEventListener('load', function() {
 
 // Код для создания списков обозначений изделий в зависимости от наименования
 window.addEventListener('load', function() {
-    var productNameSelect = document.getElementById('id_product_name');
-    if (productNameSelect) {
-        productNameSelect.addEventListener('change', function() {
-            // Находим форму и отправляем её
-            this.form.submit();
+    var $ = django.jQuery;
+    var productNameSelect = $('#id_product_name');
+    var productSelect = $('#id_product');
+
+    if (productNameSelect.length && productSelect.length) {
+        productNameSelect.on('select2:select', function(e) {
+            var productTypeId = e.params.data.id;
+
+            $.ajax({
+                url: '/admin/get_products/',
+                method: 'GET',
+                data: {
+                    'product_type_id': productTypeId
+                },
+                success: function(data) {
+                    // Очищаем и добавляем пустую опцию
+                    productSelect.empty();
+                    productSelect.append(new Option('---------', '', true, true));
+
+                    // Добавляем полученные опции
+                    data.forEach(function(item) {
+                        productSelect.append(new Option(item.nomenclature, item.id));
+                    });
+                }
+            });
         });
     }
 });

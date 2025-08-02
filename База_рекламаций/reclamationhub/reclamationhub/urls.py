@@ -20,8 +20,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.views.generic import RedirectView
 
+from reclamations.views import get_products
+
+
 urlpatterns = [
     path("", RedirectView.as_view(url="admin/", permanent=True)),
+    path("admin/get_products/", get_products, name="get_products"),
     path("admin/", admin.site.urls),
 ]
 

@@ -39,6 +39,20 @@
         font-size: 12px;
         margin-top: 5px;
     }
+
+    /* Добавляем стили для сообщения об ошибке */
+    .search-result {
+        margin: 10px 370px;
+        padding: 12px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .search-result.error {
+        background-color: #fff0f0;
+        border: 1px solid #ffcdd2;
+        color: #c62828;
+    }
 </style>
 {% endblock %}
 
@@ -46,6 +60,13 @@
 <div class="custom-form">
     <form method="post">
         {% csrf_token %}
+
+        {% if search_result %}
+        <div class="search-result {% if not found_records %}error{% endif %}">
+            {{ search_result }}
+        </div>
+        {% endif %}
+
         {% for field in form %}
             <div class="custom-form-row">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
