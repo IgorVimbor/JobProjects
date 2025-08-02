@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.db.models import Count, Q
 from django.utils.html import format_html
 
+from reclamationhub.admin import admin_site
 from .models import PeriodDefect, ProductType, Product
 
 
@@ -12,19 +13,19 @@ from .models import PeriodDefect, ProductType, Product
 # - Отображается количество активных рекламаций
 
 
-@admin.register(PeriodDefect)
+@admin.register(PeriodDefect, site=admin_site)
 class PeriodDefectAdmin(admin.ModelAdmin):
     list_display = ["name"]
     search_fields = ["name"]
 
 
-@admin.register(ProductType)
+@admin.register(ProductType, site=admin_site)
 class ProductTypeAdmin(admin.ModelAdmin):
     list_display = ["name"]
     search_fields = ["name"]
 
 
-@admin.register(Product)
+@admin.register(Product, site=admin_site)
 class ProductAdmin(admin.ModelAdmin):
     # список отображаемых полей
     list_display = [

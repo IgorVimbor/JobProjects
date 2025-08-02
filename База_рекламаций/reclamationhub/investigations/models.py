@@ -31,7 +31,7 @@ class Investigation(models.Model):
         Reclamation,
         on_delete=models.PROTECT,  # защищаем от удаления рекламации
         related_name="investigation",
-        verbose_name="Рекламация",
+        verbose_name="ID рекламации",
     )
     act_number = models.CharField(
         max_length=100, verbose_name="Номер акта исследования"
@@ -135,7 +135,7 @@ class Investigation(models.Model):
         )
 
     def clean(self):
-        # Проверка виновников дефекта
+        """Проверка виновников дефекта"""
         fault_count = sum([self.fault_bza, self.fault_consumer, self.fault_unknown])
 
         if fault_count > 1:
@@ -147,3 +147,13 @@ class Investigation(models.Model):
             raise ValidationError(
                 "Необходимо указать виновника дефекта или соответствие ТУ"
             )
+
+    def save(self, *args, **kwargs):
+        """Обновление статуса рекламации"""
+        super().save(*args, **kwargs)
+
+        # После сохранения акта проверяем и обновляем статус рекламации
+        if self.act_number and self.act_date:
+            if not self.reclamation.is_closed():
+                self.reclamation.status = self.reclamation.Status.CLOSED
+                self.reclamation.save()

@@ -1,6 +1,6 @@
 /* ------------- Правило для всех заголовков таблиц --------------- */
 #result_list thead th {
-    font-size: 10px !important; /* изменяем размер шрифта заголовков в таблице админ-панели */
+    font-size: 9px !important; /* изменяем размер шрифта заголовков в таблице админ-панели */
     /* text-transform: none !important;   отключаем перевод в верхний регистр */
     white-space: normal !important;  /* разрешаем перенос */
     max-width: 250px;  /* максимальная ширина колонки */
@@ -54,5 +54,16 @@
     padding: 0;
 }
 
-/* -------------- Стили для формы добавления накладной -------------- */
-/* не заработало, поэтому перенесли в шаблон update_invoice_number.html */
+/* ---------- Стили для секции "Принятые меры" для внесения данных ----------- */
+.measures-section {
+    transition: background-color 1s;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+/* ---- Стили для секции "Дата отправки акта исследования" для внесения данных ---- */
+.shipment-section {
+    transition: background-color 1s;
+    padding: 10px;
+    border-radius: 4px;
+}

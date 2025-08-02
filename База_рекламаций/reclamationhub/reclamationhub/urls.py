@@ -20,13 +20,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.views.generic import RedirectView
 
+from reclamationhub.admin import admin_site
 from reclamations.views import get_products
 
 
 urlpatterns = [
     path("", RedirectView.as_view(url="admin/", permanent=True)),
     path("admin/get_products/", get_products, name="get_products"),
-    path("admin/", admin.site.urls),
+    # path("admin/", admin.site.urls),
+    path("admin/", admin_site.urls),  # своя кастомная админ-панель
 ]
 
 if settings.DEBUG:
@@ -37,7 +39,7 @@ if settings.DEBUG:
     ]
 
 # Изменяем заголовок админ-панели
-admin.site.site_header = "Панель администрирования"
+admin_site.site_header = "Панель администрирования"
 
 # Изменяем второй заголовок (над виджетами)
-admin.site.index_title = "База рекламаций ОТК"
+admin_site.index_title = "База рекламаций ОТК"

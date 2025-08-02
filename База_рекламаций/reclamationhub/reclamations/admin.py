@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.urls import path
 from django.db.models import Q
 
+from reclamationhub.admin import admin_site
 from .models import Reclamation
 from sourcebook.models import Product
 
@@ -14,19 +15,19 @@ from sourcebook.models import Product
 class UpdateInvoiceNumberForm(forms.Form):
     sender_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
-        label="Исходящие номера отправителя",
+        label="Исходящий номер отправителя (ПСА)",
         help_text="(вводить через запятую)",
         required=False,
     )
     consumer_act_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
-        label="Номера актов приобретателя",
+        label="Номер акта приобретателя",
         help_text="(вводить через запятую)",
         required=False,
     )
     end_consumer_act_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
-        label="Номера актов конечного потребителя",
+        label="Номер акта конечного потребителя",
         help_text="(вводить через запятую)",
         required=False,
     )
@@ -69,7 +70,7 @@ class ReclamationAdminForm(forms.ModelForm):
         # устанавливаем высоту полей "rows" и ширину "cols", отключаем возможность изменения размера поля мышкой
         widgets = {
             field: forms.Textarea(
-                attrs={"rows": 4, "cols": 40, "style": "resize: none;"}
+                attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
             )
             for field in text_fields
         }
@@ -116,7 +117,7 @@ class ReclamationAdminForm(forms.ModelForm):
         return cleaned_data
 
 
-@admin.register(Reclamation)
+@admin.register(Reclamation, site=admin_site)
 class ReclamationAdmin(admin.ModelAdmin):
     class Media:
         css = {"all": ("admin/css/custom_admin.css",)}
@@ -129,6 +130,7 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     # Основные поля для отображения в списке
     list_display = [
+        "id",
         "status_colored",  # статус рекламации (Новая, В работе, Закрыта)
         "sender_outgoing_number",  # исходящий № отправителя
         "product_name",  # наименование изделия
@@ -140,6 +142,9 @@ class ReclamationAdmin(admin.ModelAdmin):
         "end_consumer_act_number",  # номер акта конечного потребителя
         "end_consumer_act_date",  # дата акта конечного потребителя
         "engine_number",  # номер двигателя
+        "products_count",  # количество изделий
+        "measures_taken",  # принятые меры
+        "outgoing_document_number",  # номер исходящего документа
         "receipt_invoice_number",  # номер накладной поступления изделия
         "receipt_invoice_date",  # дата накладной поступления изделия
         "has_investigation_icon",  # иконка "Исследование"
@@ -223,7 +228,8 @@ class ReclamationAdmin(admin.ModelAdmin):
                     "outgoing_document_number",
                     "outgoing_document_date",
                     "letter_sending_method",
-                ]
+                ],
+                "classes": ["measures-section"],  # добавляем класс для якоря
             },
         ),
         (
@@ -276,7 +282,7 @@ class ReclamationAdmin(admin.ModelAdmin):
             .select_related("product_name", "product", "defect_period")
         )
 
-    # Вспомогательные методы для отображения
+    # ----------------------------- Вспомогательные методы для отображения -----------------------------------
 
     # def claimed_defect_display(self, obj):
     #     """Метод для сокращения длинного текста дефекта"""
@@ -293,6 +299,30 @@ class ReclamationAdmin(admin.ModelAdmin):
     #     # ...
     # ]
 
+    # Добавляем действие в панель "Действие / Выполнить"
+    actions = ["add_measures"]
+
+    def add_measures(self, request, queryset):
+        """Действие для добавления принятых мер"""
+        # Если выбрано больше одной записи
+        if queryset.count() > 1:
+            self.message_user(
+                request,
+                "Пожалуйста, выберите только одну рекламацию для добавления принятых мер",
+                level="ERROR",
+            )
+            return
+
+        # Получаем единственную выбранную запись
+        reclamation = queryset.first()
+
+        # Перенаправляем на форму редактирования с фокусом на секции "Принятые меры"
+        return HttpResponseRedirect(
+            f"../reclamation/{reclamation.pk}/change/#measures-section"
+        )
+
+    add_measures.short_description = "Добавить принятые меры"
+
     def status_colored(self, obj):
         """Метод для цветового отображения статуса рекламации"""
         colors = {"NEW": "blue", "IN_PROGRESS": "orange", "CLOSED": "green"}
@@ -305,10 +335,21 @@ class ReclamationAdmin(admin.ModelAdmin):
     status_colored.short_description = "Статус"
 
     def has_investigation_icon(self, obj):
-        """Метод для отображения иконки исследования"""
-        return "✓" if obj.has_investigation else "✗"
+        """Метод для отображения номера акта исследования"""
+        if obj.has_investigation:
+            return obj.investigation.act_number
+        return ""
 
     has_investigation_icon.short_description = "Исследование"
+
+    def save_model(self, request, obj, form, change):
+        """Обновление статуса рекламации при добавлении номера накладной прихода изделия"""
+        if change:  # Если это изменение существующей записи
+            # Если добавили номер накладной и статус "Новая"
+            if "receipt_invoice_number" in form.changed_data and obj.is_new():
+                obj.status = obj.Status.IN_PROGRESS
+                self.message_user(request, 'Статус рекламации изменен на "В работе"')
+        super().save_model(request, obj, form, change)
 
     # Автозаполнение для связанных полей
     autocomplete_fields = ["product_name", "product"]
@@ -370,14 +411,33 @@ class ReclamationAdmin(admin.ModelAdmin):
 
                 # Проверяем, найдены ли записи
                 if filtered_queryset.exists():
-                    # Если записи найдены, обновляем их
-                    updated_count = filtered_queryset.update(
+                    # Обновляем накладную и статус для записей со статусом NEW
+                    updated_count = filtered_queryset.filter(
+                        status=self.model.Status.NEW
+                    ).update(
+                        receipt_invoice_number=invoice_number,
+                        receipt_invoice_date=invoice_date,
+                        status=self.model.Status.IN_PROGRESS,
+                    )
+
+                    # Обновляем только накладную для остальных записей
+                    other_updated = filtered_queryset.exclude(
+                        status=self.model.Status.NEW
+                    ).update(
                         receipt_invoice_number=invoice_number,
                         receipt_invoice_date=invoice_date,
                     )
+
+                    total_updated = updated_count + other_updated
+                    status_message = (
+                        f" (изменен статус для {updated_count} записей)"
+                        if updated_count
+                        else ""
+                    )
+
                     self.message_user(
                         request,
-                        f"Обновлены данные накладной для {updated_count} записей",
+                        f"Обновлены данные накладной для {total_updated} записей{status_message}",
                     )
                     return HttpResponseRedirect("../")
                 else:
@@ -386,7 +446,7 @@ class ReclamationAdmin(admin.ModelAdmin):
                         request,
                         "admin/update_invoice_number.html",
                         {
-                            "title": "Добавление данных накладной",
+                            "title": "Добавление данных накладной прихода изделий",
                             "form": form,
                             "search_result": "Указанные номера актов рекламаций в базе данных отсутствуют.",
                             "found_records": False,
@@ -398,5 +458,8 @@ class ReclamationAdmin(admin.ModelAdmin):
         return render(
             request,
             "admin/update_invoice_number.html",
-            {"title": "Добавление данных накладной", "form": form},
+            {
+                "title": "Добавление данных накладной прихода изделий",
+                "form": form,
+            },
         )

@@ -50,6 +50,16 @@ INSTALLED_APPS = [
     "reports.apps.ReportsConfig",
 ]
 
+# Добавляем порядок отображения приложений
+ADMIN_APPS_ORDER = {
+    "reclamations": 1,
+    "investigations": 2,
+    "claims": 3,
+    "reports": 4,
+    "sourcebook": 5,
+    "auth": 6,
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -145,6 +155,9 @@ TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 
 USE_TZ = True
+
+DATE_FORMAT = "d.m.Y"  # изменяем формат вывода дат (дд.мм.гггг)
+USE_L10N = False  # это важно, иначе DATE_FORMAT может не применяться
 
 
 # Static files (CSS, JavaScript, Images)

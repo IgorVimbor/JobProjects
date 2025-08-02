@@ -32,7 +32,7 @@ class Reclamation(models.Model):
 
         CHOICES = [
             (NEW, "Новая"),
-            (IN_PROGRESS, "В работе"),
+            (IN_PROGRESS, "Исследование"),
             (CLOSED, "Закрыта"),
         ]
 
@@ -193,7 +193,7 @@ class Reclamation(models.Model):
         blank=True,
         default=1,
         validators=[MinValueValidator(1)],
-        verbose_name="Количество предъявленных изделий",
+        verbose_name="Количество изделий",
     )
 
     # Принятые меры по сообщению о дефекте
@@ -311,6 +311,10 @@ class Reclamation(models.Model):
         """Проверка наличия претензии"""
         return hasattr(self, "claim")
 
+    def __str__(self):
+        """отображение рекламации везде, где она используется"""
+        return str(self.id)
+
     def clean(self):
         """
         Метод для базовой проверки данных на уровне модели
@@ -329,5 +333,15 @@ class Reclamation(models.Model):
             )
 
     def save(self, *args, **kwargs):
+        # Проверяем изменение статуса до валидации
+        print(f"Saving reclamation, status: {self.status}")
+        print(f"Receipt invoice number: {self.receipt_invoice_number}")
+
+        if self.receipt_invoice_number and self.is_new():
+            print("Changing status to IN_PROGRESS")
+            self.status = self.Status.IN_PROGRESS
+
         self.full_clean()  # обязательно нужен для запуска валидации
         super().save(*args, **kwargs)
+
+        print(f"Saved reclamation, new status: {self.status}")

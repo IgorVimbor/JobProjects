@@ -1,0 +1,67 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrastyle %}
+<style type="text/css">
+    .custom-form-row {
+        display: flex;
+        margin-bottom: 15px;
+        padding: 10px;
+    }
+
+    .custom-form-row label {
+        flex: 0 0 350px;
+        text-align: right;
+        padding-right: 20px;
+        font-weight: bold;
+    }
+
+    .custom-form-row .input-container {
+        flex: 0 0 500px;
+    }
+
+    .custom-form-row textarea {
+        width: 100%;
+        height: 80px;
+    }
+
+    .custom-form-row input[type="text"],
+    .custom-form-row input[type="date"] {
+        width: 100%;
+    }
+
+    .button-row {
+        margin-left: 370px;
+        padding-top: 20px;
+    }
+
+    .help-text {
+        color: #666;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;  /* добавляем для переноса на новую строку */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="custom-form">
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="custom-form-row">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div class="input-container">
+                    {{ field }}
+                    {% if field.help_text %}
+                        <span class="help-text">{{ field.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="button-row">
+            <input type="submit" name="apply" value="Применить" class="default">
+            <a href="{{ request.get_full_path }}" class="cancel-link">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

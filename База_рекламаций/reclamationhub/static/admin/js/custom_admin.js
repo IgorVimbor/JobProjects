@@ -67,3 +67,43 @@ window.addEventListener('load', function() {
         });
     }
 });
+
+// Код для прокрутки к секции "Принятые меры" для внесения данных
+window.addEventListener('load', function() {
+    // Если в URL есть #measures-section
+    if (window.location.hash === '#measures-section') {
+        // Находим секцию
+        var measuresSection = document.querySelector('.measures-section');
+        if (measuresSection) {
+            // Прокручиваем к ней
+            measuresSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Добавляем подсветку секции
+            measuresSection.style.backgroundColor = '#fff3e0';
+            setTimeout(function() {
+                measuresSection.style.transition = 'background-color 1s';
+                measuresSection.style.backgroundColor = 'transparent';
+            }, 2000);
+        }
+    }
+});
+
+// Обработка прокрутки к секции отправки акта исследования
+window.addEventListener('load', function() {
+    // Если в URL есть #shipment-section
+    if (window.location.hash === '#shipment-section') {
+        // Находим секцию
+        var shipmentSection = document.querySelector('.shipment-section');
+        if (shipmentSection) {
+            // Прокручиваем к ней
+            shipmentSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Добавляем подсветку секции
+            shipmentSection.style.backgroundColor = '#fff3e0';
+            setTimeout(function() {
+                shipmentSection.style.transition = 'background-color 1s';
+                shipmentSection.style.backgroundColor = 'transparent';
+            }, 2000);
+        }
+    }
+});
