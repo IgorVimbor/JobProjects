@@ -303,12 +303,12 @@ class ReclamationAdmin(admin.ModelAdmin):
     actions = ["add_measures"]
 
     def add_measures(self, request, queryset):
-        """Действие для добавления принятых мер"""
+        """Действие для редактирования рекламации"""
         # Если выбрано больше одной записи
         if queryset.count() > 1:
             self.message_user(
                 request,
-                "Пожалуйста, выберите только одну рекламацию для добавления принятых мер",
+                "Пожалуйста, выберите только одну рекламацию для редактирования",
                 level="ERROR",
             )
             return
@@ -321,7 +321,7 @@ class ReclamationAdmin(admin.ModelAdmin):
             f"../reclamation/{reclamation.pk}/change/#measures-section"
         )
 
-    add_measures.short_description = "Добавить принятые меры"
+    add_measures.short_description = "Редактировать запись"
 
     def status_colored(self, obj):
         """Метод для цветового отображения статуса рекламации"""
@@ -344,11 +344,10 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """Обновление статуса рекламации при добавлении номера накладной прихода изделия"""
-        if change:  # Если это изменение существующей записи
-            # Если добавили номер накладной и статус "Новая"
-            if "receipt_invoice_number" in form.changed_data and obj.is_new():
-                obj.status = obj.Status.IN_PROGRESS
-                self.message_user(request, 'Статус рекламации изменен на "В работе"')
+        # Если это изменение существующей записи, добавлен номер накладной и статус "Новая"
+        if change and "receipt_invoice_number" in form.changed_data and obj.is_new():
+            obj.update_status_on_receipt()
+            self.message_user(request, 'Статус рекламации изменен на "В работе"')
         super().save_model(request, obj, form, change)
 
     # Автозаполнение для связанных полей

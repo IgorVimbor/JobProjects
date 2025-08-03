@@ -42,25 +42,29 @@ class AddInvestigationForm(forms.ModelForm):
     class Meta:
         model = Investigation
         fields = [
+            # Сначала поля поиска
+            "sender_numbers",
+            "consumer_act_numbers",
+            "end_consumer_act_numbers",
             # Акт исследования
             "act_number",
             "act_date",
-            "fault_bza",
-            "fault_consumer",
-            "compliant_with_specs",
-            "fault_unknown",
+            # Виновник
+            "fault_type",
+            "guilty_department",
+            # Пояснения к дефекту
             "defect_causes",
             "defect_causes_explanation",
             "defective_supplier",
+            # Отправка результатов
+            "shipment_date",
+            "recipient",
             # ПКД
             "pkd_number",
             # Утилизация
             "disposal_act_number",
             "disposal_act_date",
             "volume_removal_reference",
-            # Отправка результатов
-            "recipient",
-            "shipment_date",
             # Отгрузка
             "shipment_invoice_number",
             "shipment_invoice_date",
@@ -71,10 +75,17 @@ class AddInvestigationForm(forms.ModelForm):
         text_fields = INVESTIGATION_TEXT_FIELDS
 
         widgets = {
-            field: forms.Textarea(
-                attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
-            )
-            for field in text_fields
+            "act_date": forms.DateInput(attrs={"type": "date"}),
+            "shipment_date": forms.DateInput(attrs={"type": "date"}),
+            "disposal_act_date": forms.DateInput(attrs={"type": "date"}),
+            "shipment_invoice_date": forms.DateInput(attrs={"type": "date"}),
+            "fault_type": forms.RadioSelect(),  # Добавляем RadioSelect для fault_type
+            **{
+                field: forms.Textarea(
+                    attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
+                )
+                for field in text_fields
+            },
         }
 
     def __init__(self, *args, **kwargs):
@@ -106,6 +117,8 @@ class AddInvestigationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+
+        # Проверка полей поиска - специфичная только для этой формы
         if not any(
             [
                 cleaned_data.get("sender_numbers"),
@@ -115,25 +128,6 @@ class AddInvestigationForm(forms.ModelForm):
         ):
             raise forms.ValidationError(
                 "Необходимо заполнить хотя бы одно поле с номерами для поиска"
-            )
-
-        # Проверка виновников дефекта
-        fault_count = sum(
-            [
-                cleaned_data.get("fault_bza", False),
-                cleaned_data.get("fault_consumer", False),
-                cleaned_data.get("fault_unknown", False),
-                cleaned_data.get("compliant_with_specs", False),
-            ]
-        )
-
-        if fault_count > 1:
-            raise forms.ValidationError(
-                "Может быть указан только один виновник дефекта или соответствие ТУ"
-            )
-        if fault_count == 0:
-            raise forms.ValidationError(
-                "Необходимо указать виновника дефекта или соответствие ТУ"
             )
 
         return cleaned_data
@@ -148,11 +142,23 @@ class InvestigationAdminForm(forms.ModelForm):
 
         # устанавливаем высоту полей "rows" и ширину "cols", отключаем возможность изменения размера поля мышкой
         widgets = {
-            field: forms.Textarea(
-                attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
-            )
-            for field in text_fields
+            "fault_type": forms.RadioSelect(),  # Добавляем RadioSelect для fault_type
+            **{
+                field: forms.Textarea(
+                    attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
+                )
+                for field in text_fields
+            },
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Фильтрация доступных рекламаций только для новых записей
+        if not self.instance.pk:
+            self.fields["reclamation"].queryset = Reclamation.objects.filter(
+                investigation__isnull=True
+            )
 
 
 @admin.register(Investigation, site=admin_site)
@@ -166,75 +172,26 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     change_list_template = "admin/investigation_changelist.html"
 
-    # Добавляем URL для групповой формы
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path(
-                "add_group_investigation/",
-                self.add_group_investigation_view,
-                name="add_group_investigation",
-            ),
-        ]
-        return custom_urls + urls
+    def reclamation_display(self, obj):
+        """Метод для отображения рекламации в админке (в две строки)"""
+        return obj.reclamation.admin_display()
 
-    def add_group_investigation_view(self, request):
-        if request.method == "POST":
-            form = AddInvestigationForm(request.POST)
-            if form.is_valid():
-                reclamations = form.filtered_reclamations
+    reclamation_display.short_description = "Рекламация (ID и изделие)"
 
-                if reclamations.exists():
-                    for reclamation in reclamations:
-                        investigation = Investigation(
-                            reclamation=reclamation,
-                            **{
-                                field: form.cleaned_data[field]
-                                for field in form.Meta.fields
-                            },
-                        )
-                        investigation.save()
+    def get_fault_display(self, obj):
+        """Метод для отображения виновника"""
+        if obj.fault_type == Investigation.FaultType.BZA:
+            return f"БЗА ({obj.guilty_department})" if obj.guilty_department else "БЗА"
+        return obj.get_fault_type_display()
 
-                        reclamation.status = reclamation.Status.CLOSED
-                        reclamation.save()
-
-                    self.message_user(
-                        request, f"Создано {reclamations.count()} актов исследования"
-                    )
-                    return HttpResponseRedirect("../")
-                else:
-                    return render(
-                        request,
-                        "admin/add_group_investigation.html",
-                        {
-                            "title": "Добавление группового акта исследования",
-                            "form": form,
-                            "search_result": "Указанные номера актов рекламаций в базе данных отсутствуют.",
-                            "found_records": False,
-                        },
-                    )
-        else:
-            form = AddInvestigationForm()
-
-        return render(
-            request,
-            "admin/add_group_investigation.html",
-            {"title": "Добавление группового акта исследования", "form": form},
-        )
-
-    # Отображение кнопок сохранения сверху и снизу формы
-    save_on_top = True
+    get_fault_display.short_description = "Виновник дефекта"
 
     # Отображаем все поля модели Investigation
     list_display = [
         "act_number",
         "act_date",
-        "reclamation",
-        "fault_bza",
-        "guilty_department",
-        "fault_consumer",
-        "compliant_with_specs",
-        "fault_unknown",
+        "reclamation_display",
+        "get_fault_display",
         "defect_causes",
         "defect_causes_explanation",
         "defective_supplier",
@@ -250,7 +207,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         "return_condition_explanation",
     ]
 
-    # Группировка полей
+    # Обновленная группировка полей
     fieldsets = [
         (
             "Акт исследования и виновник",
@@ -259,11 +216,8 @@ class InvestigationAdmin(admin.ModelAdmin):
                     "reclamation",
                     "act_number",
                     "act_date",
-                    "fault_bza",
+                    "fault_type",
                     "guilty_department",
-                    "fault_consumer",
-                    "compliant_with_specs",
-                    "fault_unknown",
                     "defect_causes",
                     "defect_causes_explanation",
                     "defective_supplier",
@@ -277,7 +231,7 @@ class InvestigationAdmin(admin.ModelAdmin):
                     "shipment_date",
                     "recipient",
                 ],
-                "classes": ["shipment-section"],  # добавляем класс для якоря
+                "classes": ["shipment-section"],
             },
         ),
         (
@@ -309,6 +263,9 @@ class InvestigationAdmin(admin.ModelAdmin):
         ),
     ]
 
+    # Отображение кнопок сохранения сверху и снизу формы
+    save_on_top = True
+
     # Поля для фильтрации
     list_filter = [
         "reclamation__defect_period",
@@ -325,6 +282,99 @@ class InvestigationAdmin(admin.ModelAdmin):
     # Сортировка по умолчанию
     ordering = ["reclamation"]
 
+    # Добавляем URL для групповой формы
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                "add_group_investigation/",
+                self.add_group_investigation_view,
+                name="add_group_investigation",
+            ),
+        ]
+        return custom_urls + urls
+
+    def add_group_investigation_view(self, request):
+        if request.method == "POST":
+            form = AddInvestigationForm(request.POST)
+
+            if form.is_valid():
+                reclamations = form.filtered_reclamations
+
+                if reclamations.exists():
+                    for reclamation in reclamations:
+                        try:
+                            investigation_fields = [
+                                f
+                                for f in form.Meta.fields
+                                if f
+                                not in [
+                                    "sender_numbers",
+                                    "consumer_act_numbers",
+                                    "end_consumer_act_numbers",
+                                ]
+                            ]
+
+                            investigation_data = {
+                                field: form.cleaned_data[field]
+                                for field in investigation_fields
+                            }
+
+                            investigation = Investigation(
+                                reclamation=reclamation, **investigation_data
+                            )
+                            investigation.save()
+
+                            reclamation.status = reclamation.Status.CLOSED
+                            reclamation.save()
+
+                        except Exception as e:
+                            return render(
+                                request,
+                                "admin/add_group_investigation.html",
+                                {
+                                    "title": "Добавление группового акта исследования",
+                                    "form": form,
+                                    "search_result": f"Ошибка при сохранении: {str(e)}",
+                                    "found_records": False,
+                                },
+                            )
+
+                    self.message_user(
+                        request, f"Создано {reclamations.count()} актов исследования"
+                    )
+                    return HttpResponseRedirect("../")
+                else:
+                    return render(
+                        request,
+                        "admin/add_group_investigation.html",
+                        {
+                            "title": "Добавление группового акта исследования",
+                            "form": form,
+                            "search_result": "Указанные номера актов рекламаций в базе данных отсутствуют.",
+                            "found_records": False,
+                        },
+                    )
+            else:
+                return render(
+                    request,
+                    "admin/add_group_investigation.html",
+                    {
+                        "title": "Добавление группового акта исследования",
+                        "form": form,
+                        "search_result": f"Форма содержит ошибки: {form.errors}",
+                        "found_records": False,
+                    },
+                )
+        else:
+            form = AddInvestigationForm()
+
+        return render(
+            request,
+            "admin/add_group_investigation.html",
+            {"title": "Добавление группового акта исследования", "form": form},
+        )
+
     # Делаем поле reclamation обязательным
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -332,13 +382,21 @@ class InvestigationAdmin(admin.ModelAdmin):
         return form
 
     def save_model(self, request, obj, form, change):
-        """Проверка статуса рекламации"""
-        super().save_model(request, obj, form, change)
+        """Проверка и изменение статуса рекламации на закрытую"""
         # Если есть номер и дата акта, закрываем рекламацию
-        if obj.act_number and obj.act_date:
-            if not obj.reclamation.is_closed():
-                obj.reclamation.close_reclamation()
-                self.message_user(request, f"Рекламация {obj.reclamation} закрыта")
+        super().save_model(request, obj, form, change)
+        obj.reclamation.update_status_on_investigation()
+        if obj.act_number and obj.act_date and not obj.reclamation.is_closed():
+            self.message_user(request, f"Рекламация {obj.reclamation} закрыта")
+
+    def delete_model(self, request, obj):
+        """Проверка и изменение статуса рекламации при удалении акта исследования"""
+        reclamation = obj.reclamation
+        super().delete_model(request, obj)
+        reclamation.update_status_on_investigation()
+        self.message_user(
+            request, f"Статус рекламации {reclamation} изменен на 'В работе'"
+        )
 
     # Добавляем действие в панель "Действие / Выполнить"
     actions = ["edit_shipment"]

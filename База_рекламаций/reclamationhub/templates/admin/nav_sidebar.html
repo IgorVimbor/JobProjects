@@ -1,0 +1,17 @@
+{% load i18n admin_list %}
+
+<button class="sticky toggle-nav-sidebar" id="toggle-nav-sidebar" aria-label="Toggle navigation"></button>
+<nav class="sticky" id="nav-sidebar" aria-label="Sidebar">
+  <input type="search" id="nav-filter" placeholder="{% translate 'Введите текст для фильтрации...' %}" aria-label="Фильтр элементов навигации">
+  {% include 'admin/app_list.html' with app_list=available_apps show_changelinks=False %}
+
+  {% if cl.has_filters %}
+    <div id="changelist-filter">
+      <h2>{% translate 'Filter' %}</h2>
+      {% if cl.has_active_filters %}<h3 id="changelist-filter-clear">
+        <a href="{{ cl.clear_all_filters_qs }}">&#10006; {% translate "Clear all filters" %}</a>
+      </h3>{% endif %}
+      {% for spec in cl.filter_specs %}{% admin_list_filter cl spec %}{% endfor %}
+    </div>
+  {% endif %}
+</nav>

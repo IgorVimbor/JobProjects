@@ -27,8 +27,26 @@ from reclamations.views import get_products
 urlpatterns = [
     path("", RedirectView.as_view(url="admin/", permanent=True)),
     path("admin/get_products/", get_products, name="get_products"),
-    # path("admin/", admin.site.urls),
-    path("admin/", admin_site.urls),  # своя кастомная админ-панель
+    # Перенаправления для каждого приложения
+    path(
+        "admin/reclamations/",
+        RedirectView.as_view(url="/admin/reclamations/reclamation/", permanent=True),
+    ),
+    path(
+        "admin/investigations/",
+        RedirectView.as_view(
+            url="/admin/investigations/investigation/", permanent=True
+        ),
+    ),
+    path(
+        "admin/claims/",
+        RedirectView.as_view(url="/admin/claims/claim/", permanent=True),
+    ),
+    path(
+        "admin/sourcebook/",
+        RedirectView.as_view(url="/admin/sourcebook/product/", permanent=True),
+    ),
+    path("admin/", admin_site.urls),
 ]
 
 if settings.DEBUG:

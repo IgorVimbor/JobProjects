@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.utils.html import mark_safe
 
 from sourcebook.models import PeriodDefect, ProductType, Product
 
@@ -25,20 +26,17 @@ class Reclamation(models.Model):
     """
 
     # Определяем класс Status внутри модели
-    class Status:
-        NEW = "NEW"
-        IN_PROGRESS = "IN_PROGRESS"
-        CLOSED = "CLOSED"
+    class Status(models.TextChoices):
+        NEW = "NEW", "Новая"
+        IN_PROGRESS = "IN_PROGRESS", "Исследование"
+        CLOSED = "CLOSED", "Закрыта"
 
-        CHOICES = [
-            (NEW, "Новая"),
-            (IN_PROGRESS, "Исследование"),
-            (CLOSED, "Закрыта"),
-        ]
-
-    # Используем Status.CHOICES в поле модели
+    # Используем класс Status в поле модели
     status = models.CharField(
-        max_length=50, choices=Status.CHOICES, default=Status.NEW, verbose_name="Статус"
+        max_length=50,
+        choices=Status.choices,  # .choices вместо .CHOICES
+        default=Status.NEW,
+        verbose_name="Статус",
     )
 
     # Методы для изменения статуса
@@ -312,8 +310,14 @@ class Reclamation(models.Model):
         return hasattr(self, "claim")
 
     def __str__(self):
-        """отображение рекламации везде, где она используется"""
-        return str(self.id)
+        """Отображение рекламации в строковом виде (консоль, логи и др.)"""
+        return f"{self.pk} - {self.product_name} - {self.product}"
+
+    def admin_display(self):
+        """Отображение рекламации в админ-панели (в две строки)"""
+        return mark_safe(f"{self.pk} - {self.product_name}<br>{self.product}")
+
+    admin_display.short_description = "Рекламация"
 
     def clean(self):
         """
@@ -333,15 +337,24 @@ class Reclamation(models.Model):
             )
 
     def save(self, *args, **kwargs):
-        # Проверяем изменение статуса до валидации
-        print(f"Saving reclamation, status: {self.status}")
-        print(f"Receipt invoice number: {self.receipt_invoice_number}")
-
-        if self.receipt_invoice_number and self.is_new():
-            print("Changing status to IN_PROGRESS")
-            self.status = self.Status.IN_PROGRESS
-
         self.full_clean()  # обязательно нужен для запуска валидации
         super().save(*args, **kwargs)
 
-        print(f"Saved reclamation, new status: {self.status}")
+    def update_status_on_receipt(self):
+        """Обновление статуса рекламации при добавлении накладной"""
+        if self.receipt_invoice_number and self.is_new():
+            self.status = self.Status.IN_PROGRESS
+            self.save()
+
+    def update_status_on_investigation(self):
+        """Обновление статуса рекламации в зависимости от акта исследования"""
+        if hasattr(self, "investigation"):
+            if (
+                self.investigation
+                and self.investigation.act_number
+                and self.investigation.act_date
+            ):
+                self.status = self.Status.CLOSED
+            else:
+                self.status = self.Status.IN_PROGRESS
+            self.save()

@@ -16,41 +16,39 @@ class Investigation(models.Model):
     - отгрузке изделия взамен
     """
 
-    class ReturnCondition:
-        REPAIRED = "REPAIRED"
-        REPLACED = "REPLACED"
-        RETURNED_AS_IS = "RETURNED_AS_IS"
+    class FaultType(models.TextChoices):
+        BZA = "bza", "БЗА"
+        CONSUMER = "consumer", "Потребитель"
+        COMPLIANT = "compliant", "Соответствует ТУ"
+        UNKNOWN = "unknown", "Не установлен"
 
-        CHOICES = [
-            (REPAIRED, "Отремонтировано"),
-            (REPLACED, "Заменено на новое"),
-            (RETURNED_AS_IS, "Возвращено как есть"),
-        ]
+    class ReturnCondition(models.TextChoices):
+        REPAIRED = "REPAIRED", "Отремонтировано"
+        REPLACED = "REPLACED", "Заменено на новое"
+        RETURNED_AS_IS = "RETURNED_AS_IS", "Возвращено как есть"
 
     reclamation = models.OneToOneField(
         Reclamation,
         on_delete=models.PROTECT,  # защищаем от удаления рекламации
         related_name="investigation",
-        verbose_name="ID рекламации",
+        verbose_name="Рекламация (ID и изделие)",
     )
     act_number = models.CharField(
         max_length=100, verbose_name="Номер акта исследования"
     )
     act_date = models.DateField(verbose_name="Дата акта исследования")
-    fault_bza = models.BooleanField(
-        default=False, verbose_name="Виновник дефекта - БЗА"
+
+    # Используем класс FaultType в поле модели
+    fault_type = models.CharField(
+        max_length=10,
+        choices=FaultType.choices,
+        verbose_name="Виновник дефекта",
+        null=False,  # поле не может содержать NULL в базе данных
+        blank=False,  # поле не может быть пустым при заполнении формы
+        default=FaultType.UNKNOWN,  # Добавляем значение по умолчанию
     )
     guilty_department = models.CharField(
-        max_length=200, null=True, blank=True, verbose_name="Виновное подразделение"
-    )
-    fault_consumer = models.BooleanField(
-        default=False, verbose_name="Виновник дефекта - потребитель"
-    )
-    compliant_with_specs = models.BooleanField(
-        default=False, verbose_name="Изделие соответствует ТУ"
-    )
-    fault_unknown = models.BooleanField(
-        default=False, verbose_name="Виновник не установлен"
+        max_length=100, default="Не определено", verbose_name="Виновное подразделение"
     )
     defect_causes = models.TextField(
         null=True, blank=True, verbose_name="Причины возникновения дефектов"
@@ -106,10 +104,10 @@ class Investigation(models.Model):
         blank=True,
         verbose_name="Дата накладной отгрузки изделия потребителю",
     )
-    # Используем ReturnCondition.CHOICES в поле модели
+    # Используем класс ReturnCondition в поле модели
     return_condition = models.CharField(
         max_length=50,
-        choices=ReturnCondition.CHOICES,
+        choices=ReturnCondition.choices,
         null=True,
         blank=True,
         verbose_name="Состояние возвращаемого потребителю изделия",
@@ -135,25 +133,19 @@ class Investigation(models.Model):
         )
 
     def clean(self):
-        """Проверка виновников дефекта"""
-        fault_count = sum([self.fault_bza, self.fault_consumer, self.fault_unknown])
-
-        if fault_count > 1:
-            raise ValidationError(
-                "Может быть указан только один виновник дефекта или соответствие ТУ"
-            )
-
-        if fault_count == 0:
+        """Базовая валидация модели"""
+        if not self.fault_type:
             raise ValidationError(
                 "Необходимо указать виновника дефекта или соответствие ТУ"
             )
 
+        if self.fault_type == self.FaultType.BZA and not self.guilty_department:
+            raise ValidationError(
+                "При указании БЗА как виновника необходимо указать виновное подразделение"
+            )
+
     def save(self, *args, **kwargs):
         """Обновление статуса рекламации"""
-        super().save(*args, **kwargs)
-
         # После сохранения акта проверяем и обновляем статус рекламации
-        if self.act_number and self.act_date:
-            if not self.reclamation.is_closed():
-                self.reclamation.status = self.reclamation.Status.CLOSED
-                self.reclamation.save()
+        super().save(*args, **kwargs)
+        self.reclamation.update_status_on_investigation()
