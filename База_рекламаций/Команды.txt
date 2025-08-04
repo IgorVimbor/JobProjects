@@ -1,13 +1,24 @@
 1. Все команды выполняются из папки проекта
 
 Войти в папку проекта: cd <папка проекта>
-Например: cd reclamationhub
+cd reclamationhub
+
+------------ Запуск проекта (если дефолтный settings.py)
+python manage.py runserver
+
+------------ Запуск проекта при разработке (settings/development.py)
+python manage.py runserver --settings=reclamationhub.settings.development
+
+------------ Запуск проекта в продакшене (settings/production.py)
+python manage.py runserver 0.0.0.0:8000 --settings=reclamationhub.settings.production
+
 -----------------------------------------------------------------------------------
 
 2. Создание приложения в проекте
 
 python manage.py startapp <название приложения>
 Например: python manage.py startapp sourcebook
+
 -----------------------------------------------------------------------------------
 
 3. Создание и применение миграций
@@ -16,6 +27,7 @@ python manage.py migrate
 
    Обновление статических файлов после их изменения
 python manage.py collectstatic
+
 -----------------------------------------------------------------------------------
 
 4. Создание суперпользователя
@@ -23,6 +35,7 @@ python manage.py createsuperuser
 Имя: root
 Пароль: 4043
 Адрес электронной почты: vasilenok.igor@mail.ru
+
 -----------------------------------------------------------------------------------
 
 5. Запуск Django shell
@@ -39,16 +52,19 @@ ProductType.objects.annotate(products_count=Count('products'))
 product = Product.objects.first()
 print(f"Тип: {product.product_type}")
 print(f"Рекламации: {product.reclamations.all()}")
+
 -----------------------------------------------------------------------------------
 
 6. Подключение к MySQL в командной строке из папки проекта
 
 Команда: mysql -u root -p
 Ввод пароля: <пароль>
+
 -----------------------------------------------------------------------------------
 
-7. Бэкап существующих данных в базе MySQL:
+7. Бэкап базы данных MySQL в файл .sql и восстановление данных:
 
+---------- Бэкап существующих таблиц
 Bash
 mysqldump -u root -p имя_базы_MySQL имя_таблицы > имя_файла_бэкапа
 
@@ -56,15 +72,45 @@ mysqldump -u root -p reclamation_db organizations > period_defect_backup.sql
 mysqldump -u root -p reclamation_db product_types > product_types_backup.sql
 mysqldump -u root -p reclamation_db product > product_backup.sql
 
-8. Восстановление данных из бэкапа:
+    Создание дампа (бэкап) всей базы данных в файл full_dump.sql
+mysqldump -u rh_user -p --routines --triggers --default-character-set=utf8mb4 reclamation_db > full_dump.sql
 
-- Откройте Command Prompt (cmd.exe) и выполните:
+----------- Восстановление данных из бэкапа:
+
+-- Откройте Command Prompt (cmd.exe) и выполните:
 mysqldump -u root -p имя_базы_MySQL < имя_файла_бэкапа
 
 mysql -u root -p reclamation_db < period_defect_backup.sql
 mysql -u root -p reclamation_db < product_types_backup.sql
 mysql -u root -p reclamation_db < product_backup.sql
+
+    Импорт данных из дампа (бэкапа) на рабочем ПК
+mysql -u ваш_пользователь -p --default-character-set=utf8mb4 reclamation_db < full_dump.sql
+mysql -u rh_user -p --default-character-set=utf8mb4 reclamation_db < full_dump.sql
+
 -----------------------------------------------------------------------------------
+
+8. Создание фикстур данных в файл .json из существующих таблиц в Django:
+
+------------ Создание фикстур
+
+8.1 Создать в проекте каталог fixtures
+
+8.2 Сделать фикстуру (дамп) командой:
+python manage.py dumpdata --indent=2 --output=fixtures/db.json --exclude=auth.permission --exclude=contenttypes
+
+(--exclude auth.permission --exclude contenttypes, потому что эти данные автоматически создаются Django и их не нужно сохранять.
+Их исключение - это стандартная практика.)
+
+-- Если выходной файл `db.json` сохраняется не в кодировке `UTF-8`, то можно дополнительно прописать флаг `-Xutf8` следующим образом:
+
+python -Xutf8 manage.py dumpdata --indent=2 --output=fixtures/db.json --exclude=auth.permission --exclude=contenttypes
+
+------------- Загрузка данных из фикстур:
+
+python manage.py loaddata fixtures/db.json
+
+-------------------------------------------------------------------------------------
 
 -- Удаление таблиц аутентификации
 DROP TABLE IF EXISTS auth_user_user_permissions;
@@ -89,9 +135,32 @@ DROP TABLE IF EXISTS product_type;
 DROP TABLE IF EXISTS product;
 drop table if exists engine_transport;
 drop table if exists investigation;
+
 -------------------------------------------------------------------------------------
 
 -- Копирование данных из таблицы organizations базы old_db в таблицу period_defect базы reclamation_db
 INSERT INTO reclamation_db.period_defect
 SELECT * FROM old_db.organizations;
+
 -------------------------------------------------------------------------------------
+
+    -- Для проверки триггеров
+SHOW TRIGGERS FROM reclamation_db;
+-- или
+SELECT * FROM information_schema.TRIGGERS
+WHERE TRIGGER_SCHEMA = 'reclamation_db';
+
+    -- Для проверки хранимых процедур
+SHOW PROCEDURE STATUS WHERE Db = 'reclamation_db';
+-- или
+SELECT * FROM information_schema.ROUTINES
+WHERE ROUTINE_SCHEMA = 'reclamation_db'
+AND ROUTINE_TYPE = 'PROCEDURE';
+
+    -- Для проверки функций
+SHOW FUNCTION STATUS WHERE Db = 'reclamation_db';
+-- или
+SELECT * FROM information_schema.ROUTINES
+WHERE ROUTINE_SCHEMA = 'reclamation_db'
+AND ROUTINE_TYPE = 'FUNCTION';
+--------------------------------------------------------------------------------------

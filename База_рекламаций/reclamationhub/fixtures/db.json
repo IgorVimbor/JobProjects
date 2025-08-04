@@ -1,0 +1,2807 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2025-07-27T10:48:42.875Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1",
+    "object_repr": "Reclamation object (1)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2025-07-27T16:48:12.766Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "2",
+    "object_repr": "Reclamation object (2)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2025-07-27T18:01:25.654Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "3",
+    "object_repr": "Reclamation object (3)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2025-07-27T18:03:24.803Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "4",
+    "object_repr": "Reclamation object (4)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2025-08-01T20:07:14.040Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1",
+    "object_repr": "Reclamation object (1)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2025-08-01T20:30:54.576Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "2",
+    "object_repr": "Reclamation object (2)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2025-08-02T11:09:00.173Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "3",
+    "object_repr": "Reclamation object (3)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2025-08-02T11:12:56.093Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "4",
+    "object_repr": "Reclamation object (4)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2025-08-02T11:17:25.773Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "5",
+    "object_repr": "Reclamation object (5)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2025-08-02T11:51:03.830Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "6",
+    "object_repr": "Reclamation object (6)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2025-08-02T15:08:31.402Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "6",
+    "object_repr": "Reclamation object (6)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0421\\u043f\\u043e\\u0441\\u043e\\u0431 \\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u043a\\u0438 \\u043f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0445 \\u043c\\u0435\\u0440\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2025-08-02T15:13:51.853Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "7",
+    "object_repr": "Reclamation object (7)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2025-08-02T15:17:50.364Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "7",
+    "object_repr": "Reclamation object (7)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0421\\u043f\\u043e\\u0441\\u043e\\u0431 \\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u043a\\u0438 \\u043f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0445 \\u043c\\u0435\\u0440\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2025-08-02T15:45:16.538Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "5",
+    "object_repr": "Reclamation object (5)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0421\\u043f\\u043e\\u0441\\u043e\\u0431 \\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u043a\\u0438 \\u043f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0445 \\u043c\\u0435\\u0440\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 15,
+  "fields": {
+    "action_time": "2025-08-02T15:45:24.893Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "5",
+    "object_repr": "Reclamation object (5)",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 16,
+  "fields": {
+    "action_time": "2025-08-02T17:23:20.436Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "1",
+    "object_repr": "Акт исследования 2025 № 123 от 28.07.2025 (А29.05.000-БЗА)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 17,
+  "fields": {
+    "action_time": "2025-08-02T17:52:15.519Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "3",
+    "object_repr": "Reclamation object (3)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 18,
+  "fields": {
+    "action_time": "2025-08-02T17:52:27.610Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "6",
+    "object_repr": "Reclamation object (6)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 19,
+  "fields": {
+    "action_time": "2025-08-02T17:56:53.652Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "1",
+    "object_repr": "Акт исследования 2025 № 123 от 28.07.2025 (А29.05.000-БЗА)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u043e\\u0435 \\u043f\\u043e\\u0434\\u0440\\u0430\\u0437\\u0434\\u0435\\u043b\\u0435\\u043d\\u0438\\u0435\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 20,
+  "fields": {
+    "action_time": "2025-08-02T18:18:40.537Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1",
+    "object_repr": "Reclamation object (1)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 21,
+  "fields": {
+    "action_time": "2025-08-02T18:18:55.429Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "4",
+    "object_repr": "Reclamation object (4)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 22,
+  "fields": {
+    "action_time": "2025-08-02T18:33:32.318Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1",
+    "object_repr": "Reclamation object (1)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 23,
+  "fields": {
+    "action_time": "2025-08-02T18:33:53.531Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1",
+    "object_repr": "Reclamation object (1)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 24,
+  "fields": {
+    "action_time": "2025-08-02T18:34:16.666Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "4",
+    "object_repr": "Reclamation object (4)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 25,
+  "fields": {
+    "action_time": "2025-08-02T18:34:24.747Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "4",
+    "object_repr": "Reclamation object (4)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 26,
+  "fields": {
+    "action_time": "2025-08-02T18:36:06.057Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "5",
+    "object_repr": "Reclamation object (5)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041e\\u0440\\u0433\\u0430\\u043d\\u0438\\u0437\\u0430\\u0446\\u0438\\u044f-\\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u0438\\u0442\\u0435\\u043b\\u044c \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 27,
+  "fields": {
+    "action_time": "2025-08-02T18:40:31.613Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "2",
+    "object_repr": "Акт исследования 2025 № 125 от 01.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 28,
+  "fields": {
+    "action_time": "2025-08-02T18:50:06.646Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "8",
+    "object_repr": "Reclamation object (8)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 29,
+  "fields": {
+    "action_time": "2025-08-02T18:52:03.090Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "3",
+    "object_repr": "Акт исследования 2025 № 126 от 02.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 30,
+  "fields": {
+    "action_time": "2025-08-02T19:56:43.869Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "1",
+    "object_repr": "Акт исследования 2025 № 123 от 28.07.2025 (А29.05.000-БЗА)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u043a\\u0438 \\u0430\\u043a\\u0442\\u0430 \\u0438\\u0441\\u0441\\u043b\\u0435\\u0434\\u043e\\u0432\\u0430\\u043d\\u0438\\u044f\", \"\\u041f\\u043e\\u043b\\u0443\\u0447\\u0430\\u0442\\u0435\\u043b\\u044c\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 31,
+  "fields": {
+    "action_time": "2025-08-02T21:26:22.677Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "4",
+    "object_repr": "Акт исследования 2025 № 128 от 03.08.2025 (ТКР 6-00.01)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 32,
+  "fields": {
+    "action_time": "2025-08-03T09:41:07.557Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "9",
+    "object_repr": "9",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 33,
+  "fields": {
+    "action_time": "2025-08-03T09:42:55.076Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "10",
+    "object_repr": "10",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 34,
+  "fields": {
+    "action_time": "2025-08-03T09:56:23.761Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "9",
+    "object_repr": "Акт исследования 2025 № 135 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 35,
+  "fields": {
+    "action_time": "2025-08-03T10:05:15.918Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "10",
+    "object_repr": "Акт исследования 2025 № 137 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 36,
+  "fields": {
+    "action_time": "2025-08-03T10:07:35.099Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "10",
+    "object_repr": "Акт исследования 2025 № 137 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u0430 - \\u0411\\u0417\\u0410\", \"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u0430 - \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044c\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 37,
+  "fields": {
+    "action_time": "2025-08-03T10:07:56.082Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "10",
+    "object_repr": "Акт исследования 2025 № 137 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u0430 - \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044c\", \"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u043d\\u0435 \\u0443\\u0441\\u0442\\u0430\\u043d\\u043e\\u0432\\u043b\\u0435\\u043d\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 38,
+  "fields": {
+    "action_time": "2025-08-03T10:12:01.780Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "10",
+    "object_repr": "Акт исследования 2025 № 137 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 39,
+  "fields": {
+    "action_time": "2025-08-03T10:15:40.650Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "10",
+    "object_repr": "Акт исследования 2025 № 137 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u0430 - \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044c\", \"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u043d\\u0435 \\u0443\\u0441\\u0442\\u0430\\u043d\\u043e\\u0432\\u043b\\u0435\\u043d\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 40,
+  "fields": {
+    "action_time": "2025-08-03T10:18:40.789Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "9",
+    "object_repr": "Акт исследования 2025 № 135 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u0430 - \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044c\", \"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u043d\\u0435 \\u0443\\u0441\\u0442\\u0430\\u043d\\u043e\\u0432\\u043b\\u0435\\u043d\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 41,
+  "fields": {
+    "action_time": "2025-08-03T10:32:39.349Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "10",
+    "object_repr": "Акт исследования 2025 № 137 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u0430 - \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044c\", \"\\u0418\\u0437\\u0434\\u0435\\u043b\\u0438\\u0435 \\u0441\\u043e\\u043e\\u0442\\u0432\\u0435\\u0442\\u0441\\u0442\\u0432\\u0443\\u0435\\u0442 \\u0422\\u0423\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 42,
+  "fields": {
+    "action_time": "2025-08-03T10:34:45.233Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "9",
+    "object_repr": "Акт исследования 2025 № 135 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u0430 - \\u0411\\u0417\\u0410\", \"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u043e\\u0435 \\u043f\\u043e\\u0434\\u0440\\u0430\\u0437\\u0434\\u0435\\u043b\\u0435\\u043d\\u0438\\u0435\", \"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u0430 - \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044c\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 43,
+  "fields": {
+    "action_time": "2025-08-03T10:36:30.374Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "10",
+    "object_repr": "Акт исследования 2025 № 137 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 44,
+  "fields": {
+    "action_time": "2025-08-03T10:36:39.412Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "9",
+    "object_repr": "Акт исследования 2025 № 135 от 03.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 45,
+  "fields": {
+    "action_time": "2025-08-03T13:40:22.020Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "11",
+    "object_repr": "Акт исследования 2025 № 139 от 01.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u0438\\u043a \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u0430\", \"\\u0412\\u0438\\u043d\\u043e\\u0432\\u043d\\u043e\\u0435 \\u043f\\u043e\\u0434\\u0440\\u0430\\u0437\\u0434\\u0435\\u043b\\u0435\\u043d\\u0438\\u0435\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 46,
+  "fields": {
+    "action_time": "2025-08-03T16:24:08.668Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "11",
+    "object_repr": "Акт исследования 2025 № 139 от 01.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 47,
+  "fields": {
+    "action_time": "2025-08-03T16:24:08.700Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "12",
+    "object_repr": "Акт исследования 2025 № 139 от 01.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 48,
+  "fields": {
+    "action_time": "2025-08-03T16:24:08.701Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "7",
+    "object_repr": "Акт исследования 2025 № 131 от 01.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 49,
+  "fields": {
+    "action_time": "2025-08-03T16:24:08.704Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "5",
+    "object_repr": "Акт исследования 2025 № 130 от 01.08.2025 (260-1307116-02)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 50,
+  "fields": {
+    "action_time": "2025-08-03T16:24:08.706Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "8",
+    "object_repr": "Акт исследования 2025 № 131 от 01.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 51,
+  "fields": {
+    "action_time": "2025-08-03T16:24:08.708Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "4",
+    "object_repr": "Акт исследования 2025 № 128 от 03.08.2025 (ТКР 6-00.01)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 52,
+  "fields": {
+    "action_time": "2025-08-03T16:24:08.710Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "3",
+    "object_repr": "Акт исследования 2025 № 126 от 02.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 53,
+  "fields": {
+    "action_time": "2025-08-03T16:24:08.712Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "1",
+    "object_repr": "Акт исследования 2025 № 123 от 28.07.2025 (А29.05.000-БЗА)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 54,
+  "fields": {
+    "action_time": "2025-08-03T16:24:08.714Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "6",
+    "object_repr": "Акт исследования 2025 № 130 от 01.08.2025 (260-1307116-02)",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 55,
+  "fields": {
+    "action_time": "2025-08-03T17:21:09.859Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "10",
+    "object_repr": "10",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 56,
+  "fields": {
+    "action_time": "2025-08-03T17:21:48.652Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "9",
+    "object_repr": "9",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 57,
+  "fields": {
+    "action_time": "2025-08-03T17:22:02.579Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "8",
+    "object_repr": "8",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 58,
+  "fields": {
+    "action_time": "2025-08-03T17:22:33.730Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "7",
+    "object_repr": "7",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 59,
+  "fields": {
+    "action_time": "2025-08-03T17:23:04.220Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "2",
+    "object_repr": "2",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 60,
+  "fields": {
+    "action_time": "2025-08-03T17:23:28.699Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "6",
+    "object_repr": "6",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 61,
+  "fields": {
+    "action_time": "2025-08-03T17:23:41.683Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "5",
+    "object_repr": "5",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 62,
+  "fields": {
+    "action_time": "2025-08-03T17:24:02.503Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "4",
+    "object_repr": "4",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 63,
+  "fields": {
+    "action_time": "2025-08-03T17:24:16.578Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "3",
+    "object_repr": "3",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 64,
+  "fields": {
+    "action_time": "2025-08-03T17:26:48.232Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "15",
+    "object_repr": "Акт исследования 2025 № 135 от 01.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u0447\\u0438\\u043d\\u044b \\u0432\\u043e\\u0437\\u043d\\u0438\\u043a\\u043d\\u043e\\u0432\\u0435\\u043d\\u0438\\u044f \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u043e\\u0432\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 65,
+  "fields": {
+    "action_time": "2025-08-03T17:27:02.367Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "14",
+    "object_repr": "Акт исследования 2025 № 135 от 01.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u0447\\u0438\\u043d\\u044b \\u0432\\u043e\\u0437\\u043d\\u0438\\u043a\\u043d\\u043e\\u0432\\u0435\\u043d\\u0438\\u044f \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u043e\\u0432\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 66,
+  "fields": {
+    "action_time": "2025-08-03T18:26:20.525Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "16",
+    "object_repr": "Акт исследования 2025 № 139 от 03.08.2025 (ТКР 6-00.01)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$N3PiQkrEWdRBFpekgxmKpU$B56ANx475SbmC/lvibytbPCW6ZqpCj65rQ67ATY3SqA=",
+    "last_login": "2025-07-27T18:36:57.071Z",
+    "is_superuser": true,
+    "username": "root",
+    "first_name": "",
+    "last_name": "",
+    "email": "vasilenok.igor@mail.ru",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-07-26T18:47:03.928Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "wudx2yytz6n7ka41k8zgbe9uz1x915ip",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ug6Ez:NJPURTxdVXh-rKpoW8TbFQUS211Nziqoz8v7VB1y79k",
+    "expire_date": "2025-08-10T18:36:57.104Z"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 1,
+  "fields": {
+    "name": "ЯМЗ - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 2,
+  "fields": {
+    "name": "ЯМЗ - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 3,
+  "fields": {
+    "name": "ММЗ - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 4,
+  "fields": {
+    "name": "ММЗ - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 5,
+  "fields": {
+    "name": "запчасть"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 6,
+  "fields": {
+    "name": "Гомсельмаш - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 7,
+  "fields": {
+    "name": "Гомсельмаш - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 8,
+  "fields": {
+    "name": "УРАЛ - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 9,
+  "fields": {
+    "name": "УРАЛ - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 10,
+  "fields": {
+    "name": "МАЗ - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 11,
+  "fields": {
+    "name": "МАЗ - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 12,
+  "fields": {
+    "name": "ПАЗ - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 13,
+  "fields": {
+    "name": "ПАЗ - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 14,
+  "fields": {
+    "name": "Ростсельмаш - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 15,
+  "fields": {
+    "name": "Ростсельмаш - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 16,
+  "fields": {
+    "name": "ПТЗ - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 17,
+  "fields": {
+    "name": "ПТЗ - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 18,
+  "fields": {
+    "name": "БЕЛАЗ - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 19,
+  "fields": {
+    "name": "БЕЛАЗ - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 20,
+  "fields": {
+    "name": "ЧСДМ - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 21,
+  "fields": {
+    "name": "ЧСДМ - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 22,
+  "fields": {
+    "name": "БТЗ - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 23,
+  "fields": {
+    "name": "САЛЕО - АСП"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 24,
+  "fields": {
+    "name": "КАМАЗ - эксплуатация"
+  }
+},
+{
+  "model": "sourcebook.perioddefect",
+  "pk": 25,
+  "fields": {
+    "name": "КАМАЗ - АСП"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 1,
+  "fields": {
+    "name": "водяной насос"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 2,
+  "fields": {
+    "name": "компрессор"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 3,
+  "fields": {
+    "name": "коромысло клапана"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 4,
+  "fields": {
+    "name": "корпус фильтра"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 5,
+  "fields": {
+    "name": "масляный насос"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 6,
+  "fields": {
+    "name": "привод гидронасоса"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 7,
+  "fields": {
+    "name": "ротор в сборе"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 8,
+  "fields": {
+    "name": "турбокомпрессор"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 9,
+  "fields": {
+    "name": "центробежный масляный фильтр"
+  }
+},
+{
+  "model": "sourcebook.producttype",
+  "pk": 10,
+  "fields": {
+    "name": "штанга"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 1,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "240-1307010-А1"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 2,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "240-1307010-А1-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 3,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "240-1307010-А1-02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 4,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 5,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 6,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-04"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 7,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-05"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 8,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-09"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 9,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-10"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 10,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-11"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 11,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-19"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 12,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-21"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 13,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-25"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 14,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-А1-М"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 15,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307010-Г"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 16,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245-1307015-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 17,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "245Е4-1307010"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 18,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "246.1М-1307010"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 19,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 20,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 21,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-03"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 22,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-04"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 23,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-05"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 24,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-06"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 25,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-10"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 26,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-15"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 27,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-Г"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 28,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307116-М"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 29,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307117-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 30,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "260-1307117-02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 31,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "263-1307116"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 32,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "263-1307116-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 33,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "263-1307116-02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 34,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "263-1307117-02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 35,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "263-1307117-Б-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 36,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "263-1307117-Б-02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 37,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "3LD-1307010-Б"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 38,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "855.1307010-10"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 39,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "КБПА 451363.21 \n(536.1307010-21)"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 40,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "КБПА 451363.30 \n(536.1307010-30)"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 41,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "КБПА 451363.41 \n(536.1307010-41)"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 42,
+  "fields": {
+    "product_type": 1,
+    "nomenclature": "КБПА 451363.61 \n(536.1307010-61)"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 43,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "53205-3509015-30"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 44,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 45,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012 ВП"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 46,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 47,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012-02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 48,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012-05"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 49,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012-06"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 50,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012-10"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 51,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012-10 ВП"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 52,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012-10-03"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 53,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012-10-04"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 54,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "5336-3509012-К181"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 55,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "А29.05.000-03-БЗА"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 56,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "А29.05.000-06-БЗА"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 57,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "А29.05.000-БЗА"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 58,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "А29.05.000А-03-БЗА"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 59,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "А29.05.000А-04-БЗА"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 60,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "А29.05.000А-06-БЗА"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 61,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "А29.05.000А-БЗА"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 62,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "ПК 115-30-02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 63,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "ПК 155-20"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 64,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "ПК 155-20-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 65,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "ПК 155-20-02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 66,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "ПК 214-30-01 ВП"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 67,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "ПК 225 \n(5340.3509015-21)"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 68,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "ПК 225-К-01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 69,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "ПК 306-03 \n(8401.3509015)"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 70,
+  "fields": {
+    "product_type": 2,
+    "nomenclature": "ПК 310"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 71,
+  "fields": {
+    "product_type": 3,
+    "nomenclature": "245-1007212"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 72,
+  "fields": {
+    "product_type": 3,
+    "nomenclature": "263-1007210"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 73,
+  "fields": {
+    "product_type": 3,
+    "nomenclature": "263-1007212"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 74,
+  "fields": {
+    "product_type": 3,
+    "nomenclature": "50-1007210-А4"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 75,
+  "fields": {
+    "product_type": 3,
+    "nomenclature": "50-1007212-А4"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 76,
+  "fields": {
+    "product_type": 4,
+    "nomenclature": "245-1017015-Б"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 77,
+  "fields": {
+    "product_type": 4,
+    "nomenclature": "245-1017015-В"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 78,
+  "fields": {
+    "product_type": 4,
+    "nomenclature": "245-1017015-Г"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 79,
+  "fields": {
+    "product_type": 4,
+    "nomenclature": "263-1017110-А"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 80,
+  "fields": {
+    "product_type": 4,
+    "nomenclature": "3LD-1017015-Б"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 81,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "240-1403010"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 82,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "245-1403010"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 83,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "245-1403010-Б"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 84,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "245-1403010-В"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 85,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "260-1011020"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 86,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "263-1011020"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 87,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "263-1011020-А"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 88,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "3LD-1403010"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 89,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "4DTI-1403010"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 90,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "50-1403010-Б1"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 91,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "50-1403010-В"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 92,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "КБПА 451412.34 \n(5340.1011014-02)"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 93,
+  "fields": {
+    "product_type": 5,
+    "nomenclature": "КБПА 451412.36 \n(536.1011014-02)"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 94,
+  "fields": {
+    "product_type": 6,
+    "nomenclature": "240-1022030"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 95,
+  "fields": {
+    "product_type": 6,
+    "nomenclature": "243-1022030-Б"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 96,
+  "fields": {
+    "product_type": 6,
+    "nomenclature": "260-3407030"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 97,
+  "fields": {
+    "product_type": 7,
+    "nomenclature": "80-1028020"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 98,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 10-02.05"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 99,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 10-03.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 100,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 5-00.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 101,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 5-00.02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 102,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-00.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 103,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-00.02"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 104,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-00.11"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 105,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-00.12"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 106,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-00.15"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 107,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-01.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 108,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-01.07"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 109,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-02.05"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 110,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-03.10"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 111,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6-03.14"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 112,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6,5.1-07.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 113,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6,5.1-09.03"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 114,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6,5.1-10.06"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 115,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6,5.1-14.05"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 116,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6,5.1-14.11"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 117,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6,5.1-15.05"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 118,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6,5.1-17.01.03"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 119,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6.1-04.04"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 120,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6.1-07.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 121,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6.1-08.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 122,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6.1-09.03"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 123,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6.1-13.08"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 124,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6.1-13.11"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 125,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6.1-14.12"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 126,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 6.1.13.08"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 127,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 7-00.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 128,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 7-00.03"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 129,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 7-02.08"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 130,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 7.1-00.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 131,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 7.1-01.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 132,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 7.1-01.03"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 133,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 7Н-2А"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 134,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 7С-200 "
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 135,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 7С-200G"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 136,
+  "fields": {
+    "product_type": 8,
+    "nomenclature": "ТКР 8-00.01"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 137,
+  "fields": {
+    "product_type": 9,
+    "nomenclature": "240-1404010-А"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 138,
+  "fields": {
+    "product_type": 9,
+    "nomenclature": "260-1028010"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 139,
+  "fields": {
+    "product_type": 10,
+    "nomenclature": "240-1007310-Б1"
+  }
+},
+{
+  "model": "sourcebook.product",
+  "pk": 140,
+  "fields": {
+    "product_type": 10,
+    "nomenclature": "3LD-1007310"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1,
+  "fields": {
+    "status": "CLOSED",
+    "incoming_number": "010/1/677-01",
+    "message_received_date": "2025-08-01T20:07:14.032Z",
+    "sender": "ЯМЗ Сычева Татьяна Александровна <SychevaTA@ymzmotor.ru>",
+    "sender_outgoing_number": "11122233",
+    "message_sent_date": "2025-07-28",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "77777",
+    "consumer_act_date": "2025-07-02",
+    "country_rejected": "Россия",
+    "end_consumer": "ФОРВАРД-МОТОРС",
+    "end_consumer_act_number": "77777",
+    "end_consumer_act_date": "2025-07-02",
+    "engine_brand": "534450",
+    "engine_number": "N000001",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "mileage_operating_time": null,
+    "claimed_defect": "течь по КО",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": "1472589/2",
+    "receipt_invoice_date": "2025-07-22",
+    "reclamation_documents": "",
+    "updated_at": "2025-08-02T18:40:31.610Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 2,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": "010/1/692-01",
+    "message_received_date": "2025-08-01T20:30:54.573Z",
+    "sender": "ММЗ <ruservice@mmz-motor.by>",
+    "sender_outgoing_number": "12-30-9-632",
+    "message_sent_date": "2025-06-25",
+    "defect_period": 3,
+    "product_name": 1,
+    "product": 20,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ММЗ",
+    "consumer_act_number": "12-30-9-632",
+    "consumer_act_date": "2025-06-25",
+    "country_rejected": "Россия",
+    "end_consumer": "Агротехнопарк",
+    "end_consumer_act_number": "50/06-бн",
+    "end_consumer_act_date": "2025-06-25",
+    "engine_brand": "Д-260.2S2",
+    "engine_number": "195565",
+    "transport_name": "Беларус-1221.3",
+    "transport_number": "Р1105280",
+    "defect_detection_date": null,
+    "mileage_operating_time": "405 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "подтвердить возмещение затрат по замене насоса и утилизацию у потребителя",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": "",
+    "updated_at": "2025-08-03T17:23:04.218Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 3,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": "010/1/695-01",
+    "message_received_date": "2025-08-02T11:09:00.154Z",
+    "sender": "ММЗ <ruservice@mmz-motor.by>",
+    "sender_outgoing_number": "12-30-9-678",
+    "message_sent_date": "2025-06-23",
+    "defect_period": 3,
+    "product_name": 2,
+    "product": 57,
+    "product_number": "00403",
+    "manufacture_date": "11.24",
+    "purchaser": "ММЗ",
+    "consumer_act_number": "12-30-9-678",
+    "consumer_act_date": "2025-06-23",
+    "country_rejected": "Беларусь",
+    "end_consumer": "Агромашсервис",
+    "end_consumer_act_number": "2/25",
+    "end_consumer_act_date": "2025-06-18",
+    "engine_brand": "Д-260.2S2-478",
+    "engine_number": "192493",
+    "transport_name": "Беларус 1221.3",
+    "transport_number": null,
+    "defect_detection_date": "2025-03-04",
+    "mileage_operating_time": "1573 м/ч",
+    "claimed_defect": "Посторонний шум при работе ПК. Износ втулки шестерни привода.",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": "147852369",
+    "receipt_invoice_date": "2025-08-01",
+    "reclamation_documents": "",
+    "updated_at": "2025-08-03T17:24:16.577Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 4,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": "010/1/697-01",
+    "message_received_date": "2025-08-02T11:12:56.091Z",
+    "sender": "ЯМЗ Желнина Наталия Владимировна <ZhelninaNV@ymzmotor.ru>",
+    "sender_outgoing_number": "2508578",
+    "message_sent_date": "2025-07-08",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "70394",
+    "consumer_act_date": "2025-04-28",
+    "country_rejected": "Россия",
+    "end_consumer": "АлтайГАЗавтосервис",
+    "end_consumer_act_number": "70394",
+    "end_consumer_act_date": "2025-04-28",
+    "engine_brand": "ЯМЗ 53445-А32",
+    "engine_number": "P0191484",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "mileage_operating_time": "48596 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": "255263",
+    "receipt_invoice_date": "2025-08-01",
+    "reclamation_documents": "",
+    "updated_at": "2025-08-03T17:24:02.503Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 5,
+  "fields": {
+    "status": "CLOSED",
+    "incoming_number": "010/1/698-01",
+    "message_received_date": "2025-08-02T11:17:25.770Z",
+    "sender": "ММЗ <bprpotk@mmz-motor.by>",
+    "sender_outgoing_number": "15-48/2-407",
+    "message_sent_date": "2025-07-08",
+    "defect_period": 3,
+    "product_name": 8,
+    "product": 102,
+    "product_number": "183",
+    "manufacture_date": "08.22",
+    "purchaser": "М",
+    "consumer_act_number": "15-48/2-407",
+    "consumer_act_date": "2025-07-08",
+    "country_rejected": "Россия",
+    "end_consumer": "Мытищинский машиностроительный завод",
+    "end_consumer_act_number": "240952/133-070",
+    "end_consumer_act_date": "2024-10-23",
+    "engine_brand": "Д-249.9-204",
+    "engine_number": "205234",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": "2024-10-23",
+    "mileage_operating_time": "161 км",
+    "claimed_defect": "течь масла из горячей части ТКР",
+    "consumer_requirement": "",
+    "products_count": 1,
+    "measures_taken": "сделан запрос фото по образцам",
+    "outgoing_document_number": "010/1/425-02",
+    "outgoing_document_date": "2025-07-23",
+    "letter_sending_method": "bprpotk@mmz-motor.by",
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": "2025-08-02",
+    "product_sender": "ММЗ",
+    "receipt_invoice_number": "14/25",
+    "receipt_invoice_date": "2025-08-01",
+    "reclamation_documents": "",
+    "updated_at": "2025-08-03T18:26:20.522Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 6,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": "010/1/700-01",
+    "message_received_date": "2025-08-02T11:51:03.827Z",
+    "sender": "ЯМЗ Желнина Наталия Владимировна <ZhelninaNV@ymzmotor.ru>",
+    "sender_outgoing_number": "2506599",
+    "message_sent_date": "2025-07-18",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "42223",
+    "consumer_act_date": "2025-03-17",
+    "country_rejected": "Россия",
+    "end_consumer": "ЛуидорГарантия-Уфа",
+    "end_consumer_act_number": "42223",
+    "end_consumer_act_date": "2025-03-17",
+    "engine_brand": "ЯМЗ 53445",
+    "engine_number": "РО207035",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": "2025-03-17",
+    "mileage_operating_time": "80408 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "запрос на доставку",
+    "outgoing_document_number": "010/1/376-02",
+    "outgoing_document_date": "2025-08-02",
+    "letter_sending_method": "ruservice@mmz-motor.by",
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": "987654321",
+    "receipt_invoice_date": "2025-07-28",
+    "reclamation_documents": "",
+    "updated_at": "2025-08-03T17:23:28.697Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 7,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": "010/1/702-01",
+    "message_received_date": "2025-08-02T15:13:51.850Z",
+    "sender": "ММЗ <ruservice@mmz-motor.by>",
+    "sender_outgoing_number": "12-30-9-685",
+    "message_sent_date": "2025-07-21",
+    "defect_period": 3,
+    "product_name": 1,
+    "product": 20,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ММЗ",
+    "consumer_act_number": "12-30-9-685",
+    "consumer_act_date": "2025-07-21",
+    "country_rejected": "Беларусь",
+    "end_consumer": "ММЗ",
+    "end_consumer_act_number": "12-30-9-685",
+    "end_consumer_act_date": "2025-07-21",
+    "engine_brand": "Д-260.2S2",
+    "engine_number": "291000",
+    "transport_name": "Беларус-1221.3",
+    "transport_number": "Р1105280",
+    "defect_detection_date": null,
+    "mileage_operating_time": "4150 км.",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "согласие на возмещение затрат и утилизацию",
+    "outgoing_document_number": "010/1/410-02",
+    "outgoing_document_date": "2025-07-24",
+    "letter_sending_method": "bprpotk@mmz-motor.by",
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": "",
+    "updated_at": "2025-08-03T17:22:33.715Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 8,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": null,
+    "message_received_date": "2025-08-02T18:50:06.644Z",
+    "sender": "",
+    "sender_outgoing_number": null,
+    "message_sent_date": null,
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "111444777",
+    "consumer_act_date": "2025-07-23",
+    "country_rejected": null,
+    "end_consumer": null,
+    "end_consumer_act_number": null,
+    "end_consumer_act_date": null,
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "mileage_operating_time": null,
+    "claimed_defect": "течь",
+    "consumer_requirement": "",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": "255263",
+    "receipt_invoice_date": "2025-08-01",
+    "reclamation_documents": "",
+    "updated_at": "2025-08-03T17:22:02.577Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 9,
+  "fields": {
+    "status": "CLOSED",
+    "incoming_number": "010/1/700-01",
+    "message_received_date": "2025-08-03T09:41:07.555Z",
+    "sender": "ЯМЗ Сычева Татьяна Александровна <SychevaTA@ymzmotor.ru>",
+    "sender_outgoing_number": "4444",
+    "message_sent_date": "2025-08-03",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "4444/25",
+    "consumer_act_date": "2025-07-17",
+    "country_rejected": "Россия",
+    "end_consumer": "ФОРВАРД-МОТОРС",
+    "end_consumer_act_number": "4444/25",
+    "end_consumer_act_date": "2025-07-17",
+    "engine_brand": "ЯМЗ 53445",
+    "engine_number": "N0000023",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "mileage_operating_time": "123450 км.",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": "9988776655",
+    "receipt_invoice_date": "2025-07-21",
+    "reclamation_documents": "",
+    "updated_at": "2025-08-03T17:26:48.230Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 10,
+  "fields": {
+    "status": "CLOSED",
+    "incoming_number": "010/1/700-01",
+    "message_received_date": "2025-08-03T09:42:55.074Z",
+    "sender": "ЯМЗ Сычева Татьяна Александровна <SychevaTA@ymzmotor.ru>",
+    "sender_outgoing_number": "5555",
+    "message_sent_date": "2025-08-03",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "5555/25",
+    "consumer_act_date": "2025-07-17",
+    "country_rejected": "Россия",
+    "end_consumer": "ФОРВАРД-МОТОРС",
+    "end_consumer_act_number": "5555/25",
+    "end_consumer_act_date": "2025-07-17",
+    "engine_brand": "ЯМЗ 53445",
+    "engine_number": "N0000235",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "mileage_operating_time": "3450 км.",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": "9988776655",
+    "receipt_invoice_date": "2025-07-21",
+    "reclamation_documents": "",
+    "updated_at": "2025-08-03T17:27:02.365Z"
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 2,
+  "fields": {
+    "reclamation": 1,
+    "act_number": "2025 № 125",
+    "act_date": "2025-08-01",
+    "fault_type": "unknown",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя комплектующего изделия",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "volume_removal_reference": null,
+    "recipient": null,
+    "shipment_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": ""
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 14,
+  "fields": {
+    "reclamation": 10,
+    "act_number": "2025 № 135",
+    "act_date": "2025-08-01",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя комплектующего изделия",
+    "defect_causes_explanation": "",
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "volume_removal_reference": null,
+    "recipient": null,
+    "shipment_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": ""
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 15,
+  "fields": {
+    "reclamation": 9,
+    "act_number": "2025 № 135",
+    "act_date": "2025-08-01",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя комплектующего изделия",
+    "defect_causes_explanation": "",
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "volume_removal_reference": null,
+    "recipient": null,
+    "shipment_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": ""
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 16,
+  "fields": {
+    "reclamation": 5,
+    "act_number": "2025 № 139",
+    "act_date": "2025-08-03",
+    "fault_type": "compliant",
+    "guilty_department": "Не определено",
+    "defect_causes": "",
+    "defect_causes_explanation": "",
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "volume_removal_reference": null,
+    "recipient": null,
+    "shipment_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": ""
+  }
+}
+]
