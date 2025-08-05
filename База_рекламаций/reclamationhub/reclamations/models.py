@@ -69,8 +69,11 @@ class Reclamation(models.Model):
     message_received_date = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата поступления сообщения в ОТК"
     )
-    sender = models.TextField(
-        blank=True, null=True, verbose_name="Кто отправил сообщение"
+    sender = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        verbose_name="Кто отправил сообщение"
     )
     sender_outgoing_number = models.CharField(
         max_length=100, null=True, blank=True, verbose_name="Исх. № отправителя"
@@ -179,16 +182,19 @@ class Reclamation(models.Model):
         null=True, blank=True, verbose_name="Дата выявления дефекта изделия"
     )
     mileage_operating_time = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Пробег, наработка"
+        max_length=100, verbose_name="Пробег, наработка"
     )
-    claimed_defect = models.TextField(verbose_name="Заявленный дефект изделия")
-    consumer_requirement = models.TextField(
-        null=True, blank=True, verbose_name="Требование потребителя"
+    claimed_defect = models.CharField(max_length=250, default="течь", verbose_name="Заявленный дефект изделия")
+
+    consumer_requirement = models.CharField(
+        max_length=250,
+        null=True,
+        blank=True,
+        default="исследование",
+        verbose_name="Требование потребителя"
     )
 
     products_count = models.PositiveIntegerField(
-        null=True,
-        blank=True,
         default=1,
         validators=[MinValueValidator(1)],
         verbose_name="Количество изделий",
@@ -245,8 +251,11 @@ class Reclamation(models.Model):
         null=True, blank=True, verbose_name="Дата накладной прихода изделия"
     )
 
-    reclamation_documents = models.TextField(
-        null=True, blank=True, verbose_name="Документы по рекламационному изделию"
+    reclamation_documents = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Документы по рекламационному изделию"
     )
     # ------------------------------------------------------------------------------------------
 

@@ -59,12 +59,12 @@ class ReclamationAdminForm(forms.ModelForm):
         fields = "__all__"
         # список полей из модели с типом TextField для которых будем изменять размер
         text_fields = [
-            "sender",
-            "claimed_defect",
-            "consumer_requirement",
+            # "sender",
+            # "claimed_defect",
+            # "consumer_requirement",
             "measures_taken",
             "consumer_response",
-            "reclamation_documents",
+            # "reclamation_documents",
         ]
 
         # устанавливаем высоту полей "rows" и ширину "cols", отключаем возможность изменения размера поля мышкой
