@@ -70,10 +70,7 @@ class Reclamation(models.Model):
         auto_now_add=True, verbose_name="Дата поступления сообщения в ОТК"
     )
     sender = models.CharField(
-        max_length=200,
-        blank=True,
-        null=True,
-        verbose_name="Кто отправил сообщение"
+        max_length=200, blank=True, null=True, verbose_name="Кто отправил сообщение"
     )
     sender_outgoing_number = models.CharField(
         max_length=100, null=True, blank=True, verbose_name="Исх. № отправителя"
@@ -106,7 +103,6 @@ class Reclamation(models.Model):
         related_name="reclamations",
         verbose_name="Обозначение изделия",
     )
-
     product_number = models.CharField(
         max_length=10, null=True, blank=True, verbose_name="Номер изделия"
     )
@@ -134,11 +130,9 @@ class Reclamation(models.Model):
         blank=True,
         verbose_name="Дата акта приобретателя изделия",
     )
-
     country_rejected = models.CharField(
         max_length=100,
-        null=True,
-        blank=True,
+        default="Россия",
         verbose_name="Государство, где забраковано изделие",
     )
 
@@ -181,19 +175,35 @@ class Reclamation(models.Model):
     defect_detection_date = models.DateField(
         null=True, blank=True, verbose_name="Дата выявления дефекта изделия"
     )
-    mileage_operating_time = models.CharField(
-        max_length=100, verbose_name="Пробег, наработка"
+
+    # Определяем класс для выбора единицы измерения пробега/наработки
+    class AwayType(models.TextChoices):
+        NOTDATA = "notdata", "н/д"
+        KILOMETRE = "kilometre", "км"
+        MOTO = "moto", "м/ч"
+
+    away_type = models.CharField(
+        max_length=20,
+        choices=AwayType.choices,
+        verbose_name="Единица измерения",
+        null=False,  # поле не может содержать NULL в базе данных
+        blank=False,  # поле не может быть пустым при заполнении формы
+        default=AwayType.NOTDATA,  # Добавляем значение по умолчанию
     )
-    claimed_defect = models.CharField(max_length=250, default="течь", verbose_name="Заявленный дефект изделия")
+    mileage_operating_time = models.CharField(
+        max_length=100, default="н/д", verbose_name="Пробег, наработка"
+    )
+    claimed_defect = models.CharField(
+        max_length=250, default="течь", verbose_name="Заявленный дефект изделия"
+    )
 
     consumer_requirement = models.CharField(
         max_length=250,
         null=True,
         blank=True,
         default="исследование",
-        verbose_name="Требование потребителя"
+        verbose_name="Требование потребителя",
     )
-
     products_count = models.PositiveIntegerField(
         default=1,
         validators=[MinValueValidator(1)],
@@ -255,7 +265,7 @@ class Reclamation(models.Model):
         max_length=100,
         null=True,
         blank=True,
-        verbose_name="Документы по рекламационному изделию"
+        verbose_name="Документы по рекламационному изделию",
     )
     # ------------------------------------------------------------------------------------------
 
@@ -350,10 +360,12 @@ class Reclamation(models.Model):
         super().save(*args, **kwargs)
 
     def update_status_on_receipt(self):
-        """Обновление статуса рекламации при добавлении накладной"""
+        """Обновление статуса рекламации при изменении накладной"""
         if self.receipt_invoice_number and self.is_new():
             self.status = self.Status.IN_PROGRESS
-            self.save()
+        elif not self.receipt_invoice_number and self.status == self.Status.IN_PROGRESS:
+            self.status = self.Status.NEW
+        self.save()
 
     def update_status_on_investigation(self):
         """Обновление статуса рекламации в зависимости от акта исследования"""

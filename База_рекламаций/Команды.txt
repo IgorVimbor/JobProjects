@@ -22,16 +22,20 @@ python manage.py runserver 0.0.0.0:8000 --settings=reclamationhub.settings.produ
 2. Создание приложения в проекте
 
 python manage.py startapp <название приложения>
-Например: python manage.py startapp sourcebook
+-- Например: python manage.py startapp sourcebook
 
 -----------------------------------------------------------------------------------
 
 3. Создание и применение миграций
+
 python manage.py makemigrations
 python manage.py migrate
 
-   Обновление статических файлов после их изменения
+-- Обновление статических файлов после их изменения
+
 python manage.py collectstatic
+python manage.py collectstatic --settings=reclamationhub.settings.development
+python manage.py collectstatic --settings=reclamationhub.settings.production
 
 -----------------------------------------------------------------------------------
 
@@ -140,6 +144,20 @@ DROP TABLE IF EXISTS product_type;
 DROP TABLE IF EXISTS product;
 drop table if exists engine_transport;
 drop table if exists investigation;
+
+-- Удаление данных (всех строк) из таблиц
+TRUNCATE TABLE reclamation;
+-- Особенности:
+— Автоматически сбрасывает счётчик автоинкремента (ID начнётся с 1).
+— Нельзя использовать с условиями WHERE.
+— Выполняется мгновенно.
+
+-- Удалить все данные (аналогично TRUNCATE, но медленнее)
+DELETE FROM reclamation;
+-- Особенности:
+— Не сбрасывает автоинкремент (новые записи продолжат ID).
+— Можно откатить через ROLLBACK (если включены транзакции).
+— Для больших таблиц работает медленнее, чем TRUNCATE.
 
 -------------------------------------------------------------------------------------
 

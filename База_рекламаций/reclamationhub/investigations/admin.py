@@ -207,7 +207,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         "return_condition_explanation",
     ]
 
-    # Обновленная группировка полей
+    # Группировка полей
     fieldsets = [
         (
             "Акт исследования и виновник",
@@ -394,9 +394,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         reclamation = obj.reclamation
         super().delete_model(request, obj)
         reclamation.update_status_on_investigation()
-        self.message_user(
-            request, f"Статус рекламации {reclamation} изменен на 'В работе'"
-        )
+        self.message_user(request, f"Статус рекламации {reclamation} изменен")
 
     # Добавляем действие в панель "Действие / Выполнить"
     actions = ["edit_shipment"]

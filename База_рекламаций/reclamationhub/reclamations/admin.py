@@ -58,21 +58,17 @@ class ReclamationAdminForm(forms.ModelForm):
         model = Reclamation
         fields = "__all__"
         # список полей из модели с типом TextField для которых будем изменять размер
-        text_fields = [
-            # "sender",
-            # "claimed_defect",
-            # "consumer_requirement",
-            "measures_taken",
-            "consumer_response",
-            # "reclamation_documents",
-        ]
+        text_fields = ["measures_taken", "consumer_response"]
 
         # устанавливаем высоту полей "rows" и ширину "cols", отключаем возможность изменения размера поля мышкой
         widgets = {
-            field: forms.Textarea(
-                attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
-            )
-            for field in text_fields
+            "away_type": forms.RadioSelect(),  # Добавляем RadioSelect для away_type
+            **{
+                field: forms.Textarea(
+                    attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
+                )
+                for field in text_fields
+            },
         }
 
     def __init__(self, *args, **kwargs):
@@ -142,6 +138,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         "end_consumer_act_number",  # номер акта конечного потребителя
         "end_consumer_act_date",  # дата акта конечного потребителя
         "engine_number",  # номер двигателя
+        "mileage_operating_time",  # пробег/наработка
         "products_count",  # количество изделий
         "measures_taken",  # принятые меры
         "outgoing_document_number",  # номер исходящего документа
@@ -213,6 +210,7 @@ class ReclamationAdmin(admin.ModelAdmin):
             {
                 "fields": [
                     "defect_detection_date",
+                    "away_type",
                     "mileage_operating_time",
                     "claimed_defect",
                     "consumer_requirement",
@@ -342,12 +340,45 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     has_investigation_icon.short_description = "Исследование"
 
+    # def save_model(self, request, obj, form, change):
+    #     """Обновление статуса рекламации при добавлении номера накладной прихода изделия"""
+    #     # Если это изменение существующей записи, добавлен номер накладной и статус "Новая"
+    #     if change and "receipt_invoice_number" in form.changed_data and obj.is_new():
+    #         obj.update_status_on_receipt()
+    #         self.message_user(request, 'Статус рекламации изменен на "В работе"')
+    #     super().save_model(request, obj, form, change)
+
     def save_model(self, request, obj, form, change):
-        """Обновление статуса рекламации при добавлении номера накладной прихода изделия"""
-        # Если это изменение существующей записи, добавлен номер накладной и статус "Новая"
-        if change and "receipt_invoice_number" in form.changed_data and obj.is_new():
-            obj.update_status_on_receipt()
-            self.message_user(request, 'Статус рекламации изменен на "В работе"')
+        """Обновление статуса рекламации и добавление суффикса к пробегу"""
+        # Добавляем суффикс к пробегу/наработке в зависимости от типа
+        if (
+            obj.away_type == Reclamation.AwayType.KILOMETRE
+            and not obj.mileage_operating_time.endswith(" км")
+        ):
+            obj.mileage_operating_time = f"{obj.mileage_operating_time} км"
+        elif (
+            obj.away_type == Reclamation.AwayType.MOTO
+            and not obj.mileage_operating_time.endswith(" м/ч")
+        ):
+            obj.mileage_operating_time = f"{obj.mileage_operating_time} м/ч"
+
+        # Обновление статуса рекламации при добавлении накладной или удалении накладной
+        if change and "receipt_invoice_number" in form.changed_data:
+            old_obj = Reclamation.objects.get(pk=obj.pk)
+
+            # Если было значение, а стало пустым и статус "В работе"
+            if (
+                old_obj.receipt_invoice_number
+                and not obj.receipt_invoice_number
+                and obj.status == Reclamation.Status.IN_PROGRESS
+            ):
+                obj.status = Reclamation.Status.NEW
+                self.message_user(request, "Статус рекламации изменен на 'Новая'")
+            # Если поле заполнено и статус "Новая"
+            elif obj.receipt_invoice_number and obj.is_new():
+                obj.status = Reclamation.Status.IN_PROGRESS
+                self.message_user(request, "Статус рекламации изменен на 'В работе'")
+
         super().save_model(request, obj, form, change)
 
     # Автозаполнение для связанных полей
