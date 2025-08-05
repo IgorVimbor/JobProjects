@@ -74,13 +74,13 @@ MIDDLEWARE = [
 ]
 
 # Для разработки
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+# CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
 
 # Или если используете другой порт
 # CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
 
 # Для продакшена добавьте ваш домен
-# CSRF_TRUSTED_ORIGINS = ['https://your-domain.com']
+# CSRF_TRUSTED_ORIGINS = ['http://192.168.0.191:8000']
 
 # Это необходимо для безопасной обработки AJAX-запросов.
 # Django использует CSRF-защиту, и эта настройка указывает, каким источникам можно доверять.
@@ -97,6 +97,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
+                'django.template.context_processors.csrf',
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],

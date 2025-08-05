@@ -12,6 +12,11 @@ python manage.py runserver --settings=reclamationhub.settings.development
 ------------ Запуск проекта в продакшене (settings/production.py)
 python manage.py runserver 0.0.0.0:8000 --settings=reclamationhub.settings.production
 
+------------ Как подключиться другим устройствам
+На моем рабочем ПК: http://localhost:8000
+
+На других ПК в сети: http://192.168.0.191:8000 (http://ваш_IP:8000)
+
 -----------------------------------------------------------------------------------
 
 2. Создание приложения в проекте
