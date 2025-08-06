@@ -117,7 +117,7 @@ class ReclamationAdminForm(forms.ModelForm):
 class ReclamationAdmin(admin.ModelAdmin):
     class Media:
         css = {"all": ("admin/css/custom_admin.css",)}
-        js = ("admin/js/custom_admin.js",)
+        js = ("admin/js/custom_admin.js", "admin/js/copy_act_fields.js")
 
     form = ReclamationAdminForm
 
@@ -128,6 +128,7 @@ class ReclamationAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "status_colored",  # статус рекламации (Новая, В работе, Закрыта)
+        "incoming_number",  # входящий № по ОТК
         "sender_outgoing_number",  # исходящий № отправителя
         "product_name",  # наименование изделия
         "product",  # обозначение изделия
