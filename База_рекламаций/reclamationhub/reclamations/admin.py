@@ -129,6 +129,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         "id",
         "status_colored",  # статус рекламации (Новая, В работе, Закрыта)
         "incoming_number",  # входящий № по ОТК
+        "defect_period",  # период выявления дефекта
         "sender_outgoing_number",  # исходящий № отправителя
         "product_name",  # наименование изделия
         "product",  # обозначение изделия
@@ -263,12 +264,14 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     # Поиск
     search_fields = [
-        "sender_outgoing_number",  # по Исходящему № отправителя
-        "product_name__name",  # по Наименованию изделия
-        "product__nomenclature",  # по Обозначению изделия
-        "product_number",  # по Номеру изделия
-        "consumer_act_number",  # по Номеру акта приобретателя изделия
-        "end_consumer_act_number",  # по Номеру акта конечного потребителя
+        "incoming_number",  # входящий № по ОТК
+        "sender_outgoing_number",  # исходящий № отправителя
+        "product_name__name",  # наименование изделия
+        "product__nomenclature",  # обозначение изделия
+        "product_number",  # номер изделия
+        "consumer_act_number",  # номер акта приобретателя изделия
+        "end_consumer_act_number",  # номер акта конечного потребителя
+        "engine_number",  # номер двигателя
     ]
 
     # Метод get_queryset с select_related используется для оптимизации запросов к базе данных.

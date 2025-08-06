@@ -333,7 +333,7 @@ class Reclamation(models.Model):
         return f"{self.pk} - {self.product_name} - {self.product}"
 
     def admin_display(self):
-        """Отображение рекламации в админ-панели (в две строки)"""
+        """Отображение рекламации в две строки в админ-панели актов рекламаций"""
         return mark_safe(f"{self.pk} - {self.product_name}<br>{self.product}")
 
     admin_display.short_description = "Рекламация"
@@ -342,17 +342,16 @@ class Reclamation(models.Model):
         """
         Метод для базовой проверки данных на уровне модели
         """
-        # Проверяем, что заполнена хотя бы одна пара по акту рекламации (приобретателя или конечного потребителя)
-        # Первая пара полей
-        has_consumer_act = bool(self.consumer_act_number and self.consumer_act_date)
-        # Вторая пара
-        has_end_consumer_act = bool(
-            self.end_consumer_act_number and self.end_consumer_act_date
-        )
-        # Проверяем, что хотя бы одна пара заполнена
-        if not has_consumer_act and not has_end_consumer_act:
+        # # Первая пара полей
+        # has_consumer_act = bool(self.consumer_act_number and self.consumer_act_date)
+        # # Вторая пара
+        # has_end_consumer_act = bool(
+        #     self.end_consumer_act_number and self.end_consumer_act_date
+        # )
+        # Проверяем, что указан хотя бы один акт рекламации (приобретателя или конечного потребителя)
+        if not self.consumer_act_number and not self.end_consumer_act_number:
             raise ValidationError(
-                "Необходимо заполнить хотя бы один акт (приобретателя или конечного потребителя)"
+                "Необходимо заполнить хотя бы один номер акта (приобретателя или конечного потребителя)"
             )
 
     def save(self, *args, **kwargs):
