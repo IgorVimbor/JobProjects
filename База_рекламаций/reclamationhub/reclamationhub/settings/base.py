@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "investigations.apps.InvestigationsConfig",
     "claims.apps.ClaimsConfig",
     "reports.apps.ReportsConfig",
+    "core.apps.CoreConfig",
 ]
 
 # Добавляем порядок отображения приложений
@@ -97,7 +98,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
-                'django.template.context_processors.csrf',
+                "django.template.context_processors.csrf",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
@@ -179,6 +180,11 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# # Явно переопределяем настройки аутентификации
+# LOGIN_REDIRECT_URL = "/"
+# LOGOUT_REDIRECT_URL = "/"
+# LOGIN_URL = "/login/"
 
 # # после авторизации пользователь попадает на главную страницу
 # LOGIN_REDIRECT_URL = "home"

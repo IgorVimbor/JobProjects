@@ -120,8 +120,8 @@ class Investigation(models.Model):
 
     class Meta:
         db_table = "investigation"
-        verbose_name = "Исследование"
-        verbose_name_plural = "Исследования"
+        verbose_name = "Акт исследования"
+        verbose_name_plural = "Акты исследования"
         indexes = [
             models.Index(fields=["act_number", "act_date"]),
         ]

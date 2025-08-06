@@ -274,7 +274,7 @@ class Reclamation(models.Model):
 
     class Meta:
         db_table = "reclamation"
-        verbose_name = "Рекламация"
+        verbose_name = "Рекламацию"
         verbose_name_plural = "Рекламации"
         ordering = ["-message_received_date"]
         indexes = [
