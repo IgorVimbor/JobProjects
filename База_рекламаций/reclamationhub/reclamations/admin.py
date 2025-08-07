@@ -60,9 +60,9 @@ class ReclamationAdminForm(forms.ModelForm):
         # список полей из модели с типом TextField для которых будем изменять размер
         text_fields = ["measures_taken", "consumer_response"]
 
-        # устанавливаем высоту полей "rows" и ширину "cols", отключаем возможность изменения размера поля мышкой
         widgets = {
             "away_type": forms.RadioSelect(),  # Добавляем RadioSelect для away_type
+            # устанавливаем высоту полей "rows" и ширину "cols", отключаем возможность изменения размера поля мышкой
             **{
                 field: forms.Textarea(
                     attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
@@ -124,11 +124,14 @@ class ReclamationAdmin(admin.ModelAdmin):
     # Отображение кнопок сохранения сверху и снизу формы
     save_on_top = True
 
+    list_per_page = 14  # количество записей на странице
+
     # Основные поля для отображения в списке
     list_display = [
         "id",
         "status_colored",  # статус рекламации (Новая, В работе, Закрыта)
         "incoming_number",  # входящий № по ОТК
+        "message_received_date",  #  дата поступления ссобщения
         "defect_period",  # период выявления дефекта
         "sender_outgoing_number",  # исходящий № отправителя
         "product_name",  # наименование изделия
@@ -156,6 +159,7 @@ class ReclamationAdmin(admin.ModelAdmin):
             {
                 "fields": [
                     "incoming_number",
+                    "message_received_date",
                     "sender",
                     "sender_outgoing_number",
                     "message_sent_date",
@@ -392,7 +396,7 @@ class ReclamationAdmin(admin.ModelAdmin):
     raw_id_fields = ["product_name", "product"]
 
     # Сортировка по умолчанию
-    ordering = ["-message_received_date"]
+    ordering = ["-id"]
 
     # Добавляем шаблон формы, где можно будет ввести номера актов и номер накладной
     change_list_template = "admin/reclamation_changelist.html"

@@ -1586,11 +1586,206 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 123,
+  "fields": {
+    "action_time": "2025-08-07T07:50:52.207Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "17",
+    "object_repr": "Акт исследования 2025 № 932 от 05.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 124,
+  "fields": {
+    "action_time": "2025-08-07T07:57:30.655Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "33",
+    "object_repr": "33 - компрессор - ПК 225 \n(5340.3509015-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 125,
+  "fields": {
+    "action_time": "2025-08-07T07:59:11.883Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "17",
+    "object_repr": "Акт исследования 2025 № 932 от 05.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u043e\\u044f\\u0441\\u043d\\u0435\\u043d\\u0438\\u044f \\u043a \\u043f\\u0440\\u0438\\u0447\\u0438\\u043d\\u0430\\u043c \\u0432\\u043e\\u0437\\u043d\\u0438\\u043a\\u043d\\u043e\\u0432\\u0435\\u043d\\u0438\\u044f \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u043e\\u0432\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 126,
+  "fields": {
+    "action_time": "2025-08-07T08:01:46.670Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "34",
+    "object_repr": "34 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 127,
+  "fields": {
+    "action_time": "2025-08-07T08:04:04.242Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "35",
+    "object_repr": "35 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 128,
+  "fields": {
+    "action_time": "2025-08-07T08:05:30.401Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "33",
+    "object_repr": "33 - компрессор - ПК 225 \n(5340.3509015-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0417\\u0430\\u044f\\u0432\\u043b\\u0435\\u043d\\u043d\\u044b\\u0439 \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 129,
+  "fields": {
+    "action_time": "2025-08-07T08:07:58.409Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "36",
+    "object_repr": "36 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 130,
+  "fields": {
+    "action_time": "2025-08-07T08:10:16.339Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "37",
+    "object_repr": "37 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 131,
+  "fields": {
+    "action_time": "2025-08-07T08:13:50.822Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "38",
+    "object_repr": "38 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 132,
+  "fields": {
+    "action_time": "2025-08-07T10:55:26.781Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "39",
+    "object_repr": "39 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 133,
+  "fields": {
+    "action_time": "2025-08-07T10:58:48.577Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "40",
+    "object_repr": "40 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 134,
+  "fields": {
+    "action_time": "2025-08-07T11:04:30.308Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "41",
+    "object_repr": "41 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 135,
+  "fields": {
+    "action_time": "2025-08-07T13:16:01.326Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "41",
+    "object_repr": "41 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 136,
+  "fields": {
+    "action_time": "2025-08-07T13:16:07.446Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "40",
+    "object_repr": "40 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 137,
+  "fields": {
+    "action_time": "2025-08-07T13:16:14.590Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "39",
+    "object_repr": "39 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044f\"]}}]"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$600000$N3PiQkrEWdRBFpekgxmKpU$B56ANx475SbmC/lvibytbPCW6ZqpCj65rQ67ATY3SqA=",
-    "last_login": "2025-08-06T05:13:50.933Z",
+    "last_login": "2025-08-07T10:45:56.536Z",
     "is_superuser": true,
     "username": "root",
     "first_name": "",
@@ -1605,10 +1800,34 @@
 },
 {
   "model": "sessions.session",
+  "pk": "12s3jnjmol49sps7xo3j7nqwsxvoaepe",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujy8C:mox3wnnCjkJQmr1eFHpsyAJUmmTDJm9iggppGxpsNZA",
+    "expire_date": "2025-08-21T10:45:56.539Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "210spgtj965i1yf5sy9dq56dw44adf0c",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujviM:ww8jkKY5mADafll5GTzqazmqXVhQRD9gCD-KNWaWDWI",
+    "expire_date": "2025-08-21T08:11:06.233Z"
+  }
+},
+{
+  "model": "sessions.session",
   "pk": "2reb948x478m0oby7ycyzvdxp5mhhlh9",
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujWTG:_sHA_teJ3v7LJMQByyQ7u6aTTFbfuPEJPXtnlP5Gdos",
     "expire_date": "2025-08-20T05:13:50.933Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "2sk3uqgcbpzm3m4i5wpveyfzeb1ujkx1",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujtHy:lClzduo47kpvITSlB6Og5c6Jdc79DX-1T_QlOdLenPo",
+    "expire_date": "2025-08-21T05:35:42.532Z"
   }
 },
 {
@@ -1637,10 +1856,34 @@
 },
 {
   "model": "sessions.session",
+  "pk": "9lht48smk603wxm2irbp9yz6d6qeg9h2",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujuvT:Q-L6xcXpqqenq1rOhS-V67MtJyNB6gN0st2IIx6MKSg",
+    "expire_date": "2025-08-21T07:20:35.629Z"
+  }
+},
+{
+  "model": "sessions.session",
   "pk": "c1l9n7wxzf9o4mk2uqggq08br8nzd6dt",
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujDKt:MDpm7HPiANrgs02cl5NTiyQrTYLukuq3HkkAaDz_JgM",
     "expire_date": "2025-08-19T08:47:55.603Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "d55wtg2zpnrpa53bln02wayeo2721tyi",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujv9K:gjRVaF0dRENW6cfklONjt_9_KMXR1pSTXihY-LEXWPw",
+    "expire_date": "2025-08-21T07:34:54.294Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fzq8ewh1pynrxlq35csojkfas0gebb2a",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujssb:tK22SCxo568Ks3_7cVgIHmF7ZlPhhdYwiIx8ajno1_A",
+    "expire_date": "2025-08-21T05:09:29.751Z"
   }
 },
 {
@@ -1677,10 +1920,26 @@
 },
 {
   "model": "sessions.session",
+  "pk": "u3wrz1sv4xp0w52r68qsgcfv8gjo6ski",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujvCp:K0TIVIzNF8BzUmNE19WC4TPP9tG_uslrWLNg8PTZVbM",
+    "expire_date": "2025-08-21T07:38:31.907Z"
+  }
+},
+{
+  "model": "sessions.session",
   "pk": "v2zmgd8e1msozdy97mlihorih82lxdzj",
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujGob:Dh2dQG98tiIv4-4yG-36Vdl9JEQzA3DKZpXxlVGMMkQ",
     "expire_date": "2025-08-19T12:30:49.250Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "v4wczr8fe3bn68s8k3u38zmx20sub61y",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujsuQ:ZAUteD_GeOefpxcKYxAgEkbiJ3YQWYNBSWchMp7fZqQ",
+    "expire_date": "2025-08-21T05:11:22.743Z"
   }
 },
 {
@@ -3062,7 +3321,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T10:38:23.415Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509497",
     "message_sent_date": "2025-08-05",
@@ -3109,7 +3368,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T10:46:58.415Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509514",
     "message_sent_date": "2025-08-05",
@@ -3154,9 +3413,9 @@
   "model": "reclamations.reclamation",
   "pk": 3,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": "дистанционно",
-    "message_received_date": "2025-08-05T10:53:41.370Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": null,
     "message_sent_date": "2025-08-05",
@@ -3194,7 +3453,7 @@
     "receipt_invoice_number": "фото",
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
-    "updated_at": "2025-08-06T05:00:26.019Z"
+    "updated_at": "2025-08-07T07:59:11.881Z"
   }
 },
 {
@@ -3203,7 +3462,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T11:07:57.960Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509499",
     "message_sent_date": "2025-08-05",
@@ -3250,7 +3509,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T12:02:16.344Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509557",
     "message_sent_date": "2025-08-05",
@@ -3297,7 +3556,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T12:08:23.049Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509565",
     "message_sent_date": "2025-08-05",
@@ -3344,7 +3603,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T12:11:18.306Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509566",
     "message_sent_date": "2025-08-05",
@@ -3391,7 +3650,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T12:13:22.058Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509578",
     "message_sent_date": "2025-08-05",
@@ -3438,7 +3697,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T12:17:13.684Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509589",
     "message_sent_date": "2025-08-05",
@@ -3485,7 +3744,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T12:20:05.671Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509591",
     "message_sent_date": null,
@@ -3532,7 +3791,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T13:08:21.756Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509592",
     "message_sent_date": "2025-08-05",
@@ -3579,7 +3838,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T13:14:21.665Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509593",
     "message_sent_date": "2025-08-05",
@@ -3626,7 +3885,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T13:16:52.425Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509594",
     "message_sent_date": "2025-08-05",
@@ -3673,7 +3932,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T13:18:58.728Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509597",
     "message_sent_date": "2025-08-05",
@@ -3720,7 +3979,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T13:22:32.564Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509599",
     "message_sent_date": "2025-08-05",
@@ -3767,7 +4026,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-05T13:24:52.156Z",
+    "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509602",
     "message_sent_date": "2025-08-05",
@@ -3814,7 +4073,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-06T05:19:08.392Z",
+    "message_received_date": "2025-08-05",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509603",
     "message_sent_date": "2025-08-05",
@@ -3861,7 +4120,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-06T05:22:40.076Z",
+    "message_received_date": "2025-08-05",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509621",
     "message_sent_date": "2025-08-05",
@@ -3908,7 +4167,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": null,
-    "message_received_date": "2025-08-06T05:25:20.186Z",
+    "message_received_date": "2025-08-05",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
     "sender_outgoing_number": "2509623",
     "message_sent_date": "2025-08-05",
@@ -3955,7 +4214,7 @@
   "fields": {
     "status": "NEW",
     "incoming_number": "010/1/641-01",
-    "message_received_date": "2025-08-06T05:44:13.156Z",
+    "message_received_date": "2025-08-05",
     "sender": "ОАО \"УКХ\"ММЗ\"",
     "sender_outgoing_number": "15-43-9/113",
     "message_sent_date": "2025-08-05",
@@ -4002,7 +4261,7 @@
   "fields": {
     "status": "IN_PROGRESS",
     "incoming_number": null,
-    "message_received_date": "2025-08-06T10:46:04.658Z",
+    "message_received_date": "2025-08-05",
     "sender": null,
     "sender_outgoing_number": null,
     "message_sent_date": null,
@@ -4041,6 +4300,453 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "updated_at": "2025-08-06T13:19:37.990Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 33,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-06",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2509640",
+    "message_sent_date": "2025-08-06",
+    "defect_period": 1,
+    "product_name": 2,
+    "product": 67,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "385833",
+    "consumer_act_date": "2024-09-16",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "385833",
+    "end_consumer_act_date": "2024-09-16",
+    "engine_brand": "ЯМЗ-53645-А12",
+    "engine_number": "P0194649",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "moto",
+    "mileage_operating_time": "444 м/ч",
+    "claimed_defect": "изменение оборотов",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "updated_at": "2025-08-07T08:05:30.385Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 34,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-06",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2509646",
+    "message_sent_date": "2025-08-06",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "401536",
+    "consumer_act_date": "2024-12-25",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "401536",
+    "end_consumer_act_date": "2024-12-25",
+    "engine_brand": "ЯМЗ-53425-А04",
+    "engine_number": "N0171487",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "moto",
+    "mileage_operating_time": "346 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "updated_at": "2025-08-07T08:01:46.670Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 35,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-06",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2509651",
+    "message_sent_date": "2025-08-06",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "379910",
+    "consumer_act_date": "2025-08-21",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "379910",
+    "end_consumer_act_date": "2025-08-21",
+    "engine_brand": "ЯМЗ-53435",
+    "engine_number": "N175703",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "moto",
+    "mileage_operating_time": "263 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "updated_at": "2025-08-07T08:04:04.242Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 36,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-06",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2509683",
+    "message_sent_date": "2025-08-06",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "90541",
+    "consumer_act_date": "2025-05-29",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "90541",
+    "end_consumer_act_date": "2025-05-29",
+    "engine_brand": "534450",
+    "engine_number": "P0194358",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "kilometre",
+    "mileage_operating_time": "100240 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "updated_at": "2025-08-07T08:07:58.407Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 37,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-06",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2509685",
+    "message_sent_date": "2025-08-06",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "90917",
+    "consumer_act_date": "2025-05-30",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "90917",
+    "end_consumer_act_date": "2025-05-30",
+    "engine_brand": "53445.1000140-А32",
+    "engine_number": "P0206006",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "kilometre",
+    "mileage_operating_time": "72099 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "updated_at": "2025-08-07T08:10:16.339Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 38,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-06",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2509688",
+    "message_sent_date": "2025-08-06",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "91258",
+    "consumer_act_date": "2025-05-30",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "91258",
+    "end_consumer_act_date": "2025-05-30",
+    "engine_brand": "534450",
+    "engine_number": "R0216834",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "kilometre",
+    "mileage_operating_time": "6593 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "updated_at": "2025-08-07T08:13:50.822Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 39,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-07",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2509700",
+    "message_sent_date": "2025-08-07",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "365580",
+    "consumer_act_date": "2024-06-28",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "365580",
+    "end_consumer_act_date": "2024-06-28",
+    "engine_brand": "ЯМЗ-53645-А12",
+    "engine_number": "N0174652",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "moto",
+    "mileage_operating_time": "584 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "updated_at": "2025-08-07T13:16:14.589Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 40,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-07",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2509701",
+    "message_sent_date": "2025-08-07",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "365553",
+    "consumer_act_date": "2024-06-28",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "365553",
+    "end_consumer_act_date": "2024-06-28",
+    "engine_brand": "ЯМЗ-53645-А12",
+    "engine_number": "P0191483",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "moto",
+    "mileage_operating_time": "308 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "updated_at": "2025-08-07T13:16:07.445Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 41,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-07",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2509703",
+    "message_sent_date": "2025-08-07",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "363414",
+    "consumer_act_date": "2024-06-18",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "363414",
+    "end_consumer_act_date": "2024-06-18",
+    "engine_brand": "ЯМЗ-53425-А04",
+    "engine_number": "N0177419",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "moto",
+    "mileage_operating_time": "410 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": "",
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "updated_at": "2025-08-07T13:16:01.324Z"
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 17,
+  "fields": {
+    "reclamation": 3,
+    "act_number": "2025 № 932",
+    "act_date": "2025-08-05",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "Установить не представляется возможным",
+    "defect_causes_explanation": "Выход из строя торцевого уплотнения \"IIC\"",
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "volume_removal_reference": null,
+    "recipient": "SychevaTA@ymzmotor.ru",
+    "shipment_date": "2025-08-07",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": ""
   }
 }
 ]

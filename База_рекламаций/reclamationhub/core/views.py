@@ -11,19 +11,11 @@ import json
 #     return render(request, "home.html", {})
 
 
-from django.shortcuts import render
-from django.db.models import Count
-from django.db.models.functions import TruncMonth
-from datetime import datetime, timedelta
-from reclamations.models import Reclamation
-from investigations.models import Investigation
-
-
 def home_view(request):
     # Последние 5 рекламаций
     latest_reclamations = Reclamation.objects.select_related(
         "product", "product_name"
-    ).order_by("-message_received_date")[:5]
+    ).order_by("-id")[:5]
 
     # Общее количество рекламаций
     total_reclamations = Reclamation.objects.count()

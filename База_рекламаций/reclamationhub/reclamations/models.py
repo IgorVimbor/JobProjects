@@ -66,8 +66,8 @@ class Reclamation(models.Model):
     incoming_number = models.CharField(
         max_length=100, blank=True, null=True, verbose_name="Входящий № по ОТК"
     )
-    message_received_date = models.DateTimeField(
-        auto_now_add=True, verbose_name="Дата поступления сообщения в ОТК"
+    message_received_date = models.DateField(
+        default=timezone.now, verbose_name="Дата поступления сообщения"
     )
     sender = models.CharField(
         max_length=200, blank=True, null=True, verbose_name="Кто отправил сообщение"
@@ -276,7 +276,7 @@ class Reclamation(models.Model):
         db_table = "reclamation"
         verbose_name = "Рекламацию"
         verbose_name_plural = "Рекламации"
-        ordering = ["-message_received_date"]
+        ordering = ["-id"]
         indexes = [
             models.Index(fields=["status"]),
             models.Index(fields=["defect_period"]),
