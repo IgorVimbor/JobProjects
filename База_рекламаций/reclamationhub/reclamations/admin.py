@@ -5,10 +5,12 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import path
 from django.db.models import Q
+from django.utils.safestring import mark_safe
 
 from reclamationhub.admin import admin_site
 from .models import Reclamation
 from sourcebook.models import Product
+from utils.excel.exporters import ReclamationExcelExporter
 
 
 # Форма для ввода номеров отправителя (ПСА), актов и номера накладной
@@ -270,13 +272,44 @@ class ReclamationAdmin(admin.ModelAdmin):
     search_fields = [
         "incoming_number",  # входящий № по ОТК
         "sender_outgoing_number",  # исходящий № отправителя
-        "product_name__name",  # наименование изделия
-        "product__nomenclature",  # обозначение изделия
+        # "product_name__name",  # наименование изделия
+        # "product__nomenclature",  # обозначение изделия
         "product_number",  # номер изделия
         "consumer_act_number",  # номер акта приобретателя изделия
         "end_consumer_act_number",  # номер акта конечного потребителя
         "engine_number",  # номер двигателя
     ]
+
+    search_help_text = mark_safe(
+        """
+    <p>ПОИСК ПО ПОЛЯМ:</p>
+    <ul>
+        <li>ВХОДЯЩИЙ № ОТК  • ИСХОДЯЩИЙ № ОТПРАВИТЕЛЯ  • НОМЕР ИЗДЕЛИЯ  • НОМЕР ДВИГАТЕЛЯ</li>
+        <li>НОМЕР АКТА ПРИОБРЕТАТЕЛЯ ИЗДЕЛИЯ  • НОМЕР АКТА КОНЕЧНОГО ПОТРЕБИТЕЛЯ</li>
+    </ul>
+    """
+    )
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+
+    #     field_names = []
+    #     # Получаем человекочитаемые названия полей из модели
+    #     for field in self.search_fields:
+    #         if "__" in field:
+    #             # Для связанных полей
+    #             related_field, sub_field = field.split("__")
+    #             related_model = self.model._meta.get_field(
+    #                 related_field
+    #             ).remote_field.model
+    #             field_name = f"{self.model._meta.get_field(related_field).verbose_name} ({related_model._meta.get_field(sub_field).verbose_name})"
+    #         else:
+    #             # Для обычных полей
+    #             field_name = self.model._meta.get_field(field).verbose_name
+
+    #         field_names.append(field_name)
+
+    #     self.search_help_text = "Поиск по полям:\n• " + "\n• ".join(field_names)
 
     # Метод get_queryset с select_related используется для оптимизации запросов к базе данных.
     # Без select_related будет N+1 запросов (1 запрос для списка рекламаций + N запросов для связанных данных)
@@ -401,11 +434,14 @@ class ReclamationAdmin(admin.ModelAdmin):
     # Добавляем шаблон формы, где можно будет ввести номера актов и номер накладной
     change_list_template = "admin/reclamation_changelist.html"
 
-    # Добавляем URL для формы
+    # Добавляем URL
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
+            # для групповой накладной
             path("add_invoice/", self.add_invoice_view, name="add_invoice"),
+            # для выгрузки в Excel
+            path("export-excel/", self.export_excel, name="export_excel"),
         ]
         return custom_urls + urls
 
@@ -501,3 +537,8 @@ class ReclamationAdmin(admin.ModelAdmin):
                 "form": form,
             },
         )
+
+    def export_excel(self, request):
+        """Метод для выгрузки данных по рекламациям и актам исследования в Excel"""
+        exporter = ReclamationExcelExporter()
+        return exporter.export_to_excel()

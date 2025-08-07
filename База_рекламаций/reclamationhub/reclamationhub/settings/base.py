@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "claims.apps.ClaimsConfig",
     "reports.apps.ReportsConfig",
     "core.apps.CoreConfig",
+    "utils.apps.UtilsConfig",
 ]
 
 # Добавляем порядок отображения приложений

@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.db.models import Count, Q
 from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
+import json
+
 from reclamations.models import Reclamation
 from investigations.models import Investigation
-import json
+from utils.excel.exporters import ReclamationExcelExporter
 
 
 # def home_view(request):
@@ -70,3 +72,9 @@ def home_view(request):
     }
 
     return render(request, "home.html", context)
+
+
+def export_excel(request):
+    """Метод для экспорта в Excel"""
+    exporter = ReclamationExcelExporter()
+    return exporter.export_to_excel()
