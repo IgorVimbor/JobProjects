@@ -3,6 +3,8 @@ from openpyxl.styles import PatternFill, Font
 from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
 from datetime import datetime
+from urllib.parse import quote
+
 from reclamations.models import Reclamation
 from investigations.models import Investigation
 
@@ -14,6 +16,7 @@ class ReclamationExcelExporter:
         self.ws.title = "Рекламации и исследования"  # можно задать имя листа
 
     def _write_reclamation_data(self):
+        """Метод для записи данных из базы данных в Excel"""
         # Заголовки для рекламаций
         headers = [
             "ID рекламации",
@@ -44,11 +47,6 @@ class ReclamationExcelExporter:
         reclamations = Reclamation.objects.all().select_related(
             "product_name", "product"
         )
-        # reclamations = (
-        #     Reclamation.objects.all()
-        #     .select_related("product_name", "product")
-        #     .prefetch_related("investigation")  # или как у вас называется related_name
-        # )
 
         # Записываем данные
         for row, rec in enumerate(reclamations, 2):
@@ -74,6 +72,7 @@ class ReclamationExcelExporter:
                 self.ws.cell(row=row, column=11, value="")
 
     def _adjust_column_width(self):
+        """Метод для автоматической настройки ширины колонок в файле Excel"""
         for column in self.ws.columns:
             max_length = 0
             column_letter = get_column_letter(column[0].column)
@@ -88,18 +87,43 @@ class ReclamationExcelExporter:
             adjusted_width = max_length + 2
             self.ws.column_dimensions[column_letter].width = adjusted_width
 
+    # def _create_response(self):
+    #     """Метод для запуска загрузки файла в браузере"""
+    #     current_date = datetime.now().strftime("%Y-%m-%d")
+    #     # Название файла на английском языке (могут быть проблемы с кодировкой русского названия файла)
+    #     filename = f"reclamations_and_investigations_{current_date}.xlsx"
+
+    #     response = HttpResponse(
+    #         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    #     )
+    #     response["Content-Disposition"] = f"attachment; filename={filename}"
+    #     self.wb.save(response)
+    #     return response
+
     def _create_response(self):
+        """Метод для запуска загрузки файла в браузере"""
         current_date = datetime.now().strftime("%Y-%m-%d")
-        filename = f"reclamations_and_investigations_{current_date}.xlsx"
+
+        # Базовое имя файла (можно на русском языке)
+        base_filename = f"ЖУРНАЛ УЧЕТА_{current_date}.xlsx"
+
+        # Кодируем имя файла для HTTP-заголовка
+        encoded_filename = quote(base_filename)
 
         response = HttpResponse(
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-        response["Content-Disposition"] = f"attachment; filename={filename}"
+
+        # Добавляем два варианта Content-Disposition для лучшей совместимости
+        response["Content-Disposition"] = (
+            f"attachment; filename*=UTF-8''{encoded_filename}; filename={encoded_filename}"
+        )
+
         self.wb.save(response)
         return response
 
     def export_to_excel(self):
+        """Общий метод для экспорта данных из базы данных в Excel"""
         self._write_reclamation_data()
         self._adjust_column_width()
         return self._create_response()
