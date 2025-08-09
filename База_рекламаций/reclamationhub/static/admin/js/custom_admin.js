@@ -107,3 +107,35 @@ window.addEventListener('load', function() {
         }
     }
 });
+
+// Код для автоматического добавления суффиксов в поле пробега/наработки
+window.addEventListener('load', function() {
+    var awayTypeRadios = document.querySelectorAll('input[type="radio"][name="away_type"]');
+    var mileageField = document.getElementById('id_mileage_operating_time');
+
+    if (!awayTypeRadios.length || !mileageField) return;
+
+    // Обработчик изменения radio кнопок
+    awayTypeRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (this.value === 'psi') {
+                mileageField.value = 'ПСИ';
+                mileageField.readOnly = true;
+            } else if (this.value !== 'notdata') {
+                mileageField.readOnly = false;
+                if (mileageField.value === 'ПСИ') {
+                    mileageField.value = '';
+                }
+            }
+        });
+    });
+
+    // Обработчик потери фокуса
+    mileageField.addEventListener('blur', function() {
+        var selectedRadio = document.querySelector('input[type="radio"][name="away_type"]:checked');
+        if (!selectedRadio || ['psi', 'notdata'].includes(selectedRadio.value)) return;
+
+        var value = this.value.replace(/\s*(км|м\/ч)$/, '');
+        this.value = value + (selectedRadio.value === 'kilometre' ? ' км' : ' м/ч');
+    });
+});

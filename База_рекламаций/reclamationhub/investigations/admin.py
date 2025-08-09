@@ -10,7 +10,7 @@ from reclamations.models import Reclamation
 from .models import Investigation
 
 
-# список полей с типом TextField для которых будем изменять размер
+# список полей с типом CharField для которых добавим возможность переноса строк
 INVESTIGATION_TEXT_FIELDS = [
     "defect_causes",
     "defect_causes_explanation",
@@ -64,7 +64,7 @@ class AddInvestigationForm(forms.ModelForm):
             # Утилизация
             "disposal_act_number",
             "disposal_act_date",
-            "volume_removal_reference",
+            # "volume_removal_reference",
             # Отгрузка
             "shipment_invoice_number",
             "shipment_invoice_date",
@@ -72,19 +72,19 @@ class AddInvestigationForm(forms.ModelForm):
             "return_condition_explanation",
         ]
 
-        text_fields = INVESTIGATION_TEXT_FIELDS
-
         widgets = {
             "act_date": forms.DateInput(attrs={"type": "date"}),
             "shipment_date": forms.DateInput(attrs={"type": "date"}),
             "disposal_act_date": forms.DateInput(attrs={"type": "date"}),
             "shipment_invoice_date": forms.DateInput(attrs={"type": "date"}),
             "fault_type": forms.RadioSelect(),  # Добавляем RadioSelect для fault_type
-            **{
-                field: forms.Textarea(
-                    attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
+            **{  # устанавливаем высоту полей, возможность переноса строк и отключаем изменения размера
+                field: forms.TextInput(
+                    attrs={
+                        "style": "height: 60px; width: 300px; white-space: pre-wrap; word-wrap: break-word; word-break: break-all; resize: none;"
+                    }
                 )
-                for field in text_fields
+                for field in INVESTIGATION_TEXT_FIELDS
             },
         }
 
@@ -138,16 +138,15 @@ class InvestigationAdminForm(forms.ModelForm):
         model = Investigation
         fields = "__all__"
 
-        text_fields = INVESTIGATION_TEXT_FIELDS
-
-        # устанавливаем высоту полей "rows" и ширину "cols", отключаем возможность изменения размера поля мышкой
         widgets = {
             "fault_type": forms.RadioSelect(),  # Добавляем RadioSelect для fault_type
-            **{
-                field: forms.Textarea(
-                    attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
+            **{  # устанавливаем высоту полей, возможность переноса строк и отключаем изменения размера
+                field: forms.TextInput(
+                    attrs={
+                        "style": "height: 60px; width: 300px; white-space: pre-wrap; word-wrap: break-word; word-break: break-all; resize: none;"
+                    }
                 )
-                for field in text_fields
+                for field in INVESTIGATION_TEXT_FIELDS
             },
         }
 
@@ -200,7 +199,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         "pkd_number",
         "disposal_act_number",
         "disposal_act_date",
-        "volume_removal_reference",
+        # "volume_removal_reference",
         "shipment_invoice_number",
         "shipment_invoice_date",
         "return_condition",
@@ -246,7 +245,6 @@ class InvestigationAdmin(admin.ModelAdmin):
                 "fields": [
                     "disposal_act_number",
                     "disposal_act_date",
-                    "volume_removal_reference",
                 ],
             },
         ),
@@ -254,6 +252,7 @@ class InvestigationAdmin(admin.ModelAdmin):
             "Отгрузка (возврат) изделия потребителю",
             {
                 "fields": [
+                    # "volume_removal_reference",
                     "shipment_invoice_number",
                     "shipment_invoice_date",
                     "return_condition",
@@ -375,10 +374,22 @@ class InvestigationAdmin(admin.ModelAdmin):
             {"title": "Добавление группового акта исследования", "form": form},
         )
 
-    # Делаем поле reclamation обязательным
+    # # Делаем поле reclamation обязательным
+    # def get_form(self, request, obj=None, **kwargs):
+    #     form = super().get_form(request, obj, **kwargs)
+    #     form.base_fields["reclamation"].required = True
+    #     return form
+
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
+
+        # Существующая функциональность - делаем поле обязательным
         form.base_fields["reclamation"].required = True
+
+        # Новая функциональность - устанавливаем начальное значение из GET-параметра
+        if not obj and "reclamation" in request.GET:
+            form.base_fields["reclamation"].initial = request.GET.get("reclamation")
+
         return form
 
     def save_model(self, request, obj, form, change):

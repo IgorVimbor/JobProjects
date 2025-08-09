@@ -6,7 +6,7 @@ cd reclamationhub
 ------------ Запуск проекта (если дефолтный settings.py)
 python manage.py runserver
 
------------- Запуск проекта при разработке (settings/development.py)
+------------ Запуск проекта в режиме разработки (settings/development.py)
 python manage.py runserver --settings=reclamationhub.settings.development
 
 ------------ Запуск проекта в продакшене (settings/production.py)

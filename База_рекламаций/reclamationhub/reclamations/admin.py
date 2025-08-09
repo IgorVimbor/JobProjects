@@ -59,15 +59,17 @@ class ReclamationAdminForm(forms.ModelForm):
     class Meta:
         model = Reclamation
         fields = "__all__"
-        # список полей из модели с типом TextField для которых будем изменять размер
+        # список полей с типом CharField для которых добавим возможность переноса строк
         text_fields = ["measures_taken", "consumer_response"]
 
         widgets = {
             "away_type": forms.RadioSelect(),  # Добавляем RadioSelect для away_type
-            # устанавливаем высоту полей "rows" и ширину "cols", отключаем возможность изменения размера поля мышкой
-            **{
-                field: forms.Textarea(
-                    attrs={"rows": 4, "cols": 60, "style": "resize: none;"}
+            **{  # устанавливаем высоту полей, возможность переноса строк и отключаем изменения размера
+                field: forms.TextInput(
+                    attrs={
+                        "style": "height: 60px; width: 40em; resize: none;",
+                        "title": "Полный текст будет виден при наведении",  # всплывающая подсказка
+                    }
                 )
                 for field in text_fields
             },
@@ -151,6 +153,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         "outgoing_document_number",  # номер исходящего документа
         "receipt_invoice_number",  # номер накладной поступления изделия
         "receipt_invoice_date",  # дата накладной поступления изделия
+        "volume_removal_reference",  # справка снятия с объёмов
         "has_investigation_icon",  # иконка "Исследование"
     ]
 
@@ -257,6 +260,7 @@ class ReclamationAdmin(admin.ModelAdmin):
                     "receipt_invoice_number",
                     "receipt_invoice_date",
                     "reclamation_documents",
+                    "volume_removal_reference",
                 ]
             },
         ),
@@ -339,8 +343,9 @@ class ReclamationAdmin(admin.ModelAdmin):
     # ]
 
     # Добавляем действие в панель "Действие / Выполнить"
-    actions = ["add_measures"]
+    actions = ["add_measures", "add_investigation"]
 
+    @admin.action(description="Редактировать запись")
     def add_measures(self, request, queryset):
         """Действие для редактирования рекламации"""
         # Если выбрано больше одной записи
@@ -352,7 +357,7 @@ class ReclamationAdmin(admin.ModelAdmin):
             )
             return
 
-        # Получаем единственную выбранную запись
+        # Получаем выбранную запись
         reclamation = queryset.first()
 
         # Перенаправляем на форму редактирования с фокусом на секции "Принятые меры"
@@ -360,8 +365,28 @@ class ReclamationAdmin(admin.ModelAdmin):
             f"../reclamation/{reclamation.pk}/change/#measures-section"
         )
 
-    add_measures.short_description = "Редактировать запись"
+    # add_measures.short_description = "Редактировать запись"
 
+    @admin.action(description="Добавить акт исследования для рекламации")
+    def add_investigation(self, request, queryset):
+        # Проверяем, что выбрана только одна запись
+        if queryset.count() != 1:
+            self.message_user(
+                request,
+                "Пожалуйста, выберите только одну рекламацию",
+                level="ERROR",
+            )
+            return
+
+        # # Получаем выбранную запись
+        reclamation = queryset.first()
+
+        # Перенаправляем на форму создания акта
+        return HttpResponseRedirect(
+            f"/admin/investigations/investigation/add/?reclamation={reclamation.id}"
+        )
+
+    @admin.action(description="Статус")
     def status_colored(self, obj):
         """Метод для цветового отображения статуса рекламации"""
         colors = {"NEW": "blue", "IN_PROGRESS": "orange", "CLOSED": "green"}
@@ -371,15 +396,16 @@ class ReclamationAdmin(admin.ModelAdmin):
             obj.get_status_display(),
         )
 
-    status_colored.short_description = "Статус"
+    # status_colored.short_description = "Статус"
 
+    @admin.action(description="Исследование")
     def has_investigation_icon(self, obj):
         """Метод для отображения номера акта исследования"""
         if obj.has_investigation:
             return obj.investigation.act_number
         return ""
 
-    has_investigation_icon.short_description = "Исследование"
+    # has_investigation_icon.short_description = "Исследование"
 
     # def save_model(self, request, obj, form, change):
     #     """Обновление статуса рекламации при добавлении номера накладной прихода изделия"""
@@ -402,6 +428,9 @@ class ReclamationAdmin(admin.ModelAdmin):
             and not obj.mileage_operating_time.endswith(" м/ч")
         ):
             obj.mileage_operating_time = f"{obj.mileage_operating_time} м/ч"
+        # В базу данных записываем "ПСИ", если выбрано "ПСИ"
+        elif obj.away_type == Reclamation.AwayType.PSI:
+            obj.mileage_operating_time = "ПСИ"
 
         # Обновление статуса рекламации при добавлении накладной или удалении накладной
         if change and "receipt_invoice_number" in form.changed_data:

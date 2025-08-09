@@ -50,10 +50,14 @@ class Investigation(models.Model):
     guilty_department = models.CharField(
         max_length=100, default="Не определено", verbose_name="Виновное подразделение"
     )
-    defect_causes = models.TextField(
-        null=True, blank=True, verbose_name="Причины возникновения дефектов"
+    defect_causes = models.CharField(
+        max_length=250,
+        null=True,
+        blank=True,
+        verbose_name="Причины возникновения дефектов",
     )
-    defect_causes_explanation = models.TextField(
+    defect_causes_explanation = models.CharField(
+        max_length=250,
         null=True,
         blank=True,
         verbose_name="Пояснения к причинам возникновения дефектов",
@@ -77,12 +81,12 @@ class Investigation(models.Model):
     disposal_act_date = models.DateField(
         null=True, blank=True, verbose_name="Дата акта утилизации"
     )
-    volume_removal_reference = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        verbose_name="Номер и месяц справки снятия с объёмов",
-    )
+    # volume_removal_reference = models.CharField(
+    #     max_length=100,
+    #     null=True,
+    #     blank=True,
+    #     verbose_name="Номер и месяц справки снятия с объёмов",
+    # )
 
     # Отправка результатов исследования
     recipient = models.CharField(
@@ -112,7 +116,8 @@ class Investigation(models.Model):
         blank=True,
         verbose_name="Состояние возвращаемого потребителю изделия",
     )
-    return_condition_explanation = models.TextField(
+    return_condition_explanation = models.CharField(
+        max_length=250,
         null=True,
         blank=True,
         verbose_name="Пояснения по состоянию возвращаемого изделия",
@@ -132,17 +137,16 @@ class Investigation(models.Model):
             f"({self.reclamation.product})"
         )
 
-    def clean(self):
-        """Базовая валидация модели"""
-        if not self.fault_type:
-            raise ValidationError(
-                "Необходимо указать виновника дефекта или соответствие ТУ"
-            )
+    # def clean(self):
+    # if not self.fault_type:
+    #     raise ValidationError(
+    #         "Необходимо указать виновника дефекта или соответствие ТУ"
+    #     )
 
-        if self.fault_type == self.FaultType.BZA and not self.guilty_department:
-            raise ValidationError(
-                "При указании БЗА как виновника необходимо указать виновное подразделение"
-            )
+    # if self.fault_type == self.FaultType.BZA and not self.guilty_department:
+    #     raise ValidationError(
+    #         "При указании БЗА как виновника необходимо указать виновное подразделение"
+    #     )
 
     def save(self, *args, **kwargs):
         """Обновление статуса рекламации"""

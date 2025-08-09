@@ -181,6 +181,7 @@ class Reclamation(models.Model):
         NOTDATA = "notdata", "н/д"
         KILOMETRE = "kilometre", "км"
         MOTO = "moto", "м/ч"
+        PSI = "psi", "ПСИ"
 
     away_type = models.CharField(
         max_length=20,
@@ -211,8 +212,8 @@ class Reclamation(models.Model):
     )
 
     # Принятые меры по сообщению о дефекте
-    measures_taken = models.TextField(
-        null=True, blank=True, verbose_name="Принятые меры по сообщению"
+    measures_taken = models.CharField(
+        max_length=250, null=True, blank=True, verbose_name="Принятые меры по сообщению"
     )
     outgoing_document_number = models.CharField(
         max_length=100, null=True, blank=True, verbose_name="Исходящий № документа"
@@ -228,8 +229,11 @@ class Reclamation(models.Model):
     )
 
     # Ответ потребителя
-    consumer_response = models.TextField(
-        null=True, blank=True, verbose_name="Ответ потребителя на сообщение"
+    consumer_response = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name="Ответ потребителя на сообщение",
     )
     consumer_response_number = models.CharField(
         max_length=100,
@@ -265,7 +269,14 @@ class Reclamation(models.Model):
         max_length=100,
         null=True,
         blank=True,
-        verbose_name="Документы по рекламационному изделию",
+        verbose_name="Дополнительные сведения по рекламации",
+    )
+
+    volume_removal_reference = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Номер справки снятия с объёмов",
     )
     # ------------------------------------------------------------------------------------------
 
