@@ -42,9 +42,8 @@
     </div>
 </div>
 
-<!-- Графики -->
+<!-- Временно скрыты графики по статусам рекламаций и виновникам дефектов
 <div class="row">
-    <!-- График статусов -->
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-body">
@@ -53,7 +52,27 @@
             </div>
         </div>
     </div>
-    <!-- График по изделиям -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Виновники дефектов</h5>
+                <canvas id="faultChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+<!-- Графики по изделиям и по месяцам -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Динамика поступления рекламаций по месяцам</h5>
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+    </div>
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-body">
@@ -64,21 +83,13 @@
     </div>
 </div>
 
-<!-- Временно скрыт график по месяцам до накопления данных
+<!-- Графики по изделиям на всю длину экрана
 <div class="row">
-    <div class="col-md-6 mb-4">
+    <div class="col">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Динамика рекламаций по месяцам</h5>
-                <canvas id="monthlyChart"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Виновники дефектов</h5>
-                <canvas id="faultChart"></canvas>
+                <h5 class="card-title">Распределение по изделиям</h5>
+                <canvas id="productsChart"></canvas>
             </div>
         </div>
     </div>
@@ -131,15 +142,19 @@
 
     const statusData = {{ status_data|safe }};
     const productsData = {{ products_data|safe }};
-    const faultData = {{ fault_data|safe }};
+    const monthlyData = {{ monthly_data|safe }};
+    // const faultData = {{ fault_data|safe }};
 
+    /*
     console.log('Status data:', statusData);
     console.log('Products data:', productsData);
-    console.log('Fault data:', faultData);
+    console.log('Monthly data:', monthlyData);
 
     // Проверка наличия элементов canvas
     console.log('Status chart element:', document.getElementById('statusChart'));
     console.log('Products chart element:', document.getElementById('productsChart'));
+    console.log('Products chart element:', document.getElementById('monthlyChart'));
+    */
 
     // Функция для генерации случайных цветов
     function generateColors(count) {
@@ -150,7 +165,7 @@
         }
         return colors;
     }
-
+    /*
     // График статусов
     new Chart(document.getElementById('statusChart'), {
         type: 'bar',
@@ -177,7 +192,8 @@
             }
         }
     });
-
+    */
+    /*
     // График по изделиям
     new Chart(document.getElementById('productsChart'), {
         type: 'bar',
@@ -198,8 +214,73 @@
             }
         }
     });
+    */
+    // График по изделиям - Вариант 2 (с подписями данных)
+    new Chart(document.getElementById('productsChart'), {
+        type: 'bar',
+        data: {
+            labels: productsData.map(item => item.product_name__name),
+            datasets: [{
+                label: 'Количество рекламаций',
+                data: productsData.map(item => item.count),
+                backgroundColor: generateColors(productsData.length)
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                datalabels: {  // добавляем значения над столбцами
+                    anchor: 'end',  // точка привязки - конец столбца
+                    align: 'top',   // выравнивание над столбцом
+                    offset: 2,      // отступ от столбца
+                    formatter: function(value) {
+                        return value;
+                    },
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    color: 'black'
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        rotation: 0,  // горизонтальные подписи
+                        font: {
+                            size: 8  // размер шрифта подписей оси Х
+                        },
+                        callback: function(value) {
+                            // Перенос длинных строк
+                            const label = this.getLabelForValue(value);
+                            const maxLength = 15; // максимальная длина строки
+                            const words = label.split(' ');
+                            const lines = [];
+                            let line = '';
 
-    /* Временно отключен график по месяцам и виновникам
+                            words.forEach(word => {
+                                if (line.length + word.length > maxLength) {
+                                    lines.push(line);
+                                    line = word;
+                                } else {
+                                    line = line ? line + ' ' + word : word;
+                                }
+                            });
+                            if (line) {
+                                lines.push(line);
+                            }
+                            return lines;
+                        }
+                    }
+                }
+            }
+        },
+    });
+
+    /*
     // График по месяцам
     new Chart(document.getElementById('monthlyChart'), {
         type: 'line',
@@ -224,7 +305,49 @@
             }
         }
     });
+    */
+    // График по месяцам - вариант 2 (с подписями данных)
+    new Chart(document.getElementById('monthlyChart'), {
+        type: 'line',
+        data: {
+            labels: monthlyData.map(item => {
+                const date = new Date(item.month);
+                return date.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+            }),
+            datasets: [{
+                label: 'Количество рекламаций',
+                data: monthlyData.map(item => item.count),
+                borderColor: '#36A2EB',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                datalabels: {
+                    anchor: 'end',  // точка привязки - конец линии
+                    align: 'top',   // выравнивание над точкой
+                    offset: 5,      // отступ от точки (увеличен для линейного графика)
+                    formatter: function(value) {
+                        return value;
+                    },
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    color: 'black',
+                    backgroundColor: 'white',  // добавляем белый фон для лучшей читаемости
+                    borderRadius: 4,           // скругляем углы фона
+                    padding: 4                 // отступы текста от фона
+                }
+            }
+        }
+    });
 
+    /*
     // График по виновникам
     new Chart(document.getElementById('faultChart'), {
         type: 'pie',

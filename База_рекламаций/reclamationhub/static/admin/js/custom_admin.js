@@ -139,3 +139,25 @@ window.addEventListener('load', function() {
         this.value = value + (selectedRadio.value === 'kilometre' ? ' км' : ' м/ч');
     });
 });
+
+// Обновление title для текстовых полей
+window.addEventListener('load', function() {
+    // Находим все поля из списка text_fields в формах рекламаций и актов исследования
+    const textFields = document.querySelectorAll(`
+        input[name="measures_taken"],
+        input[name="consumer_response"],
+        input[name="defect_causes"],
+        input[name="defect_causes_explanation"],
+        input[name="return_condition_explanation"]
+    `);
+
+    textFields.forEach(function(field) {
+        // Устанавливаем начальное значение title
+        field.title = field.value;
+
+        // Обновляем title при вводе текста
+        field.addEventListener('input', function() {
+            this.title = this.value;
+        });
+    });
+});

@@ -60,15 +60,14 @@ class ReclamationAdminForm(forms.ModelForm):
         model = Reclamation
         fields = "__all__"
         # список полей с типом CharField для которых добавим возможность переноса строк
-        text_fields = ["measures_taken", "consumer_response"]
+        text_fields = ["measures_taken", "consumer_response", "consumer_requirement"]
 
         widgets = {
             "away_type": forms.RadioSelect(),  # Добавляем RadioSelect для away_type
             **{  # устанавливаем высоту полей, возможность переноса строк и отключаем изменения размера
                 field: forms.TextInput(
                     attrs={
-                        "style": "height: 60px; width: 40em; resize: none;",
-                        "title": "Полный текст будет виден при наведении",  # всплывающая подсказка
+                        "style": "width: 600px; text-overflow: ellipsis; resize: none;"
                     }
                 )
                 for field in text_fields
@@ -128,7 +127,7 @@ class ReclamationAdmin(admin.ModelAdmin):
     # Отображение кнопок сохранения сверху и снизу формы
     save_on_top = True
 
-    list_per_page = 14  # количество записей на странице
+    list_per_page = 15  # количество записей на странице
 
     # Основные поля для отображения в списке
     list_display = [

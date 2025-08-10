@@ -81,7 +81,7 @@ class AddInvestigationForm(forms.ModelForm):
             **{  # устанавливаем высоту полей, возможность переноса строк и отключаем изменения размера
                 field: forms.TextInput(
                     attrs={
-                        "style": "height: 60px; width: 300px; white-space: pre-wrap; word-wrap: break-word; word-break: break-all; resize: none;"
+                        "style": "width: 600px; text-overflow: ellipsis; resize: none;"
                     }
                 )
                 for field in INVESTIGATION_TEXT_FIELDS
@@ -143,7 +143,7 @@ class InvestigationAdminForm(forms.ModelForm):
             **{  # устанавливаем высоту полей, возможность переноса строк и отключаем изменения размера
                 field: forms.TextInput(
                     attrs={
-                        "style": "height: 60px; width: 300px; white-space: pre-wrap; word-wrap: break-word; word-break: break-all; resize: none;"
+                        "style": "width: 600px; text-overflow: ellipsis; resize: none;"
                     }
                 )
                 for field in INVESTIGATION_TEXT_FIELDS
@@ -264,6 +264,8 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     # Отображение кнопок сохранения сверху и снизу формы
     save_on_top = True
+
+    list_per_page = 15  # количество записей на странице
 
     # Поля для фильтрации
     list_filter = [

@@ -36,30 +36,45 @@ def home_view(request):
         .order_by("-count")
     )
 
-    # Временно отключена статистика по месяцам
     # # Статистика по месяцам (за последние 6 месяцев)
     # six_months_ago = datetime.now() - timedelta(days=180)
-    # monthly_data = (
+    # monthly_data = list(
     #     Reclamation.objects.filter(message_received_date__gte=six_months_ago)
     #     .annotate(month=TruncMonth("message_received_date"))
     #     .values("month")
     #     .annotate(count=Count("id"))
     #     .order_by("month")
     # )
+    # # Преобразуем даты в строки для monthly_data
+    # for item in monthly_data:
+    #     item["month"] = item["month"].strftime("%Y-%m-%d")
 
-    # Статистика по виновникам дефектов
-    fault_data = (
-        Investigation.objects.values("fault_type")
+    # Статистика по месяцам (за весь период)
+    monthly_data = list(
+        Reclamation.objects.annotate(month=TruncMonth("message_received_date"))
+        .values("month")
         .annotate(count=Count("id"))
-        .order_by("-count")
+        .order_by("month")
     )
+
+    # Преобразуем даты в строки
+    for item in monthly_data:
+        item["month"] = item["month"].strftime("%Y-%m-%d")
+
+    # # Статистика по виновникам дефектов
+    # fault_data = (
+    #     Investigation.objects.values("fault_type")
+    #     .annotate(count=Count("id"))
+    #     .order_by("-count")
+    # )
 
     context = {
         "latest_reclamations": latest_reclamations,
         "total_reclamations": total_reclamations,
         "status_data": json.dumps(list(status_data)),
         "products_data": json.dumps(list(products_data)),
-        "fault_data": json.dumps(list(fault_data)),
+        "monthly_data": json.dumps(monthly_data),
+        # "fault_data": json.dumps(list(fault_data)),
         "new_reclamations": Reclamation.objects.filter(
             status=Reclamation.Status.NEW
         ).count(),
