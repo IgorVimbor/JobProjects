@@ -3900,6 +3900,71 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 301,
+  "fields": {
+    "action_time": "2025-08-12T08:46:01.501Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1286",
+    "object_repr": "1286 - водяной насос - КБПА 451363.41 \n(536.1307010-41)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 302,
+  "fields": {
+    "action_time": "2025-08-12T08:46:57.625Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1287",
+    "object_repr": "1287 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 303,
+  "fields": {
+    "action_time": "2025-08-12T08:47:27.032Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1288",
+    "object_repr": "1288 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 304,
+  "fields": {
+    "action_time": "2025-08-12T08:47:54.130Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1289",
+    "object_repr": "1289 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 305,
+  "fields": {
+    "action_time": "2025-08-12T08:48:12.792Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1290",
+    "object_repr": "1290 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\"]}}]"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
@@ -67170,9 +67235,9 @@
     "claimed_defect": "перегрев двигателя",
     "consumer_requirement": "исследование",
     "products_count": 1,
-    "measures_taken": null,
-    "outgoing_document_number": null,
-    "outgoing_document_date": null,
+    "measures_taken": "отклонена (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-08-12",
     "letter_sending_method": null,
     "consumer_response": null,
     "consumer_response_number": null,
@@ -67183,7 +67248,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-11T09:39:51.307Z"
+    "updated_at": "2025-08-12T08:46:01.496Z"
   }
 },
 {
@@ -67218,9 +67283,9 @@
     "claimed_defect": "течь",
     "consumer_requirement": "исследование",
     "products_count": 1,
-    "measures_taken": null,
-    "outgoing_document_number": null,
-    "outgoing_document_date": null,
+    "measures_taken": "отклонена (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-08-12",
     "letter_sending_method": null,
     "consumer_response": null,
     "consumer_response_number": null,
@@ -67231,7 +67296,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-11T09:44:38.711Z"
+    "updated_at": "2025-08-12T08:46:57.624Z"
   }
 },
 {
@@ -67266,9 +67331,9 @@
     "claimed_defect": "разрушение компонента",
     "consumer_requirement": "исследование",
     "products_count": 1,
-    "measures_taken": null,
-    "outgoing_document_number": null,
-    "outgoing_document_date": null,
+    "measures_taken": "отклонена (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-08-12",
     "letter_sending_method": null,
     "consumer_response": null,
     "consumer_response_number": null,
@@ -67279,7 +67344,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-11T09:50:16.527Z"
+    "updated_at": "2025-08-12T08:47:27.032Z"
   }
 },
 {
@@ -67314,9 +67379,9 @@
     "claimed_defect": "течь",
     "consumer_requirement": "исследование",
     "products_count": 1,
-    "measures_taken": null,
-    "outgoing_document_number": null,
-    "outgoing_document_date": null,
+    "measures_taken": "отклонена (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-08-12",
     "letter_sending_method": null,
     "consumer_response": null,
     "consumer_response_number": null,
@@ -67327,7 +67392,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-11T09:58:17.960Z"
+    "updated_at": "2025-08-12T08:47:54.128Z"
   }
 },
 {
@@ -67362,9 +67427,9 @@
     "claimed_defect": "разрушение компонента",
     "consumer_requirement": "исследование",
     "products_count": 1,
-    "measures_taken": null,
-    "outgoing_document_number": null,
-    "outgoing_document_date": null,
+    "measures_taken": "отклонена (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-08-12",
     "letter_sending_method": null,
     "consumer_response": null,
     "consumer_response_number": null,
@@ -67375,7 +67440,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-11T10:02:36.990Z"
+    "updated_at": "2025-08-12T08:48:12.790Z"
   }
 },
 {
