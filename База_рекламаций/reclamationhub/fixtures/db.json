@@ -4641,6 +4641,19 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 358,
+  "fields": {
+    "action_time": "2025-08-15T18:28:31.131Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1311",
+    "object_repr": "1311 - водяной насос - КБПА 451363.61 \n(536.1307010-61)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
@@ -68981,6 +68994,54 @@
     "reclamation_documents": null,
     "volume_removal_reference": null,
     "updated_at": "2025-08-14T11:29:19.447Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1311,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-15",
+    "sender": null,
+    "sender_outgoing_number": null,
+    "message_sent_date": null,
+    "defect_period": 19,
+    "product_name": 1,
+    "product": 42,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "БелАЗ",
+    "consumer_act_number": "н/д",
+    "consumer_act_date": null,
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": null,
+    "end_consumer_act_date": null,
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "notdata",
+    "mileage_operating_time": "н/д",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": null,
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-15T18:28:31.127Z"
   }
 },
 {
