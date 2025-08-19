@@ -6526,11 +6526,24 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 503,
+  "fields": {
+    "action_time": "2025-08-19T06:50:53.306Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1157",
+    "object_repr": "1157 - турбокомпрессор - ТКР 6,5.1-14.11",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u0430\\u043a\\u0442\\u0430 \\u043f\\u0440\\u0438\\u043e\\u0431\\u0440\\u0435\\u0442\\u0430\\u0442\\u0435\\u043b\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u0430\\u043a\\u0442\\u0430 \\u043a\\u043e\\u043d\\u0435\\u0447\\u043d\\u043e\\u0433\\u043e \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044f\"]}}]"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$600000$N3PiQkrEWdRBFpekgxmKpU$B56ANx475SbmC/lvibytbPCW6ZqpCj65rQ67ATY3SqA=",
-    "last_login": "2025-08-10T18:38:31.844Z",
+    "last_login": "2025-08-19T05:49:18.888Z",
     "is_superuser": true,
     "username": "root",
     "first_name": "",
@@ -6581,6 +6594,14 @@
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujtHy:lClzduo47kpvITSlB6Og5c6Jdc79DX-1T_QlOdLenPo",
     "expire_date": "2025-08-21T05:35:42.532Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "37vd6xzk3gavuzer3y78i76cimq9k2vr",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1uoFDi:ZCGKw0lkZ8huuphqjtUxID_73ZtENbp6Eyjir93o0Qg",
+    "expire_date": "2025-09-02T05:49:18.891Z"
   }
 },
 {
@@ -63604,12 +63625,12 @@
     "product_number": null,
     "manufacture_date": null,
     "purchaser": "ММЗ",
-    "consumer_act_number": "15-228",
+    "consumer_act_number": "15-227",
     "consumer_act_date": "2025-07-07",
     "country_rejected": "Беларусь",
     "end_consumer": null,
     "end_consumer_act_number": "15-227",
-    "end_consumer_act_date": "2025-07-24",
+    "end_consumer_act_date": "2025-07-07",
     "engine_brand": null,
     "engine_number": null,
     "transport_name": null,
@@ -63633,7 +63654,7 @@
     "receipt_invoice_date": "2025-07-29",
     "reclamation_documents": null,
     "volume_removal_reference": "2025 № 31",
-    "updated_at": "2025-08-12T20:29:26.115Z"
+    "updated_at": "2025-08-19T06:50:53.305Z"
   }
 },
 {
