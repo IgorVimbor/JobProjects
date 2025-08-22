@@ -25,6 +25,16 @@
     background-color: #f5f5f5 !important; /* легкий фон для заголовков */
 }
 
+/* Стиль для ячеек таблицы */
+#result_list tbody td {
+    font-size: 11px !important; /* размер шрифта в ячейках */
+    padding: 4px !important;    /* уменьшаем отступы для более компактного вида */
+}
+
+#result_list tbody tr:hover {
+    background-color: #f0f7ff !important; /* подсветка строки при наведении */
+}
+
 /* ---------- Стили для секции "Принятые меры" для внесения данных ----------- */
 .measures-section {
     transition: background-color 1s;
