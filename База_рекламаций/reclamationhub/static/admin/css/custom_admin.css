@@ -1,39 +1,86 @@
-/* --------------- Стиль для всех заголовков таблиц ------------------ */
+/* ---------------------- Стили для таблиц в админ-панели --------------------- */
+/* Контейнер для таблицы */
+.results {
+    position: relative !important;
+    overflow-x: auto !important;
+}
+
+/* Основные стили для таблицы */
+#result_list {
+    position: relative !important;
+    border-collapse: collapse !important;  /* убираем двойные границы между ячейками */
+    border: 1px solid #ddd !important;   /* внешняя граница таблицы */
+}
+
+/* Стиль для всех заголовков таблиц */
 #result_list thead th {
-    font-size: 9px !important; /* изменяем размер шрифта заголовков в таблице админ-панели */
-    /* text-transform: none !important;   отключаем перевод в верхний регистр */
+    font-size: 9px !important;  /* размер шрифта заголовков в админ-панели */
     white-space: normal !important;  /* разрешаем перенос */
     max-width: 250px;  /* максимальная ширина колонки */
     text-align: center !important;  /* центрирование заголовков */
-}
-
-/* Границы для всей таблицы и всех ячеек */
-#result_list {
-    border-collapse: collapse !important;  /* убираем двойные границы между ячейками */
-    border: 1px solid #ddd !important;    /* внешняя граница таблицы */
-}
-
-#result_list thead th,
-#result_list tbody td {
-    border: 1px solid #ddd !important;    /* границы для всех ячеек */
-    /* padding: 8px !important;   отступы внутри ячеек */
-}
-
-/* Выделяем заголовки другим цветом границ */
-#result_list thead th {
-    border: 1px solid #999 !important;    /* более темные границы для заголовков */
-    background-color: #f5f5f5 !important; /* легкий фон для заголовков */
+    border: 1px solid #999 !important;  /* более темные границы для ячеек заголовков */
+    background-color: #f5f5f5 !important;  /* фон для заголовков */
 }
 
 /* Стиль для ячеек таблицы */
 #result_list tbody td {
-    font-size: 11px !important; /* размер шрифта в ячейках */
-    padding: 4px !important;    /* уменьшаем отступы для более компактного вида */
+    font-size: 11px !important;  /* размер шрифта в ячейках */
+    padding: 4px !important;  /* уменьшаем отступы для более компактного вида */
+    border: 1px solid #bbb !important;  /* границы для всех ячеек */
 }
 
+/* Подсветка строки при наведении */
 #result_list tbody tr:hover {
-    background-color: #f0f7ff !important; /* подсветка строки при наведении */
+    background-color: #f0f7ff !important;
 }
+
+/* --------------- Стиль для закрепления столбцов таблицы ------------------ */
+/* Фиксируем первый столбец с чекбоксами */
+#result_list th:first-child,
+#result_list td:first-child {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    background: inherit !important;
+    border: 1px solid #bbb !important;  /* границы ячеек первого столбца */
+}
+
+/* Фиксируем столбец ID */
+#result_list th:nth-child(2),
+#result_list td:nth-child(2) {
+    position: sticky !important;
+    left: 30px !important;
+    z-index: 10 !important;
+    background: inherit !important;
+    border: 1px solid #bbb !important;  /* границы ячеек второго столбца */
+}
+
+/* Отдельные стили для заголовков фиксированных столбцов */
+#result_list thead th:first-child,
+#result_list thead th:nth-child(2) {
+    z-index: 11 !important;
+    border: 1px solid #999 !important;  /* более темная граница для заголовков */
+    background-color: #f5f5f5 !important;  /* фон для заголовков */
+}
+
+/* Отдельные стили для ячеек фиксированных столбцов */
+#result_list tbody td:first-child,
+#result_list tbody td:nth-child(2) {
+    z-index: 11 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #bbb !important;  /* повторяем границу для уверенности */
+}
+
+/* Добавляем правую границу для второго столбца через псевдоэлемент */
+#result_list th:nth-child(2)::after,
+#result_list td:nth-child(2)::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    width: 0.5px;
+    background: #bbb;
+}
+
 
 /* ---------- Стили для секции "Принятые меры" для внесения данных ----------- */
 .measures-section {
@@ -42,12 +89,14 @@
     border-radius: 4px;
 }
 
+
 /* ---- Стили для секции "Дата отправки акта исследования" для внесения данных ---- */
 .shipment-section {
     transition: background-color 1s;
     padding: 10px;
     border-radius: 4px;
 }
+
 
 /* ------------- Размещаем фильтры в навигационной панели ---------------- */
 #changelist-filter {

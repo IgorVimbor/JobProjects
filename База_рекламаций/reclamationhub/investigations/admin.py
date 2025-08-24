@@ -163,11 +163,11 @@ class InvestigationAdminForm(forms.ModelForm):
 @admin.register(Investigation, site=admin_site)
 class InvestigationAdmin(admin.ModelAdmin):
 
-    form = InvestigationAdminForm
-
     class Media:
         css = {"all": ("admin/css/custom_admin.css",)}
         js = ("admin/js/custom_admin.js",)
+
+    form = InvestigationAdminForm
 
     change_list_template = "admin/investigation_changelist.html"
 
