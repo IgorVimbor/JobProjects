@@ -10491,11 +10491,258 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 808,
+  "fields": {
+    "action_time": "2025-08-25T05:10:26.407Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1327",
+    "object_repr": "1327 - компрессор - 5336-3509012-10",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 809,
+  "fields": {
+    "action_time": "2025-08-25T05:13:33.020Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1328",
+    "object_repr": "1328 - компрессор - 5336-3509012-10",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 810,
+  "fields": {
+    "action_time": "2025-08-25T05:15:43.030Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1329",
+    "object_repr": "1329 - компрессор - 5336-3509012-10",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 811,
+  "fields": {
+    "action_time": "2025-08-25T05:17:30.274Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1330",
+    "object_repr": "1330 - компрессор - 5336-3509012-10",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 812,
+  "fields": {
+    "action_time": "2025-08-25T05:18:53.414Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1330",
+    "object_repr": "1330 - компрессор - 5336-3509012-10",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 813,
+  "fields": {
+    "action_time": "2025-08-25T05:19:12.424Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1329",
+    "object_repr": "1329 - компрессор - 5336-3509012-10",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 814,
+  "fields": {
+    "action_time": "2025-08-25T05:19:24.526Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1328",
+    "object_repr": "1328 - компрессор - 5336-3509012-10",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 815,
+  "fields": {
+    "action_time": "2025-08-25T05:19:39.311Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1327",
+    "object_repr": "1327 - компрессор - 5336-3509012-10",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0421\\u0442\\u0430\\u0442\\u0443\\u0441\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 816,
+  "fields": {
+    "action_time": "2025-08-25T05:51:30.384Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "173",
+    "object_repr": "Акт исследования 2025 № 959 от 19.08.2025 (ТКР 6-01.01)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u0430\\u043a\\u0442\\u0430 \\u0443\\u0442\\u0438\\u043b\\u0438\\u0437\\u0430\\u0446\\u0438\\u0438\", \"\\u0414\\u0430\\u0442\\u0430 \\u0430\\u043a\\u0442\\u0430 \\u0443\\u0442\\u0438\\u043b\\u0438\\u0437\\u0430\\u0446\\u0438\\u0438\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 817,
+  "fields": {
+    "action_time": "2025-08-25T07:33:31.132Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1331",
+    "object_repr": "1331 - водяной насос - 260-1307116-15",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 818,
+  "fields": {
+    "action_time": "2025-08-25T07:52:25.608Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1331",
+    "object_repr": "1331 - водяной насос - 260-1307116-15",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u043f\\u043e \\u041e\\u0422\\u041a\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 819,
+  "fields": {
+    "action_time": "2025-08-25T07:53:02.503Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1331",
+    "object_repr": "1331 - водяной насос - 260-1307116-15",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u043f\\u043e \\u041e\\u0422\\u041a\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 820,
+  "fields": {
+    "action_time": "2025-08-25T08:23:35.418Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1331",
+    "object_repr": "1331 - водяной насос - 260-1307116-15",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0421\\u043f\\u043e\\u0441\\u043e\\u0431 \\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u043a\\u0438 \\u043f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0445 \\u043c\\u0435\\u0440\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 821,
+  "fields": {
+    "action_time": "2025-08-25T08:24:27.557Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1331",
+    "object_repr": "1331 - водяной насос - 260-1307116-15",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 822,
+  "fields": {
+    "action_time": "2025-08-25T10:13:15.000Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1326",
+    "object_repr": "1326 - турбокомпрессор - ТКР 6.1-07.01",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0412\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u043f\\u043e \\u041e\\u0422\\u041a\", \"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041e\\u0440\\u0433\\u0430\\u043d\\u0438\\u0437\\u0430\\u0446\\u0438\\u044f-\\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u0438\\u0442\\u0435\\u043b\\u044c \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 823,
+  "fields": {
+    "action_time": "2025-08-25T12:05:44.417Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1332",
+    "object_repr": "1332 - компрессор - А29.05.000А-03-БЗА",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 824,
+  "fields": {
+    "action_time": "2025-08-25T12:08:00.603Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1332",
+    "object_repr": "1332 - компрессор - А29.05.000А-03-БЗА",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041e\\u0440\\u0433\\u0430\\u043d\\u0438\\u0437\\u0430\\u0446\\u0438\\u044f-\\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u0438\\u0442\\u0435\\u043b\\u044c \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 825,
+  "fields": {
+    "action_time": "2025-08-25T13:01:16.707Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1332",
+    "object_repr": "1332 - компрессор - А29.05.000А-03-БЗА",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0422\\u0440\\u0435\\u0431\\u043e\\u0432\\u0430\\u043d\\u0438\\u0435 \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044f\", \"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0414\\u0430\\u0442\\u0430 \\u0438\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0435\\u0433\\u043e \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\", \"\\u0421\\u043f\\u043e\\u0441\\u043e\\u0431 \\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u043a\\u0438 \\u043f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0445 \\u043c\\u0435\\u0440\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 826,
+  "fields": {
+    "action_time": "2025-08-25T13:18:03.153Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1331",
+    "object_repr": "1331 - водяной насос - 260-1307116-15",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041e\\u0440\\u0433\\u0430\\u043d\\u0438\\u0437\\u0430\\u0446\\u0438\\u044f-\\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u0438\\u0442\\u0435\\u043b\\u044c \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$600000$N3PiQkrEWdRBFpekgxmKpU$B56ANx475SbmC/lvibytbPCW6ZqpCj65rQ67ATY3SqA=",
-    "last_login": "2025-08-24T19:02:57.272Z",
+    "last_login": "2025-08-25T07:23:51.206Z",
     "is_superuser": true,
     "username": "root",
     "first_name": "",
@@ -10634,6 +10881,30 @@
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujGJU:2dY0QGcAD6miFHt-Sil00dxeUbhYBbQCXGmiKMiWeC0",
     "expire_date": "2025-08-19T11:58:40.236Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "mkmsh3gkm3cn28o22eqz2gdk9hdr6meo",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1uqRYV:41k4C2o1qaCJvN1GeNfTsFykrULyemEVGL-C7v1hFdQ",
+    "expire_date": "2025-09-08T07:23:51.206Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "pri2vaa00wgy86uocziu5nj502ld9cku",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1uqQKv:x8cM-bBjOySXk1SEgDUGrgO_R8JvvOCpQMiVMV2gTd8",
+    "expire_date": "2025-09-08T06:05:45.207Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "q4grby19wx29iqwe5xw63y637n0zg6zj",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1uqPEp:Gg6PXDLycgt5MNgsXveXqusulHc97pKnNOEPH7wM_qo",
+    "expire_date": "2025-09-08T04:55:23.087Z"
   }
 },
 {
@@ -75294,7 +75565,7 @@
     "receipt_invoice_date": "2025-08-19",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-20T17:44:39.625Z"
+    "updated_at": "2025-08-25T05:51:30.382Z"
   }
 },
 {
@@ -75685,8 +75956,8 @@
   "model": "reclamations.reclamation",
   "pk": 1326,
   "fields": {
-    "status": "NEW",
-    "incoming_number": "010/1/710-01",
+    "status": "IN_PROGRESS",
+    "incoming_number": "дистанционно 010/1/710-01",
     "message_received_date": "2025-08-20",
     "sender": "ТД ММЗ Казахстан  <td-mmz-kz@mail.ru>",
     "sender_outgoing_number": "17",
@@ -75720,13 +75991,301 @@
     "consumer_response": null,
     "consumer_response_number": null,
     "consumer_response_date": null,
-    "product_received_date": null,
-    "product_sender": null,
-    "receipt_invoice_number": null,
-    "receipt_invoice_date": null,
+    "product_received_date": "2025-08-25",
+    "product_sender": "ТД ММЗ",
+    "receipt_invoice_number": "фото",
+    "receipt_invoice_date": "2025-08-25",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-20T19:57:00.398Z"
+    "updated_at": "2025-08-25T10:13:14.985Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1327,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": null,
+    "message_received_date": "2025-08-21",
+    "sender": null,
+    "sender_outgoing_number": null,
+    "message_sent_date": null,
+    "defect_period": 6,
+    "product_name": 2,
+    "product": 50,
+    "product_number": "4936",
+    "manufacture_date": "07.24",
+    "purchaser": "Гомсельмаш",
+    "consumer_act_number": "1165",
+    "consumer_act_date": "2025-08-08",
+    "country_rejected": "Беларусь",
+    "end_consumer": "Миорский райагросервис",
+    "end_consumer_act_number": "1165",
+    "end_consumer_act_date": "2025-08-08",
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": "FS 80",
+    "transport_number": "FS087011R00409",
+    "defect_detection_date": "2025-08-08",
+    "away_type": "moto",
+    "mileage_operating_time": "480 м/ч",
+    "claimed_defect": "заклинил",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": null,
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": "2025-08-21",
+    "product_sender": "Гомсельмаш",
+    "receipt_invoice_number": "0856805",
+    "receipt_invoice_date": "2025-08-20",
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-25T05:19:39.310Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1328,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": null,
+    "message_received_date": "2025-08-21",
+    "sender": null,
+    "sender_outgoing_number": null,
+    "message_sent_date": null,
+    "defect_period": 6,
+    "product_name": 2,
+    "product": 50,
+    "product_number": "3958",
+    "manufacture_date": "10.23",
+    "purchaser": "Гомсельмаш",
+    "consumer_act_number": "2137",
+    "consumer_act_date": "2025-07-18",
+    "country_rejected": "Беларусь",
+    "end_consumer": "Гомельоблагросервис",
+    "end_consumer_act_number": "2137",
+    "end_consumer_act_date": "2025-07-18",
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": "GS 12H1",
+    "transport_number": "R01682",
+    "defect_detection_date": "2025-07-17",
+    "away_type": "moto",
+    "mileage_operating_time": "710 м/ч",
+    "claimed_defect": "течь масла через манжету коленчатого вала",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": null,
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": "2025-08-21",
+    "product_sender": "Гомсельмаш",
+    "receipt_invoice_number": "0856805",
+    "receipt_invoice_date": "2025-08-20",
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-25T05:19:24.526Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1329,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": null,
+    "message_received_date": "2025-08-21",
+    "sender": null,
+    "sender_outgoing_number": null,
+    "message_sent_date": null,
+    "defect_period": 6,
+    "product_name": 2,
+    "product": 50,
+    "product_number": "5444",
+    "manufacture_date": "07.24",
+    "purchaser": "Гомсельмаш",
+    "consumer_act_number": "4336",
+    "consumer_act_date": "2025-07-28",
+    "country_rejected": "Беларусь",
+    "end_consumer": "Минскоблагросервис",
+    "end_consumer_act_number": "4336",
+    "end_consumer_act_date": "2025-07-28",
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": "GS 2124",
+    "transport_number": "R00303",
+    "defect_detection_date": "2025-07-28",
+    "away_type": "moto",
+    "mileage_operating_time": "101 м/ч",
+    "claimed_defect": "разрушение подшипника",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": null,
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": "2025-08-21",
+    "product_sender": "Гомсельмаш",
+    "receipt_invoice_number": "0856805",
+    "receipt_invoice_date": "2025-08-20",
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-25T05:19:12.423Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1330,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": null,
+    "message_received_date": "2025-08-21",
+    "sender": null,
+    "sender_outgoing_number": null,
+    "message_sent_date": null,
+    "defect_period": 6,
+    "product_name": 2,
+    "product": 50,
+    "product_number": "5300",
+    "manufacture_date": "07.24",
+    "purchaser": "Гомсельмаш",
+    "consumer_act_number": "5104",
+    "consumer_act_date": "2025-07-25",
+    "country_rejected": "Беларусь",
+    "end_consumer": "Заднепровский межрайагросервис",
+    "end_consumer_act_number": "5104",
+    "end_consumer_act_date": "2025-07-25",
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": "FS 80",
+    "transport_number": "00388",
+    "defect_detection_date": "2025-07-25",
+    "away_type": "moto",
+    "mileage_operating_time": "567 м/ч",
+    "claimed_defect": "выход из строя компрессора",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": null,
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": "2025-08-21",
+    "product_sender": "Гомсельмаш",
+    "receipt_invoice_number": "0856805",
+    "receipt_invoice_date": "2025-08-20",
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-25T05:18:53.413Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1331,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": "дистанционно 010/1/716-01",
+    "message_received_date": "2025-08-22",
+    "sender": "ОАО \"УКХ\"ММЗ\"",
+    "sender_outgoing_number": "12-30-9-886",
+    "message_sent_date": "2025-08-22",
+    "defect_period": 3,
+    "product_name": 1,
+    "product": 26,
+    "product_number": null,
+    "manufacture_date": "05.23",
+    "purchaser": "ОАО \"УКХ\"ММЗ\"",
+    "consumer_act_number": null,
+    "consumer_act_date": null,
+    "country_rejected": "Россия",
+    "end_consumer": "Воронежкомплект",
+    "end_consumer_act_number": "4-25",
+    "end_consumer_act_date": "2025-01-24",
+    "engine_brand": "Д-260.1S2",
+    "engine_number": "195804",
+    "transport_name": "Беларус-1523.3",
+    "transport_number": "Y4R1101801P1101801",
+    "defect_detection_date": "2025-01-24",
+    "away_type": "moto",
+    "mileage_operating_time": "285 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование, подтверждение возмещения затрат и утилизации",
+    "products_count": 1,
+    "measures_taken": "согласие на актирование и утилизацию",
+    "outgoing_document_number": "010/1/539-02",
+    "outgoing_document_date": "2025-08-25",
+    "letter_sending_method": "ruservice@mmz-motor.by",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": "2025-08-25",
+    "product_sender": "ММЗ",
+    "receipt_invoice_number": "фото",
+    "receipt_invoice_date": "2025-08-25",
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-25T13:18:03.153Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1332,
+  "fields": {
+    "status": "IN_PROGRESS",
+    "incoming_number": "дистанционно 010/1/719-01",
+    "message_received_date": "2025-08-25",
+    "sender": "ОАО \"УКХ\"ММЗ\"",
+    "sender_outgoing_number": "12-30-9-890",
+    "message_sent_date": "2025-08-25",
+    "defect_period": 3,
+    "product_name": 2,
+    "product": 58,
+    "product_number": "36232",
+    "manufacture_date": "10.24",
+    "purchaser": "ОАО \"УКХ\"ММЗ\"",
+    "consumer_act_number": null,
+    "consumer_act_date": null,
+    "country_rejected": "Россия",
+    "end_consumer": "Моторавто",
+    "end_consumer_act_number": "154/Т",
+    "end_consumer_act_date": "2025-08-25",
+    "engine_brand": "Д-245.5S2-1742",
+    "engine_number": "276239",
+    "transport_name": "Беларус 921.3",
+    "transport_number": "Y3S921Z02R2103967",
+    "defect_detection_date": "2025-08-22",
+    "away_type": "moto",
+    "mileage_operating_time": "749 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование, подтверждение возмещения затрат и утилизации",
+    "products_count": 1,
+    "measures_taken": "запрос фото по чек-листу",
+    "outgoing_document_number": "010/1/540-02",
+    "outgoing_document_date": "2025-08-25",
+    "letter_sending_method": "ruservice@mmz-motor.by",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": "2025-08-25",
+    "product_sender": "ММЗ",
+    "receipt_invoice_number": "фото",
+    "receipt_invoice_date": "2025-08-25",
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-25T13:01:16.703Z"
   }
 },
 {
@@ -79261,8 +79820,8 @@
     "defect_causes_explanation": null,
     "defective_supplier": null,
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "15",
+    "disposal_act_date": "2025-08-22",
     "recipient": null,
     "shipment_date": null,
     "shipment_invoice_number": null,
