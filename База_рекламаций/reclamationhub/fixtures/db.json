@@ -11180,11 +11180,323 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 861,
+  "fields": {
+    "action_time": "2025-08-26T05:42:29.674Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1333",
+    "object_repr": "1333 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 862,
+  "fields": {
+    "action_time": "2025-08-26T05:43:42.428Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1333",
+    "object_repr": "1333 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 863,
+  "fields": {
+    "action_time": "2025-08-26T05:44:30.144Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "324",
+    "object_repr": "Акт исследования не требуется от 26.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 864,
+  "fields": {
+    "action_time": "2025-08-26T07:13:15.388Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "325",
+    "object_repr": "Акт исследования 2025 № 969 от 25.08.2025 (260-1307116-15)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 865,
+  "fields": {
+    "action_time": "2025-08-26T07:14:52.709Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "325",
+    "object_repr": "Акт исследования 2025 № 969 от 25.08.2025 (260-1307116-15)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u0447\\u0438\\u043d\\u044b \\u0432\\u043e\\u0437\\u043d\\u0438\\u043a\\u043d\\u043e\\u0432\\u0435\\u043d\\u0438\\u044f \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u043e\\u0432\", \"\\u041f\\u043e\\u044f\\u0441\\u043d\\u0435\\u043d\\u0438\\u044f \\u043a \\u043f\\u0440\\u0438\\u0447\\u0438\\u043d\\u0430\\u043c \\u0432\\u043e\\u0437\\u043d\\u0438\\u043a\\u043d\\u043e\\u0432\\u0435\\u043d\\u0438\\u044f \\u0434\\u0435\\u0444\\u0435\\u043a\\u0442\\u043e\\u0432\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 866,
+  "fields": {
+    "action_time": "2025-08-26T07:27:24.580Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1301",
+    "object_repr": "1301 - турбокомпрессор - ТКР 6.1-13.08",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 867,
+  "fields": {
+    "action_time": "2025-08-26T07:29:51.038Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "148",
+    "object_repr": "Акт исследования 2025 № 968 от 25.08.2025 (ТКР 6.1-13.08)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u0430\\u043a\\u0442\\u0430 \\u0438\\u0441\\u0441\\u043b\\u0435\\u0434\\u043e\\u0432\\u0430\\u043d\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u0430\\u043a\\u0442\\u0430 \\u0438\\u0441\\u0441\\u043b\\u0435\\u0434\\u043e\\u0432\\u0430\\u043d\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u043a\\u0438 \\u0430\\u043a\\u0442\\u0430 \\u0438\\u0441\\u0441\\u043b\\u0435\\u0434\\u043e\\u0432\\u0430\\u043d\\u0438\\u044f\", \"\\u041f\\u043e\\u043b\\u0443\\u0447\\u0430\\u0442\\u0435\\u043b\\u044c\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 868,
+  "fields": {
+    "action_time": "2025-08-26T09:22:46.082Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1082",
+    "object_repr": "1082 - масляный насос - КБПА 451412.36 \n(536.1011014-02)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041e\\u0440\\u0433\\u0430\\u043d\\u0438\\u0437\\u0430\\u0446\\u0438\\u044f-\\u043e\\u0442\\u043f\\u0440\\u0430\\u0432\\u0438\\u0442\\u0435\\u043b\\u044c \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 869,
+  "fields": {
+    "action_time": "2025-08-26T09:25:42.330Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "326",
+    "object_repr": "Акт исследования 2025 № 961 от 20.08.2025 (КБПА 451412.36 \n(536.1011014-02))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 870,
+  "fields": {
+    "action_time": "2025-08-26T09:29:02.634Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "327",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 871,
+  "fields": {
+    "action_time": "2025-08-26T09:29:58.271Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "328",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 872,
+  "fields": {
+    "action_time": "2025-08-26T09:30:43.622Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "329",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 873,
+  "fields": {
+    "action_time": "2025-08-26T09:31:52.654Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "330",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 874,
+  "fields": {
+    "action_time": "2025-08-26T09:34:36.607Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1181",
+    "object_repr": "1181 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 875,
+  "fields": {
+    "action_time": "2025-08-26T09:35:20.784Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "331",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 876,
+  "fields": {
+    "action_time": "2025-08-26T09:36:26.071Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1182",
+    "object_repr": "1182 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 877,
+  "fields": {
+    "action_time": "2025-08-26T09:36:45.486Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "332",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 878,
+  "fields": {
+    "action_time": "2025-08-26T09:37:21.750Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1183",
+    "object_repr": "1183 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0414\\u0430\\u0442\\u0430 \\u043f\\u043e\\u0441\\u0442\\u0443\\u043f\\u043b\\u0435\\u043d\\u0438\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u043d\\u0430\\u043a\\u043b\\u0430\\u0434\\u043d\\u043e\\u0439 \\u043f\\u0440\\u0438\\u0445\\u043e\\u0434\\u0430 \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 879,
+  "fields": {
+    "action_time": "2025-08-26T09:37:59.855Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "333",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 880,
+  "fields": {
+    "action_time": "2025-08-26T09:38:55.032Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "334",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 881,
+  "fields": {
+    "action_time": "2025-08-26T09:39:39.032Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "335",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 882,
+  "fields": {
+    "action_time": "2025-08-26T09:40:26.015Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "336",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 883,
+  "fields": {
+    "action_time": "2025-08-26T09:41:04.478Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "337",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 884,
+  "fields": {
+    "action_time": "2025-08-26T09:41:49.510Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "338",
+    "object_repr": "Акт исследования 2025 № 950 от 18.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$600000$N3PiQkrEWdRBFpekgxmKpU$B56ANx475SbmC/lvibytbPCW6ZqpCj65rQ67ATY3SqA=",
-    "last_login": "2025-08-25T07:23:51.206Z",
+    "last_login": "2025-08-26T05:35:45.107Z",
     "is_superuser": true,
     "username": "root",
     "first_name": "",
@@ -11299,6 +11611,14 @@
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ujv9K:gjRVaF0dRENW6cfklONjt_9_KMXR1pSTXihY-LEXWPw",
     "expire_date": "2025-08-21T07:34:54.294Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "dfxq712rgtngamg2z917tug9sf8nuj85",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1uqmLR:7L3JuZ7TXZtlAYK4TnR_hH-ZGMFdgjND5eYEkpunUqA",
+    "expire_date": "2025-09-09T05:35:45.107Z"
   }
 },
 {
@@ -64686,7 +65006,7 @@
   "model": "reclamations.reclamation",
   "pk": 1082,
   "fields": {
-    "status": "NEW",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-01",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
@@ -64721,13 +65041,13 @@
     "consumer_response": null,
     "consumer_response_number": null,
     "consumer_response_date": null,
-    "product_received_date": null,
-    "product_sender": null,
-    "receipt_invoice_number": null,
-    "receipt_invoice_date": null,
+    "product_received_date": "2025-08-13",
+    "product_sender": "ЯМЗ",
+    "receipt_invoice_number": "2507037-2",
+    "receipt_invoice_date": "2025-07-17",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T18:55:52.004Z"
+    "updated_at": "2025-08-26T09:25:42.327Z"
   }
 },
 {
@@ -69438,7 +69758,7 @@
   "model": "reclamations.reclamation",
   "pk": 1181,
   "fields": {
-    "status": "NEW",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-16",
     "sender": "ЯМЗ Желнина Наталия Владимировна",
@@ -69473,20 +69793,20 @@
     "consumer_response": null,
     "consumer_response_number": null,
     "consumer_response_date": null,
-    "product_received_date": null,
+    "product_received_date": "2025-08-13",
     "product_sender": "ЯМЗ",
-    "receipt_invoice_number": null,
-    "receipt_invoice_date": null,
+    "receipt_invoice_number": "2509497",
+    "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-12T16:47:22.343Z"
+    "updated_at": "2025-08-26T09:35:20.781Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1182,
   "fields": {
-    "status": "NEW",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-16",
     "sender": "ЯМЗ Желнина Наталия Владимировна",
@@ -69521,20 +69841,20 @@
     "consumer_response": null,
     "consumer_response_number": null,
     "consumer_response_date": null,
-    "product_received_date": null,
+    "product_received_date": "2025-08-13",
     "product_sender": "ЯМЗ",
-    "receipt_invoice_number": null,
-    "receipt_invoice_date": null,
+    "receipt_invoice_number": "2509497",
+    "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-12T16:45:12.804Z"
+    "updated_at": "2025-08-26T09:36:45.485Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1183,
   "fields": {
-    "status": "NEW",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-17",
     "sender": "ЯМЗ Желнина Наталия Владимировна",
@@ -69569,13 +69889,13 @@
     "consumer_response": null,
     "consumer_response_number": null,
     "consumer_response_date": null,
-    "product_received_date": null,
+    "product_received_date": "2025-08-13",
     "product_sender": "ЯМЗ",
-    "receipt_invoice_number": null,
-    "receipt_invoice_date": null,
+    "receipt_invoice_number": "2509497",
+    "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-12T16:42:42.160Z"
+    "updated_at": "2025-08-26T09:37:59.853Z"
   }
 },
 {
@@ -70254,7 +70574,7 @@
   "model": "reclamations.reclamation",
   "pk": 1198,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-21",
     "sender": "ЯМЗ Желнина Наталия Владимировна",
@@ -70295,14 +70615,14 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-10T18:13:29.405Z"
+    "updated_at": "2025-08-26T09:39:39.030Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1199,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-21",
     "sender": "ЯМЗ Желнина Наталия Владимировна",
@@ -70343,14 +70663,14 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-10T18:10:54.883Z"
+    "updated_at": "2025-08-26T09:40:26.013Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1200,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-21",
     "sender": "ЯМЗ Желнина Наталия Владимировна",
@@ -70391,14 +70711,14 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-10T18:01:44.953Z"
+    "updated_at": "2025-08-26T09:41:49.509Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1201,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-21",
     "sender": "ЯМЗ Желнина Наталия Владимировна",
@@ -70439,14 +70759,14 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-10T17:58:53.830Z"
+    "updated_at": "2025-08-26T09:41:04.476Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1202,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-21",
     "sender": "ЯМЗ Желнина Наталия Владимировна",
@@ -70487,14 +70807,14 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-10T17:55:50.602Z"
+    "updated_at": "2025-08-26T09:31:52.652Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1203,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-07-21",
     "sender": "ЯМЗ Желнина Наталия Владимировна",
@@ -70535,7 +70855,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-10T17:52:23.225Z"
+    "updated_at": "2025-08-26T09:38:55.029Z"
   }
 },
 {
@@ -72942,7 +73262,7 @@
   "model": "reclamations.reclamation",
   "pk": 1254,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
@@ -72983,14 +73303,14 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-06T05:01:28.841Z"
+    "updated_at": "2025-08-26T09:29:02.633Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1255,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
@@ -73031,7 +73351,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": "",
     "volume_removal_reference": null,
-    "updated_at": "2025-08-05T11:01:46.857Z"
+    "updated_at": "2025-08-26T09:30:43.622Z"
   }
 },
 {
@@ -73086,7 +73406,7 @@
   "model": "reclamations.reclamation",
   "pk": 1257,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-08-04",
     "sender": "ЯМЗ Сычева Татьяна Александровна",
@@ -73127,7 +73447,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-05T14:03:27.013Z"
+    "updated_at": "2025-08-26T09:29:58.270Z"
   }
 },
 {
@@ -75226,7 +75546,7 @@
     "claimed_defect": "турбокомпрессор течет",
     "consumer_requirement": "командировать представителя для совместного исследования",
     "products_count": 1,
-    "measures_taken": "1. запрос доставки для исследования 2. выезд на ММЗ представителей БЗА 15.08.2025",
+    "measures_taken": "1. запрос доставки для исследования 2. выезд на ММЗ представителей БЗА 15.08.2025 - акт ММЗ № 1214",
     "outgoing_document_number": "010/1/516-02",
     "outgoing_document_date": "2025-08-12",
     "letter_sending_method": "breklamats@mmz-motor.by",
@@ -75239,7 +75559,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T17:13:10.429Z"
+    "updated_at": "2025-08-26T07:29:51.038Z"
   }
 },
 {
@@ -76638,7 +76958,7 @@
   "model": "reclamations.reclamation",
   "pk": 1331,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": "дистанционно 010/1/716-01",
     "message_received_date": "2025-08-22",
     "sender": "ОАО \"УКХ\"ММЗ\"",
@@ -76679,7 +76999,7 @@
     "receipt_invoice_date": "2025-08-25",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-25T13:18:03.153Z"
+    "updated_at": "2025-08-26T07:14:52.693Z"
   }
 },
 {
@@ -76728,6 +77048,54 @@
     "reclamation_documents": null,
     "volume_removal_reference": null,
     "updated_at": "2025-08-25T13:01:16.703Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1333,
+  "fields": {
+    "status": "CLOSED",
+    "incoming_number": null,
+    "message_received_date": "2025-08-26",
+    "sender": "ЯМЗ Желнина Наталия Владимровна",
+    "sender_outgoing_number": "2510432",
+    "message_sent_date": "2025-08-26",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "17865",
+    "consumer_act_date": "2024-12-18",
+    "country_rejected": "Россия",
+    "end_consumer": "Орентранс-Камаз",
+    "end_consumer_act_number": "17865",
+    "end_consumer_act_date": "2024-12-18",
+    "engine_brand": "ЯМЗ 53623",
+    "engine_number": "P0187718",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "moto",
+    "mileage_operating_time": "36 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "отклонить (более 90 дней)",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-26T05:44:30.144Z"
   }
 },
 {
@@ -79679,8 +80047,8 @@
   "pk": 148,
   "fields": {
     "reclamation": 1301,
-    "act_number": "2025 № 1214",
-    "act_date": "2025-08-15",
+    "act_number": "2025 № 968",
+    "act_date": "2025-08-25",
     "fault_type": "consumer",
     "guilty_department": "Не определено",
     "defect_causes": "эксплуатационный дефект",
@@ -79689,8 +80057,8 @@
     "pkd_number": null,
     "disposal_act_number": null,
     "disposal_act_date": null,
-    "recipient": null,
-    "shipment_date": null,
+    "recipient": "ruservice@mmz-motor.by",
+    "shipment_date": "2025-08-26",
     "shipment_invoice_number": null,
     "shipment_invoice_date": null,
     "return_condition": null,
@@ -83716,6 +84084,351 @@
     "disposal_act_date": "2025-07-08",
     "recipient": "SychevaTA@ymzmotor.ru",
     "shipment_date": "2025-07-01",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 324,
+  "fields": {
+    "reclamation": 1333,
+    "act_number": "не требуется",
+    "act_date": "2025-08-26",
+    "fault_type": "unknown",
+    "guilty_department": "Не определено",
+    "defect_causes": null,
+    "defect_causes_explanation": null,
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": null,
+    "shipment_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 325,
+  "fields": {
+    "reclamation": 1331,
+    "act_number": "2025 № 969",
+    "act_date": "2025-08-25",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "установить не представляется возможным",
+    "defect_causes_explanation": "предпологаемо выход из строя торцевого уплотнения \"IIC\"",
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ruservice@mmz-motor.by",
+    "shipment_date": "2025-08-26",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 326,
+  "fields": {
+    "reclamation": 1082,
+    "act_number": "2025 № 961",
+    "act_date": "2025-08-20",
+    "fault_type": "consumer",
+    "guilty_department": "Не определено",
+    "defect_causes": "эксплуатационный дефект",
+    "defect_causes_explanation": "подвергался разборке у потребителя, попадание твердых частиц с моторным маслом",
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-21",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": "не пригодно к использованию"
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 327,
+  "fields": {
+    "reclamation": 1254,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 328,
+  "fields": {
+    "reclamation": 1257,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 329,
+  "fields": {
+    "reclamation": 1255,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 330,
+  "fields": {
+    "reclamation": 1202,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 331,
+  "fields": {
+    "reclamation": 1181,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 332,
+  "fields": {
+    "reclamation": 1182,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 333,
+  "fields": {
+    "reclamation": 1183,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 334,
+  "fields": {
+    "reclamation": 1203,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 335,
+  "fields": {
+    "reclamation": 1198,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 336,
+  "fields": {
+    "reclamation": 1199,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 337,
+  "fields": {
+    "reclamation": 1201,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 338,
+  "fields": {
+    "reclamation": 1200,
+    "act_number": "2025 № 950",
+    "act_date": "2025-08-18",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ZhelninaNV@ymzmotor.ru",
+    "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
     "shipment_invoice_date": null,
     "return_condition": null,
