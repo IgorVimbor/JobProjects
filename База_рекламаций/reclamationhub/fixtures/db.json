@@ -11492,11 +11492,141 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 885,
+  "fields": {
+    "action_time": "2025-08-27T06:21:31.902Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1334",
+    "object_repr": "1334 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 886,
+  "fields": {
+    "action_time": "2025-08-27T06:24:05.804Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "339",
+    "object_repr": "Акт исследования не требуется от 27.08.2025 (КБПА 451363.21 \n(536.1307010-21))",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 887,
+  "fields": {
+    "action_time": "2025-08-27T06:34:32.031Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1335",
+    "object_repr": "1335 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 888,
+  "fields": {
+    "action_time": "2025-08-27T07:27:39.156Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1332",
+    "object_repr": "1332 - компрессор - А29.05.000А-03-БЗА",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\", \"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 889,
+  "fields": {
+    "action_time": "2025-08-27T07:52:29.435Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1334",
+    "object_repr": "1334 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 890,
+  "fields": {
+    "action_time": "2025-08-27T08:02:07.899Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1023",
+    "object_repr": "1023 - водяной насос - 855.1307010-10",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u0430\\u043a\\u0442\\u0430 \\u043f\\u0440\\u0438\\u043e\\u0431\\u0440\\u0435\\u0442\\u0430\\u0442\\u0435\\u043b\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u0414\\u0430\\u0442\\u0430 \\u0430\\u043a\\u0442\\u0430 \\u043f\\u0440\\u0438\\u043e\\u0431\\u0440\\u0435\\u0442\\u0430\\u0442\\u0435\\u043b\\u044f \\u0438\\u0437\\u0434\\u0435\\u043b\\u0438\\u044f\", \"\\u041a\\u043e\\u043d\\u0435\\u0447\\u043d\\u044b\\u0439 \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044c\", \"\\u041d\\u043e\\u043c\\u0435\\u0440 \\u0430\\u043a\\u0442\\u0430 \\u043a\\u043e\\u043d\\u0435\\u0447\\u043d\\u043e\\u0433\\u043e \\u043f\\u043e\\u0442\\u0440\\u0435\\u0431\\u0438\\u0442\\u0435\\u043b\\u044f\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 891,
+  "fields": {
+    "action_time": "2025-08-27T12:07:56.437Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "340",
+    "object_repr": "Акт исследования 2025 № 973 от 26.08.2025 (5336-3509012-10)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 892,
+  "fields": {
+    "action_time": "2025-08-27T12:11:00.414Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "341",
+    "object_repr": "Акт исследования 2025 № 972 от 26.08.2025 (5336-3509012-10)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 893,
+  "fields": {
+    "action_time": "2025-08-27T12:12:34.475Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "342",
+    "object_repr": "Акт исследования 2025 № 971 от 26.08.2025 (5336-3509012-10)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 894,
+  "fields": {
+    "action_time": "2025-08-27T12:13:39.632Z",
+    "user": 1,
+    "content_type": 11,
+    "object_id": "343",
+    "object_repr": "Акт исследования 2025 № 970 от 26.08.2025 (5336-3509012-10)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$600000$N3PiQkrEWdRBFpekgxmKpU$B56ANx475SbmC/lvibytbPCW6ZqpCj65rQ67ATY3SqA=",
-    "last_login": "2025-08-26T05:35:45.107Z",
+    "last_login": "2025-08-27T06:18:07.539Z",
     "is_superuser": true,
     "username": "root",
     "first_name": "",
@@ -11651,6 +11781,14 @@
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1uqRYV:41k4C2o1qaCJvN1GeNfTsFykrULyemEVGL-C7v1hFdQ",
     "expire_date": "2025-09-08T07:23:51.206Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "n1fee32fjue0z9g5b9olonta7j9m39cu",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1ur9Tz:2K8jOukgZg0mZxYr43ns7Cebvtzn0N2aedHGYBvNQJo",
+    "expire_date": "2025-09-10T06:18:07.539Z"
   }
 },
 {
@@ -62186,11 +62324,11 @@
     "product_number": null,
     "manufacture_date": null,
     "purchaser": "ЯМЗ",
-    "consumer_act_number": "756/03-45/226",
-    "consumer_act_date": "2025-06-06",
+    "consumer_act_number": "546",
+    "consumer_act_date": "2025-06-11",
     "country_rejected": "Россия",
-    "end_consumer": null,
-    "end_consumer_act_number": "756/03-45/226",
+    "end_consumer": "546",
+    "end_consumer_act_number": "2025-06-11",
     "end_consumer_act_date": "2025-06-06",
     "engine_brand": null,
     "engine_number": null,
@@ -62215,7 +62353,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-21T18:51:23.540Z"
+    "updated_at": "2025-08-27T08:02:07.899Z"
   }
 },
 {
@@ -76766,7 +76904,7 @@
   "model": "reclamations.reclamation",
   "pk": 1327,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-08-21",
     "sender": null,
@@ -76807,14 +76945,14 @@
     "receipt_invoice_date": "2025-08-20",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-25T05:19:39.310Z"
+    "updated_at": "2025-08-27T12:13:39.616Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1328,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-08-21",
     "sender": null,
@@ -76855,14 +76993,14 @@
     "receipt_invoice_date": "2025-08-20",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-25T05:19:24.526Z"
+    "updated_at": "2025-08-27T12:12:34.475Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1329,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-08-21",
     "sender": null,
@@ -76903,14 +77041,14 @@
     "receipt_invoice_date": "2025-08-20",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-25T05:19:12.423Z"
+    "updated_at": "2025-08-27T12:11:00.414Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1330,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "incoming_number": null,
     "message_received_date": "2025-08-21",
     "sender": null,
@@ -76951,7 +77089,7 @@
     "receipt_invoice_date": "2025-08-20",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-25T05:18:53.413Z"
+    "updated_at": "2025-08-27T12:07:56.437Z"
   }
 },
 {
@@ -77034,8 +77172,8 @@
     "claimed_defect": "течь",
     "consumer_requirement": "исследование, подтверждение возмещения затрат и утилизации",
     "products_count": 1,
-    "measures_taken": "запрос фото по чек-листу",
-    "outgoing_document_number": "010/1/540-02",
+    "measures_taken": "1. запрос фото по чек-листу 2. согласие на односторонние актирование, утилизацию, удовлетворение претензии",
+    "outgoing_document_number": "1. 010/1/540-02 2. 010/1/548-02",
     "outgoing_document_date": "2025-08-25",
     "letter_sending_method": "ruservice@mmz-motor.by",
     "consumer_response": null,
@@ -77047,7 +77185,7 @@
     "receipt_invoice_date": "2025-08-25",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-25T13:01:16.703Z"
+    "updated_at": "2025-08-27T07:27:39.156Z"
   }
 },
 {
@@ -77096,6 +77234,102 @@
     "reclamation_documents": null,
     "volume_removal_reference": null,
     "updated_at": "2025-08-26T05:44:30.144Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1334,
+  "fields": {
+    "status": "CLOSED",
+    "incoming_number": null,
+    "message_received_date": "2025-08-26",
+    "sender": "ЯМЗ Желнина Наталия Владимровна",
+    "sender_outgoing_number": "251454",
+    "message_sent_date": "2025-08-26",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "13991",
+    "consumer_act_date": "2024-11-08",
+    "country_rejected": "Россия",
+    "end_consumer": "В/ч 6761",
+    "end_consumer_act_number": "13991",
+    "end_consumer_act_date": "2024-11-08",
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": "Урал 432009-0020-73",
+    "transport_number": null,
+    "defect_detection_date": "2024-10-04",
+    "away_type": "kilometre",
+    "mileage_operating_time": "12537 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "отклонить (более 90 дней)",
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-27T07:52:29.435Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1335,
+  "fields": {
+    "status": "NEW",
+    "incoming_number": null,
+    "message_received_date": "2025-08-26",
+    "sender": "ЯМЗ Желнина Наталия Владимровна",
+    "sender_outgoing_number": "25794",
+    "message_sent_date": "2025-08-26",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "25794",
+    "consumer_act_date": "2025-06-10",
+    "country_rejected": "Россия",
+    "end_consumer": "ООО \"УЗПТ\"",
+    "end_consumer_act_number": "25794",
+    "end_consumer_act_date": "2025-06-10",
+    "engine_brand": "ЯМЗ-53623",
+    "engine_number": "P0188899",
+    "transport_name": "Урал 5557-6152-72Е5Г38",
+    "transport_number": null,
+    "defect_detection_date": "2025-06-10",
+    "away_type": "kilometre",
+    "mileage_operating_time": "6414 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": null,
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "reclamation_documents": null,
+    "volume_removal_reference": null,
+    "updated_at": "2025-08-27T06:34:32.031Z"
   }
 },
 {
@@ -84429,6 +84663,121 @@
     "disposal_act_date": null,
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 339,
+  "fields": {
+    "reclamation": 1334,
+    "act_number": "не требуется",
+    "act_date": "2025-08-27",
+    "fault_type": "unknown",
+    "guilty_department": "Не определено",
+    "defect_causes": null,
+    "defect_causes_explanation": null,
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": null,
+    "shipment_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 340,
+  "fields": {
+    "reclamation": 1330,
+    "act_number": "2025 № 973",
+    "act_date": "2025-08-26",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "не установлена",
+    "defect_causes_explanation": "предпологаемо разрушение сепаратора подшипника",
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ute@gomselmash.by",
+    "shipment_date": "2025-08-27",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 341,
+  "fields": {
+    "reclamation": 1329,
+    "act_number": "2025 № 972",
+    "act_date": "2025-08-26",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "не установлена",
+    "defect_causes_explanation": "предпологаемо разрушение сепаратора подшипника",
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ute@gomselmash.by",
+    "shipment_date": "2025-08-27",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 342,
+  "fields": {
+    "reclamation": 1328,
+    "act_number": "2025 № 971",
+    "act_date": "2025-08-26",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "Скрытый дефект манжеты 5336-3509380",
+    "defect_causes_explanation": null,
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ute@gomselmash.by",
+    "shipment_date": "2025-08-27",
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 343,
+  "fields": {
+    "reclamation": 1327,
+    "act_number": "2025 № 970",
+    "act_date": "2025-08-26",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "не установлена",
+    "defect_causes_explanation": "предпологаемо разрушение сепаратора подшипника",
+    "defective_supplier": null,
+    "pkd_number": null,
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "recipient": "ute@gomselmash.by",
+    "shipment_date": "2025-08-27",
     "shipment_invoice_number": null,
     "shipment_invoice_date": null,
     "return_condition": null,
