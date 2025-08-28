@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.db.models import Q
 from django.urls import path
 from django.shortcuts import render
+from django.utils.safestring import mark_safe
 
 from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
@@ -275,10 +276,21 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     # Поля для поиска
     search_fields = [
-        "act_number",
-        "reclamation__product__nomenclature",
-        "reclamation__product_number",
+        "act_number",  # номер акта исследования
+        "reclamation__product__nomenclature",  # обозначение изделия
+        "reclamation__product_number",  # номер изделия
+        "reclamation__engine_number",  # номер двигателя
     ]
+
+    search_help_text = mark_safe(
+        """
+    <p>ПОИСК ПО ПОЛЯМ:</p>
+    <ul>
+        <li>НОМЕР АКТА ИССЛЕДОВАНИЯ ••• ОБОЗНАЧЕНИЕ ИЗДЕЛИЯ</li>
+        <li>НОМЕР ИЗДЕЛИЯ ••• НОМЕР ДВИГАТЕЛЯ</li>
+    </ul>
+    """
+    )
 
     # Сортировка по умолчанию
     ordering = ["reclamation"]

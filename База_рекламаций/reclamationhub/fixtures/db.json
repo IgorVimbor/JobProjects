@@ -11869,11 +11869,76 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 914,
+  "fields": {
+    "action_time": "2025-08-28T17:01:16.962Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1339",
+    "object_repr": "1339 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 915,
+  "fields": {
+    "action_time": "2025-08-28T17:01:31.703Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1340",
+    "object_repr": "1340 - водяной насос - КБПА 451363.21 \n(536.1307010-21)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 916,
+  "fields": {
+    "action_time": "2025-08-28T20:19:37.407Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1336",
+    "object_repr": "1336 - водяной насос - 855.1307010-10",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 917,
+  "fields": {
+    "action_time": "2025-08-28T21:19:59.109Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1332",
+    "object_repr": "1332 - компрессор - А29.05.000А-03-БЗА",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u0418\\u0441\\u0445\\u043e\\u0434\\u044f\\u0449\\u0438\\u0439 \\u2116 \\u0434\\u043e\\u043a\\u0443\\u043c\\u0435\\u043d\\u0442\\u0430\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 918,
+  "fields": {
+    "action_time": "2025-08-28T21:21:20.362Z",
+    "user": 1,
+    "content_type": 10,
+    "object_id": "1332",
+    "object_repr": "1332 - компрессор - А29.05.000А-03-БЗА",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"\\u041f\\u0440\\u0438\\u043d\\u044f\\u0442\\u044b\\u0435 \\u043c\\u0435\\u0440\\u044b \\u043f\\u043e \\u0441\\u043e\\u043e\\u0431\\u0449\\u0435\\u043d\\u0438\\u044e\"]}}]"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$600000$N3PiQkrEWdRBFpekgxmKpU$B56ANx475SbmC/lvibytbPCW6ZqpCj65rQ67ATY3SqA=",
-    "last_login": "2025-08-28T07:14:36.000Z",
+    "last_login": "2025-08-28T07:14:36Z",
     "is_superuser": true,
     "username": "root",
     "first_name": "",
@@ -11987,7 +12052,7 @@
   "pk": "chqu53vsomuu2d1682462wpjibnh2clc",
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pChdKBx6d4zkGFgpGogKe3KeHdt0oVu_3vvv1SgbS1h63kJc1JnZdTpd4vEj1x3kO5Ub01zq-syR70r-qBdX1vKz8vh_h0U6uVbg4ExeUAjDE7EQk45s0vI6ByTJfREwpObhAeLnkE8DwguxtGyF_X-APO7OIQ:1urWqC:IyD6aR48V1v_A03xmHDfc-Di6fseh8A5XMecJy4OVCk",
-    "expire_date": "2025-09-11T07:14:36.000Z"
+    "expire_date": "2025-09-11T07:14:36Z"
   }
 },
 {
@@ -65112,7 +65177,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T19:25:35.636Z"
+    "updated_at": "2025-08-28T20:10:33.182Z"
   }
 },
 {
@@ -65160,7 +65225,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T19:25:35.636Z"
+    "updated_at": "2025-08-28T20:10:33.230Z"
   }
 },
 {
@@ -65208,7 +65273,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-23T20:34:49.277Z"
+    "updated_at": "2025-08-28T20:10:33.198Z"
   }
 },
 {
@@ -65256,7 +65321,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T19:25:35.610Z"
+    "updated_at": "2025-08-28T20:10:33.206Z"
   }
 },
 {
@@ -65496,7 +65561,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T18:51:21.028Z"
+    "updated_at": "2025-08-28T20:10:33.228Z"
   }
 },
 {
@@ -65544,7 +65609,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T18:51:21.017Z"
+    "updated_at": "2025-08-28T20:10:33.249Z"
   }
 },
 {
@@ -65592,7 +65657,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T18:51:21.008Z"
+    "updated_at": "2025-08-28T20:10:33.230Z"
   }
 },
 {
@@ -65640,7 +65705,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T18:51:20.997Z"
+    "updated_at": "2025-08-28T20:10:33.249Z"
   }
 },
 {
@@ -65688,7 +65753,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T18:51:20.987Z"
+    "updated_at": "2025-08-28T20:10:33.213Z"
   }
 },
 {
@@ -65736,7 +65801,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-18T18:51:20.976Z"
+    "updated_at": "2025-08-28T20:10:33.183Z"
   }
 },
 {
@@ -67176,7 +67241,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T19:28:21.357Z"
+    "updated_at": "2025-08-28T20:43:59.324Z"
   }
 },
 {
@@ -67224,7 +67289,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T19:28:21.355Z"
+    "updated_at": "2025-08-28T20:43:59.230Z"
   }
 },
 {
@@ -67272,7 +67337,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T19:28:21.345Z"
+    "updated_at": "2025-08-28T20:43:59.297Z"
   }
 },
 {
@@ -67320,7 +67385,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T19:28:21.324Z"
+    "updated_at": "2025-08-28T20:43:59.317Z"
   }
 },
 {
@@ -67368,7 +67433,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T19:28:21.324Z"
+    "updated_at": "2025-08-28T20:43:59.344Z"
   }
 },
 {
@@ -67416,7 +67481,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T19:28:21.317Z"
+    "updated_at": "2025-08-28T20:43:59.248Z"
   }
 },
 {
@@ -67464,7 +67529,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T19:28:21.306Z"
+    "updated_at": "2025-08-28T20:43:59.256Z"
   }
 },
 {
@@ -67512,7 +67577,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T18:40:19.465Z"
+    "updated_at": "2025-08-28T20:43:59.271Z"
   }
 },
 {
@@ -67560,7 +67625,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T18:34:55.844Z"
+    "updated_at": "2025-08-28T20:43:59.263Z"
   }
 },
 {
@@ -67608,7 +67673,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T18:09:58.688Z"
+    "updated_at": "2025-08-28T20:43:59.184Z"
   }
 },
 {
@@ -67656,7 +67721,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T18:09:58.688Z"
+    "updated_at": "2025-08-28T20:43:59.164Z"
   }
 },
 {
@@ -67704,7 +67769,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T18:09:58.670Z"
+    "updated_at": "2025-08-28T20:43:59.344Z"
   }
 },
 {
@@ -67752,7 +67817,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T18:09:58.669Z"
+    "updated_at": "2025-08-28T20:43:59.297Z"
   }
 },
 {
@@ -67800,7 +67865,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T18:09:58.658Z"
+    "updated_at": "2025-08-28T20:43:59.208Z"
   }
 },
 {
@@ -68376,7 +68441,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T15:37:14.648Z"
+    "updated_at": "2025-08-28T20:43:59.278Z"
   }
 },
 {
@@ -68424,7 +68489,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-17T15:33:32.949Z"
+    "updated_at": "2025-08-28T20:43:59.230Z"
   }
 },
 {
@@ -68472,7 +68537,7 @@
     "receipt_invoice_date": "2025-06-30",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-28T08:03:52.223Z"
+    "updated_at": "2025-08-28T20:10:33.221Z"
   }
 },
 {
@@ -68616,7 +68681,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-13T20:30:37.468Z"
+    "updated_at": "2025-08-28T20:43:59.278Z"
   }
 },
 {
@@ -68664,7 +68729,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-13T20:30:37.459Z"
+    "updated_at": "2025-08-28T20:43:59.293Z"
   }
 },
 {
@@ -68712,7 +68777,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-13T20:30:37.448Z"
+    "updated_at": "2025-08-28T20:43:59.339Z"
   }
 },
 {
@@ -68760,7 +68825,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-13T20:30:37.440Z"
+    "updated_at": "2025-08-28T20:43:59.211Z"
   }
 },
 {
@@ -68808,7 +68873,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-13T20:30:37.418Z"
+    "updated_at": "2025-08-28T20:43:59.211Z"
   }
 },
 {
@@ -68856,7 +68921,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-13T20:30:37.418Z"
+    "updated_at": "2025-08-28T20:43:59.164Z"
   }
 },
 {
@@ -68904,7 +68969,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-13T20:30:37.400Z"
+    "updated_at": "2025-08-28T20:43:59.201Z"
   }
 },
 {
@@ -68952,7 +69017,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-13T20:30:37.400Z"
+    "updated_at": "2025-08-28T20:43:59.192Z"
   }
 },
 {
@@ -69000,7 +69065,7 @@
     "receipt_invoice_date": "2025-07-16",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-13T20:30:37.388Z"
+    "updated_at": "2025-08-28T20:43:59.332Z"
   }
 },
 {
@@ -70200,7 +70265,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:35:20.781Z"
+    "updated_at": "2025-08-28T20:05:53.770Z"
   }
 },
 {
@@ -70248,7 +70313,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:36:45.485Z"
+    "updated_at": "2025-08-28T20:05:53.770Z"
   }
 },
 {
@@ -70296,7 +70361,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:37:59.853Z"
+    "updated_at": "2025-08-28T20:05:53.767Z"
   }
 },
 {
@@ -71016,7 +71081,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:39:39.030Z"
+    "updated_at": "2025-08-28T20:05:53.761Z"
   }
 },
 {
@@ -71064,7 +71129,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:40:26.013Z"
+    "updated_at": "2025-08-28T20:05:53.754Z"
   }
 },
 {
@@ -71112,7 +71177,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:41:49.509Z"
+    "updated_at": "2025-08-28T20:05:53.738Z"
   }
 },
 {
@@ -71160,7 +71225,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:41:04.476Z"
+    "updated_at": "2025-08-28T20:05:53.736Z"
   }
 },
 {
@@ -71208,7 +71273,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:31:52.652Z"
+    "updated_at": "2025-08-28T20:05:53.718Z"
   }
 },
 {
@@ -71256,7 +71321,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:38:55.029Z"
+    "updated_at": "2025-08-28T20:05:53.718Z"
   }
 },
 {
@@ -73704,7 +73769,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:29:02.633Z"
+    "updated_at": "2025-08-28T20:05:53.713Z"
   }
 },
 {
@@ -73752,7 +73817,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": "",
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:30:43.622Z"
+    "updated_at": "2025-08-28T20:05:53.706Z"
   }
 },
 {
@@ -73848,7 +73913,7 @@
     "receipt_invoice_date": "2025-08-05",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-26T09:29:58.270Z"
+    "updated_at": "2025-08-28T20:05:53.697Z"
   }
 },
 {
@@ -77435,8 +77500,8 @@
     "claimed_defect": "течь",
     "consumer_requirement": "исследование, подтверждение возмещения затрат и утилизации",
     "products_count": 1,
-    "measures_taken": "1. запрос фото по чек-листу 2. согласие на односторонние актирование, утилизацию, удовлетворение претензии",
-    "outgoing_document_number": "1. 010/1/540-02 2. 010/1/548-02",
+    "measures_taken": "1. запрос фото по чек-листу 2. согласие на актирование и утилизацию",
+    "outgoing_document_number": "010/1/540-02 010/1/548-02",
     "outgoing_document_date": "2025-08-25",
     "letter_sending_method": "ruservice@mmz-motor.by",
     "consumer_response": null,
@@ -77448,7 +77513,7 @@
     "receipt_invoice_date": "2025-08-25",
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-28T13:13:58.787Z"
+    "updated_at": "2025-08-28T21:21:20.360Z"
   }
 },
 {
@@ -77627,7 +77692,7 @@
     "claimed_defect": "отсутствие Q-кода",
     "consumer_requirement": "распорядится забракованной продукцией",
     "products_count": 5,
-    "measures_taken": "29.08.2025 в адрес ЯМЗ направлены 11 Q-кодов (855.1307010-10 - 5 шт., 855.130700-20 - 6 шт.)",
+    "measures_taken": "29.08.2025 в адрес ЯМЗ направлены Q-коды",
     "outgoing_document_number": "010/1/542-02",
     "outgoing_document_date": "2025-08-26",
     "letter_sending_method": "MorozovMN@ymzmotor.ru",
@@ -77640,7 +77705,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-28T09:40:08.832Z"
+    "updated_at": "2025-08-28T20:19:37.407Z"
   }
 },
 {
@@ -77771,7 +77836,7 @@
     "claimed_defect": "течь",
     "consumer_requirement": "исследование",
     "products_count": 1,
-    "measures_taken": null,
+    "measures_taken": "отклонить (более 90 дней)",
     "outgoing_document_number": null,
     "outgoing_document_date": null,
     "letter_sending_method": null,
@@ -77784,7 +77849,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-28T11:25:37.956Z"
+    "updated_at": "2025-08-28T17:01:16.962Z"
   }
 },
 {
@@ -77819,7 +77884,7 @@
     "claimed_defect": "течь",
     "consumer_requirement": "исследование",
     "products_count": 1,
-    "measures_taken": null,
+    "measures_taken": "отклонить (более 90 дней)",
     "outgoing_document_number": null,
     "outgoing_document_date": null,
     "letter_sending_method": null,
@@ -77832,7 +77897,7 @@
     "receipt_invoice_date": null,
     "reclamation_documents": null,
     "volume_removal_reference": null,
-    "updated_at": "2025-08-28T11:36:26.575Z"
+    "updated_at": "2025-08-28T17:01:31.702Z"
   }
 },
 {
@@ -79481,8 +79546,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79504,8 +79569,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79527,8 +79592,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79550,8 +79615,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79573,8 +79638,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79596,8 +79661,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79619,8 +79684,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79642,8 +79707,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79665,8 +79730,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79780,7 +79845,7 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": "2025 № 21",
+    "disposal_act_number": "21",
     "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
@@ -79803,8 +79868,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -79826,8 +79891,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80010,8 +80075,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80033,8 +80098,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80056,8 +80121,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80079,8 +80144,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80102,8 +80167,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80125,8 +80190,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80148,8 +80213,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80171,8 +80236,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80194,8 +80259,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80217,8 +80282,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80240,8 +80305,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80263,8 +80328,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80286,8 +80351,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80309,8 +80374,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "22",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-13",
     "shipment_invoice_number": null,
@@ -80953,8 +81018,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -80976,8 +81041,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -80999,8 +81064,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -81022,8 +81087,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -81045,8 +81110,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -81068,8 +81133,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -81091,8 +81156,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -81114,8 +81179,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -81137,8 +81202,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -81160,8 +81225,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "21",
+    "disposal_act_date": "2025-08-19",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-07-25",
     "shipment_invoice_number": null,
@@ -84909,8 +84974,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -84932,8 +84997,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -84955,8 +85020,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -84978,8 +85043,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -85001,8 +85066,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -85024,8 +85089,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -85047,8 +85112,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -85070,8 +85135,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -85093,8 +85158,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -85116,8 +85181,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -85139,8 +85204,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,
@@ -85162,8 +85227,8 @@
     "defect_causes_explanation": "IIC-WT16",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "pkd_number": null,
-    "disposal_act_number": null,
-    "disposal_act_date": null,
+    "disposal_act_number": "24",
+    "disposal_act_date": "2025-08-25",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-08-18",
     "shipment_invoice_number": null,

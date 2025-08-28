@@ -1,0 +1,56 @@
+<!-- Шаблон для добавления акта утилизации для рекламаций -->
+
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 20px auto; padding: 20px;">
+    <div style="background-color: #fff; padding: 30px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
+        <h2 style="margin-bottom: 20px; color: #333;">{{ title }}</h2>
+        <p style="margin-bottom: 30px; color: #666;">Выбрано рекламаций: {{ count }}</p>
+
+        <form action="" method="post">
+            {% csrf_token %}
+
+            {% for reclamation in reclamations %}
+                <input type="hidden" name="_selected_action" value="{{ reclamation.pk }}" />
+            {% endfor %}
+            <input type="hidden" name="action" value="{{ action }}" />
+            <input type="hidden" name="{{ action_checkbox_name }}" value="1" />
+
+            <div style="margin-bottom: 25px;">
+                <label for="disposal_act_number" style="display: block; margin-bottom: 8px; font-weight: bold;">
+                    Номер акта утилизации:
+                </label>
+                <input type="text"
+                       name="disposal_act_number"
+                       id="disposal_act_number"
+                       required
+                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label for="disposal_act_date" style="display: block; margin-bottom: 8px; font-weight: bold;">
+                    Дата акта утилизации:
+                </label>
+                <input type="date"
+                       name="disposal_act_date"
+                       id="disposal_act_date"
+                       required
+                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+
+            <div style="margin-top: 30px;">
+                <input type="submit"
+                       name="apply"
+                       value="Добавить акт утилизации"
+                       style="background-color: #79aec8; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">
+                <a href="{{ request.META.HTTP_REFERER }}"
+                   class="button cancel-link"
+                   style="margin-left: 10px; padding: 10px 15px; text-decoration: none; color: #666; border: 1px solid #ddd; border-radius: 4px;">
+                    Отмена
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
