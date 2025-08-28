@@ -46,8 +46,8 @@ def run_command(command, description, capture_output=True):
 
 def main():
     # Пути
-    PROJECT_PATH = r"D:/MyRepositories/JobProjects/База_рекламаций"
-    VENV_PATH = os.path.join(PROJECT_PATH, "rhub_venv")
+    PROJECT_PATH = r"E:/MyRepositories/JobProjects/База_рекламаций"
+    VENV_PATH = os.path.join(PROJECT_PATH, "r-hub_venv")
     PYTHON_PATH = os.path.join(VENV_PATH, "Scripts", "python.exe")
 
     logging.info("Начало выполнения скрипта запуска сервера")
