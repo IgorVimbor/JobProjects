@@ -47,12 +47,16 @@ function initProductsChart(productsData) {
                     ticks: {
                         rotation: 0,  // горизонтальные подписи
                         font: {
-                            size: 8  // размер шрифта подписей оси Х
+                            size: 9  // размер шрифта подписей оси Х
                         },
                         callback: function(value) {
+                            let label = this.getLabelForValue(value);
+                            // Заменяем "турбокомпрессор" на "ТКР"
+                            label = label.toLowerCase() === 'турбокомпрессор' ? 'ТКР' : label;
+                            //  const label = this.getLabelForValue(value);
+
                             // Перенос длинных строк
-                            const label = this.getLabelForValue(value);
-                            const maxLength = 15; // максимальная длина строки
+                            const maxLength = 12; // максимальная длина строки
                             const words = label.split(' ');
                             const lines = [];
                             let line = '';
