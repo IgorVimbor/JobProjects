@@ -31,7 +31,7 @@ function initProductsChart(productsData) {
                 datalabels: {  // добавляем значения над столбцами
                     anchor: 'end',  // точка привязки - конец столбца
                     align: 'top',   // выравнивание над столбцом
-                    offset: 2,      // отступ от столбца
+                    offset: 1,      // отступ от столбца
                     formatter: function(value) {
                         return value;
                     },
