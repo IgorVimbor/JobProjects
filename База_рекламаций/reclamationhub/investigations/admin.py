@@ -60,12 +60,9 @@ class AddInvestigationForm(forms.ModelForm):
             # Отправка результатов
             "shipment_date",
             "recipient",
-            # ПКД
-            "pkd_number",
             # Утилизация
             "disposal_act_number",
             "disposal_act_date",
-            # "volume_removal_reference",
             # Отгрузка
             "shipment_invoice_number",
             "shipment_invoice_date",
@@ -197,10 +194,8 @@ class InvestigationAdmin(admin.ModelAdmin):
         "defective_supplier",
         "shipment_date",
         "recipient",
-        "pkd_number",
         "disposal_act_number",
         "disposal_act_date",
-        # "volume_removal_reference",
         "shipment_invoice_number",
         "shipment_invoice_date",
         "return_condition",
@@ -235,12 +230,6 @@ class InvestigationAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Номер ПКД",
-            {
-                "fields": ["pkd_number"],
-            },
-        ),
-        (
             "Утилизация",
             {
                 "fields": [
@@ -253,7 +242,6 @@ class InvestigationAdmin(admin.ModelAdmin):
             "Отгрузка (возврат) изделия потребителю",
             {
                 "fields": [
-                    # "volume_removal_reference",
                     "shipment_invoice_number",
                     "shipment_invoice_date",
                     "return_condition",

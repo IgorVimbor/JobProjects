@@ -245,6 +245,25 @@ class Reclamation(models.Model):
         null=True, blank=True, verbose_name="Дата ответа потребителя"
     )
 
+    # ПКД (Предупреждающие и корректирующие действия)
+    pkd_number = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name="Номерок 8D (ПКД)"
+    )
+
+    volume_removal_reference = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Справка снятия с объёмов",
+    )
+
+    reclamation_documents = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Дополнительные сведения по рекламации",
+    )
+
     # Поступление изделия
     product_received_date = models.DateField(
         null=True, blank=True, verbose_name="Дата поступления изделия"
@@ -259,24 +278,10 @@ class Reclamation(models.Model):
         max_length=100,
         null=True,
         blank=True,
-        verbose_name="Номер накладной прихода изделия",
+        verbose_name="Накладная прихода изделия",
     )
     receipt_invoice_date = models.DateField(
-        null=True, blank=True, verbose_name="Дата накладной прихода изделия"
-    )
-
-    reclamation_documents = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        verbose_name="Дополнительные сведения по рекламации",
-    )
-
-    volume_removal_reference = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        verbose_name="Номер справки снятия с объёмов",
+        null=True, blank=True, verbose_name="Дата накладной прихода"
     )
     # ------------------------------------------------------------------------------------------
 

@@ -69,11 +69,6 @@ class Investigation(models.Model):
         verbose_name="Поставщик дефектного комплектующего",
     )
 
-    # ПКД (Предупреждающие и корректирующие действия)
-    pkd_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Номер ПКД"
-    )
-
     # Утилизация
     disposal_act_number = models.CharField(
         max_length=100, null=True, blank=True, verbose_name="Номер акта утилизации"
@@ -81,12 +76,6 @@ class Investigation(models.Model):
     disposal_act_date = models.DateField(
         null=True, blank=True, verbose_name="Дата акта утилизации"
     )
-    # volume_removal_reference = models.CharField(
-    #     max_length=100,
-    #     null=True,
-    #     blank=True,
-    #     verbose_name="Номер и месяц справки снятия с объёмов",
-    # )
 
     # Отправка результатов исследования
     recipient = models.CharField(

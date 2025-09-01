@@ -150,10 +150,11 @@ class ReclamationAdmin(admin.ModelAdmin):
         "products_count",  # количество изделий
         "measures_taken",  # принятые меры
         "outgoing_document_number",  # номер исходящего документа
+        "pkd_number",  # номер 8D или ПКД
+        "volume_removal_reference",  # справка снятия с объёмов
         "receipt_invoice_number",  # номер накладной поступления изделия
         "receipt_invoice_date",  # дата накладной поступления изделия
-        "volume_removal_reference",  # справка снятия с объёмов
-        "has_investigation_icon",  # иконка "Исследование"
+        "has_investigation_icon",  # акт исследования
     ]
 
     # Группировка полей в форме редактирования
@@ -175,11 +176,11 @@ class ReclamationAdmin(admin.ModelAdmin):
             "Информация об изделии",
             {
                 "fields": [
+                    "defect_period",
                     "product_name",
                     "product",
                     "product_number",
                     "manufacture_date",
-                    "defect_period",
                 ]
             },
         ),
@@ -251,6 +252,16 @@ class ReclamationAdmin(admin.ModelAdmin):
             },
         ),
         (
+            "Корректирующие действия",
+            {
+                "fields": [
+                    "pkd_number",
+                    "volume_removal_reference",
+                    "reclamation_documents",
+                ]
+            },
+        ),
+        (
             "Поступление изделия",
             {
                 "fields": [
@@ -258,8 +269,6 @@ class ReclamationAdmin(admin.ModelAdmin):
                     "product_sender",
                     "receipt_invoice_number",
                     "receipt_invoice_date",
-                    "reclamation_documents",
-                    "volume_removal_reference",
                 ]
             },
         ),
