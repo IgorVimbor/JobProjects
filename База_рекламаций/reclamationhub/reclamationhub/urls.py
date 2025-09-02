@@ -58,7 +58,7 @@ if settings.DEBUG:
     ]
 
 # Изменяем заголовок админ-панели
-admin_site.site_header = "Панель администрирования"
+admin_site.site_header = "Панель редактирования"
 
 # Изменяем второй заголовок (над виджетами)
 admin_site.index_title = "База рекламаций ОТК"
