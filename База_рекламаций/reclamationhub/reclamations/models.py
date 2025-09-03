@@ -36,7 +36,7 @@ class Reclamation(models.Model):
         max_length=50,
         choices=Status.choices,  # .choices вместо .CHOICES
         default=Status.NEW,
-        verbose_name="Статус",
+        verbose_name="Статус рекламации",
     )
 
     # Методы для изменения статуса

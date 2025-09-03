@@ -169,25 +169,35 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     change_list_template = "admin/investigation_changelist.html"
 
+    @admin.display(description="Рекламация: ID и изделие")
     def reclamation_display(self, obj):
         """Метод для отображения рекламации в админке (в две строки)"""
         return obj.reclamation.admin_display()
 
-    reclamation_display.short_description = "Рекламация (ID и изделие)"
+    # reclamation_display.short_description = "Рекламация (ID и изделие)"
 
+    @admin.display(description="Период выявления дефекта")
+    def get_defect_period(self, obj):
+        """Метод для отображения поля "Период выявления дефекта" из модели reclamation в админ-панели"""
+        return obj.reclamation.defect_period
+
+    # get_defect_period.short_description = "Период выявления дефекта"
+
+    @admin.display(description="Виновник дефекта")
     def get_fault_display(self, obj):
         """Метод для отображения виновника"""
         if obj.fault_type == Investigation.FaultType.BZA:
             return f"БЗА ({obj.guilty_department})" if obj.guilty_department else "БЗА"
         return obj.get_fault_type_display()
 
-    get_fault_display.short_description = "Виновник дефекта"
+    # get_fault_display.short_description = "Виновник дефекта"
 
     # Отображаем все поля модели Investigation
     list_display = [
         "act_number",
         "act_date",
         "reclamation_display",
+        "get_defect_period",
         "get_fault_display",
         "defect_causes",
         "defect_causes_explanation",
@@ -254,7 +264,7 @@ class InvestigationAdmin(admin.ModelAdmin):
     # Отображение кнопок сохранения сверху и снизу формы
     save_on_top = True
 
-    list_per_page = 15  # количество записей на странице
+    list_per_page = 10  # количество записей на странице
 
     # Поля для фильтрации
     list_filter = [
@@ -283,6 +293,17 @@ class InvestigationAdmin(admin.ModelAdmin):
     # Сортировка по умолчанию
     ordering = ["reclamation"]
 
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related(
+                "reclamation",  # для доступа к pk рекламации
+                "reclamation__product",  # для product в admin_display
+                "reclamation__product_name",  # для product_name в admin_display
+            )
+        )
+
     # Добавляем URL для групповой формы
     def get_urls(self):
         urls = super().get_urls()
@@ -296,6 +317,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def add_group_investigation_view(self, request):
+        """Метод добавления группового акта исследования"""
         if request.method == "POST":
             form = AddInvestigationForm(request.POST)
 
@@ -412,6 +434,7 @@ class InvestigationAdmin(admin.ModelAdmin):
     # Добавляем действие в панель "Действие / Выполнить"
     actions = ["edit_shipment"]
 
+    @admin.action(description="Редактировать запись")
     def edit_shipment(self, request, queryset):
         """Действие для редактирования даты отправки акта"""
         # Если выбрано больше одной записи
@@ -431,4 +454,4 @@ class InvestigationAdmin(admin.ModelAdmin):
             f"../investigation/{investigation.pk}/change/#shipment-section"
         )
 
-    edit_shipment.short_description = "Редактировать запись"
+    # edit_shipment.short_description = "Редактировать запись"

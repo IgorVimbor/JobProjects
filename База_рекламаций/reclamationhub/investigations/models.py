@@ -54,13 +54,13 @@ class Investigation(models.Model):
         max_length=250,
         null=True,
         blank=True,
-        verbose_name="Причины возникновения дефектов",
+        verbose_name="Причины дефекта",
     )
     defect_causes_explanation = models.CharField(
         max_length=250,
         null=True,
         blank=True,
-        verbose_name="Пояснения к причинам возникновения дефектов",
+        verbose_name="Пояснения к причинам дефекта",
     )
     defective_supplier = models.CharField(
         max_length=200,
@@ -90,12 +90,12 @@ class Investigation(models.Model):
         max_length=100,
         null=True,
         blank=True,
-        verbose_name="Номер накладной отгрузки изделия потребителю",
+        verbose_name="Накладная отгрузки изделия",
     )
     shipment_invoice_date = models.DateField(
         null=True,
         blank=True,
-        verbose_name="Дата накладной отгрузки изделия потребителю",
+        verbose_name="Дата накладной отгрузки изделия",
     )
     # Используем класс ReturnCondition в поле модели
     return_condition = models.CharField(
@@ -103,13 +103,13 @@ class Investigation(models.Model):
         choices=ReturnCondition.choices,
         null=True,
         blank=True,
-        verbose_name="Состояние возвращаемого потребителю изделия",
+        verbose_name="Состояние возвращаемого изделия",
     )
     return_condition_explanation = models.CharField(
         max_length=250,
         null=True,
         blank=True,
-        verbose_name="Пояснения по состоянию возвращаемого изделия",
+        verbose_name="Пояснения к состоянию изделия",
     )
 
     class Meta:

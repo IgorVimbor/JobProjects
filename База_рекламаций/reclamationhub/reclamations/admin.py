@@ -276,6 +276,7 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     # Фильтры
     list_filter = [
+        "status",
         "defect_period",
         "product__product_type",
     ]
@@ -436,7 +437,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         }
         return render(request, "admin/add_disposal_act.html", context)
 
-    @admin.action(description="Статус")
+    @admin.display(description="Статус реклаиации")
     def status_colored(self, obj):
         """Метод для цветового отображения статуса рекламации"""
         colors = {"NEW": "blue", "IN_PROGRESS": "orange", "CLOSED": "green"}
@@ -448,7 +449,7 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     # status_colored.short_description = "Статус"
 
-    @admin.action(description="Исследование")
+    @admin.display(description="Исследование")
     def has_investigation_icon(self, obj):
         """Метод для отображения номера акта исследования"""
         if obj.has_investigation:
