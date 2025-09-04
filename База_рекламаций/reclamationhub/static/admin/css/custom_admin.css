@@ -100,7 +100,7 @@
 
 /* ------------- Размещаем фильтры в навигационной панели ---------------- */
 #changelist-filter {
-    font-weight: bold !important;
+    /* font-weight: bold !important; */
     font-size: 16px !important;
     width: 100% !important;
     padding: 10px !important;
