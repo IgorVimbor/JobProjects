@@ -1,6 +1,21 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
+import os
+
 from reclamations.models import Reclamation
+
+
+# def investigation_act_path(instance, filename):
+#     """
+#     Функция для формирования пути сохранения файла pdf.
+#     Пробелы и спецсимволы в имени файла автоматически заменяются на подчеркивание.
+#     """
+#     from django.utils.encoding import force_str
+
+#     year = instance.act_number[:4]
+#     # Используем оригинальный номер акта исследования
+#     filename = force_str(f"{instance.act_number}.pdf")
+#     return f"investigations/{year}/{filename}"
 
 
 class Investigation(models.Model):
@@ -69,20 +84,35 @@ class Investigation(models.Model):
         verbose_name="Поставщик дефектного комплектующего",
     )
 
-    # Утилизация
-    disposal_act_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Номер акта утилизации"
-    )
-    disposal_act_date = models.DateField(
-        null=True, blank=True, verbose_name="Дата акта утилизации"
-    )
-
     # Отправка результатов исследования
     recipient = models.CharField(
         max_length=200, null=True, blank=True, verbose_name="Получатель"
     )
     shipment_date = models.DateField(
         null=True, blank=True, verbose_name="Дата отправки акта исследования"
+    )
+
+    # Сканированная копия акта исследования
+    act_scan = models.FileField(
+        # upload_to=investigation_act_path,
+        upload_to="",  # пустая строка означает сохранение прямо в media
+        verbose_name="Скан акта исследования",
+        # help_text="Загрузите скан акта в формате PDF",
+        null=True,
+        blank=True,
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=["pdf"], message="Разрешены только файлы PDF"
+            )
+        ],
+    )
+
+    # Утилизация
+    disposal_act_number = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name="Номер акта утилизации"
+    )
+    disposal_act_date = models.DateField(
+        null=True, blank=True, verbose_name="Дата акта утилизации"
     )
 
     # Отгрузка (возврат) изделия потребителю
@@ -120,6 +150,17 @@ class Investigation(models.Model):
             models.Index(fields=["act_number", "act_date"]),
         ]
 
+    @property
+    def has_act_scan(self):
+        return bool(self.act_scan)
+
+    @property
+    def act_scan_filename(self):
+        """Получение только имени файла без пути"""
+        if self.act_scan:
+            return self.act_scan.name.split("/")[-1]
+        return None
+
     def __str__(self):
         return (
             f"Акт исследования {self.act_number} от {self.act_date.strftime('%d.%m.%Y')} "
@@ -127,18 +168,41 @@ class Investigation(models.Model):
         )
 
     # def clean(self):
-    # if not self.fault_type:
-    #     raise ValidationError(
-    #         "Необходимо указать виновника дефекта или соответствие ТУ"
-    #     )
+    #     if not self.fault_type:
+    #         raise ValidationError(
+    #             "Необходимо указать виновника дефекта или соответствие ТУ"
+    #         )
 
-    # if self.fault_type == self.FaultType.BZA and not self.guilty_department:
-    #     raise ValidationError(
-    #         "При указании БЗА как виновника необходимо указать виновное подразделение"
-    #     )
+    def delete_act_scan(self):
+        """Метод для удаления файла"""
+        if self.act_scan:
+            if os.path.isfile(self.act_scan.path):
+                os.remove(self.act_scan.path)
+
+    # def save(self, *args, **kwargs):
+    #     """Обновление статуса рекламации"""
+    #     # После сохранения акта проверяем и обновляем статус рекламации
+    #     super().save(*args, **kwargs)
+    #     self.reclamation.update_status_on_investigation()
 
     def save(self, *args, **kwargs):
-        """Обновление статуса рекламации"""
-        # После сохранения акта проверяем и обновляем статус рекламации
+        """Обновление статуса рекламации и обработка файлов"""
+        # Обработка файла
+        if self.pk:  # если запись уже существует
+            try:
+                old_instance = Investigation.objects.get(pk=self.pk)
+                if old_instance.act_scan and (
+                    not self.act_scan or old_instance.act_scan != self.act_scan
+                ):
+                    old_instance.delete_act_scan()
+            except Investigation.DoesNotExist:
+                pass
+
+        # Сохранение записи и обновление статуса рекламации
         super().save(*args, **kwargs)
         self.reclamation.update_status_on_investigation()
+
+    def delete(self, *args, **kwargs):
+        """Переопределяем метод удаления"""
+        self.delete_act_scan()
+        super().delete(*args, **kwargs)

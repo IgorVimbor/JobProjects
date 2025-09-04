@@ -18,6 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.conf.urls.static import static
 from django.views.generic import RedirectView
 
 from reclamationhub.admin import admin_site
@@ -48,7 +49,9 @@ urlpatterns = [
         RedirectView.as_view(url="/admin/sourcebook/product/", permanent=True),
     ),
     path("admin/", admin_site.urls),
-]
+] + static(
+    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+)  # обработка медиа-файлов
 
 if settings.DEBUG:
     import debug_toolbar

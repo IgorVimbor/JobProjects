@@ -3,7 +3,7 @@ from django.utils.html import format_html
 from django import forms
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.urls import path
+from django.urls import path, reverse
 from django.db.models import Q
 from django.utils.safestring import mark_safe
 
@@ -449,14 +449,33 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     # status_colored.short_description = "Статус"
 
+    # @admin.display(description="Исследование")
+    # def has_investigation_icon(self, obj):
+    #     """Метод для отображения номера акта исследования"""
+    #     if obj.has_investigation:
+    #         return obj.investigation.act_number
+    #     return ""
+    # вариант присваивания наименования has_investigation_icon.short_description = "Исследование"
+
     @admin.display(description="Исследование")
     def has_investigation_icon(self, obj):
-        """Метод для отображения номера акта исследования"""
+        """Метод для отображения номера акта исследования как ссылки"""
         if obj.has_investigation:
-            return obj.investigation.act_number
+            # Получаем базовый URL
+            url = reverse("admin:investigations_investigation_changelist")
+            # Добавляем параметр фильтрации по номеру акта
+            filtered_url = f"{url}?act_number={obj.investigation.act_number}"
+            # return mark_safe(
+            #     f'<a href="{filtered_url}">{obj.investigation.act_number}</a>'
+            # )
+            return mark_safe(
+                f'<a href="{filtered_url}" '
+                f"onmouseover=\"this.style.fontWeight='bold'\" "  # жирный шрифт при наведении
+                f"onmouseout=\"this.style.fontWeight='normal'\" "  # нормальный шрифт
+                f'title="Перейти к акту исследования">'  # подсказка при наведении
+                f"{obj.investigation.act_number}</a>"
+            )
         return ""
-
-    # has_investigation_icon.short_description = "Исследование"
 
     # def save_model(self, request, obj, form, change):
     #     """Обновление статуса рекламации при добавлении номера накладной прихода изделия"""

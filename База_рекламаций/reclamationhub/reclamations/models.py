@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
 
@@ -348,11 +349,42 @@ class Reclamation(models.Model):
         """Отображение рекламации в строковом виде (консоль, логи и др.)"""
         return f"{self.pk} - {self.product_name} - {self.product}"
 
-    def admin_display(self):
-        """Отображение рекламации в две строки в админ-панели актов рекламаций"""
-        return mark_safe(f"{self.pk} - {self.product_name}<br>{self.product}")
+    # def admin_display_by_reclamation(self):
+    #     """Отображение рекламации в две строки в админ-панели актов исследований"""
+    #     return mark_safe(f"{self.pk} - {self.product_name}<br>{self.product}")
 
-    admin_display.short_description = "Рекламация"
+    def admin_display_by_reclamation(self):
+        """Отображение рекламации (в две строки с активной ссылкой) в админ-панели актов исследований"""
+        url = reverse("admin:reclamations_reclamation_changelist")
+        filtered_url = f"{url}?id={self.pk}"
+        return mark_safe(
+            f'<a href="{filtered_url}" '
+            # f'style="text-decoration: none; transition: font-weight 0.2s;" '
+            f"onmouseover=\"this.style.fontWeight='bold'\" "
+            f"onmouseout=\"this.style.fontWeight='normal'\" "
+            f'title="Перейти к рекламации">'
+            f"{self.pk}</a> - {self.product_name}<br>{self.product}"
+        )
+
+    admin_display_by_reclamation.short_description = "Рекламация"
+
+    def admin_display_by_consumer_act(self):
+        """Отображение акта рекламации в админ-панели актов исследований"""
+        # Если есть акт рекламации приобретателя - выводим его
+        if self.consumer_act_number and self.consumer_act_date:
+            return mark_safe(
+                f"№ {self.consumer_act_number}<br>{self.consumer_act_date}"
+            )
+        # Если акт рекламации приобретателя нет, но есть конечного потребителя - выводим его
+        elif self.end_consumer_act_number and self.end_consumer_act_date:
+            return mark_safe(
+                f"№ {self.end_consumer_act_number}<br>{self.end_consumer_act_date}"
+            )
+        # Если актов нет - выводим пустую строку
+        else:
+            return ""
+
+    admin_display_by_consumer_act.short_description = "Номер и дата акта рекламации"
 
     def clean(self):
         """

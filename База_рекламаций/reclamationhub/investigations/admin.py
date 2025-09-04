@@ -157,6 +157,12 @@ class InvestigationAdminForm(forms.ModelForm):
                 investigation__isnull=True
             )
 
+        # Настройка отображения поля для сохранения файла
+        if self.instance.act_scan:
+            self.fields["act_scan"].widget.initial_text = "Файл"
+            self.fields["act_scan"].widget.input_text = "Заменить"
+            self.fields["act_scan"].widget.clear_checkbox_label = "Удалить"
+
 
 @admin.register(Investigation, site=admin_site)
 class InvestigationAdmin(admin.ModelAdmin):
@@ -172,9 +178,16 @@ class InvestigationAdmin(admin.ModelAdmin):
     @admin.display(description="Рекламация: ID и изделие")
     def reclamation_display(self, obj):
         """Метод для отображения рекламации в админке (в две строки)"""
-        return obj.reclamation.admin_display()
+        return obj.reclamation.admin_display_by_reclamation()
 
     # reclamation_display.short_description = "Рекламация (ID и изделие)"
+
+    @admin.display(description="Номер и дата акта рекламации")
+    def act_reclamation_display(self, obj):
+        """Метод для отображения акта рекламации приобретателя в админке (в две строки)"""
+        return obj.reclamation.admin_display_by_consumer_act()
+
+    # act_reclamation_display.short_description = "Номер и дата акта рекламации"
 
     @admin.display(description="Период выявления дефекта")
     def get_defect_period(self, obj):
@@ -192,18 +205,35 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     # get_fault_display.short_description = "Виновник дефекта"
 
+    @admin.display(description="Копия акта")
+    def has_act_scan_icon(self, obj):
+        """Отображение иконки наличия скана"""
+        if obj.has_act_scan:
+            return mark_safe(
+                f'<div style="display: flex; justify-content: center; align-items: center; height: 100%;">'
+                f'<a href="{obj.act_scan.url}" '
+                f'target="_blank" '
+                f'style="font-size: 24px; text-decoration: none;" '
+                f'title="Открыть скан акта">'
+                f"📄</a>"
+                f"</div>"
+            )
+        return ""
+
     # Отображаем все поля модели Investigation
     list_display = [
         "act_number",
         "act_date",
         "reclamation_display",
         "get_defect_period",
+        "act_reclamation_display",
         "get_fault_display",
         "defect_causes",
         "defect_causes_explanation",
         "defective_supplier",
         "shipment_date",
         "recipient",
+        "has_act_scan_icon",
         "disposal_act_number",
         "disposal_act_date",
         "shipment_invoice_number",
@@ -226,6 +256,7 @@ class InvestigationAdmin(admin.ModelAdmin):
                     "defect_causes",
                     "defect_causes_explanation",
                     "defective_supplier",
+                    "act_scan",
                 ],
             },
         ),
@@ -299,8 +330,8 @@ class InvestigationAdmin(admin.ModelAdmin):
             .get_queryset(request)
             .select_related(
                 "reclamation",  # для доступа к pk рекламации
-                "reclamation__product",  # для product в admin_display
-                "reclamation__product_name",  # для product_name в admin_display
+                "reclamation__product",  # для product в admin_display_by_reclamation
+                "reclamation__product_name",  # для product_name в admin_display_by_reclamation
             )
         )
 
@@ -398,19 +429,13 @@ class InvestigationAdmin(admin.ModelAdmin):
             {"title": "Добавление группового акта исследования", "form": form},
         )
 
-    # # Делаем поле reclamation обязательным
-    # def get_form(self, request, obj=None, **kwargs):
-    #     form = super().get_form(request, obj, **kwargs)
-    #     form.base_fields["reclamation"].required = True
-    #     return form
-
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
 
-        # Существующая функциональность - делаем поле обязательным
+        # Делаем поле обязательным
         form.base_fields["reclamation"].required = True
 
-        # Новая функциональность - устанавливаем начальное значение из GET-параметра
+        # Устанавливаем начальное значение из GET-параметра
         if not obj and "reclamation" in request.GET:
             form.base_fields["reclamation"].initial = request.GET.get("reclamation")
 
