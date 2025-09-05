@@ -96,7 +96,7 @@ class Investigation(models.Model):
     act_scan = models.FileField(
         # upload_to=investigation_act_path,
         upload_to="",  # пустая строка означает сохранение прямо в media
-        verbose_name="Скан акта исследования",
+        verbose_name="Копия акта исследования",
         # help_text="Загрузите скан акта в формате PDF",
         null=True,
         blank=True,

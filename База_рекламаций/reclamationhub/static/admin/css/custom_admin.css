@@ -140,3 +140,20 @@
     margin: 0;
     padding: 0;
 }
+
+/* ------------- Стили для ClearableFileInput добавления файла pdf ---------------- */
+/* Убираем жирный шрифт в поле загрузки файла */
+.file-upload {
+    font-size: 14px !important;
+    font-weight: normal !important;
+}
+
+/* Стили для чекбокса и текста "Удалить" */
+.clearable-file-input label {
+    font-size: 14px !important;
+    font-weight: normal !important;
+}
+
+.clearable-file-input input[type="checkbox"]{
+    margin-left: 5px !important;
+}

@@ -162,6 +162,7 @@ class InvestigationAdminForm(forms.ModelForm):
             self.fields["act_scan"].widget.initial_text = "Файл"
             self.fields["act_scan"].widget.input_text = "Заменить"
             self.fields["act_scan"].widget.clear_checkbox_label = "Удалить"
+            # self.fields["act_scan"].initial = self.instance.act_scan_filename
 
 
 @admin.register(Investigation, site=admin_site)
