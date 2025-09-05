@@ -74,7 +74,10 @@ class Reclamation(models.Model):
         max_length=200, blank=True, null=True, verbose_name="Кто отправил сообщение"
     )
     sender_outgoing_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Исх. № отправителя"
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Исх. № отправителя (Номер ПСА)",
     )
     message_sent_date = models.DateField(
         null=True, blank=True, verbose_name="Дата отправления сообщения"

@@ -31,6 +31,16 @@ python manage.py startapp <название приложения>
 python manage.py makemigrations
 python manage.py migrate
 
+-- Проверить статус миграций
+
+python manage.py showmigrations
+
+-- Если нужно убедиться, что конкретная миграция применилась корректно, можно проверить структуру таблицы в БД
+Эта команда покажет SQL-запросы, которые выполнялись при применении миграции.
+(Пример для миграции 0013)
+
+python manage.py sqlmigrate investigations 0013
+
 -- Обновление статических файлов после их изменения
 
 python manage.py collectstatic
