@@ -1,6 +1,7 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.utils.html import format_html
 from django import forms
+from django.utils import timezone
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import path, reverse
@@ -42,6 +43,8 @@ class UpdateInvoiceNumberForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
+
+        # Проверяем, что заполнено хотя бы одно поле с номерами актов
         if not any(
             [
                 cleaned_data.get("sender_numbers"),
@@ -50,8 +53,16 @@ class UpdateInvoiceNumberForm(forms.Form):
             ]
         ):
             raise forms.ValidationError(
-                "Необходимо заполнить хотя бы одно поле с номерами для поиска"
+                "Необходимо заполнить хотя бы одно поле с номерами актов"
             )
+
+        # Проверяем, что дата накладной не больше сегодняшней
+        invoice_date = cleaned_data.get("invoice_date")
+        if invoice_date and invoice_date > timezone.now().date():
+            raise forms.ValidationError(
+                {"invoice_date": "Дата не может быть больше сегодняшней"}
+            )
+
         return cleaned_data
 
 
@@ -415,7 +426,7 @@ class ReclamationAdmin(admin.ModelAdmin):
             if success_count:
                 self.message_user(
                     request,
-                    f"Акт утилизации успешно добавлен для {success_count} рекламаций",
+                    f"Акт утилизации успешно добавлен для {success_count} рекламации(-ий)",
                 )
             if no_investigation_count:
                 self.message_user(
@@ -476,14 +487,6 @@ class ReclamationAdmin(admin.ModelAdmin):
                 f"{obj.investigation.act_number}</a>"
             )
         return ""
-
-    # def save_model(self, request, obj, form, change):
-    #     """Обновление статуса рекламации при добавлении номера накладной прихода изделия"""
-    #     # Если это изменение существующей записи, добавлен номер накладной и статус "Новая"
-    #     if change and "receipt_invoice_number" in form.changed_data and obj.is_new():
-    #         obj.update_status_on_receipt()
-    #         self.message_user(request, 'Статус рекламации изменен на "В работе"')
-    #     super().save_model(request, obj, form, change)
 
     def save_model(self, request, obj, form, change):
         """Обновление статуса рекламации и добавление суффикса к пробегу"""
@@ -546,14 +549,23 @@ class ReclamationAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
-    # Обработчик формы для добавления накладной
     def add_invoice_view(self, request):
+        """Метод группового добавления накладной"""
+        context_vars = {
+            "opts": Reclamation._meta,
+            "app_label": Reclamation._meta.app_label,
+            "has_view_permission": True,
+            "original": None,
+        }
+
         if request.method == "POST":
             form = UpdateInvoiceNumberForm(request.POST)
             if form.is_valid():
                 invoice_number = form.cleaned_data["invoice_number"]
                 invoice_date = form.cleaned_data["invoice_date"]
 
+                # Собираем все введенные номера
+                all_input_numbers = []
                 filter_q = Q()
 
                 if form.cleaned_data["sender_numbers"]:
@@ -561,8 +573,9 @@ class ReclamationAdmin(admin.ModelAdmin):
                         num.strip()
                         for num in form.cleaned_data["sender_numbers"].split(",")
                     ]
+                    all_input_numbers.extend(sender_list)
                     filter_q |= Q(sender_outgoing_number__in=sender_list)
-                    # filter_q |= - это операция побитового ИЛИ с присваиванием в Python,
+                    # filter_q |= это операция побитового ИЛИ с присваиванием в Python,
                     # которая в контексте Django Q-объектов используется для объединения
                     # условий фильтрации через логическое ИЛИ (OR)
 
@@ -571,6 +584,7 @@ class ReclamationAdmin(admin.ModelAdmin):
                         num.strip()
                         for num in form.cleaned_data["consumer_act_numbers"].split(",")
                     ]
+                    all_input_numbers.extend(consumer_list)
                     filter_q |= Q(consumer_act_number__in=consumer_list)
 
                 if form.cleaned_data["end_consumer_act_numbers"]:
@@ -580,9 +594,26 @@ class ReclamationAdmin(admin.ModelAdmin):
                             ","
                         )
                     ]
+                    all_input_numbers.extend(end_consumer_list)
                     filter_q |= Q(end_consumer_act_number__in=end_consumer_list)
 
                 filtered_queryset = self.model.objects.filter(filter_q)
+
+                # Проверяем отсутствующие номера
+                found_numbers = set()
+                all_reclamations = self.model.objects.all()
+
+                for num in all_input_numbers:
+                    if all_reclamations.filter(
+                        Q(sender_outgoing_number=num)
+                        | Q(consumer_act_number=num)
+                        | Q(end_consumer_act_number=num)
+                    ).exists():
+                        found_numbers.add(num)
+
+                missing_numbers = [
+                    num for num in all_input_numbers if num not in found_numbers
+                ]
 
                 # Проверяем, найдены ли записи
                 if filtered_queryset.exists():
@@ -605,37 +636,78 @@ class ReclamationAdmin(admin.ModelAdmin):
 
                     total_updated = updated_count + other_updated
                     status_message = (
-                        f" (изменен статус для {updated_count} записей)"
+                        f"Изменен статус для записей: {updated_count}"
                         if updated_count
                         else ""
                     )
 
-                    self.message_user(
-                        request,
-                        f"Обновлены данные накладной для {total_updated} записей{status_message}",
-                    )
-                    return HttpResponseRedirect("../")
+                    # Формируем сообщения
+                    info_message = f"Введено номеров актов: {len(all_input_numbers)}"
+                    success_message = f"Обновлены данные накладной для записей: {total_updated} {status_message}"
+
+                    if missing_numbers:
+                        missing_text = ", ".join(missing_numbers)
+                        error_part = (
+                            f"Номер акта отсутствующий в базе данных: {missing_text}"
+                        )
+
+                        # Три отдельных сообщения с разными уровнями
+                        self.message_user(request, info_message, level=messages.INFO)
+                        self.message_user(
+                            request, success_message, level=messages.SUCCESS
+                        )
+                        self.message_user(request, error_part, level=messages.WARNING)
+                    else:
+                        # Два сообщения если все номера найдены
+                        self.message_user(request, info_message, level=messages.INFO)
+                        self.message_user(
+                            request, success_message, level=messages.SUCCESS
+                        )
+
+                    return HttpResponseRedirect(request.get_full_path())
                 else:
-                    # Если записи не найдены, возвращаем форму с сообщением
+                    # Все номера отсутствуют
+                    if missing_numbers:
+                        missing_text = ", ".join(missing_numbers)
+                        error_message = (
+                            f"Номер акта отсутствующий в базе данных: {missing_text}"
+                        )
+                    else:
+                        error_message = (
+                            "Указанные номера актов в базе данных отсутствуют."
+                        )
+
                     return render(
                         request,
-                        "admin/update_invoice_number.html",
+                        "admin/add_group_invoice_number.html",
                         {
                             "title": "Добавление данных накладной прихода изделий",
                             "form": form,
-                            "search_result": "Указанные номера актов рекламаций в базе данных отсутствуют.",
+                            "search_result": error_message,
                             "found_records": False,
+                            **context_vars,
                         },
                     )
+            else:
+                return render(
+                    request,
+                    "admin/add_group_invoice_number.html",
+                    {
+                        "title": "Добавление данных накладной прихода изделий",
+                        "form": form,
+                        **context_vars,
+                    },
+                )
         else:
             form = UpdateInvoiceNumberForm()
 
         return render(
             request,
-            "admin/update_invoice_number.html",
+            "admin/add_group_invoice_number.html",
             {
                 "title": "Добавление данных накладной прихода изделий",
                 "form": form,
+                **context_vars,
             },
         )
 

@@ -192,7 +192,7 @@ class Investigation(models.Model):
             raise ValidationError(errors)
 
     def delete_act_scan(self):
-        """Метод для удаления файла"""
+        """Метод для удаления pdf-файла"""
         if self.act_scan:
             if os.path.isfile(self.act_scan.path):
                 os.remove(self.act_scan.path)
@@ -216,5 +216,13 @@ class Investigation(models.Model):
 
     def delete(self, *args, **kwargs):
         """Переопределяем метод удаления"""
-        self.delete_act_scan()
-        super().delete(*args, **kwargs)
+        self.delete_act_scan()  # Удаляем pdf-файл
+
+        # Сохраняем ссылку на рекламацию
+        reclamation = self.reclamation
+
+        super().delete(*args, **kwargs)  # удаляем объект Investigation
+
+        # Напрямую изменяем статус после удаления
+        reclamation.status = reclamation.Status.IN_PROGRESS
+        reclamation.save()

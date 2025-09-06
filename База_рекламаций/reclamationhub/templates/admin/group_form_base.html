@@ -56,6 +56,23 @@
         border: 1px solid #ffcdd2;
         color: #c62828;
     }
+
+    /* Стили для ошибок формы */
+    .form-errors {
+        margin: 10px 370px;
+        padding: 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: #fff0f0;
+        border: 1px solid #ffcdd2;
+        color: #c62828;
+    }
+
+    .field-errors {
+        color: #c62828;
+        font-size: 14px;
+        margin-top: 5px;
+    }
 </style>
 {% endblock %}
 
@@ -63,6 +80,23 @@
 <div class="custom-form">
     <form method="post">
         {% csrf_token %}
+
+        <!-- Вывод ошибок формы -->
+        {% if form.non_field_errors %}
+            <!-- Показываем конкретные общие ошибки (например, про номера) -->
+            <div class="form-errors">
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Проверяем есть ли ошибки в полях -->
+            {% if form.errors %}
+                <div class="form-errors">
+                    Пожалуйста, исправьте ошибки в форме.
+                </div>
+            {% endif %}
+        {% endif %}
 
         {% if search_result %}
         <div class="search-result {% if not found_records %}error{% endif %}">
@@ -75,6 +109,14 @@
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 <div class="input-container">
                     {{ field }}
+                    <!-- Вывод ошибок поля -->
+                    {% if field.errors %}
+                        <div class="field-errors">
+                            {% for error in field.errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                     {% if field.help_text %}
                         <div class="help-text">{{ field.help_text }}</div>
                     {% endif %}

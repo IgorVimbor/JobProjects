@@ -26,16 +26,6 @@
 
 {% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
 
-{% if not is_popup %}
-{% block breadcrumbs %}
-<div class="breadcrumbs">
-<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
-&rsaquo; <a href="{% url 'admin:app_list' app_label=cl.opts.app_label %}">{{ cl.opts.app_config.verbose_name }}</a>
-&rsaquo; {{ cl.opts.verbose_name_plural|capfirst }}
-</div>
-{% endblock %}
-{% endif %}
-
 {% block coltype %}{% endblock %}
 
 {% block content %}
@@ -49,8 +39,8 @@
     {% endblock %}
     {% if cl.formset and cl.formset.errors %}
         <p class="errornote">
-        <!-- {% blocktranslate count counter=cl.formset.total_error_count %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %} -->
-            Пожалуйста, исправьте ошибки в форме.
+            {% blocktranslate count counter=cl.formset.total_error_count %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %}
+            <!-- Пожалуйста, исправьте ошибки в форме. -->
         </p>
         {{ cl.formset.non_form_errors }}
     {% endif %}

@@ -1,9 +1,21 @@
 <!--
  Шаблон для изменения на страницах форм добавления/изменения актов рекламаций и исследования
  сообщения об ошибке с английского "Please correct the errors below." на русский вариант
+ и сокращения ссылки при открытии конкретного акта рекламации или исследования
 -->
 
 {% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; {% if add %}{% blocktranslate with name=opts.verbose_name %}Add {{ name }}{% endblocktranslate %}{% else %}{{ original|truncatewords:"18" }}{% endif %}
+</div>
+{% endblock %}
+{% endif %}
 
 {% block extrahead %}
 {{ block.super }}

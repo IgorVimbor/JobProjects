@@ -1,7 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django import forms
 from django.http import HttpResponseRedirect
 from django.db.models import Q
+from django.utils import timezone
 from django.urls import path
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
@@ -91,17 +92,20 @@ class AddInvestigationForm(forms.ModelForm):
 
         if self.data:
             filter_q = Q()
+            self.all_input_numbers = []  # Добавляем сохранение всех введенных номеров
 
             if self.data.get("sender_numbers"):
                 sender_list = [
                     num.strip() for num in self.data["sender_numbers"].split(",")
                 ]
+                self.all_input_numbers.extend(sender_list)
                 filter_q |= Q(sender_outgoing_number__in=sender_list)
 
             if self.data.get("consumer_act_numbers"):
                 consumer_list = [
                     num.strip() for num in self.data["consumer_act_numbers"].split(",")
                 ]
+                self.all_input_numbers.extend(consumer_list)
                 filter_q |= Q(consumer_act_number__in=consumer_list)
 
             if self.data.get("end_consumer_act_numbers"):
@@ -109,6 +113,7 @@ class AddInvestigationForm(forms.ModelForm):
                     num.strip()
                     for num in self.data["end_consumer_act_numbers"].split(",")
                 ]
+                self.all_input_numbers.extend(end_consumer_list)
                 filter_q |= Q(end_consumer_act_number__in=end_consumer_list)
 
             self.filtered_reclamations = Reclamation.objects.filter(filter_q)
@@ -125,8 +130,25 @@ class AddInvestigationForm(forms.ModelForm):
             ]
         ):
             raise forms.ValidationError(
-                "Необходимо заполнить хотя бы одно поле с номерами для поиска"
+                "Необходимо заполнить хотя бы одно поле с номерами актов"
             )
+
+        # Проверяем, что даты не больше сегодняшней
+        today = timezone.now().date()
+        date_fields = [
+            cleaned_data.get("act_date"),
+            cleaned_data.get("shipment_date"),
+            cleaned_data.get("disposal_act_date"),
+            cleaned_data.get("shipment_invoice_date"),
+        ]  # список полей с типом DateField
+
+        errors = {}
+        for field_name in date_fields:
+            if field_name and field_name > today:
+                errors[field_name] = "Дата не может быть больше сегодняшней"
+
+        if errors:
+            raise forms.ValidationError(errors)
 
         return cleaned_data
 
@@ -350,13 +372,38 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     def add_group_investigation_view(self, request):
         """Метод добавления группового акта исследования"""
+        context_vars = {
+            "opts": Investigation._meta,
+            "app_label": Investigation._meta.app_label,
+            "has_view_permission": True,
+            "original": None,
+        }
+
         if request.method == "POST":
             form = AddInvestigationForm(request.POST)
 
             if form.is_valid():
                 reclamations = form.filtered_reclamations
+                all_input_numbers = form.all_input_numbers
+
+                # Проверяем отсутствующие номера ДО создания актов
+                found_numbers = set()
+                all_reclamations = Reclamation.objects.all()
+
+                for num in all_input_numbers:
+                    if all_reclamations.filter(
+                        Q(sender_outgoing_number=num)
+                        | Q(consumer_act_number=num)
+                        | Q(end_consumer_act_number=num)
+                    ).exists():
+                        found_numbers.add(num)
+
+                missing_numbers = [
+                    num for num in all_input_numbers if num not in found_numbers
+                ]
 
                 if reclamations.exists():
+                    # Создаем акты для найденных рекламаций
                     for reclamation in reclamations:
                         try:
                             investigation_fields = [
@@ -392,22 +439,65 @@ class InvestigationAdmin(admin.ModelAdmin):
                                     "form": form,
                                     "search_result": f"Ошибка при сохранении: {str(e)}",
                                     "found_records": False,
+                                    **context_vars,  # Добавляем переменные для breadcrumbs
                                 },
                             )
 
-                    self.message_user(
-                        request, f"Создано {reclamations.count()} актов исследования"
+                    # Формируем сообщение
+                    info_message = f"Введено номеров актов: {len(all_input_numbers)}"
+                    success_message = (
+                        f"Создано актаов исследования: {reclamations.count()}"
                     )
-                    return HttpResponseRedirect("../")
+
+                    if missing_numbers:
+                        missing_text = ", ".join(missing_numbers)
+                        error_part = (
+                            f"Номер акта отсутствующий в базе данных: {missing_text}"
+                        )
+
+                        # Три отдельных сообщения с разными уровнями
+                        self.message_user(  # Синее/серое
+                            request, info_message, level=messages.INFO
+                        )
+                        self.message_user(  # Зеленое
+                            request, success_message, level=messages.SUCCESS
+                        )
+                        self.message_user(  # Желтое
+                            request, error_part, level=messages.WARNING
+                        )
+                    else:
+                        # Два сообщения если все номера найдены
+                        self.message_user(  # Синее/серое
+                            request, info_message, level=messages.INFO
+                        )
+                        self.message_user(  # Зеленое
+                            request, success_message, level=messages.SUCCESS
+                        )
+
+                    # остаемся на этой же странице
+                    return HttpResponseRedirect(request.get_full_path())
+                    # return HttpResponseRedirect("../")  # возвращает на страницу актов исследования
                 else:
+                    # Все номера отсутствуют
+                    if missing_numbers:
+                        missing_text = ", ".join(missing_numbers)
+                        error_message = (
+                            f"Номер акта отсутствующий в базе данных: {missing_text}"
+                        )
+                    else:
+                        error_message = (
+                            "Указанные номера актов в базе данных отсутствуют"
+                        )
+
                     return render(
                         request,
                         "admin/add_group_investigation.html",
                         {
                             "title": "Добавление группового акта исследования",
                             "form": form,
-                            "search_result": "Указанные номера актов рекламаций в базе данных отсутствуют.",
+                            "search_result": error_message,
                             "found_records": False,
+                            **context_vars,  # Добавляем переменные для breadcrumbs
                         },
                     )
             else:
@@ -417,8 +507,7 @@ class InvestigationAdmin(admin.ModelAdmin):
                     {
                         "title": "Добавление группового акта исследования",
                         "form": form,
-                        "search_result": f"Форма содержит ошибки: {form.errors}",
-                        "found_records": False,
+                        **context_vars,  # Добавляем переменные для breadcrumbs
                     },
                 )
         else:
@@ -427,7 +516,11 @@ class InvestigationAdmin(admin.ModelAdmin):
         return render(
             request,
             "admin/add_group_investigation.html",
-            {"title": "Добавление группового акта исследования", "form": form},
+            {
+                "title": "Добавление группового акта исследования",
+                "form": form,
+                **context_vars,  # Добавляем переменные для breadcrumbs
+            },
         )
 
     def get_form(self, request, obj=None, **kwargs):
@@ -451,11 +544,14 @@ class InvestigationAdmin(admin.ModelAdmin):
             self.message_user(request, f"Рекламация {obj.reclamation} закрыта")
 
     def delete_model(self, request, obj):
-        """Проверка и изменение статуса рекламации при удалении акта исследования"""
-        reclamation = obj.reclamation
+        """Удаление акта исследования"""
+        reclamation = obj.reclamation  # Сохраняем ссылку для сообщения
+        # Удаляем объект (статус изменится в методе delete модели Investigation)
         super().delete_model(request, obj)
-        reclamation.update_status_on_investigation()
-        self.message_user(request, f"Статус рекламации {reclamation} изменен")
+
+        self.message_user(
+            request, f"Статус рекламации {reclamation} изменен на 'Исследование'"
+        )
 
     # Добавляем действие в панель "Действие / Выполнить"
     actions = ["edit_shipment"]
@@ -467,7 +563,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         if queryset.count() > 1:
             self.message_user(
                 request,
-                "Пожалуйста, выберите только один акт исследования для редактирования",
+                "Выберите только один акт исследования для редактирования",
                 level="ERROR",
             )
             return
