@@ -67,6 +67,7 @@ ADMIN_APPS_ORDER = {
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -154,14 +155,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = "ru-RU"
-
 TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
-
 USE_TZ = True
 
 DATE_FORMAT = "d.m.Y"  # изменяем формат вывода дат (дд.мм.гггг)
+DATE_INPUT_FORMATS = [
+    "%d.%m.%Y",  # дд.мм.гггг - для ввода пользователем
+    "%Y-%m-%d",  # гггг-мм-дд - стандартный (оставляем для совместимости)
+]
 USE_L10N = False  # это важно, иначе DATE_FORMAT может не применяться
 
 

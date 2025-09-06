@@ -390,20 +390,37 @@ class Reclamation(models.Model):
     admin_display_by_consumer_act.short_description = "Номер и дата акта рекламации"
 
     def clean(self):
-        """
-        Метод для базовой проверки данных на уровне модели
-        """
-        # # Первая пара полей
-        # has_consumer_act = bool(self.consumer_act_number and self.consumer_act_date)
-        # # Вторая пара
-        # has_end_consumer_act = bool(
-        #     self.end_consumer_act_number and self.end_consumer_act_date
-        # )
+        """Метод для базовой проверки данных на уровне модели"""
+        super().clean()
+
         # Проверяем, что указан хотя бы один акт рекламации (приобретателя или конечного потребителя)
         if not self.consumer_act_number and not self.end_consumer_act_number:
             raise ValidationError(
                 "Необходимо заполнить хотя бы один номер акта (приобретателя или конечного потребителя)"
             )
+
+        # Проверяем, что даты не больше сегодняшней
+        today = timezone.now().date()
+        date_fields = [
+            "message_received_date",
+            "message_sent_date",
+            "consumer_act_date",
+            "end_consumer_act_date",
+            "defect_detection_date",
+            "outgoing_document_date",
+            "consumer_response_date",
+            "product_received_date",
+            "receipt_invoice_date",
+        ]  # список полей с типом DateField
+
+        errors = {}
+        for field_name in date_fields:
+            field_value = getattr(self, field_name)
+            if field_value and field_value > today:
+                errors[field_name] = "Дата не может быть больше сегодняшней"
+
+        if errors:
+            raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
         self.full_clean()  # обязательно нужен для запуска валидации

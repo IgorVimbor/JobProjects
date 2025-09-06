@@ -1,0 +1,21 @@
+<!--
+ Шаблон для изменения на страницах форм добавления/изменения актов рекламаций и исследования
+ сообщения об ошибке с английского "Please correct the errors below." на русский вариант
+-->
+
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+.errornote {
+    font-size: 0 !important;
+}
+.errornote:before {
+    content: "Пожалуйста, исправьте ошибки в форме";
+    font-size: 13px;
+    display: block;
+    font-weight: normal;
+}
+</style>
+{% endblock %}

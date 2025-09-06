@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 import os
 
 from reclamations.models import Reclamation
@@ -167,23 +169,33 @@ class Investigation(models.Model):
             f"({self.reclamation.product})"
         )
 
-    # def clean(self):
-    #     if not self.fault_type:
-    #         raise ValidationError(
-    #             "Необходимо указать виновника дефекта или соответствие ТУ"
-    #         )
+    def clean(self):
+        """Метод для базовой проверки данных на уровне модели"""
+        super().clean()
+
+        # Проверяем, что даты не больше сегодняшней
+        today = timezone.now().date()
+        date_fields = [
+            "act_date",
+            "shipment_date",
+            "disposal_act_date",
+            "shipment_invoice_date",
+        ]  # список полей с типом DateField
+
+        errors = {}
+        for field_name in date_fields:
+            field_value = getattr(self, field_name)
+            if field_value and field_value > today:
+                errors[field_name] = "Дата не может быть больше сегодняшней"
+
+        if errors:
+            raise ValidationError(errors)
 
     def delete_act_scan(self):
         """Метод для удаления файла"""
         if self.act_scan:
             if os.path.isfile(self.act_scan.path):
                 os.remove(self.act_scan.path)
-
-    # def save(self, *args, **kwargs):
-    #     """Обновление статуса рекламации"""
-    #     # После сохранения акта проверяем и обновляем статус рекламации
-    #     super().save(*args, **kwargs)
-    #     self.reclamation.update_status_on_investigation()
 
     def save(self, *args, **kwargs):
         """Обновление статуса рекламации и обработка файлов"""
@@ -198,7 +210,7 @@ class Investigation(models.Model):
             except Investigation.DoesNotExist:
                 pass
 
-        # Сохранение записи и обновление статуса рекламации
+        # После сохранения акта исследования проверяем и обновляем статус рекламации
         super().save(*args, **kwargs)
         self.reclamation.update_status_on_investigation()
 
