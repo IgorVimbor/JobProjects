@@ -27,9 +27,18 @@
         height: 80px;
     }
 
-    .custom-form-row input[type="text"],
-    .custom-form-row input[type="date"] {
+    .custom-form-row input[type="text"] {
         width: 100%;
+    }
+
+    /* Добавляем стили для виджета даты forms.DateInput */
+    .custom-form-row input[type="date"] {
+        width: 100px !important;  /* Стандартная ширина поля даты */
+    }
+
+    /* Добавляем стили для виджета даты AdminDateWidget */
+    .custom-form-row .vDateField {
+        width: 100px !important;  /* Стандартная ширина поля даты */
     }
 
     .button-row {

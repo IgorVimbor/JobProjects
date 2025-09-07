@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.contrib.admin.widgets import AdminDateWidget
 from django.utils.html import format_html
 from django import forms
 from django.utils import timezone
@@ -38,6 +39,7 @@ class UpdateInvoiceNumberForm(forms.Form):
     invoice_date = forms.DateField(
         label="Дата накладной",
         widget=forms.DateInput(attrs={"type": "date"}),
+        # widget=AdminDateWidget(),
         required=True,
     )
 
@@ -94,8 +96,11 @@ class ReclamationAdminForm(forms.ModelForm):
                 )
                 for field in text_fields
             },
-            **{  # устанавливаем виджет DateInput для полей дат
-                field: forms.DateInput(attrs={"type": "date"}) for field in date_fields
+            # **{  # устанавливаем виджет DateInput для полей дат
+            #     field: forms.DateInput(attrs={"type": "date"}) for field in date_fields
+            # },
+            **{  # устанавливаем виджет AdminDateWidget для полей дат
+                field: AdminDateWidget() for field in date_fields
             },
         }
 
@@ -502,8 +507,32 @@ class ReclamationAdmin(admin.ModelAdmin):
             )
         return ""
 
+    def response_add(self, request, obj, post_url_continue=None):
+        """Переопределяем стандартный метод вывода сообщения при добавлении рекламации"""
+        storage = messages.get_messages(request)
+        storage.used = True  # Очищаем стандартное сообщение
+
+        self.message_user(
+            request, f"Рекламация <{obj}> была успешно добавлена.", messages.SUCCESS
+        )
+        return super().response_add(request, obj, post_url_continue)
+
+    def response_change(self, request, obj):
+        """Переопределяем стандартный метод вывода сообщения при изменении рекламации"""
+        storage = messages.get_messages(request)
+        storage.used = True  # Очищаем стандартное сообщение
+
+        self.message_user(
+            request, f"Рекламация <{obj}> была успешно изменена.", messages.SUCCESS
+        )
+
+        return super().response_change(request, obj)
+
     def save_model(self, request, obj, form, change):
-        """Обновление статуса рекламации и добавление суффикса к пробегу"""
+        """
+        Переопределяем стандартный метод сохранения для обновления статуса рекламации
+        и добавления суффикса к пробегу
+        """
         # Добавляем суффикс к пробегу/наработке в зависимости от типа
         if (
             obj.away_type == Reclamation.AwayType.KILOMETRE
@@ -519,38 +548,23 @@ class ReclamationAdmin(admin.ModelAdmin):
         elif obj.away_type == Reclamation.AwayType.PSI:
             obj.mileage_operating_time = "ПСИ"
 
-        # Обновление статуса рекламации при добавлении накладной или удалении накладной
+        # Обновление статуса рекламации при добавлении или удалении накладной
         if change and "receipt_invoice_number" in form.changed_data:
             old_obj = Reclamation.objects.get(pk=obj.pk)
 
-            # Если было значение, а стало пустым и статус "В работе"
-            if (
+            # Если статус "Новая" и введена накладная - изменяем статус на "В работе"
+            if obj.receipt_invoice_number and obj.is_new():
+                obj.status = Reclamation.Status.IN_PROGRESS
+
+            # Если статус "В работе" и была накладная, но поле стало пустым - изменяем статус на "Новая"
+            elif (
                 old_obj.receipt_invoice_number
                 and not obj.receipt_invoice_number
                 and obj.status == Reclamation.Status.IN_PROGRESS
             ):
                 obj.status = Reclamation.Status.NEW
-                self.message_user(
-                    request, f"Статус рекламации <{obj}> изменен на <НОВАЯ>"
-                )
-            # Если поле заполнено и статус "Новая"
-            elif obj.receipt_invoice_number and obj.is_new():
-                obj.status = Reclamation.Status.IN_PROGRESS
-                self.message_user(
-                    request, f"Статус рекламации <{obj}> изменен на <ИССЛЕДОВАНИЕ>"
-                )
 
         super().save_model(request, obj, form, change)
-
-    def response_add(self, request, obj, post_url_continue=None):
-        """Переопределяем стандартный метод вывода сообщения при добавлении рекламации"""
-        storage = messages.get_messages(request)
-        storage.used = True  # Очищаем стандартное сообщение
-
-        self.message_user(
-            request, f"Рекламация <{obj}> была успешно добавлена.", messages.SUCCESS
-        )
-        return super().response_add(request, obj, post_url_continue)
 
     # Автозаполнение для связанных полей
     autocomplete_fields = ["product_name", "product"]

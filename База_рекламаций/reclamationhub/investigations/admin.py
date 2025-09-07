@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.contrib.admin.widgets import AdminDateWidget
 from django import forms
 from django.http import HttpResponseRedirect
 from django.db.models import Q
@@ -96,6 +97,9 @@ class AddInvestigationForm(forms.ModelForm):
                 field: forms.DateInput(attrs={"type": "date"})
                 for field in INVESTIGATION_DATE_FIELDS
             },
+            # **{  # устанавливаем виджет AdminDateWidget для полей дат
+            #     field: AdminDateWidget() for field in INVESTIGATION_DATE_FIELDS
+            # },
         }
 
     def __init__(self, *args, **kwargs):
@@ -179,9 +183,11 @@ class InvestigationAdminForm(forms.ModelForm):
                 )
                 for field in INVESTIGATION_TEXT_FIELDS
             },
-            **{  # устанавливаем виджет DateInput для полей дат
-                field: forms.DateInput(attrs={"type": "date"})
-                for field in INVESTIGATION_DATE_FIELDS
+            # **{  # устанавливаем виджет DateInput для полей дат
+            #     field: forms.DateInput(attrs={"type": "date"}) for field in INVESTIGATION_DATE_FIELDS
+            # },
+            **{  # устанавливаем виджет AdminDateWidget для полей дат
+                field: AdminDateWidget() for field in INVESTIGATION_DATE_FIELDS
             },
         }
 
@@ -557,6 +563,14 @@ class InvestigationAdmin(admin.ModelAdmin):
 
         self.message_user(request, f"{obj} был успешно добавлен.", messages.SUCCESS)
         return super().response_add(request, obj, post_url_continue)
+
+    def response_change(self, request, obj):
+        """Переопределяем стандартный метод вывода сообщения при изменении акта"""
+        storage = messages.get_messages(request)
+        storage.used = True  # Очищаем стандартное сообщение
+
+        self.message_user(request, f"{obj} был успешно изменен.", messages.SUCCESS)
+        return super().response_change(request, obj)
 
     def save_model(self, request, obj, form, change):
         """Проверка и изменение статуса рекламации на закрытую"""
