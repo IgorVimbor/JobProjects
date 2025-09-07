@@ -165,8 +165,8 @@ class Investigation(models.Model):
 
     def __str__(self):
         return (
-            f"Акт исследования {self.act_number} от {self.act_date.strftime('%d.%m.%Y')} "
-            f"({self.reclamation.product})"
+            f"Акт исследования {self.act_number} от {self.act_date.strftime('%d.%m.%Y')}"
+            # f"({self.reclamation.product})"
         )
 
     def clean(self):

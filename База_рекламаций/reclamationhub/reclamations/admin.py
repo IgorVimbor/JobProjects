@@ -72,6 +72,17 @@ class ReclamationAdminForm(forms.ModelForm):
         fields = "__all__"
         # список полей с типом CharField для которых добавим возможность переноса строк
         text_fields = ["measures_taken", "consumer_response", "consumer_requirement"]
+        date_fields = [
+            "message_received_date",
+            "message_sent_date",
+            "consumer_act_date",
+            "end_consumer_act_date",
+            "defect_detection_date",
+            "outgoing_document_date",
+            "consumer_response_date",
+            "product_received_date",
+            "receipt_invoice_date",
+        ]  # список полей с типом DateField
 
         widgets = {
             "away_type": forms.RadioSelect(),  # Добавляем RadioSelect для away_type
@@ -82,6 +93,9 @@ class ReclamationAdminForm(forms.ModelForm):
                     }
                 )
                 for field in text_fields
+            },
+            **{  # устанавливаем виджет DateInput для полей дат
+                field: forms.DateInput(attrs={"type": "date"}) for field in date_fields
             },
         }
 
@@ -516,13 +530,27 @@ class ReclamationAdmin(admin.ModelAdmin):
                 and obj.status == Reclamation.Status.IN_PROGRESS
             ):
                 obj.status = Reclamation.Status.NEW
-                self.message_user(request, "Статус рекламации изменен на 'Новая'")
+                self.message_user(
+                    request, f"Статус рекламации <{obj}> изменен на <НОВАЯ>"
+                )
             # Если поле заполнено и статус "Новая"
             elif obj.receipt_invoice_number and obj.is_new():
                 obj.status = Reclamation.Status.IN_PROGRESS
-                self.message_user(request, "Статус рекламации изменен на 'В работе'")
+                self.message_user(
+                    request, f"Статус рекламации <{obj}> изменен на <ИССЛЕДОВАНИЕ>"
+                )
 
         super().save_model(request, obj, form, change)
+
+    def response_add(self, request, obj, post_url_continue=None):
+        """Переопределяем стандартный метод вывода сообщения при добавлении рекламации"""
+        storage = messages.get_messages(request)
+        storage.used = True  # Очищаем стандартное сообщение
+
+        self.message_user(
+            request, f"Рекламация <{obj}> была успешно добавлена.", messages.SUCCESS
+        )
+        return super().response_add(request, obj, post_url_continue)
 
     # Автозаполнение для связанных полей
     autocomplete_fields = ["product_name", "product"]

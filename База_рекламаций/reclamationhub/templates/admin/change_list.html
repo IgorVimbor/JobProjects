@@ -1,3 +1,10 @@
+<!--
+ Базовый шаблон страницы списка рекламаций или актов исследования.
+
+ Мы его переопределяем для изменения сообщения при добавлении/изменении актов рекламаций или исследования
+ (скрываем стандартное сообщение со ссылкой на рекламацию/акт исследования)
+-->
+
 {% extends "admin/base_site.html" %}
 {% load i18n admin_urls static admin_list %}
 
@@ -22,6 +29,17 @@
 {{ block.super }}
 {{ media.js }}
 <script src="{% static 'admin/js/filters.js' %}" defer></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Скрываем стандартные сообщения Django со ссылками
+    document.querySelectorAll('.messagelist li').forEach(function(msg) {
+        if (msg.querySelector('a')) {
+            msg.style.display = 'none';
+        }
+    });
+});
+</script>
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}

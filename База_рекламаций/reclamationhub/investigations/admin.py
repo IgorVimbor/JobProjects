@@ -18,6 +18,13 @@ INVESTIGATION_TEXT_FIELDS = [
     "defect_causes_explanation",
     "return_condition_explanation",
 ]
+# список полей с типом DateField
+INVESTIGATION_DATE_FIELDS = [
+    "act_date",
+    "shipment_date",
+    "disposal_act_date",
+    "shipment_invoice_date",
+]
 
 
 class AddInvestigationForm(forms.ModelForm):
@@ -84,6 +91,10 @@ class AddInvestigationForm(forms.ModelForm):
                     }
                 )
                 for field in INVESTIGATION_TEXT_FIELDS
+            },
+            **{  # устанавливаем виджет DateInput для полей дат
+                field: forms.DateInput(attrs={"type": "date"})
+                for field in INVESTIGATION_DATE_FIELDS
             },
         }
 
@@ -167,6 +178,10 @@ class InvestigationAdminForm(forms.ModelForm):
                     }
                 )
                 for field in INVESTIGATION_TEXT_FIELDS
+            },
+            **{  # устанавливаем виджет DateInput для полей дат
+                field: forms.DateInput(attrs={"type": "date"})
+                for field in INVESTIGATION_DATE_FIELDS
             },
         }
 
@@ -534,6 +549,14 @@ class InvestigationAdmin(admin.ModelAdmin):
             form.base_fields["reclamation"].initial = request.GET.get("reclamation")
 
         return form
+
+    def response_add(self, request, obj, post_url_continue=None):
+        """Переопределяем стандартный метод вывода сообщения при добавлении акта"""
+        storage = messages.get_messages(request)
+        storage.used = True  # Очищаем стандартное сообщение
+
+        self.message_user(request, f"{obj} был успешно добавлен.", messages.SUCCESS)
+        return super().response_add(request, obj, post_url_continue)
 
     def save_model(self, request, obj, form, change):
         """Проверка и изменение статуса рекламации на закрытую"""
