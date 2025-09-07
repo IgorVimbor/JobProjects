@@ -20,6 +20,12 @@ from reclamations.models import Reclamation
 #     return f"investigations/{year}/{filename}"
 
 
+def get_default_act_number():
+    """Возвращает строку с текущим годом и символом №"""
+    current_year = timezone.now().year
+    return f"{current_year} № "
+
+
 class Investigation(models.Model):
     """
     Модель акта исследования рекламационного изделия.
@@ -51,7 +57,9 @@ class Investigation(models.Model):
         verbose_name="Рекламация (ID и изделие)",
     )
     act_number = models.CharField(
-        max_length=100, verbose_name="Номер акта исследования"
+        max_length=100,
+        default=get_default_act_number,
+        verbose_name="Номер акта исследования",
     )
     act_date = models.DateField(verbose_name="Дата акта исследования")
 
