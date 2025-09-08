@@ -171,17 +171,14 @@ USE_L10N = False  # это важно, иначе DATE_FORMAT может не п
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-# строка с префиксом URL-адреса для статических файлов
-STATIC_URL = "static/"
-
+# Настройки для статических файлов
+STATIC_URL = "static/"  # Относительный URL
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # папка для collectstatic
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")] # папка с исходными статическими файлами
 
-# папка размещения статических файлов
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
-# Путь для хранения загруженных файлов
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = "/media/"
+# Настройки для медиафайлов
+MEDIA_URL = "media/"  # Относительный URL
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # папка для загруженных файлов
 
 
 # Default primary key field type

@@ -49,13 +49,21 @@ urlpatterns = [
         RedirectView.as_view(url="/admin/sourcebook/product/", permanent=True),
     ),
     path("admin/", admin_site.urls),
-] + static(
-    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-)  # обработка медиа-файлов
+]
+
+# # Обслуживание медиафайлов в разработке и в продакшене
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# if settings.DEBUG:
+#     import debug_toolbar
+#     urlpatterns += [
+#         path("__debug__/", include(debug_toolbar.urls)),
+#     ]
 
 if settings.DEBUG:
+    # обработка медиа-файлов
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     import debug_toolbar
-
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
     ]

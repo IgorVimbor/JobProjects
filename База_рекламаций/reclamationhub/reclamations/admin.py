@@ -157,7 +157,7 @@ class ReclamationAdmin(admin.ModelAdmin):
     # Отображение кнопок сохранения сверху и снизу формы
     save_on_top = True
 
-    list_per_page = 15  # количество записей на странице
+    list_per_page = 10  # количество записей на странице
 
     # Основные поля для отображения в списке
     list_display = [

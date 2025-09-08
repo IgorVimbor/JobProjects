@@ -10,6 +10,10 @@ ALLOWED_HOSTS = [
     '127.0.0.1'
 ]
 
+# Настройки для работы за обратным прокси
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
+
 # Добавляем WhiteNoise в MIDDLEWARE (после SecurityMiddleware!)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -20,9 +24,15 @@ MIDDLEWARE = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Для продакшена
-CSRF_TRUSTED_ORIGINS = ['http://192.168.0.191:8000', 'http://localhost:8000']
+# CSRF_TRUSTED_ORIGINS = ['http://192.168.0.191:8000', 'http://localhost:8000']
 # Это необходимо для безопасной обработки AJAX-запросов.
 # Django использует CSRF-защиту, и эта настройка указывает, каким источникам можно доверять.
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://192.168.0.191',  # Без порта (Nginx на порту 80)
+    'http://localhost',      # Без порта (Nginx на порту 80)
+    'http://127.0.0.1',      # Добавьте для локального доступа
+]
 
 # Дополнительные настройки безопасности
 CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'  # Кастомный вид при ошибке
