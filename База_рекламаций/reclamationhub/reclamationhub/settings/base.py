@@ -174,9 +174,7 @@ USE_L10N = False  # это важно, иначе DATE_FORMAT может не п
 # Настройки для статических файлов
 STATIC_URL = "/static/"  # Относительный URL
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # папка для collectstatic
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static")
-]  # папка с исходными статическими файлами
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]  # исходные статические файлы
 
 # Настройки для медиафайлов
 MEDIA_URL = "/media/"  # Относительный URL
