@@ -69,6 +69,7 @@ def home_view(request):
     # )
 
     context = {
+        "current_section": None,  # Для главной "Все разделы" будет выделено
         "latest_reclamations": latest_reclamations,
         "total_reclamations": total_reclamations,
         "status_data": json.dumps(list(status_data)),

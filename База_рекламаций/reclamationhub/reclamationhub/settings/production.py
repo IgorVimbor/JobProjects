@@ -32,24 +32,40 @@ ALLOWED_HOSTS = [
 # ----------------- Настройки по варианту 3 urls.py (Django + Nginx) --------------------------
 # Убрать (закоментировать настройки WhiteNoise)
 
-# Настройки для работы за обратным прокси
+# Настройки для работы HTTP / HTTPS
 USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")  # для HTTP
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")  # для HTTPS
 
-# Настройки для безопасной обработки AJAX-запросов.
+# CSRF для работы HTTP / HTTPS
 # Django использует CSRF-защиту, и эта настройка указывает, каким источникам можно доверять.
 # Для продакшена без порта 8000
-CSRF_TRUSTED_ORIGINS = ["http://192.168.0.191", "http://localhost", "http://127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://192.168.0.191",
+    "http://localhost",
+    "http://127.0.0.1",
+]  # CSRF для HTTP
 
-# Дополнительные настройки безопасности
+# # CSRF для HTTPS
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://192.168.0.191",
+#     "https://localhost",
+#     "https://bza-otk",
+# ]
+
+# Дополнительные настройки поведения CSRF защиты
 CSRF_FAILURE_VIEW = "django.views.csrf.csrf_failure"  # Кастомный вид при ошибке
 CSRF_USE_SESSIONS = False  # Хранить токен в куках (стандартное поведение)
 
-# Настройки кук для работы по HTTP в локальной сети
-CSRF_COOKIE_SECURE = False  # Разрешить передачу CSRF-куки по HTTP
-SESSION_COOKIE_SECURE = False  # Разрешить сессионные куки по HTTP
+# Настройки кук по HTTP в локальной сети
+CSRF_COOKIE_SECURE = False  # CSRF-куки по HTTP
+SESSION_COOKIE_SECURE = False  # Сессионные куки по HTTP
 CSRF_COOKIE_HTTPONLY = False  # Разрешить JavaScript доступ к куке (для AJAX)
 
+# # Настройки кук для HTTPS
+# CSRF_COOKIE_SECURE = True  # CSRF-куки только по HTTPS
+# SESSION_COOKIE_SECURE = True  # Сессионные куки только по HTTPS
+# CSRF_COOKIE_HTTPONLY = False  # Разрешить JavaScript доступ к куке (для AJAX)
 
-# Запуск в продакшене:
-# python manage.py runserver 0.0.0.0:8000 --settings=reclamationhub.settings.production
+# # Дополнительные настройки безопасности для HTTPS
+# SECURE_SSL_REDIRECT = False  # Nginx делает редирект

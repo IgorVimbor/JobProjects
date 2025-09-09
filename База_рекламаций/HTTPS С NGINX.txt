@@ -1,0 +1,35 @@
+=== НАСТРОЙКА HTTPS С NGINX ===
+
+1. Создать папку для сертификатов
+
+mkdir C:\nginx\ssl
+
+2. Создать сертификат на 10 лет:
+
+ВАРИАНТ А (Git Bash):
+   openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /c/nginx/ssl/nginx.key -out /c/nginx/ssl/nginx.crt -subj "/C=RU/ST=Moscow/L=Moscow/O=OTK/CN=192.168.0.191"
+
+ВАРИАНТ Б (если OpenSSL установлен):
+   openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout C:\nginx\ssl\nginx.key -out C:\nginx\ssl\nginx.crt -subj "/C=RU/ST=Moscow/L=Moscow/O=OTK/CN=192.168.0.191"
+
+ВАРИАНТ В (онлайн):
+   https://www.selfsignedcertificate.com/
+
+Проверка срока действия сертификата:
+Bash
+openssl x509 -in C:\nginx\ssl\nginx.crt -text -noout | findstr "Not After"
+
+3. Обновить Nginx конфиг (добавить HTTPS секцию в nginx.conf)
+
+4. Обновить настройки Django (изменить на HTTPS в production.py ):
+
+5. Запустить Nginx:
+   .\nginx.exe
+
+Доступ:
+✅ https://192.168.0.191 - другие ПК в сети (через Nginx)
+✅ https://localhost - мой рабочий ПК (через Nginx)
+
+---------------------------------------------------------------------------
+Ссылка на чат с claude-sonnet-4-20250514-thinking-32k:
+https://lmarena.ai/c/eaf9e704-747e-4567-83e3-2c27a26231b3

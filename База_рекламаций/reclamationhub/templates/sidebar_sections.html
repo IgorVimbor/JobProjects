@@ -1,0 +1,21 @@
+{% for section in sections %}
+    {% if section.slug == current_section %}
+        <li class="sidebar-nav-link selected">
+            {{ section.name }}
+        </li>
+    {% else %}
+        {% if section.available %}
+            <li>
+                <a class="sidebar-nav-link" href="{% url section.url_name %}">
+                    {{ section.name }}
+                </a>
+            </li>
+        {% else %}
+            <li>
+                <a class="sidebar-nav-link disabled" href="#" onclick="showComingSoon('{{ section.name }}'); return false;">
+                    {{ section.name }}
+                </a>
+            </li>
+        {% endif %}
+    {% endif %}
+{% endfor %}
