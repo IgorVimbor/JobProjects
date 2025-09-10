@@ -1,0 +1,27 @@
+<!--
+ Страница админ-панели с кастомными изменениями
+ Наследуемся от базового шаблона админ-панели admin/base.html и добавляем свои изменения
+ -->
+
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
+    <!-- После заголовка админ-панели добавляем разделитель "|" потом ссылку "Главная" и еще один разделитель "|" -->
+    | <a href="{% url 'home' %}" style="color: #ffc; font-size: 20px;">Главная</a> |
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+<!-- Добавляем CSS - он скрывает стандартную ссылку"Открыть сайт" на админ-панели -->
+<style>
+    #user-tools a[href="/"]:first-of-type {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
