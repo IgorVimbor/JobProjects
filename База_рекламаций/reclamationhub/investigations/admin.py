@@ -59,6 +59,8 @@ class AddInvestigationForm(forms.ModelForm):
             # Акт исследования
             "act_number",
             "act_date",
+            # Решение по рекламации
+            "solution",
             # Виновник
             "fault_type",
             "guilty_department",
@@ -235,7 +237,7 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     @admin.display(description="Период выявления дефекта")
     def get_defect_period(self, obj):
-        """Метод для отображения поля "Период выявления дефекта" из модели reclamation в админ-панели"""
+        """Метод для отображения поля "Период выявления дефекта" из модели reclamation"""
         return obj.reclamation.defect_period
 
     # get_defect_period.short_description = "Период выявления дефекта"
@@ -264,6 +266,11 @@ class InvestigationAdmin(admin.ModelAdmin):
             )
         return ""
 
+    @admin.display(description="Номерок 8D (ПКД)")
+    def has_pkd_number(self, obj):
+        """Отображение номера 8D (ПКД) из модели reclamation при наличии"""
+        return obj.reclamation.pkd_number
+
     # Отображаем все поля модели Investigation
     list_display = [
         "act_number",
@@ -271,6 +278,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         "reclamation_display",
         "get_defect_period",
         "act_reclamation_display",
+        "solution",
         "get_fault_display",
         "defect_causes",
         "defect_causes_explanation",
@@ -278,6 +286,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         "shipment_date",
         "recipient",
         "has_act_scan_icon",
+        "has_pkd_number",
         "disposal_act_number",
         "disposal_act_date",
         "shipment_invoice_number",
@@ -289,18 +298,33 @@ class InvestigationAdmin(admin.ModelAdmin):
     # Группировка полей
     fieldsets = [
         (
-            "Акт исследования и виновник",
+            "Акт исследования",
             {
                 "fields": [
                     "reclamation",
                     "act_number",
                     "act_date",
+                    "act_scan",
+                ],
+            },
+        ),
+        (
+            "Решение по рекламации",
+            {
+                "fields": [
+                    "solution",
+                ],
+            },
+        ),
+        (
+            "Виновник дефекта и причины",
+            {
+                "fields": [
                     "fault_type",
                     "guilty_department",
                     "defect_causes",
                     "defect_causes_explanation",
                     "defective_supplier",
-                    "act_scan",
                 ],
             },
         ),

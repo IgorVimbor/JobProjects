@@ -251,7 +251,7 @@ class Reclamation(models.Model):
 
     # ПКД (Предупреждающие и корректирующие действия)
     pkd_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Номерок 8D (ПКД)"
+        max_length=250, null=True, blank=True, verbose_name="Номерок 8D (ПКД)"
     )
 
     volume_removal_reference = models.CharField(
@@ -262,7 +262,7 @@ class Reclamation(models.Model):
     )
 
     reclamation_documents = models.CharField(
-        max_length=100,
+        max_length=250,
         null=True,
         blank=True,
         verbose_name="Дополнительные сведения по рекламации",

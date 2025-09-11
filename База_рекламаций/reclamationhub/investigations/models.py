@@ -50,6 +50,10 @@ class Investigation(models.Model):
         REPLACED = "REPLACED", "Заменено на новое"
         RETURNED_AS_IS = "RETURNED_AS_IS", "Возвращено как есть"
 
+    class Solution(models.TextChoices):
+        ACCEPT = "ACCEPT", "Признать"
+        DEFLECT = "DEFLECT", "Отклонить"
+
     reclamation = models.OneToOneField(
         Reclamation,
         on_delete=models.PROTECT,  # защищаем от удаления рекламации
@@ -63,13 +67,22 @@ class Investigation(models.Model):
     )
     act_date = models.DateField(verbose_name="Дата акта исследования")
 
+    # Добавить поле solution "Решение по рекламации": ACCEPT - "Признать" или DEFLECT - "Отклонить"
+    solution = models.CharField(
+        max_length=50,
+        choices=Solution.choices,
+        verbose_name="Решение по рекламации",
+        null=True,  # поле может содержать NULL в базе данных
+        blank=False  # поле не может быть пустым при заполнении формы
+    )
+
     # Используем класс FaultType в поле модели
     fault_type = models.CharField(
         max_length=10,
         choices=FaultType.choices,
         verbose_name="Виновник дефекта",
         null=False,  # поле не может содержать NULL в базе данных
-        blank=False,  # поле не может быть пустым при заполнении формы
+        blank=False,
         default=FaultType.UNKNOWN,  # Добавляем значение по умолчанию
     )
     guilty_department = models.CharField(

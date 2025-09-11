@@ -73,7 +73,13 @@ class ReclamationAdminForm(forms.ModelForm):
         model = Reclamation
         fields = "__all__"
         # список полей с типом CharField для которых добавим возможность переноса строк
-        text_fields = ["measures_taken", "consumer_response", "consumer_requirement"]
+        text_fields = [
+            "consumer_requirement",
+            "measures_taken",
+            "consumer_response",
+            "pkd_number",
+            "reclamation_documents"
+        ]
         date_fields = [
             "message_received_date",
             "message_sent_date",
@@ -467,7 +473,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         }
         return render(request, "admin/add_disposal_act.html", context)
 
-    @admin.display(description="Статус реклаиации")
+    @admin.display(description="Статус рекламации")
     def status_colored(self, obj):
         """Метод для цветового отображения статуса рекламации"""
         colors = {"NEW": "blue", "IN_PROGRESS": "orange", "CLOSED": "green"}
