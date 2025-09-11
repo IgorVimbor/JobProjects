@@ -50,6 +50,7 @@ urlpatterns = [
         RedirectView.as_view(url="/admin/sourcebook/product/", permanent=True),
     ),
     path("admin/", admin_site.urls),
+    path("reports/", include("reports.urls")),  # приложение для аналитики
 ]
 
 # ------------------- Вариант 1 - Djando для медиа и статики -------------------------

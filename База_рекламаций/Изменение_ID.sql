@@ -9,6 +9,26 @@ SET FOREIGN_KEY_CHECKS=1;
 
 -- Далее загружаем базу данных из фикстуры-бэкапа.Например: python manage.py loaddata fixtures/db_290825.json
 
+-------------------------------------------------------------------------------------------------------------
+
+
+-- Поиск дубликатов записей в reclamation по номеру двигателя
+-- Наименование и обозначение изделий берутся из таблиц product_type и product
+SELECT r.id,
+       r.engine_number,
+       pt.name,
+       p.nomenclature
+FROM reclamation r
+LEFT JOIN product_type pt ON r.product_name_id = pt.id
+LEFT JOIN product p ON r.product_id = p.id
+WHERE r.engine_number IN (
+    SELECT engine_number
+    FROM reclamation
+    GROUP BY engine_number
+    HAVING COUNT(*) > 1
+)
+ORDER BY r.engine_number;
+
 
 -------------------- Изменение ID и дат в таблице reclamation и связей в investigation ---------------------
 -- ПРОВЕРКА ДО ВЫПОЛНЕНИЯ ИЗМЕНЕНИЙ:

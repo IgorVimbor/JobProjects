@@ -1,0 +1,31 @@
+<!-- Шаблон страницы с аналитикой и отчетами -->
+
+{% extends 'home.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ page_title }}</h1>
+            <p class="text-muted">{{ description }}</p>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>Справка за период</h5>
+                </div>
+                <div class="card-body">
+                    <p>Здесь будет форма для выбора параметров отчета</p>
+
+                    <!-- Пока просто кнопка-заглушка -->
+                    <button class="btn btn-primary" disabled>
+                        Получить справку за период
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
