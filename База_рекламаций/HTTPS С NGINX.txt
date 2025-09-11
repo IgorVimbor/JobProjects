@@ -7,17 +7,26 @@ mkdir C:\nginx\ssl
 2. Создать сертификат на 10 лет:
 
 ВАРИАНТ А (Git Bash):
-   openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /c/nginx/ssl/nginx.key -out /c/nginx/ssl/nginx.crt -subj "/C=RU/ST=Moscow/L=Moscow/O=OTK/CN=192.168.0.191"
+   openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /c/nginx-1.28.0/ssl/nginx.key -out /c/nginx-1.28.0/ssl/nginx.crt
+
+   Система попросит ввести данные по очереди:
+Country Name (2 letter code): RU
+State or Province Name: Moscow
+Locality Name: Moscow
+Organization Name: OTK
+Organizational Unit Name: Enter (пропустить)
+Common Name: 192.168.0.191
+Email Address: можно Enter (пропустить)
 
 ВАРИАНТ Б (если OpenSSL установлен):
-   openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout C:\nginx\ssl\nginx.key -out C:\nginx\ssl\nginx.crt -subj "/C=RU/ST=Moscow/L=Moscow/O=OTK/CN=192.168.0.191"
+   Выполнить команду из варианта А
 
 ВАРИАНТ В (онлайн):
    https://www.selfsignedcertificate.com/
 
 Проверка срока действия сертификата:
 Bash
-openssl x509 -in C:\nginx\ssl\nginx.crt -text -noout | findstr "Not After"
+   openssl x509 -in C:\nginx-1.28.0\ssl\nginx.crt -text -noout | findstr "Not After"
 
 3. Обновить Nginx конфиг (добавить HTTPS секцию в nginx.conf)
 

@@ -40,14 +40,13 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")  # для HTTP
 # CSRF для работы HTTP / HTTPS
 # Django использует CSRF-защиту, и эта настройка указывает, каким источникам можно доверять.
 # Для продакшена без порта 8000
-CSRF_TRUSTED_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = [ # CSRF для HTTP
     "http://192.168.0.191",
     "http://localhost",
     "http://127.0.0.1",
-]  # CSRF для HTTP
+]
 
-# # CSRF для HTTPS
-# CSRF_TRUSTED_ORIGINS = [
+# CSRF_TRUSTED_ORIGINS = [ # CSRF для HTTPS
 #     "https://192.168.0.191",
 #     "https://localhost",
 #     "https://bza-otk",
