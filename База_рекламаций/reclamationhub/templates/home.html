@@ -10,40 +10,8 @@
 
 {% block content %}
 <!-- Карточки с общей статистикой -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Всего рекламаций</h5>
-                <p class="card-text display-4">{{ total_reclamations }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h5 class="card-title">Новые</h5>
-                <p class="card-text display-4">{{ new_reclamations }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-warning">
-            <div class="card-body">
-                <h5 class="card-title">В работе</h5>
-                <p class="card-text display-4">{{ in_progress }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-success">
-            <div class="card-body">
-                <h5 class="card-title">Закрытые</h5>
-                <p class="card-text display-4">{{ closed_reclamations }}</p>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Используем include для карточек -->
+{% include 'includes/stats_cards.html' %}
 
 <!-- Графики по изделиям и по месяцам -->
 <div class="row">

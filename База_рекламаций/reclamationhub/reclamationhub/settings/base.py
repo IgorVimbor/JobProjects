@@ -58,9 +58,9 @@ INSTALLED_APPS = [
 ADMIN_APPS_ORDER = {
     "reclamations": 1,
     "investigations": 2,
-    "claims": 3,
+    "sourcebook": 3,
     "reports": 4,
-    "sourcebook": 5,
+    "claims": 5,
     "auth": 6,
 }
 

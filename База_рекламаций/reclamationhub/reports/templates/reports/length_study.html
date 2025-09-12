@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'reports:analytics' %}">Аналитика</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </nav>
+
+            <!-- <h1>{{ page_title }}</h1>  -->
+            <h3 class="text-muted">{{ description }}</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="text-info">🚧 {{ status }}</h3>
+                    <p>Модуль "{{ module_name }}" находится в стадии разработки</p>
+                    <p>Здесь будет информация по длительности исследования рекламаций</p>
+
+                    <a href="{% url 'reports:analytics' %}" class="btn btn-secondary">
+                        ← Вернуться к аналитике
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

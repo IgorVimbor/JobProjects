@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Карточки статистики как на главной странице -->
+    {% include 'includes/stats_cards.html' %}
+
+    <!-- Блоки аналитических модулей (как кликабельные карточки в главном окне) -->
+    <!--
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Справка за период</h5>
+                    <p class="card-text">Справка по количеству дефектов за период</p>
+                    <a href="{% url 'reports:enquiry_period' %}" class="btn btn-primary">Открыть</a>
+                </div>
+            </div>
+        </div>
+     -->
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">📊 Справка за период</h5>
+                <p class="card-text">Справка по количеству дефектов за указанный период времени</p>
+                <a href="{% url 'reports:enquiry_period' %}" class="btn btn-primary">Открыть модуль</a>
+            </div>
+        </div>
+    </div>
+        <!--
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Признанные рекламации</h5>
+                    <p class="card-text">Количество признанных/непризнанных рекламаций</p>
+                    <a href="{% url 'reports:accept_defect' %}" class="btn btn-primary">Открыть</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Длительность исследования</h5>
+                    <p class="card-text">Анализ времени проведения исследований</p>
+                    <a href="{% url 'reports:length_study' %}" class="btn btn-primary">Открыть</a>
+                </div>
+            </div>
+        </div>
+        -->
+    </div>
+</div>
+{% endblock %}
