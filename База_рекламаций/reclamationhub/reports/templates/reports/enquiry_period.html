@@ -1,3 +1,6 @@
+<!-- reports/templates/reports/enquiry_period.html -->
+<!-- Шаблон страницы приложения "Справка за период" -->
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -19,20 +22,109 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
+    <!-- Информация о последней справке -->
+    <div class="row mb-4">
+        <div class="col-md-6">
             <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-info">🚧 {{ status }}</h3>
-                    <p>Модуль "{{ module_name }}" находится в стадии разработки</p>
-                    <p>Здесь будет форма для выбора периода и генерации Excel отчета</p>
-
-                    <a href="{% url 'reports:analytics' %}" class="btn btn-secondary">
-                        ← Вернуться к аналитике
-                    </a>
+                <div class="card-header">
+                    <h5>📊 Информация по последней справке</h5>
+                </div>
+                <div class="card-body">
+                    {% if last_metadata %}
+                        <p>Номер справки: <strong>{{ last_metadata.sequence_number }}</strong></p>
+                        <p>Дата формирования: <strong>{{ last_metadata.report_date }}</strong></p>
+                        <p>Последний обработанный ID: <strong>{{ last_metadata.last_processed_id }}</strong></p>
+                    {% else %}
+                        <p class="text-muted">Справки еще не формировались</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Генерация справки</h5>
+                </div>
+                <div class="card-body">
+                    <p>Формирование справки по количеству дефектов за период</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            📈 Сформировать справку
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Блок для предложения скачивания -->
+        {% if download_info %}
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card border-success">
+                        <!--
+                        <div class="card-header bg-success text-white">
+                            <h5>✅ Справка сформирована</h5>
+                        </div>
+                        -->
+                        <div class="card-body">
+                            <p><strong>{{ download_info.message }}</strong></p>
+                            <p class="mt-3">Вы можете скачать файл справки с сайта:</p>
+
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'reports:download_enquiry_excel' %}" class="btn btn-success">
+                                    Да, скачать файл
+                                </a>
+                                <button class="btn btn-secondary" onclick="this.closest('.card').style.display='none'">
+                                    ❌ Нет, не нужно
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
+
+    <!-- Сообщения -->
+    {% if messages %}
+        <div class="row">
+            <div class="col-12">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Сообщение если передано через context -->
+    {% if message %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Статистика актуальных данных для справки -->
+    {% if new_records_count %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>📈 Статистика</h5>
+                        <p>Новых записей для обработки: <strong>{{ new_records_count }}</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

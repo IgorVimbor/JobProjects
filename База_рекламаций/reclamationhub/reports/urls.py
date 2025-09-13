@@ -13,7 +13,13 @@ app_name = "reports"
 
 urlpatterns = [
     path("", analytics.analytics_page, name="analytics"),
+    # Маршруты для приложения "Справка за период"
     path("enquiry-period/", enquiry_period.enquiry_period_page, name="enquiry_period"),
+    path(  # загрузка файла Excel справки
+        "enquiry-period/download/",
+        enquiry_period.download_excel,
+        name="download_enquiry_excel",
+    ),
     path("accept-defect/", accept_defect.accept_defect_page, name="accept_defect"),
     path("length-study/", length_study.length_study_page, name="length_study"),
     path("not-acts/", not_acts.not_acts_page, name="not_acts"),
