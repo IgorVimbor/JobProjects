@@ -7,14 +7,16 @@ import os
 from datetime import date
 
 # ==================== БАЗОВЫЕ НАСТРОЙКИ ====================
-BASE_REPORTS_DIR = r"D:/АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
+# Каталог для сохранения справок, отчетов, таблиц и др.
+# BASE_REPORTS_DIR = r"\\Server\otk\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
+BASE_REPORTS_DIR = r"D:\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
 
 # Текущая дата и год для имен файлов
 date_today = date.today().strftime("%d-%m-%Y")
 year_now = date.today().year
 
 # ==================== ENQUIRY PERIOD ====================
-ENQUIRY_PERIOD_TXT_DIR = os.path.join(BASE_REPORTS_DIR, "Справки_за_период_txt")
+ENQUIRY_PERIOD_TXT_DIR = os.path.join(BASE_REPORTS_DIR, "ENQUIRY_PERIOD_txt")
 
 # Создаем папку для справок TXT
 os.makedirs(ENQUIRY_PERIOD_TXT_DIR, exist_ok=True)
@@ -33,14 +35,18 @@ def get_enquiry_period_excel_path(sequence_number):
     return os.path.join(BASE_REPORTS_DIR, "Справка по рекламациям за период.xlsx")
 
 
-# # ==================== ACCEPT DEFECT ====================
-# ACCEPT_DEFECT_DIR = os.path.join(BASE_REPORTS_DIR, "accept_defect")
+# ==================== ACCEPT DEFECT ====================
+ACCEPT_DEFECT_DIR = os.path.join(BASE_REPORTS_DIR, "Кол-во_признанных-непризнанных_txt")
+
+# Создаем папку для справок TXT
+os.makedirs(ACCEPT_DEFECT_DIR, exist_ok=True)
 
 
-# def get_accept_defect_excel_path(sequence_number):
-#     return os.path.join(
-#         ACCEPT_DEFECT_DIR, f"accept_defect_{sequence_number}_{date_today}.xlsx"
-#     )
+def get_accept_defect_txt_path(sequence_number):
+    return os.path.join(
+        ACCEPT_DEFECT_DIR,
+        f"Справка по количеству признанных-непризнанных_{date_today}.txt",
+    )
 
 
 # # ==================== LENGTH STUDY ====================
