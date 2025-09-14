@@ -19,8 +19,9 @@ def accept_defect_page(request):
     if request.method == "POST":
         return generate_report(request)
 
-    # GET запрос - показываем страницу
+    # GET запрос - показываем актуальную информацию
     download_info = request.session.get("accept_defect_download_info", None)
+    # Проверяем, есть ли актуальная данные
     if download_info:
         del request.session["accept_defect_download_info"]
 

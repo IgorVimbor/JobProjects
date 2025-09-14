@@ -249,7 +249,7 @@ class ExcelWriter(DataProcessor):
             return {
                 "success": True,
                 "message": f"Справка сформирована",
-                "full_message": f"ID записей: {self.last_processed_id + 1} - {self.new_last_id}. Файл находится в папке {BASE_REPORTS_DIR}",
+                "full_message": f"ID записей: {self.last_processed_id + 1} - {self.new_last_id}. Файл Excel со справкой находится в папке {BASE_REPORTS_DIR}",
                 "excel_path": self.excel_file_path,
                 "filename": os.path.basename(self.excel_file_path),
                 "message_type": "success",

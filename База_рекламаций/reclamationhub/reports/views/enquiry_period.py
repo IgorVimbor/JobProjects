@@ -29,8 +29,8 @@ def enquiry_period_page(request):
 
     # Проверяем, есть ли актуальная данные для справки
     download_info = request.session.get("download_info", None)
-    # if download_info:
-    #     del request.session["download_info"]
+    if download_info:
+        del request.session["download_info"]
 
     context = {
         "page_title": "Справка за период",
@@ -51,11 +51,7 @@ def generate_report(request):
     # Обрабатываем результат
     if result["success"]:
         messages.success(request, f"✅ {result['message']}")
-        request.session["download_info"] = {
-            "message": result["full_message"],
-            "excel_path": result["excel_path"],
-            "filename": result["filename"],
-        }
+        request.session["download_info"] = {"message": result["full_message"]}
     else:
         # Определяем тип сообщения
         if result["message_type"] == "info":
@@ -69,25 +65,26 @@ def generate_report(request):
     return redirect("reports:enquiry_period")
 
 
-def download_excel(request):
-    """Скачивание Excel файла"""
-    download_info = request.session.get("download_info")
+# Убираем функцию download_excel полностью!
+# def download_excel(request):
+#     """Скачивание Excel файла"""
+#     download_info = request.session.get("download_info")
 
-    if not download_info:
-        messages.error(request, "Файл для скачивания не найден")
-        return redirect("reports:enquiry_period")
+#     if not download_info:
+#         messages.error(request, "Файл для скачивания не найден")
+#         return redirect("reports:enquiry_period")
 
-    excel_path = download_info.get("excel_path")
-    filename = download_info.get("filename")
+#     excel_path = download_info.get("excel_path")
+#     filename = download_info.get("filename")
 
-    if os.path.exists(excel_path):
-        # Убираем информацию о файле из сессии после скачивания
-        if download_info:
-            del request.session["download_info"]
+#     if os.path.exists(excel_path):
+#         # Убираем информацию о файле из сессии после скачивания
+#         if download_info:
+#             del request.session["download_info"]
 
-        return FileResponse(
-            open(excel_path, "rb"), as_attachment=True, filename=filename
-        )
-    else:
-        messages.error(request, "Файл отчета не найден на диске")
-        return redirect("reports:enquiry_period")
+#         return FileResponse(
+#             open(excel_path, "rb"), as_attachment=True, filename=filename
+#         )
+#     else:
+#         messages.error(request, "Файл отчета не найден на диске")
+#         return redirect("reports:enquiry_period")

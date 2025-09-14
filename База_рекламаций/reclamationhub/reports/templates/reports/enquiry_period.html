@@ -58,73 +58,74 @@
                 </div>
             </div>
         </div>
-
-        <!-- Блок для предложения скачивания -->
-        {% if download_info %}
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card border-success">
-                        <!--
-                        <div class="card-header bg-success text-white">
-                            <h5>✅ Справка сформирована</h5>
-                        </div>
-                        -->
-                        <div class="card-body">
-                            <p><strong>{{ download_info.message }}</strong></p>
-                            <p class="mt-3">Вы можете скачать файл справки с сайта:</p>
-
-                            <div class="d-flex gap-2">
-                                <a href="{% url 'reports:download_enquiry_excel' %}" class="btn btn-success">
-                                    Да, скачать файл
-                                </a>
-                                <button class="btn btn-secondary" onclick="this.closest('.card').style.display='none'">
-                                    ❌ Нет, не нужно
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
     </div>
 
     <!-- Сообщения -->
     {% if messages %}
-        <div class="row">
-            <div class="col-12">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Блок для информации и сообщений -->
+    {% if download_info %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <!--
+                <div class="card-header bg-success text-white">
+                    <h5>✅ Отчет готов</h5>
+                </div>
+                -->
+                <div class="card-body">
+                    <p><strong>{{ download_info.message }}</strong></p>
+
+                    <div class="d-flex gap-2 mt-3">
+                    <!--
+                    <a href="{% url 'reports:accept_defect' %}" class="btn btn-primary">
+                        🔄 Сформировать новый отчет
+                    </a>
+                    -->
+                    <button class="btn btn-secondary" onclick="this.closest('.card').style.display='none'">
+                        ❌ Закрыть
+                    </button>
                     </div>
-                {% endfor %}
+                </div>
             </div>
         </div>
+    </div>
     {% endif %}
 
     <!-- Сообщение если передано через context -->
     {% if message %}
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-info">
-                    {{ message }}
-                </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                {{ message }}
             </div>
         </div>
+    </div>
     {% endif %}
 
     <!-- Статистика актуальных данных для справки -->
     {% if new_records_count %}
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5>📈 Статистика</h5>
-                        <p>Новых записей для обработки: <strong>{{ new_records_count }}</strong></p>
-                    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5>📈 Статистика</h5>
+                    <p>Новых записей для обработки: <strong>{{ new_records_count }}</strong></p>
                 </div>
             </div>
         </div>
+    </div>
     {% endif %}
 </div>
 {% endblock %}
