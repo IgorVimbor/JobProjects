@@ -133,6 +133,8 @@ python manage.py dumpdata --indent=2 --output=fixtures/db.json --exclude=auth.pe
 
 python -Xutf8 manage.py dumpdata --indent=2 --output=fixtures/db.json --exclude=auth.permission --exclude=contenttypes
 
+python -Xutf8 manage.py dumpdata --indent=2 --output=fixtures/db.json --exclude=auth.permission --exclude=contenttypes --exclude=admin.logentry --exclude=sessions.session
+
 ------------- Загрузка данных из фикстур:
 
 python manage.py loaddata fixtures/db.json
