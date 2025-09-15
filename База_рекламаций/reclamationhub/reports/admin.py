@@ -8,7 +8,7 @@ from .models import EnquiryPeriod
 class EnquiryPeriodAdmin(admin.ModelAdmin):
     list_display = ("sequence_number", "last_processed_id", "report_date")
     list_filter = ("report_date",)
-    ordering = ("sequence_number",)
+    # ordering = ("-sequence_number",)  # НЕ НУЖНО! Берется из модели, т.к. логика та же
 
     # Для удобства редактирования
     list_editable = ("last_processed_id", "report_date")

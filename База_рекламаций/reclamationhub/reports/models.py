@@ -19,7 +19,7 @@ class EnquiryPeriod(models.Model):
     class Meta:
         verbose_name = "Справка за период"
         verbose_name_plural = "Справки за период"
-        ordering = ["sequence_number"]
+        ordering = ["-sequence_number"]  # сортировка по убыванию
 
     def __str__(self):
         return f"Справка № {self.sequence_number} от {self.report_date}"

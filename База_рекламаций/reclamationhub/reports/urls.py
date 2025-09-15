@@ -17,6 +17,7 @@ urlpatterns = [
     path("enquiry-period/", enquiry_period.enquiry_period_page, name="enquiry_period"),
     # Маршрут для приложения "Количество признанных/непризнанных"
     path("accept-defect/", accept_defect.accept_defect_page, name="accept_defect"),
+    # Маршрут для приложения "Длительность исследования"
     path("length-study/", length_study.length_study_page, name="length_study"),
     path("not-acts/", not_acts.not_acts_page, name="not_acts"),
     path("date-pretence/", date_pretence.date_pretence_page, name="date_pretence"),

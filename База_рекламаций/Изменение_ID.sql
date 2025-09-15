@@ -29,6 +29,48 @@ WHERE r.engine_number IN (
 )
 ORDER BY r.engine_number;
 
+------------------------------------------------------------------------------------------------------------
+
+
+-- Запрос для вывода строк со значением NULL в столбце r.product_received_date (Дата поступления изделия)
+-- Вывод: номер и дата акта исследования и ID рекламации
+SELECT
+    i.act_number as act_number,
+    i.act_date,
+    i.reclamation_id,
+    r.product_received_date
+FROM investigation i
+INNER JOIN reclamation r
+    ON i.reclamation_id = r.id
+WHERE i.act_date IS NOT NULL AND r.product_received_date IS NULL;
+-- ------------------------------------------------------------------------------------------------------
+
+
+-- Записываем в столбец r.product_received_date (Дата поступления изделия) значения
+-- из столбца receipt_invoice_date (Дата накладной прихода)
+-- 1. Проверочный запрос - что будет изменено:
+SELECT
+    id,
+    product_received_date as current_product_date,
+    receipt_invoice_date as will_be_copied,
+    message_received_date
+FROM reclamation
+WHERE product_received_date IS NULL
+  AND receipt_invoice_date IS NOT NULL;
+
+-- 2. UPDATE запрос - обновляем данные:
+UPDATE reclamation
+SET product_received_date = receipt_invoice_date
+WHERE product_received_date IS NULL AND receipt_invoice_date IS NOT NULL;
+
+-- 3. Проверка результата - сколько еще осталось пустых product_received_date
+-- при заполненном receipt_invoice_date
+SELECT
+    COUNT(*) as still_empty
+FROM reclamation
+WHERE product_received_date IS NULL AND receipt_invoice_date IS NOT NULL;
+-- --------------------------------------------------------------------------------------------------------
+
 
 -------------------- Изменение ID и дат в таблице reclamation и связей в investigation ---------------------
 -- ПРОВЕРКА ДО ВЫПОЛНЕНИЯ ИЗМЕНЕНИЙ:
