@@ -51,6 +51,9 @@ urlpatterns = [
     ),
     path("admin/", admin_site.urls),
     path("reports/", include("reports.urls")),  # приложение для аналитики
+    path(  # редирект для отображения иконки
+        "favicon.ico", RedirectView.as_view(url="/static/favicon.png", permanent=True)
+    ),
 ]
 
 # ------------------- Вариант 1 - Djando для медиа и статики -------------------------
