@@ -228,9 +228,14 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     # reclamation_display.short_description = "Рекламация (ID и изделие)"
 
+    @admin.display(description="Номер изделия")
+    def product_number_display(self, obj):
+        """Метод для отображения номера изделия из модели reclamation"""
+        return obj.reclamation.product_number
+
     @admin.display(description="Номер и дата акта рекламации")
     def act_reclamation_display(self, obj):
-        """Метод для отображения акта рекламации приобретателя в админке (в две строки)"""
+        """Метод для отображения акта рекламации приобретателя в админке"""
         return obj.reclamation.admin_display_by_consumer_act()
 
     # act_reclamation_display.short_description = "Номер и дата акта рекламации"
@@ -276,6 +281,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         "act_number",
         "act_date",
         "reclamation_display",
+        "product_number_display",
         "get_defect_period",
         "act_reclamation_display",
         "solution",
