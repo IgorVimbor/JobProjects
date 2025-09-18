@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
+from datetime import datetime
 
 from sourcebook.models import PeriodDefect, ProductType, Product
 
@@ -62,6 +63,10 @@ class Reclamation(models.Model):
         return self.status == self.Status.CLOSED
 
     # -------------------------------------------------------------------------------
+
+    # Два поля для составного индекса номера рекламации с учетом года (например, 2025-0001):
+    year = models.IntegerField(verbose_name="Год рекламации")
+    yearly_number = models.IntegerField(verbose_name="Номер в году")
 
     # Информация о поступившем сообщении
     incoming_number = models.CharField(
@@ -301,7 +306,11 @@ class Reclamation(models.Model):
             models.Index(fields=["status"]),
             models.Index(fields=["defect_period"]),
             models.Index(fields=["product", "status"]),
+            models.Index(fields=['year'], name='reclamation_year_idx'),
+            models.Index(fields=['year', 'yearly_number'], name='reclamation_year_num_idx'),
+            models.Index(fields=['-year', '-yearly_number'], name='reclamation_order_idx'),
         ]
+        unique_together = [['yearly_number', 'year']]
 
     # Дополнительные аргументы экземпляра класса Reclamation
     @property
@@ -350,7 +359,8 @@ class Reclamation(models.Model):
 
     def __str__(self):
         """Отображение рекламации в строковом виде (консоль, логи и др.)"""
-        return f"{self.pk} - {self.product_name} - {self.product}"
+        # return f"{self.pk} - {self.product_name} - {self.product}"
+        return f"{self.year}-{self.yearly_number:04d} - {self.product_name} {self.product}"
 
     # def admin_display_by_reclamation(self):
     #     """Отображение рекламации в две строки в админ-панели актов исследований"""
@@ -360,13 +370,15 @@ class Reclamation(models.Model):
         """Отображение рекламации (в две строки с активной ссылкой) в админ-панели актов исследований"""
         url = reverse("admin:reclamations_reclamation_changelist")
         filtered_url = f"{url}?id={self.pk}"
+        display_number = f"{self.year}-{self.yearly_number:04d}"  # номер рекламации с учетом года
         return mark_safe(
             f'<a href="{filtered_url}" '
             # f'style="text-decoration: none; transition: font-weight 0.2s;" '
             f"onmouseover=\"this.style.fontWeight='bold'\" "
             f"onmouseout=\"this.style.fontWeight='normal'\" "
             f'title="Перейти к рекламации">'
-            f"{self.pk}</a> - {self.product_name}<br>{self.product}"
+            # f"{self.pk}</a> - {self.product_name}<br>{self.product}"
+            f"{display_number}</a> - {self.product_name}<br>{self.product}"  # display_number вместо self.pk
         )
 
     admin_display_by_reclamation.short_description = "Рекламация"
@@ -422,7 +434,27 @@ class Reclamation(models.Model):
         if errors:
             raise ValidationError(errors)
 
+    # def save(self, *args, **kwargs):
+    #     self.full_clean()  # обязательно нужен для запуска валидации
+    #     super().save(*args, **kwargs)
+
     def save(self, *args, **kwargs):
+        """
+        Переопределяем метод сохранения записи. При создании новой рекламации через админку поля
+        year и yearly_number заполнятся автоматически, потом пройдет валидация, потом сохранение
+        """
+        if not self.pk:  # если это новая запись
+
+            current_year = datetime.now().year
+            self.year = current_year
+
+            # Получаем следующий номер рекламации с учетом года
+            max_number = Reclamation.objects.filter(
+                year=current_year
+            ).aggregate(max_number=models.Max('yearly_number'))['max_number']
+
+            self.yearly_number = (max_number or 0) + 1
+
         self.full_clean()  # обязательно нужен для запуска валидации
         super().save(*args, **kwargs)
 

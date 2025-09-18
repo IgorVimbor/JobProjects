@@ -167,7 +167,8 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     # Основные поля для отображения в списке
     list_display = [
-        "id",
+        # "id",
+        "display_number",  # номер рекламации с учетом года
         "status_colored",  # статус рекламации (Новая, В работе, Закрыта)
         "incoming_number",  # входящий № по ОТК
         "message_received_date",  #  дата поступления ссобщения
@@ -312,6 +313,7 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     # Фильтры
     list_filter = [
+        'year',
         "status",
         "defect_period",
         "product__product_type",
@@ -472,6 +474,12 @@ class ReclamationAdmin(admin.ModelAdmin):
             "action_checkbox_name": admin.helpers.ACTION_CHECKBOX_NAME,
         }
         return render(request, "admin/add_disposal_act.html", context)
+
+    @admin.display(description="Номер рекламации")
+    def display_number(self, obj):
+        """Метод для отображения номера рекламации с учетом года (например, 2025-0001)"""
+        return f"{obj.year}-{obj.yearly_number:04d}"
+    # display_number.short_description = 'Номер рекламации'
 
     @admin.display(description="Статус рекламации")
     def status_colored(self, obj):

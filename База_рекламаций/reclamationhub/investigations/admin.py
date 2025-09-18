@@ -373,6 +373,7 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     # Поля для фильтрации
     list_filter = [
+        'reclamation__year',
         "reclamation__defect_period",
         "reclamation__product__product_type",
     ]

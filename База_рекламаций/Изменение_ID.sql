@@ -247,3 +247,28 @@ ALTER TABLE investigation AUTO_INCREMENT = 356;
 SET FOREIGN_KEY_CHECKS=1;
 SET SQL_SAFE_UPDATES=1;
 -------------------------------------------------------------------------------------------
+
+
+-- Хранение данных:
+-- Все записи в одной таблице reclamation. MySQL автоматически использует индексы для ускорения
+
+-- ------------- Быстрые запросы:
+
+--# Все рекламации 2025 года - БЫСТРО (по индексу year)
+-- recs_2025 = Reclamation.objects.filter(year=2025)
+
+--# Конкретная рекламация - ОЧЕНЬ БЫСТРО (по составному индексу)
+-- rec = Reclamation.objects.get(year=2025, yearly_number=15)
+
+--# Последние 10 рекламаций - БЫСТРО (по индексу сортировки)
+-- recent = Reclamation.objects.order_by('-year', '-yearly_number')[:10]
+
+--# За несколько лет
+-- multi_year = Reclamation.objects.filter(year__in=[2024, 2025, 2026])
+
+-- -------------- Архивирование старых данных ------------------------------
+-- Архивировать данные старше 5 лет
+CREATE TABLE reclamation_archive AS
+SELECT * FROM reclamation WHERE year < 2021;
+
+DELETE FROM reclamation WHERE year < 2021;
