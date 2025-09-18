@@ -108,6 +108,21 @@
     border: none !important;
 }
 
+/* Убираем отступы слева у списков фильтров */
+#changelist-filter {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+/* Выделение выбранных фильтров (слово выделяется полосой) */
+#changelist-filter .selected a {
+    background-color: #79aec8 !important;
+    color: white !important;
+    padding: 3px 6px !important;
+    border-radius: 3px !important;
+    text-decoration: none !important;
+}
+
 /* Стиль для кнопки сворачивания фильтров */
 .filter-toggle {
     background: #417690;
@@ -119,11 +134,17 @@
     cursor: pointer;
     border-radius: 4px;
     text-align: center;
-    transform: translateX(-40px) !important;
+    /* Сдвигаем кнопку левее */
+    /* transform: translateX(-40px) !important; */
 }
 
 .filter-toggle:hover {
     background: #205067;
+}
+
+/* Жирный шрифт для заголовков фильтров */
+#changelist-filter h3 {
+    font-weight: 500 !important;
 }
 
 /* Стили для контента фильтров */

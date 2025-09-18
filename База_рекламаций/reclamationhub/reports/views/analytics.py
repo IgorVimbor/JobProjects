@@ -21,7 +21,7 @@ def analytics_page(request):
     closed_reclamations = Reclamation.objects.filter(status="closed").count()
 
     context = {
-        "page_title": "Аналитика данных",
+        "page_title": "Справки и отчеты",
         "description": "Генерация отчетов и справок по дефектности изделий БЗА",
         # Данные для карточек
         "total_reclamations": total_reclamations,
