@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AdminDateWidget
+from django.contrib.admin import SimpleListFilter
 from django import forms
 from django.http import HttpResponseRedirect
 from django.db.models import Q
@@ -7,6 +8,7 @@ from django.utils import timezone
 from django.urls import path
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
+from datetime import datetime
 
 from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
@@ -210,6 +212,37 @@ class InvestigationAdminForm(forms.ModelForm):
             # self.fields["act_scan"].initial = self.instance.act_scan_filename
 
 
+class ReclamationYearListFilter(SimpleListFilter):
+    """Класс для переопределения фильтра по году рекламации"""
+    title = 'Год рекламации'
+    parameter_name = 'reclamation__year'
+
+    def lookups(self, request, model_admin):
+        # Получаем все годы из рекламаций и сортируем по убыванию
+        years = Reclamation.objects.values_list('year', flat=True).distinct().order_by('-year')
+        return [(year, str(year)) for year in years]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(reclamation__year=self.value())
+        return queryset
+
+    def choices(self, changelist):
+        # Подсвечиваем текущий год как выбранный по умолчанию
+        current_year = datetime.now().year
+
+        # Если не выбрано значение, считаем что выбран текущий год
+        selected_value = self.value() or str(current_year)
+
+        # Возвращаем варианты выбора
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': str(selected_value) == str(lookup),
+                'query_string': changelist.get_query_string({self.parameter_name: lookup}),
+                'display': title,
+            }
+
+
 @admin.register(Investigation, site=admin_site)
 class InvestigationAdmin(admin.ModelAdmin):
 
@@ -372,11 +405,8 @@ class InvestigationAdmin(admin.ModelAdmin):
     list_per_page = 10  # количество записей на странице
 
     # Поля для фильтрации
-    list_filter = [
-        'reclamation__year',
-        "reclamation__defect_period",
-        "reclamation__product__product_type",
-    ]
+    # list_filter = ['reclamation__year', "reclamation__defect_period", "reclamation__product__product_type"]
+    list_filter = [ReclamationYearListFilter, "reclamation__defect_period", "reclamation__product__product_type"]
 
     # Поля для поиска
     search_fields = [
@@ -421,6 +451,25 @@ class InvestigationAdmin(admin.ModelAdmin):
             ),
         ]
         return custom_urls + urls
+
+    def changelist_view(self, request, extra_context=None):
+        """Метод для настройки вывода актов исследования по текущему году по умолчанию"""
+        # Проверяем есть ли фильтр по году от пользователя
+        user_year_filter = 'reclamation__year' in request.GET
+        auto_year_filter = 'reclamation__year__exact' in request.GET
+
+        if user_year_filter and auto_year_filter:
+            # Конфликт! Удаляем автоматический фильтр
+            request.GET = request.GET.copy()
+            del request.GET['reclamation__year__exact']
+
+        elif not user_year_filter and not auto_year_filter:
+            # Никаких фильтров нет - добавляем текущий год
+            current_year = datetime.now().year
+            request.GET = request.GET.copy()
+            request.GET['reclamation__year__exact'] = current_year
+
+        return super().changelist_view(request, extra_context)
 
     def add_group_investigation_view(self, request):
         """Метод добавления группового акта исследования"""

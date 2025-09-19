@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AdminDateWidget
+from django.contrib.admin import SimpleListFilter
 from django.utils.html import format_html
 from django import forms
 from django.utils import timezone
@@ -8,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from django.db.models import Q
 from django.utils.safestring import mark_safe
+from datetime import datetime
 
 from reclamationhub.admin import admin_site
 from .models import Reclamation
@@ -150,6 +152,37 @@ class ReclamationAdminForm(forms.ModelForm):
                 )
 
         return cleaned_data
+
+
+class YearListFilter(SimpleListFilter):
+    """Класс для переопределения фильтра по году рекламации"""
+    title = 'Год рекламации'
+    parameter_name = 'year'
+
+    def lookups(self, request, model_admin):
+        # Получаем все годы и сортируем по убыванию: 2026, 2025, 2024...
+        years = Reclamation.objects.values_list('year', flat=True).distinct().order_by('-year')
+        return [(year, str(year)) for year in years]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(year=self.value())
+        return queryset
+
+    def choices(self, changelist):
+        # Подсвечиваем текущий год как выбранный по умолчанию
+        current_year = datetime.now().year
+
+        # Если не выбрано значение, считаем что выбран текущий год
+        selected_value = self.value() or str(current_year)
+
+        # Возвращаем варианты выбора
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': str(selected_value) == str(lookup),
+                'query_string': changelist.get_query_string({self.parameter_name: lookup}),
+                'display': title,
+            }
 
 
 @admin.register(Reclamation, site=admin_site)
@@ -312,12 +345,8 @@ class ReclamationAdmin(admin.ModelAdmin):
     ]
 
     # Фильтры
-    list_filter = [
-        'year',
-        "status",
-        "defect_period",
-        "product__product_type",
-    ]
+    # list_filter = ['year', "status", "defect_period", "product__product_type"]
+    list_filter = [YearListFilter, "status", "defect_period", "product__product_type"]
 
     # Поиск
     search_fields = [
@@ -350,6 +379,25 @@ class ReclamationAdmin(admin.ModelAdmin):
             .get_queryset(request)
             .select_related("product_name", "product", "defect_period")
         )
+
+    def changelist_view(self, request, extra_context=None):
+        """Метод для настройки вывода рекламаций по текущему году по умолчанию"""
+        # Проверяем есть ли фильтр по году от пользователя
+        user_year_filter = 'year' in request.GET
+        auto_year_filter = 'year__exact' in request.GET
+
+        if user_year_filter and auto_year_filter:
+            # Конфликт! Удаляем автоматический фильтр
+            request.GET = request.GET.copy()
+            del request.GET['year__exact']
+
+        elif not user_year_filter and not auto_year_filter:
+            # Никаких фильтров нет - добавляем текущий год
+            current_year = datetime.now().year
+            request.GET = request.GET.copy()
+            request.GET['year__exact'] = current_year
+
+        return super().changelist_view(request, extra_context)
 
     # ----------------------------- Вспомогательные методы для отображения -----------------------------------
 
