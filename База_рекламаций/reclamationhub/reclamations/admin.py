@@ -37,6 +37,17 @@ class UpdateInvoiceNumberForm(forms.Form):
         help_text="(вводить через запятую)",
         required=False,
     )
+    received_date = forms.DateField(
+        label="Дата поступления изделий",
+        widget=forms.DateInput(attrs={"type": "date"}),
+        # widget=AdminDateWidget(),
+        required=True,
+    )
+    product_sender = forms.CharField(
+        max_length=200,
+        label="Организация-отправитель изделия",
+        required=True,
+    )
     invoice_number = forms.CharField(label="Номер накладной", required=True)
     invoice_date = forms.DateField(
         label="Дата накладной",
@@ -225,6 +236,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         "receipt_invoice_number",  # номер накладной поступления изделия
         "receipt_invoice_date",  # дата накладной поступления изделия
         "has_investigation_icon",  # акт исследования
+        "reclamation_documents"  # дополнительные сведения по рекламации
     ]
 
     # Группировка полей в форме редактирования
@@ -665,6 +677,8 @@ class ReclamationAdmin(admin.ModelAdmin):
         if request.method == "POST":
             form = UpdateInvoiceNumberForm(request.POST)
             if form.is_valid():
+                received_date = form.cleaned_data["received_date"]
+                product_sender = form.cleaned_data["product_sender"]
                 invoice_number = form.cleaned_data["invoice_number"]
                 invoice_date = form.cleaned_data["invoice_date"]
 
@@ -725,6 +739,8 @@ class ReclamationAdmin(admin.ModelAdmin):
                     updated_count = filtered_queryset.filter(
                         status=self.model.Status.NEW
                     ).update(
+                        product_received_date=received_date,
+                        product_sender=product_sender,
                         receipt_invoice_number=invoice_number,
                         receipt_invoice_date=invoice_date,
                         status=self.model.Status.IN_PROGRESS,
@@ -734,6 +750,8 @@ class ReclamationAdmin(admin.ModelAdmin):
                     other_updated = filtered_queryset.exclude(
                         status=self.model.Status.NEW
                     ).update(
+                        product_received_date=received_date,
+                        product_sender=product_sender,
                         receipt_invoice_number=invoice_number,
                         receipt_invoice_date=invoice_date,
                     )

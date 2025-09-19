@@ -9,16 +9,37 @@
 {% block title %}Главная - База рекламаций{% endblock %}
 
 {% block content %}
+
+<!-- НОВОЕ: Заголовок с переключателем года -->
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="d-flex align-items-center">
+            <h5 class="card-title mb-0 me-2">Сводная информация за</h5>
+            <select id="yearSelector" class="form-select me-2 fw-bold fs-5" style="width: auto; display: inline-block;">
+                <option value="{% now 'Y' %}" selected>{% now "Y" %}</option>
+                <!-- Остальные опции добавит JavaScript -->
+            </select>
+            <h5 class="card-title mb-0">год</h5>
+            <div class="spinner-border spinner-border-sm text-primary ms-3 d-none" id="loadingSpinner" role="status">
+                <span class="visually-hidden">Загрузка...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Карточки с общей статистикой -->
 <!-- Используем include для карточек -->
-{% include 'includes/stats_cards.html' %}
+<div id="statsContainer">
+    {% include 'includes/stats_cards.html' %}
+</div>
 
 <!-- Графики по изделиям и по месяцам -->
 <div class="row">
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Динамика поступления рекламаций в {% now "Y" %} году</h5>
+                <!-- <h5 class="card-title">Динамика поступления рекламаций в {% now "Y" %} году</h5> -->
+                <h5 class="card-title">Динамика поступления рекламаций</h5>
                 <canvas id="monthlyChart"></canvas>
                 <button class="btn btn-primary mt-2" onclick="downloadMonthlyChart()">Сохранить график</button>
             </div>
@@ -41,7 +62,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Последние рекламации</h5>
-                <div class="table-responsive">
+                <div class="table-responsive" id="recentReclamationsTable">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -73,12 +94,16 @@
 
 {% block extra_js %}
 <script src="{% static 'custom_js/charts.js' %}"></script>
+<script src="{% static 'custom_js/year_selector.js' %}"></script>
 <script>
     const statusData = {{ status_data|safe }};
     const productsData = {{ products_data|safe }};
     const monthlyData = {{ monthly_data|safe }};
+    const availableYears = {{ available_years|safe }};
+    const currentYear = {{ selected_year }};
 
     document.addEventListener('DOMContentLoaded', function() {
+        initYearSelector(availableYears, currentYear);
         initProductsChart(productsData);
         initMonthlyChart(monthlyData);
     });

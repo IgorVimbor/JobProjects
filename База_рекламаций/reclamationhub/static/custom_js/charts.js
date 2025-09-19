@@ -1,4 +1,8 @@
-// JavaScript для построения графиков на главной странице и сохранения их в файл
+// JavaScript для построения графиков на главной странице с учетом выбора года и сохранения их в файл
+
+// Глобальные переменные для графиков
+let monthlyChart = null;
+let productsChart = null;
 
 // Функция для генерации случайных цветов
 function generateColors(count) {
@@ -12,7 +16,16 @@ function generateColors(count) {
 
 // Инициализация графика по изделиям с подписями данных
 function initProductsChart(productsData) {
-    new Chart(document.getElementById('productsChart'), {
+    // Уничтожаем предыдущий график если есть
+    if (productsChart) {
+        productsChart.destroy();
+        productsChart = null;  // ДОБАВЛЯЕМ ОБНУЛЕНИЕ
+    }
+
+    const canvas = document.getElementById('productsChart');
+    if (!canvas) return;
+
+    productsChart = new Chart(canvas, {
         type: 'bar',
         data: {
             labels: productsData.map(item => item.product_name__name),
@@ -53,7 +66,6 @@ function initProductsChart(productsData) {
                             let label = this.getLabelForValue(value);
                             // Заменяем "турбокомпрессор" на "ТКР"
                             label = label.toLowerCase() === 'турбокомпрессор' ? 'ТКР' : label;
-                            //  const label = this.getLabelForValue(value);
 
                             // Перенос длинных строк
                             const maxLength = 12; // максимальная длина строки
@@ -83,12 +95,20 @@ function initProductsChart(productsData) {
 
 // Инициализация графика по месяцам (с подписями данных)
 function initMonthlyChart(monthlyData) {
-    new Chart(document.getElementById('monthlyChart'), {
+    // Уничтожаем предыдущий график если есть
+    if (monthlyChart) {
+        monthlyChart.destroy();
+        monthlyChart = null;  // ДОБАВЛЯЕМ ОБНУЛЕНИЕ
+    }
+
+    const canvas = document.getElementById('monthlyChart');
+    if (!canvas) return;
+
+    monthlyChart = new Chart(canvas, {
         type: 'line',
         data: {
             labels: monthlyData.map(item => {
                 const date = new Date(item.month);
-                // return date.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
                 return date.toLocaleDateString('ru-RU', { month: 'long' });
             }),
             datasets: [{
@@ -107,7 +127,7 @@ function initMonthlyChart(monthlyData) {
                 datalabels: {
                     anchor: 'end',  // точка привязки - конец линии
                     align: 'top',   // выравнивание над точкой
-                    offset: 0,      // отступ от точки (увеличен для линейного графика)
+                    offset: 0,      // отступ от точки
                     formatter: function(value) {
                         return value;
                     },
@@ -116,9 +136,16 @@ function initMonthlyChart(monthlyData) {
                         size: 12
                     },
                     color: 'black',  // цвет подписей данных
-                    // backgroundColor: 'white',  // добавляем белый фон для лучшей читаемости
-                    // borderRadius: 4,           // скругляем углы фона
-                    // padding: 4                 // отступы текста от фона
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        rotation: 0,  // горизонтальные подписи
+                        font: {
+                            size: 11  // размер шрифта подписей оси Х
+                        },
+                    }
                 }
             }
         }
@@ -127,12 +154,18 @@ function initMonthlyChart(monthlyData) {
 
 // Функция для скачивания графика динамики по месяцам
 function downloadMonthlyChart() {
+    if (!monthlyChart) {
+        alert('График не загружен');
+        return;
+    }
+
     // Получаем canvas элемент
     const canvas = document.getElementById('monthlyChart');
 
     // Создаем ссылку для скачивания
     const link = document.createElement('a');
-    link.download = 'График_рекламаций_по_месяцам.png';
+    const selectedYear = document.getElementById('yearSelector').value;
+    link.download = `График_рекламаций_по_месяцам_${selectedYear}.png`;
 
     // Конвертируем canvas в URL данных
     link.href = canvas.toDataURL('image/png');
@@ -143,12 +176,18 @@ function downloadMonthlyChart() {
 
 // Функция для скачивания графика по количеству изделий
 function downloadProductsChart() {
+    if (!productsChart) {
+        alert('График не загружен');
+        return;
+    }
+
     // Получаем canvas элемент
     const canvas = document.getElementById('productsChart');
     // Создаем ссылку для скачивания
     const link = document.createElement('a');
 
-    link.download = 'График_рекламаций_по_изделиям.png';
+    const selectedYear = document.getElementById('yearSelector').value;
+    link.download = `График_рекламаций_по_изделиям_${selectedYear}.png`;
 
     // Конвертируем canvas в URL данных
     link.href = canvas.toDataURL('image/png');
