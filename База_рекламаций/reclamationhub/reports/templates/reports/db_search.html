@@ -1,3 +1,6 @@
+<!-- reports/templates/reports/db_search.html -->
+<!-- Шаблон страницы приложения "Поиск по базе рекламаций" -->
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -14,25 +17,188 @@
                 </ol>
             </nav>
 
-            <!-- <h1>{{ page_title }}</h1>  -->
             <h3 class="text-muted">{{ description }}</h3>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
+    <!-- Форма поиска -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
             <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-info">🚧 {{ status }}</h3>
-                    <p>Модуль "{{ module_name }}" находится в стадии разработки</p>
-                    <p>Здесь будет информация по результатам поиска по Базе рекламаций</p>
+                <div class="card-header">
+                    <h5>🔍 Параметры поиска</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
 
-                    <a href="{% url 'reports:analytics' %}" class="btn btn-secondary">
-                        ← Вернуться к аналитике
-                    </a>
+                        <!-- Год поиска -->
+                        <div class="mb-3">
+                            <label for="{{ form.year.id_for_label }}" class="form-label">
+                                {{ form.year.label }}
+                            </label>
+                            {{ form.year }}
+                            {% if form.year.errors %}
+                                <div class="text-danger">{{ form.year.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Номера двигателей -->
+                        <div class="mb-3">
+                            <label for="{{ form.engine_numbers.id_for_label }}" class="form-label">
+                                {{ form.engine_numbers.label }}
+                            </label>
+                            {{ form.engine_numbers }}
+                            {% if form.engine_numbers.help_text %}
+                                <div class="form-text">{{ form.engine_numbers.help_text }}</div>
+                            {% endif %}
+                            {% if form.engine_numbers.errors %}
+                                <div class="text-danger">{{ form.engine_numbers.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Номера актов -->
+                        <div class="mb-3">
+                            <label for="{{ form.act_numbers.id_for_label }}" class="form-label">
+                                {{ form.act_numbers.label }}
+                            </label>
+                            {{ form.act_numbers }}
+                            {% if form.act_numbers.errors %}
+                                <div class="text-danger">{{ form.act_numbers.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Кнопки поиска -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" name="quick_search" class="btn btn-primary">
+                                🔍 Быстрый поиск
+                            </button>
+                            <button type="submit" name="detailed_search" class="btn btn-success">
+                                📄 Детальный отчет
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                                🗑️ Очистить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Справка по поиску -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>ℹ️ Справка</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Быстрый поиск:</h6>
+                    <p class="small">Показывает список найденных/не найденных номеров с ID записей для предварительного просмотра.</p>
+
+                    <h6>Детальный отчет:</h6>
+                    <p class="small">Создает TXT файл с полной информацией о найденных рекламациях и результатах исследований.</p>
+
+                    <h6>Номера двигателей:</h6>
+                    <p class="small">Если в номере есть буквы, вводите только цифры.</p>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Сообщения -->
+    {% if messages %}
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Результаты быстрого поиска -->
+    {% if search_results %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <!-- Заголовок в стиле alert-success как сообщения -->
+                <div class="alert alert-success mb-0">
+                    <h5 class="mb-1">📋 Результаты поиска</h5>
+                    <small>Год: {{ search_results.year }} |
+                    {% if search_results.engine_numbers %}Двигатели: {{ search_results.engine_numbers }}{% endif %}
+                    {% if search_results.act_numbers %}| Акты: {{ search_results.act_numbers }}{% endif %}
+                    </small>
+                </div>
+
+                <div class="card-body">
+                    {% if search_results.results %}
+                        <div class="row">
+                            {% for result in search_results.results %}
+                                <div class="col-md-6 mb-2">
+                                    {% if result.found == False %}
+                                        <!-- Не найденная запись -->
+                                        <div class="alert alert-warning py-2 mb-1">
+                                            {{ result.message }}
+                                        </div>
+                                    {% else %}
+                                        <!-- Найденная запись -->
+                                        <div class="alert alert-success py-2 mb-1">
+                                            {% if result.type == 'engine' %}Двигатель{% else %}Акт{% endif %}
+                                            {{ result.found_value }} | строка {{ result.record_id }} | {{ result.product_info }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Кнопка для детального отчета -->
+                        <div class="mt-3">
+                            <p class="text-muted">Для получения детального отчета с полной информацией нажмите кнопку выше или заполните форму заново.</p>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Результаты поиска отсутствуют.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Информация о готовом отчете -->
+    {% if download_info %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5>✅ Отчет готов</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>{{ download_info.message }}</strong></p>
+                    <p>Количество найденных записей: <strong>{{ download_info.records_count }}</strong></p>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="{% url 'reports:download_search_report' %}" class="btn btn-success">
+                            💾 Скачать отчет ({{ download_info.filename }})
+                        </a>
+                        <button class="btn btn-secondary" onclick="this.closest('.card').style.display='none'">
+                            ❌ Закрыть
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
 </div>
+
+<script>
+function clearForm() {
+    // Перезагружаем страницу с параметром clear=1 для очистки сессии
+    window.location.href = '{% url "reports:db_search" %}?clear=1';
+}
+</script>
 {% endblock %}

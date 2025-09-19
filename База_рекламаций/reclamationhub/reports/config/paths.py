@@ -8,8 +8,8 @@ from datetime import date
 
 # ==================== БАЗОВЫЕ НАСТРОЙКИ ====================
 # Каталог для сохранения справок, отчетов, таблиц и др.
-BASE_REPORTS_DIR = r"\\Server\otk\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
-# BASE_REPORTS_DIR = r"D:\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
+# BASE_REPORTS_DIR = r"\\Server\otk\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
+BASE_REPORTS_DIR = r"D:\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
 
 # Текущая дата и год для имен файлов
 date_today = date.today().strftime("%d-%m-%Y")
@@ -49,6 +49,14 @@ def get_accept_defect_txt_path(sequence_number):
     )
 
 
+# # ==================== DB SEARCH ====================
+# DB_SEARCH_DIR = os.path.join(BASE_REPORTS_DIR, "db_search")
+def get_db_search_txt_path():
+    """Путь к TXT файлу отчета поиска"""
+    filename = f"Результаты поиска по базе.txt"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
 # # ==================== LENGTH STUDY ====================
 # LENGTH_STUDY_DIR = os.path.join(BASE_REPORTS_DIR, "length_study")
 
@@ -62,11 +70,10 @@ def get_accept_defect_txt_path(sequence_number):
 # # ==================== NOT ACTS ====================
 # NOT_ACTS_DIR = os.path.join(BASE_REPORTS_DIR, "not_acts")
 
+
 # # ==================== PRETENCE ====================
 # PRETENCE_DIR = os.path.join(BASE_REPORTS_DIR, "pretence")
 
-# # ==================== DB SEARCH ====================
-# DB_SEARCH_DIR = os.path.join(BASE_REPORTS_DIR, "db_search")
 
 # # ==================== СОЗДАНИЕ ПАПОК ====================
 # # Создаем все необходимые папки

@@ -19,10 +19,15 @@ urlpatterns = [
     path("accept-defect/", accept_defect.accept_defect_page, name="accept_defect"),
     # Маршрут для приложения "Длительность исследования"
     path("length-study/", length_study.length_study_page, name="length_study"),
+    # Маршруты для приложения "Поиск по базе рекламаций"
+    path("db-search/", db_search.db_search_page, name="db_search"),
+    path(
+        "db-search/download/",
+        db_search.download_search_report,
+        name="download_search_report",
+    ),
     # Маршрут для приложения "Незакрытые акты рекламаций"
     path("not-acts/", not_acts.not_acts_page, name="not_acts"),
     # Маршрут для приложения "Даты уведомления по рекламациям"
     path("date-pretence/", date_pretence.date_pretence_page, name="date_pretence"),
-    # Маршрут для приложения "Поиск по базе рекламаций"
-    path("db-search/", db_search.db_search_page, name="db_search"),
 ]
