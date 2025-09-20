@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, HttpResponse
+import os
 
 from reports.config.paths import get_db_search_txt_path
 from reports.forms import DbSearchForm
 from reports.modules.db_search_module import perform_search
-import os
 
 
 # def db_search_page(request):
@@ -117,19 +117,60 @@ def handle_search(request):
     return redirect("reports:db_search")
 
 
+# def download_search_report(request):
+#     """Открытие TXT файла отчета в браузере"""
+#     try:
+#         file_path = get_db_search_txt_path()
+
+#         if not os.path.exists(file_path):
+#             raise Http404("Файл отчета не найден")
+
+#         return FileResponse(
+#             open(file_path, "rb"),
+#             as_attachment=False,  # Открыть в браузере, а не скачать
+#             filename="Отчет_по_базе_рекламаций.txt",  # Это будет заголовок вкладки
+#             content_type="text/plain; charset=utf-8",
+#         )
+
+
 def download_search_report(request):
-    """Скачивание TXT файла отчета"""
+    """Открытие TXT файла отчета в браузере с кастомным заголовком и возможностью печати"""
     try:
         file_path = get_db_search_txt_path()
 
         if not os.path.exists(file_path):
             raise Http404("Файл отчета не найден")
 
-        return FileResponse(
-            open(file_path, "rb"),
-            as_attachment=True,
-            filename="db_search_report.txt",
-            content_type="text/plain",
-        )
+        # Читаем содержимое файла
+        with open(file_path, "r", encoding="utf-8") as file:
+            report_content = file.read()
+
+        # Создаем простую HTML страницу с кнопкой печати
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Отчет по базе рекламаций</title>
+            <style>
+                body {{ margin: 2px 20px; font-family: monospace; }}
+                .container {{ white-space: pre-wrap; display: inline-block; }}
+                .print-btn {{ text-align: right; margin-bottom: 0; }}
+                @media print {{ .print-btn {{ display: none; }} }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                {report_content}
+                <div class="print-btn">
+                    <button onclick="window.print()">🖨️ Распечатать</button>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+
+        return HttpResponse(html_content, content_type="text/html; charset=utf-8")
+
     except Exception:
-        raise Http404("Ошибка при скачивании файла")
+        raise Http404("Ошибка при открытии файла")

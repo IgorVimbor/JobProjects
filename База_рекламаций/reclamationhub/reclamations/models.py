@@ -306,11 +306,15 @@ class Reclamation(models.Model):
             models.Index(fields=["status"]),
             models.Index(fields=["defect_period"]),
             models.Index(fields=["product", "status"]),
-            models.Index(fields=['year'], name='reclamation_year_idx'),
-            models.Index(fields=['year', 'yearly_number'], name='reclamation_year_num_idx'),
-            models.Index(fields=['-year', '-yearly_number'], name='reclamation_order_idx'),
+            models.Index(fields=["year"], name="reclamation_year_idx"),
+            models.Index(
+                fields=["year", "yearly_number"], name="reclamation_year_num_idx"
+            ),
+            models.Index(
+                fields=["-year", "-yearly_number"], name="reclamation_order_idx"
+            ),
         ]
-        unique_together = [['yearly_number', 'year']]
+        unique_together = [["yearly_number", "year"]]
 
     # Дополнительные аргументы экземпляра класса Reclamation
     @property
@@ -360,7 +364,9 @@ class Reclamation(models.Model):
     def __str__(self):
         """Отображение рекламации в строковом виде (консоль, логи и др.)"""
         # return f"{self.pk} - {self.product_name} - {self.product}"
-        return f"{self.year}-{self.yearly_number:04d} - {self.product_name} {self.product}"
+        return (
+            f"{self.year}-{self.yearly_number:04d} - {self.product_name} {self.product}"
+        )
 
     # def admin_display_by_reclamation(self):
     #     """Отображение рекламации в две строки в админ-панели актов исследований"""
@@ -370,7 +376,9 @@ class Reclamation(models.Model):
         """Отображение рекламации (в две строки с активной ссылкой) в админ-панели актов исследований"""
         url = reverse("admin:reclamations_reclamation_changelist")
         filtered_url = f"{url}?id={self.pk}"
-        display_number = f"{self.year}-{self.yearly_number:04d}"  # номер рекламации с учетом года
+        display_number = (
+            f"{self.year}-{self.yearly_number:04d}"  # номер рекламации с учетом года
+        )
         return mark_safe(
             f'<a href="{filtered_url}" '
             # f'style="text-decoration: none; transition: font-weight 0.2s;" '
@@ -444,19 +452,63 @@ class Reclamation(models.Model):
         year и yearly_number заполнятся автоматически, потом пройдет валидация, потом сохранение
         """
         if not self.pk:  # если это новая запись
-
             current_year = datetime.now().year
             self.year = current_year
 
             # Получаем следующий номер рекламации с учетом года
-            max_number = Reclamation.objects.filter(
-                year=current_year
-            ).aggregate(max_number=models.Max('yearly_number'))['max_number']
+            max_number = Reclamation.objects.filter(year=current_year).aggregate(
+                max_number=models.Max("yearly_number")
+            )["max_number"]
 
             self.yearly_number = (max_number or 0) + 1
 
+        # Нормализация номера двигателя - преобразование кирилицы в латиницу
+        if self.engine_number:
+            self.engine_number = self._normalize_engine_number(self.engine_number)
+
         self.full_clean()  # обязательно нужен для запуска валидации
         super().save(*args, **kwargs)
+
+    def _normalize_engine_number(self, engine_number):
+        """
+        Преобразует похожие кирилические символы в латинские в номере двигателя
+        """
+        result = engine_number.strip()  # убираем лишние пробелы
+
+        # Замены кирилица -> латиница
+        replacements = [
+            ("А", "A"),
+            ("а", "a"),
+            ("В", "B"),
+            ("в", "b"),
+            ("Е", "E"),
+            ("е", "e"),
+            ("К", "K"),
+            ("к", "k"),
+            ("М", "M"),
+            ("м", "m"),
+            ("Н", "H"),
+            ("н", "h"),
+            ("О", "O"),
+            ("о", "o"),
+            ("Р", "P"),
+            ("р", "p"),
+            ("С", "C"),
+            ("с", "c"),
+            ("Т", "T"),
+            ("т", "t"),
+            ("У", "Y"),
+            ("у", "y"),
+            ("Х", "X"),
+            ("х", "x"),
+        ]
+
+        # Применяем преобразование
+        for cyrillic, latin in replacements:
+            result = result.replace(cyrillic, latin)
+
+        # Приводим к верхнему регистру
+        return result.upper()
 
     def update_status_on_receipt(self):
         """Обновление статуса рекламации при изменении накладной"""

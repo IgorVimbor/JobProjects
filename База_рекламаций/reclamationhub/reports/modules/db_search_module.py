@@ -160,7 +160,7 @@ class DbSearchProcessor:
             return {
                 "success": True,
                 "message": f"Отчет успешно сформирован",
-                "full_message": f"Найдено записей: {records.count()}. Файл отчета: {txt_file_path}",
+                "full_message": f"Файл отчета находится в папке: {txt_file_path}",
                 "txt_path": txt_file_path,
                 "filename": os.path.basename(txt_file_path),
                 "records_count": records.count(),
@@ -190,21 +190,24 @@ class DbSearchProcessor:
         :param file_path: Путь к создаваемому TXT файлу
         """
         with open(file_path, "w", encoding="utf-8") as f:
-            print("\n" * 2, file=f)
+            # print("\n" * 2, file=f)
 
             # Заголовок отчета с параметрами поиска
+            print(
+                f'\nДата формирования отчета: {self.today.strftime("%d.%m.%Y")}',
+                file=f,
+            )
+            print(f"\nГод поиска: {self.year}", file=f)
+            # print(file=f)
+
             if self.engine_numbers:
                 print("Номера двигателей:", ", ".join(self.engine_numbers), file=f)
-                print(file=f)
+                # print(file=f)
 
             if self.act_numbers:
                 print("Номера актов:", ", ".join(self.act_numbers), file=f)
-                print(file=f)
+                # print(file=f)
 
-            print(f"Год поиска: {self.year}", file=f)
-            print(
-                f'Дата формирования отчета: {self.today.strftime("%d.%m.%Y")}', file=f
-            )
             print("=" * 80, file=f)
             print(file=f)
 
@@ -250,27 +253,30 @@ class DbSearchProcessor:
         :param search_type: Тип поиска ('engine' или 'act')
         :param search_value: Искомое значение для отображения в заголовке
         """
-        # Заголовок записи с указанием что искали и что нашли
+        # Заголовок записи с указанием что нашли
+        engine_number = record.engine_number
+        consumer_act_number = record.consumer_act_number
+
         if search_type == "engine":
             print(
-                f"Двигатель {record.engine_number} (искали: {search_value}) | ID записи - {record.id} |",
+                f"Двигатель {engine_number} | ID записи - {record.id} |",
                 file=file,
             )
         elif search_type == "act":
             print(
-                f"Акт {record.consumer_act_number} (искали: {search_value}) | ID записи - {record.id} |",
+                f"Акт {consumer_act_number} | ID записи - {record.id} |",
                 file=file,
             )
         else:
             # Универсальный заголовок для обратной совместимости
-            if record.engine_number:
+            if engine_number:
                 print(
-                    f"Двигатель {record.engine_number} | ID записи - {record.id} |",
+                    f"Двигатель {engine_number} | ID записи - {record.id} |",
                     file=file,
                 )
-            elif record.consumer_act_number:
+            elif consumer_act_number:
                 print(
-                    f"Акт {record.consumer_act_number} | ID записи - {record.id} |",
+                    f"Акт {consumer_act_number} | ID записи - {record.id} |",
                     file=file,
                 )
             else:
@@ -283,8 +289,8 @@ class DbSearchProcessor:
         product_nomenclature = (
             record.product.nomenclature if record.product else "не указано"
         )
-        product_number = record.product_number or "не указан"
-        manufacture_date = record.manufacture_date or "не указана"
+        product_number = record.product_number or "б/н"
+        manufacture_date = record.manufacture_date or ""
 
         print(
             f"{product_name} | {product_nomenclature} | зав.№: {product_number} {manufacture_date} |",

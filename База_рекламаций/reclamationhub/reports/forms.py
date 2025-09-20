@@ -14,7 +14,7 @@ class DbSearchForm(forms.Form):
     )
 
     engine_numbers = forms.CharField(
-        label="Номера двигателей (через пробел)",
+        label="Номера двигателей",
         widget=forms.Textarea(
             attrs={
                 "rows": 3,
@@ -23,11 +23,11 @@ class DbSearchForm(forms.Form):
             }
         ),
         required=False,
-        help_text="Если в номере есть буквы, вводите только цифры",
+        help_text="Если в номере двигателя есть буквы, вводите полностью - с английскими буквами",
     )
 
     act_numbers = forms.CharField(
-        label="Номера актов рекламаций (через пробел)",
+        label="Номера актов рекламаций",
         widget=forms.Textarea(
             attrs={
                 "rows": 3,

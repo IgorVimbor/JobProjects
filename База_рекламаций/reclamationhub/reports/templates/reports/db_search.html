@@ -34,7 +34,7 @@
 
                         <!-- Год поиска -->
                         <div class="mb-3">
-                            <label for="{{ form.year.id_for_label }}" class="form-label">
+                            <label for="{{ form.year.id_for_label }}" class="form-label fw-bold">
                                 {{ form.year.label }}
                             </label>
                             {{ form.year }}
@@ -45,7 +45,7 @@
 
                         <!-- Номера двигателей -->
                         <div class="mb-3">
-                            <label for="{{ form.engine_numbers.id_for_label }}" class="form-label">
+                            <label for="{{ form.engine_numbers.id_for_label }}" class="form-label fw-bold">
                                 {{ form.engine_numbers.label }}
                             </label>
                             {{ form.engine_numbers }}
@@ -59,7 +59,7 @@
 
                         <!-- Номера актов -->
                         <div class="mb-3">
-                            <label for="{{ form.act_numbers.id_for_label }}" class="form-label">
+                            <label for="{{ form.act_numbers.id_for_label }}" class="form-label fw-bold">
                                 {{ form.act_numbers.label }}
                             </label>
                             {{ form.act_numbers }}
@@ -92,14 +92,17 @@
                     <h5>ℹ️ Справка</h5>
                 </div>
                 <div class="card-body">
+                    <h6>Номера двигателей:</h6>
+                    <p class="small">Если в номере двигателя есть буквы, вводите номер полностью - с АНГЛИЙСКИМИ буквами.</p>
+
                     <h6>Быстрый поиск:</h6>
                     <p class="small">Показывает список найденных/не найденных номеров с ID записей для предварительного просмотра.</p>
 
                     <h6>Детальный отчет:</h6>
                     <p class="small">Создает TXT файл с полной информацией о найденных рекламациях и результатах исследований.</p>
 
-                    <h6>Номера двигателей:</h6>
-                    <p class="small">Если в номере есть буквы, вводите только цифры.</p>
+                    <h6>Просмотр детального отчета:</h6>
+                    <p class="small">Детальный отчет можно открыть в новой вкладке браузера или из файла в папке.</p>
                 </div>
             </div>
         </div>
@@ -123,14 +126,16 @@
     {% if search_results %}
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card" id="search-results-card" data-scroll-to>
                 <!-- Заголовок в стиле alert-success как сообщения -->
                 <div class="alert alert-success mb-0">
                     <h5 class="mb-1">📋 Результаты поиска</h5>
-                    <small>Год: {{ search_results.year }} |
-                    {% if search_results.engine_numbers %}Двигатели: {{ search_results.engine_numbers }}{% endif %}
-                    {% if search_results.act_numbers %}| Акты: {{ search_results.act_numbers }}{% endif %}
-                    </small>
+                    {% if search_results.engine_numbers %}
+                        <small>Двигатели: {{ search_results.engine_numbers }}</small><br>
+                    {% endif %}
+                    {% if search_results.act_numbers %}
+                        <small>Акты: {{ search_results.act_numbers }}</small>
+                    {% endif %}
                 </div>
 
                 <div class="card-body">
@@ -156,7 +161,7 @@
 
                         <!-- Кнопка для детального отчета -->
                         <div class="mt-3">
-                            <p class="text-muted">Для получения детального отчета с полной информацией нажмите кнопку выше или заполните форму заново.</p>
+                            <p class="text-muted">Для получения детального отчета с полной информацией нажмите кнопку выше.</p>
                         </div>
                     {% else %}
                         <p class="text-muted">Результаты поиска отсутствуют.</p>
@@ -171,7 +176,7 @@
     {% if download_info %}
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card border-success">
+            <div class="card border-success" id="report-ready-card" data-scroll-to>
                 <div class="card-header bg-success text-white">
                     <h5>✅ Отчет готов</h5>
                 </div>
@@ -180,8 +185,8 @@
                     <p>Количество найденных записей: <strong>{{ download_info.records_count }}</strong></p>
 
                     <div class="d-flex gap-2 mt-3">
-                        <a href="{% url 'reports:download_search_report' %}" class="btn btn-success">
-                            💾 Скачать отчет ({{ download_info.filename }})
+                        <a href="{% url 'reports:download_search_report' %}" target="_blank" class="btn btn-success">
+                            💾 Открыть отчет
                         </a>
                         <button class="btn btn-secondary" onclick="this.closest('.card').style.display='none'">
                             ❌ Закрыть
@@ -197,8 +202,31 @@
 
 <script>
 function clearForm() {
-    // Перезагружаем страницу с параметром clear=1 для очистки сессии
+    // Функция для перезагрузки страницы с параметром clear=1 для очистки сессии
     window.location.href = '{% url "reports:db_search" %}?clear=1';
 }
+
+function scrollToElement(elementId, delay = 100) {
+    // Функция для прокрутки страницы к элементу с аргументом data-scroll-to в теге
+    setTimeout(function() {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            element.setAttribute('tabindex', '-1');
+            element.focus();
+        }
+    }, delay);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Автоматически ищем элементы с data-scroll-to
+    const elementsToScroll = document.querySelectorAll('[data-scroll-to]');
+    elementsToScroll.forEach(function(element) {
+        scrollToElement(element.id);
+    });
+});
 </script>
 {% endblock %}
