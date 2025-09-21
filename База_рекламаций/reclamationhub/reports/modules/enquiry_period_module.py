@@ -46,11 +46,20 @@ class DataProcessor(MetadataLoader):
         self.new_last_id = 0
         self.df_res = pd.DataFrame()
         self.today = date.today()
+        self.current_year = self.today.year  # Добавляем текущий год
 
     def get_result(self):
-        # Вместо pd.read_excel - запрос к Django ORM
+        """Вместо pd.read_excel - запрос к Django ORM"""
+
+        year_start = date(self.current_year, 1, 1)  # начало текущего года
+        year_end = date(self.current_year, 12, 31)  # конец текущего года
+
         queryset = (
-            Reclamation.objects.filter(id__gt=self.last_processed_id)
+            Reclamation.objects.filter(
+                id__gt=self.last_processed_id,
+                # Добавляем фильтр по текущему году
+                message_received_date__range=[year_start, year_end],
+            )
             .select_related("defect_period", "product_name", "product")
             .values(
                 "id",  # поле из Reclamation для отслеживания последнего ID

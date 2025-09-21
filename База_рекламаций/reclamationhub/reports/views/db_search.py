@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import FileResponse, Http404, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import os
 
 from reports.config.paths import get_db_search_txt_path
@@ -115,22 +116,6 @@ def handle_search(request):
 
     # Редирект для обновления страницы
     return redirect("reports:db_search")
-
-
-# def download_search_report(request):
-#     """Открытие TXT файла отчета в браузере"""
-#     try:
-#         file_path = get_db_search_txt_path()
-
-#         if not os.path.exists(file_path):
-#             raise Http404("Файл отчета не найден")
-
-#         return FileResponse(
-#             open(file_path, "rb"),
-#             as_attachment=False,  # Открыть в браузере, а не скачать
-#             filename="Отчет_по_базе_рекламаций.txt",  # Это будет заголовок вкладки
-#             content_type="text/plain; charset=utf-8",
-#         )
 
 
 def download_search_report(request):

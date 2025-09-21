@@ -16,8 +16,9 @@ from reports.config.paths import (
 class AcceptDefectProcessor:
     """Обработка данных для отчета по признанным рекламациям"""
 
-    def __init__(self):
+    def __init__(self, year=None):
         self.today = date.today()
+        self.year = year or self.today.year  # Если год не передан, используем текущий
         self.result_df = pd.DataFrame()
         # Используем готовую функцию из конфига
         self.txt_file_path = get_accept_defect_txt_path(0)
@@ -25,16 +26,22 @@ class AcceptDefectProcessor:
     def process_data(self):
         """Основная логика обработки данных - исходная логика с pivot_table"""
 
-        # 1. Получаем ВСЕ рекламации (аналог исходного df)
-        all_reclamations = Reclamation.objects.select_related(
-            "defect_period", "product_name"
-        ).values("defect_period__name", "product_name__name", "products_count")
+        # 1. Получаем ВСЕ рекламации за указанный год
+        all_reclamations = (
+            Reclamation.objects.filter(year=self.year)
+            .select_related("defect_period", "product_name")
+            .values("defect_period__name", "product_name__name", "products_count")
+        )
 
         if not all_reclamations.exists():
-            return False, "Нет данных для обработки"
+            return False, f"Нет данных для {self.year} года"
 
         # Создаем DataFrame всех рекламаций
         df_all = pd.DataFrame(list(all_reclamations))
+
+        if df_all.empty:
+            return False, f"DataFrame пустой для {self.year} года"
+
         df_all.rename(
             columns={
                 "defect_period__name": "Потребитель",
@@ -51,7 +58,9 @@ class AcceptDefectProcessor:
 
         # 2. Получаем данные по виновникам из Investigation
         investigations = (
-            Investigation.objects.filter(reclamation__isnull=False)
+            Investigation.objects.filter(
+                reclamation__isnull=False, reclamation__year=self.year
+            )
             .select_related("reclamation__defect_period", "reclamation__product_name")
             .values(
                 "reclamation__defect_period__name",
@@ -102,7 +111,8 @@ class AcceptDefectProcessor:
                     pivot_investigations[fault_type] = 0
         else:
             # Если исследований нет, создаем пустую таблицу виновников
-            pivot_investigations = total_df.copy()
+            # БЫЛО: total_df.copy()
+            pivot_investigations = total_df[["Потребитель", "Изделие"]].copy()
             for fault_type in ["bza", "consumer", "compliant", "unknown"]:
                 pivot_investigations[fault_type] = 0
 
@@ -149,7 +159,7 @@ class AcceptDefectProcessor:
         """Сохранение в TXT файл"""
         with open(self.txt_file_path, "w", encoding="utf-8") as f:
             print(
-                f"\n\n\tСправка по количеству признанных рекламаций на {self.today.strftime('%d-%m-%Y')}\n\n",
+                f"\n\n\tСправка по количеству признанных рекламаций за {self.year} год на {self.today.strftime('%d-%m-%Y')}\n\n",
                 file=f,
             )
             f.write(self.result_df.to_string())

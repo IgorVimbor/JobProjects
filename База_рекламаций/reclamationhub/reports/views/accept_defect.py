@@ -5,6 +5,7 @@
 # redirect - для HTML страниц. Результат: обновляет страницу с новыми данными
 # HttpResponse - для файлов и данных. Результат: Браузер скачивает файл
 
+from datetime import datetime
 from django.http import FileResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
@@ -35,14 +36,23 @@ def accept_defect_page(request):
 
 def generate_report(request):
     """Генерация отчета"""
-    processor = AcceptDefectProcessor()
+    # Получаем год из POST данных
+    year = request.POST.get("year")
+
+    try:
+        year = int(year) if year else datetime.now().year
+    except (ValueError, TypeError):
+        messages.error(request, "Некорректный год")
+        return redirect("reports:accept_defect")
+
+    processor = AcceptDefectProcessor(year=year)
     result = processor.generate_report()
 
     if result["success"]:
         messages.success(request, f"✅ {result['message']}")
         request.session["accept_defect_download_info"] = {
-            "message": result["full_message"],  # Убираем txt_path и filename
-            "report_data": result["report_data"],  # ← Добавляем данные для показа
+            "message": result["full_message"],
+            "report_data": result["report_data"],
         }
     else:
         if result["message_type"] == "info":

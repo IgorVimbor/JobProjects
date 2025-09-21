@@ -201,13 +201,23 @@
 </div>
 
 <script>
+/**
+ * СКРИПТ УПРАВЛЕНИЯ ДАННЫМИ ПОИСКА
+ * Основные функции:
+ * 1. Очистка формы по кнопке (без вопросов)
+ * 2. Прокрутка к результатам поиска
+ * 3. Перехват внешних ссылок с предупреждением об очистке данных
+ */
+
 function clearForm() {
-    // Функция для перезагрузки страницы с параметром clear=1 для очистки сессии
+    // Функция очистки формы по кнопке "Очистить" - без подтверждения
+    // Использует существующую логику через GET параметр clear=1
     window.location.href = '{% url "reports:db_search" %}?clear=1';
 }
 
 function scrollToElement(elementId, delay = 100) {
-    // Функция для прокрутки страницы к элементу с аргументом data-scroll-to в теге
+    // Функция плавной прокрутки к элементу с data-scroll-to атрибутом
+    // Используется для показа результатов поиска после их появления
     setTimeout(function() {
         const element = document.getElementById(elementId);
         if (element) {
@@ -221,12 +231,78 @@ function scrollToElement(elementId, delay = 100) {
     }, delay);
 }
 
+function clearSessionAndRedirect(url) {
+    // Функция очищает данные сессии и перенаправляет на указанный URL
+    // Используется когда пользователь выбрал "ОК" в диалоге подтверждения
+    fetch('{% url "reports:db_search" %}?clear=1')
+        .then(() => {
+            window.location.href = url;
+        })
+        .catch(() => {
+            // Если очистка не сработала - все равно переходим по ссылке
+            window.location.href = url;
+        });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Автоматически ищем элементы с data-scroll-to
+    // === АВТОПРОКРУТКА К РЕЗУЛЬТАТАМ ===
+    // Ищем все элементы с атрибутом data-scroll-to и прокручиваем к ним
     const elementsToScroll = document.querySelectorAll('[data-scroll-to]');
     elementsToScroll.forEach(function(element) {
         scrollToElement(element.id);
     });
+
+    // === ПЕРЕХВАТ ВНЕШНИХ ССЫЛОК ===
+    // Работает ТОЛЬКО если на странице есть результаты поиска или отчет
+    {% if search_results or download_info %}
+    document.addEventListener('click', function(event) {
+        // Проверяем, что пользователь кликнул по ссылке (или элементу внутри ссылки)
+        const link = event.target.closest('a');
+        if (!link) return; // Если это не ссылка - ничего не делаем
+
+        // Определяем URL-ы приложения поиска (внутренние ссылки)
+        const currentAppUrls = [
+            '{% url "reports:db_search" %}',           // Страница поиска
+            '{% url "reports:download_search_report" %}' // Страница отчета
+        ];
+
+        const linkUrl = link.getAttribute('href');
+
+        // ИГНОРИРУЕМ ссылки, которые не нужно перехватывать:
+        if (!linkUrl ||                    // Нет href
+            linkUrl.startsWith('#') ||     // Якорные ссылки (#section)
+            linkUrl.startsWith('javascript:')) return; // JavaScript ссылки
+
+        // Проверяем, не является ли ссылка внутренней (внутри приложения поиска)
+        let isInternalLink = false;
+        currentAppUrls.forEach(function(url) {
+            if (linkUrl.includes(url)) {
+                isInternalLink = true;
+            }
+        });
+
+        // НЕ ПЕРЕХВАТЫВАЕМ:
+        // - Внутренние ссылки приложения (остаемся в контексте поиска)
+        // - Ссылки с target="_blank" (отчеты открываются в новой вкладке)
+        if (isInternalLink || link.target === '_blank') return;
+
+        // === ОСНОВНАЯ ЛОГИКА ПЕРЕХВАТА ===
+        // Останавливаем стандартный переход по ссылке
+        event.preventDefault();
+
+        // Показываем диалог подтверждения
+        if (confirm('На странице остались данные. Очистить данные?')) {
+            // Пользователь выбрал "ОК" - очищаем данные и переходим
+            clearSessionAndRedirect(linkUrl);
+        } else {
+            // Пользователь выбрал "Отмена" - просто переходим без очистки
+            window.location.href = linkUrl;
+        }
+    });
+    {% endif %}
+
+    // ВАЖНО: Если на странице нет данных поиска (search_results или download_info),
+    // то перехват ссылок НЕ работает - пользователь свободно перемещается по сайту
 });
 </script>
 {% endblock %}

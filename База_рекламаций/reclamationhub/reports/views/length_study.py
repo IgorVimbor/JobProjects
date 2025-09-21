@@ -5,6 +5,7 @@
 # redirect - для HTML страниц. Результат: обновляет страницу с новыми данными
 # HttpResponse - для файлов и данных. Результат: Браузер скачивает файл
 
+from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from reports.modules.length_study_module import LengthStudyProcessor
@@ -31,7 +32,16 @@ def length_study_page(request):
 
 def generate_report(request):
     """Генерация отчета"""
-    processor = LengthStudyProcessor()
+    # Получаем год из POST данных
+    year = request.POST.get("year")
+
+    try:
+        year = int(year) if year else datetime.now().year
+    except (ValueError, TypeError):
+        messages.error(request, "Некорректный год")
+        return redirect("reports:length-study")
+
+    processor = LengthStudyProcessor(year=year)
     result = processor.generate_report()
 
     if result["success"]:

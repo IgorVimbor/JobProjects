@@ -1,5 +1,6 @@
 # Представление для основной страницы аналитики
 
+from datetime import date
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
@@ -12,13 +13,22 @@ from reclamations.models import Reclamation
 # LOGIN_URL = "/admin/login/"  # Куда перенаправлять неавторизованных
 
 
-# @login_required
+# # @login_required
 def analytics_page(request):
-    # Получаем данные для карточек, как на главной странице
-    total_reclamations = Reclamation.objects.count()
-    new_reclamations = Reclamation.objects.filter(status="new").count()
-    in_progress = Reclamation.objects.filter(status="in_progress").count()
-    closed_reclamations = Reclamation.objects.filter(status="closed").count()
+    # Получаем выбранный год (по умолчанию текущий)
+    selected_year = int(request.GET.get("year", date.today().year))
+
+    # Получаем данные для карточек ЗА ВЫБРАННЫЙ ГОД
+    total_reclamations = Reclamation.objects.filter(year=selected_year).count()
+    new_reclamations = Reclamation.objects.filter(
+        year=selected_year, status="new"
+    ).count()
+    in_progress = Reclamation.objects.filter(
+        year=selected_year, status="in_progress"
+    ).count()
+    closed_reclamations = Reclamation.objects.filter(
+        year=selected_year, status="closed"
+    ).count()
 
     context = {
         "page_title": "Справки и отчеты",

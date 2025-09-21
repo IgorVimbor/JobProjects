@@ -73279,7 +73279,7 @@
   "model": "reclamations.reclamation",
   "pk": 1410,
   "fields": {
-    "status": "NEW",
+    "status": "CLOSED",
     "year": 2024,
     "yearly_number": 1,
     "incoming_number": null,
@@ -73319,11 +73319,11 @@
     "pkd_number": null,
     "volume_removal_reference": null,
     "reclamation_documents": null,
-    "product_received_date": null,
-    "product_sender": null,
-    "receipt_invoice_number": null,
-    "receipt_invoice_date": null,
-    "updated_at": "2024-10-19T05:25:43.705Z"
+    "product_received_date": "2024-10-17",
+    "product_sender": "ЯМЗ",
+    "receipt_invoice_number": "фото",
+    "receipt_invoice_date": "2024-10-17",
+    "updated_at": "2025-09-21T19:08:24.195Z"
   }
 },
 {
@@ -92188,6 +92188,30 @@
     "recipient": null,
     "shipment_date": null,
     "act_scan": "2025__520_ЯМЗ_ра_368064.pdf",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 806,
+  "fields": {
+    "reclamation": 1410,
+    "act_number": "2024 № 0001",
+    "act_date": "2024-10-18",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": null,
+    "defect_causes_explanation": null,
+    "defective_supplier": null,
+    "recipient": null,
+    "shipment_date": null,
+    "act_scan": "",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,

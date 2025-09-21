@@ -5,9 +5,11 @@
 # redirect - для HTML страниц. Результат: обновляет страницу с новыми данными
 # HttpResponse - для файлов и данных. Результат: Браузер скачивает файл
 
+from datetime import date
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import FileResponse, Http404
+
 from reports.modules.enquiry_period_module import ExcelWriter
 from reports.models import EnquiryPeriod
 from reclamations.models import Reclamation
@@ -20,12 +22,20 @@ def enquiry_period_page(request):
     if request.method == "POST":
         return generate_report(request)
 
+    # Получаем текущий год и диапазон дат
+    current_year = date.today().year
+    year_start = date(current_year, 1, 1)
+    year_end = date(current_year, 12, 31)
+
     # Получаем информацию для отображения (GET запрос - показываем страницу)
     last_metadata = EnquiryPeriod.objects.order_by("-sequence_number").first()
 
-    # Считаем количество новых записей
+    # Считаем количество новых записей ЗА ТЕКУЩИЙ ГОД
     last_processed_id = last_metadata.last_processed_id if last_metadata else 0
-    new_records_count = Reclamation.objects.filter(id__gt=last_processed_id).count()
+    new_records_count = Reclamation.objects.filter(
+        id__gt=last_processed_id,
+        message_received_date__range=[year_start, year_end],  # Добавляем фильтр по году
+    ).count()
 
     # Проверяем, есть ли актуальная данные для справки
     download_info = request.session.get("download_info", None)
@@ -34,10 +44,11 @@ def enquiry_period_page(request):
 
     context = {
         "page_title": "Справка за период",
-        "description": "Справка по количеству поступивших рекламаций за период времени",
+        "description": f"Справка по количеству поступивших рекламаций за период {current_year} года",
         "last_metadata": last_metadata,
         "new_records_count": new_records_count,
-        "download_info": download_info,  # актуальная данные для справки
+        "download_info": download_info,  # актуальные данные для справки
+        "current_year": current_year,  # текущий год для отображения в шаблоне
     }
     return render(request, "reports/enquiry_period.html", context)
 

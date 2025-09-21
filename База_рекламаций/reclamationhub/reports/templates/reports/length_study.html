@@ -35,6 +35,20 @@
 
                     <form method="post">
                         {% csrf_token %}
+
+                        <!-- Поле выбора года -->
+                        <div class="mb-3">
+                            <label for="year" class="form-label fw-bold">Год для анализа:</label>
+                            <input type="number"
+                                class="form-control"
+                                id="year"
+                                name="year"
+                                value="{{ request.POST.year|default:'2025' }}"
+                                min="2020"
+                                max="2026"
+                                required>
+                        </div>
+
                         <button type="submit" class="btn btn-primary btn-lg">
                             📊 Сделать расчеты
                         </button>

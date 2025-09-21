@@ -19,9 +19,10 @@ from reports.config.paths import BASE_REPORTS_DIR
 class LengthStudyProcessor:
     """Анализ длительности исследований"""
 
-    def __init__(self):
+    def __init__(self, year=None):
         self.today = date.today()
-        self.current_year = self.today.year
+        # self.current_year = self.today.year
+        self.year = year or self.today.year  # Добавили год
         self.result_df = pd.DataFrame()
         self.df = pd.DataFrame()
         self.df_asp = pd.DataFrame()
@@ -31,7 +32,8 @@ class LengthStudyProcessor:
         """Получение данных с логикой подстановки дат"""
         queryset = (
             Investigation.objects.filter(
-                act_date__isnull=False  # Есть дата исследования
+                act_date__isnull=False,  # Есть дата исследования
+                reclamation__year=self.year,  # Добавляем фильтр по году рекламации
             )
             .select_related("reclamation__defect_period")
             .annotate(
@@ -152,7 +154,7 @@ class LengthStudyProcessor:
             axes[2].set_xlim(-1, 40)
 
         # Заголовок
-        fig.suptitle(f"{self.current_year} год", fontsize=16)
+        fig.suptitle(f"{self.year} год", fontsize=16)
         plt.tight_layout()
 
         # Конвертируем в base64
@@ -176,7 +178,7 @@ class LengthStudyProcessor:
         )
         with open(txt_path, "w", encoding="utf-8") as f:
             print(
-                f"\n\tСтатистика длительности исследований за {self.current_year} на {today_str}\n\n",
+                f"\n\tСтатистика длительности исследований за {self.year} на {today_str}\n\n",
                 file=f,
             )
             f.write(self.result_df.to_string())
@@ -210,7 +212,7 @@ class LengthStudyProcessor:
             axes[2].set_title("Исследование по ГП")
             axes[2].set_xlim(-1, 40)
 
-        fig.suptitle(f"{self.current_year} год", fontsize=16)
+        fig.suptitle(f"{self.year} год", fontsize=16)
         plt.tight_layout()
         plt.savefig(png_path, dpi=300, bbox_inches="tight")
         plt.close(fig)
