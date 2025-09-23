@@ -49,7 +49,7 @@
   "pk": 2,
   "fields": {
     "password": "pbkdf2_sha256$600000$nGWRmKLyKqIuczkdneeDLi$nigd2a7PGqdlDy+3Ucg6Th00B9kRZWkvc/UoLXQdRvY=",
-    "last_login": "2025-09-22T07:18:49.003Z",
+    "last_login": "2025-09-23T11:53:02.915Z",
     "is_superuser": false,
     "username": "Ковалева",
     "first_name": "Василина Эдуардовна",
@@ -69,7 +69,7 @@
   "pk": 3,
   "fields": {
     "password": "pbkdf2_sha256$600000$wmSl0wXoHsDcTGteJHopDy$ZPCio3evcbOQBOf8H6uoA8pUVfIcagVeNkfR/RxUNMg=",
-    "last_login": "2025-09-08T06:40:03.762Z",
+    "last_login": "2025-09-23T06:51:51.738Z",
     "is_superuser": false,
     "username": "Горбачев",
     "first_name": "Сергей Григорьевич",
@@ -25369,7 +25369,7 @@
     "claimed_defect": "не выдержена плоскостность",
     "consumer_requirement": "предоставить 8D, командировать представителя",
     "products_count": 160,
-    "measures_taken": "выезд работников МСЦ-3 на ММЗ 12.03.2025",
+    "measures_taken": "выезд 12.03.25 на ММЗ для переборки и исправления",
     "outgoing_document_number": null,
     "outgoing_document_date": null,
     "letter_sending_method": null,
@@ -25383,7 +25383,7 @@
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-09-22T17:48:01.752Z"
+    "updated_at": "2025-09-23T13:15:14.494Z"
   }
 },
 {
@@ -38986,7 +38986,7 @@
     "claimed_defect": "не выдержана плоскостность 0,08",
     "consumer_requirement": "предоставить 8D",
     "products_count": 160,
-    "measures_taken": "выезд 11.04.2025 на ММЗ для переборки и исправления",
+    "measures_taken": "выезд 11.04.25 на ММЗ для переборки и исправления",
     "outgoing_document_number": "010/1/248-02",
     "outgoing_document_date": "2025-04-10",
     "letter_sending_method": "dir_serv@mmz-motor.by",
@@ -39000,7 +39000,7 @@
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-09-22T17:51:45.346Z"
+    "updated_at": "2025-09-23T13:16:30.193Z"
   }
 },
 {
@@ -43903,7 +43903,7 @@
   "model": "reclamations.reclamation",
   "pk": 833,
   "fields": {
-    "status": "NEW",
+    "status": "CLOSED",
     "year": 2025,
     "yearly_number": 833,
     "incoming_number": "010/1/432-01",
@@ -43942,12 +43942,12 @@
     "consumer_response_date": null,
     "pkd_number": "8D/23-25",
     "volume_removal_reference": null,
-    "reclamation_documents": null,
+    "reclamation_documents": "исправлено на ММЗ",
     "product_received_date": null,
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-09-18T04:48:15.376Z"
+    "updated_at": "2025-09-23T13:27:58.100Z"
   }
 },
 {
@@ -57615,7 +57615,7 @@
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-09-18T04:48:15.189Z"
+    "updated_at": "2025-09-23T13:20:46.435Z"
   }
 },
 {
@@ -57666,7 +57666,7 @@
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-09-18T04:48:15.189Z"
+    "updated_at": "2025-09-23T13:23:16.256Z"
   }
 },
 {
@@ -57717,7 +57717,7 @@
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-09-18T04:48:15.189Z"
+    "updated_at": "2025-09-23T13:23:16.256Z"
   }
 },
 {
@@ -68933,11 +68933,11 @@
     "pkd_number": null,
     "volume_removal_reference": null,
     "reclamation_documents": "670 03.25; 685 03.25; 690 03.25; 653 03.25; 648 03.25",
-    "product_received_date": null,
-    "product_sender": null,
-    "receipt_invoice_number": null,
-    "receipt_invoice_date": null,
-    "updated_at": "2025-09-18T04:48:15.033Z"
+    "product_received_date": "2025-09-23",
+    "product_sender": "Гомсельмаш",
+    "receipt_invoice_number": "0138551",
+    "receipt_invoice_date": "2025-09-22",
+    "updated_at": "2025-09-23T11:54:35.182Z"
   }
 },
 {
@@ -72252,7 +72252,7 @@
     "product_sender": "БелАгро-Сервис",
     "receipt_invoice_number": "76",
     "receipt_invoice_date": "2025-09-10",
-    "updated_at": "2025-09-22T09:54:40.432Z"
+    "updated_at": "2025-09-23T12:31:38.480Z"
   }
 },
 {
@@ -72303,7 +72303,7 @@
     "product_sender": "БелАгро-Сервис",
     "receipt_invoice_number": "76",
     "receipt_invoice_date": "2025-09-10",
-    "updated_at": "2025-09-22T09:44:41.084Z"
+    "updated_at": "2025-09-23T12:32:02.019Z"
   }
 },
 {
@@ -72769,7 +72769,7 @@
   "model": "reclamations.reclamation",
   "pk": 1400,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "year": 2025,
     "yearly_number": 1400,
     "incoming_number": null,
@@ -72813,14 +72813,14 @@
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0137732",
     "receipt_invoice_date": "2025-09-15",
-    "updated_at": "2025-09-18T04:48:14.986Z"
+    "updated_at": "2025-09-23T12:07:49.807Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1401,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "year": 2025,
     "yearly_number": 1401,
     "incoming_number": null,
@@ -72864,14 +72864,14 @@
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0137732",
     "receipt_invoice_date": "2025-09-15",
-    "updated_at": "2025-09-18T04:48:14.986Z"
+    "updated_at": "2025-09-23T12:25:15.324Z"
   }
 },
 {
   "model": "reclamations.reclamation",
   "pk": 1402,
   "fields": {
-    "status": "IN_PROGRESS",
+    "status": "CLOSED",
     "year": 2025,
     "yearly_number": 1402,
     "incoming_number": null,
@@ -72915,7 +72915,7 @@
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0137732",
     "receipt_invoice_date": "2025-09-15",
-    "updated_at": "2025-09-18T04:48:14.986Z"
+    "updated_at": "2025-09-23T12:30:07.162Z"
   }
 },
 {
@@ -72966,7 +72966,7 @@
     "product_sender": "СпецМиксТрейд",
     "receipt_invoice_number": "5300446",
     "receipt_invoice_date": "2025-09-15",
-    "updated_at": "2025-09-22T08:32:01.563Z"
+    "updated_at": "2025-09-23T12:33:08.826Z"
   }
 },
 {
@@ -93247,8 +93247,8 @@
     "defect_causes": "выход из строя торцевого уплотнения ОАО БЗА",
     "defect_causes_explanation": null,
     "defective_supplier": null,
-    "recipient": null,
-    "shipment_date": null,
+    "recipient": "AA.Voynich@belagro.com",
+    "shipment_date": "2025-09-23",
     "act_scan": "2025__1025_БелАгроСервис_ра_1.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
@@ -93271,8 +93271,8 @@
     "defect_causes": "отклонение в изготовлении корпуса компрессора 700-1118020",
     "defect_causes_explanation": null,
     "defective_supplier": null,
-    "recipient": null,
-    "shipment_date": null,
+    "recipient": "AA.Voynich@belagro.com",
+    "shipment_date": "2025-09-23",
     "act_scan": "2025__1026_БелАгроСервис_ра_бн.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
@@ -93295,8 +93295,8 @@
     "defect_causes": "не связаны с качеством изготовления компрессора",
     "defect_causes_explanation": null,
     "defective_supplier": null,
-    "recipient": null,
-    "shipment_date": null,
+    "recipient": "evseeva.n@bk.ru",
+    "shipment_date": "2025-09-23",
     "act_scan": "2025__1027_СпецМиксТрейд__ра_6.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
@@ -93715,6 +93715,222 @@
   }
 },
 {
+  "model": "investigations.investigation",
+  "pk": 848,
+  "fields": {
+    "reclamation": 1400,
+    "act_number": "2025 № 1031",
+    "act_date": "2025-09-18",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "1. повреждение головки компрессора после вмешательства в конструкцию; 2. скрытый дефект манжеты 5336-3509380",
+    "defect_causes_explanation": "1. вина потребителя  2. вина БЗА",
+    "defective_supplier": null,
+    "recipient": "ute@gomselmash.by",
+    "shipment_date": "2025-09-23",
+    "act_scan": "2025__1031_Гомсельмаш_ра_3327.pdf",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 849,
+  "fields": {
+    "reclamation": 1401,
+    "act_number": "2025 № 1032",
+    "act_date": "2025-09-18",
+    "solution": "DEFLECT",
+    "fault_type": "consumer",
+    "guilty_department": "Не определено",
+    "defect_causes": "не связаны с качеством изготовления компрессора",
+    "defect_causes_explanation": "поступление не очищенного фильтором воздуха",
+    "defective_supplier": null,
+    "recipient": "ute@gomselmash.by",
+    "shipment_date": "2025-09-23",
+    "act_scan": "2025__1032_Гомсельмаш_ра_6175.pdf",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 850,
+  "fields": {
+    "reclamation": 1402,
+    "act_number": "2025 № 1033",
+    "act_date": "2025-09-18",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "ослабление момента затяжки соединения болта 5336-3509200 с гайкой 5336-3509202",
+    "defect_causes_explanation": null,
+    "defective_supplier": null,
+    "recipient": null,
+    "shipment_date": null,
+    "act_scan": "2025__1033_Гомсельмаш_ра_2283.pdf",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 851,
+  "fields": {
+    "reclamation": 467,
+    "act_number": "не требуется",
+    "act_date": "2025-03-12",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "несовершенство технологии",
+    "defect_causes_explanation": "введен 100% контроль плоскосности",
+    "defective_supplier": null,
+    "recipient": null,
+    "shipment_date": null,
+    "act_scan": "",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 852,
+  "fields": {
+    "reclamation": 736,
+    "act_number": "не требуется",
+    "act_date": "2025-04-11",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "несовершенство технологии",
+    "defect_causes_explanation": "введен 100% контроль плоскосности",
+    "defective_supplier": null,
+    "recipient": null,
+    "shipment_date": null,
+    "act_scan": "",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 853,
+  "fields": {
+    "reclamation": 1101,
+    "act_number": "не требуется",
+    "act_date": "2025-07-14",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "несовершенство технологии",
+    "defect_causes_explanation": null,
+    "defective_supplier": null,
+    "recipient": null,
+    "shipment_date": null,
+    "act_scan": "",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 854,
+  "fields": {
+    "reclamation": 1103,
+    "act_number": "не требуется",
+    "act_date": "2025-07-14",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "несовершенство технологии",
+    "defect_causes_explanation": null,
+    "defective_supplier": null,
+    "recipient": null,
+    "shipment_date": null,
+    "act_scan": "",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 855,
+  "fields": {
+    "reclamation": 1102,
+    "act_number": "не требуется",
+    "act_date": "2025-07-14",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "несовершенство технологии",
+    "defect_causes_explanation": null,
+    "defective_supplier": null,
+    "recipient": null,
+    "shipment_date": null,
+    "act_scan": "",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 857,
+  "fields": {
+    "reclamation": 833,
+    "act_number": "не требуется",
+    "act_date": "2025-05-12",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "Не определено",
+    "defect_causes": "несовершенство технологии",
+    "defect_causes_explanation": null,
+    "defective_supplier": null,
+    "recipient": null,
+    "shipment_date": null,
+    "act_scan": "",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
   "model": "reports.enquiryperiod",
   "pk": 13,
   "fields": {
@@ -93973,6 +94189,15 @@
     "sequence_number": 28,
     "last_processed_id": 1402,
     "report_date": "2025-09-16"
+  }
+},
+{
+  "model": "reports.enquiryperiod",
+  "pk": 54,
+  "fields": {
+    "sequence_number": 29,
+    "last_processed_id": 1423,
+    "report_date": "2025-09-23"
   }
 }
 ]
