@@ -4,6 +4,7 @@
 import pandas as pd
 from datetime import date
 import os
+from django.db.models import Q
 
 from investigations.models import Investigation
 from reclamations.models import Reclamation
@@ -12,35 +13,68 @@ from reports.config.paths import (
     ACCEPT_DEFECT_DIR,  # BASE_REPORTS_DIR,
 )
 
-
 class AcceptDefectProcessor:
     """Обработка данных для отчета по признанным рекламациям"""
 
-    def __init__(self, year=None):
+    def __init__(self, year=None, months=None):
         self.today = date.today()
         self.year = year or self.today.year  # Если год не передан, используем текущий
+        self.months = months or []  # Список выбранных месяцев [1, 2, 3] или [] для всех месяцев
         self.result_df = pd.DataFrame()
         # Используем готовую функцию из конфига
         self.txt_file_path = get_accept_defect_txt_path(0)
 
-    def process_data(self):
-        """Основная логика обработки данных - исходная логика с pivot_table"""
+    def _get_month_names(self):
+        """Возвращает названия выбранных месяцев для отчета"""
+        if not self.months:
+            return "все месяцы"
 
-        # 1. Получаем ВСЕ рекламации за указанный год
+        month_names = {
+            1: "январь", 2: "февраль", 3: "март", 4: "апрель",
+            5: "май", 6: "июнь", 7: "июль", 8: "август",
+            9: "сентябрь", 10: "октябрь", 11: "ноябрь", 12: "декабрь"
+        }
+
+        selected_names = [month_names[month] for month in sorted(self.months)]
+
+        if len(selected_names) == 1:
+            return selected_names[0]
+        elif len(selected_names) == 2:
+            return f"{selected_names[0]} и {selected_names[1]}"
+        else:
+            return f"{', '.join(selected_names[:-1])} и {selected_names[-1]}"
+
+    def process_data(self):
+        """Основная логика обработки данных с фильтрацией по месяцам"""
+
+        # 1. Формируем фильтр для рекламаций
+        reclamations_filter = Q(year=self.year)
+        if self.months:  # Если выбраны конкретные месяцы
+            reclamations_filter &= Q(message_received_date__month__in=self.months)
+
+        # Получаем ВСЕ рекламации за указанный год и месяцы
         all_reclamations = (
-            Reclamation.objects.filter(year=self.year)
+            Reclamation.objects.filter(reclamations_filter)
             .select_related("defect_period", "product_name")
             .values("defect_period__name", "product_name__name", "products_count")
         )
 
         if not all_reclamations.exists():
-            return False, f"Нет данных для {self.year} года"
+            period_text = f"{self.year} год"
+            if self.months:
+                month_names = self._get_month_names()
+                period_text = f"{month_names} {self.year} года"
+            return False, f"Нет данных за {period_text}"
 
         # Создаем DataFrame всех рекламаций
         df_all = pd.DataFrame(list(all_reclamations))
 
         if df_all.empty:
-            return False, f"DataFrame пустой для {self.year} года"
+            period_text = f"{self.year} год"
+            if self.months:
+                month_names = self._get_month_names()
+                period_text = f"{month_names} {self.year} года"
+            return False, f"DataFrame пустой за {period_text}"
 
         df_all.rename(
             columns={
@@ -56,11 +90,17 @@ class AcceptDefectProcessor:
             df_all.groupby(["Потребитель", "Изделие"])["Количество"].sum().reset_index()
         )
 
-        # 2. Получаем данные по виновникам из Investigation
+        # 2. Формируем фильтр для исследований
+        investigations_filter = Q(
+            reclamation__isnull=False,
+            reclamation__year=self.year
+        )
+        if self.months:  # Если выбраны конкретные месяцы
+            investigations_filter &= Q(reclamation__message_received_date__month__in=self.months)
+
+        # Получаем данные по виновникам из Investigation
         investigations = (
-            Investigation.objects.filter(
-                reclamation__isnull=False, reclamation__year=self.year
-            )
+            Investigation.objects.filter(investigations_filter)
             .select_related("reclamation__defect_period", "reclamation__product_name")
             .values(
                 "reclamation__defect_period__name",
@@ -158,8 +198,14 @@ class AcceptDefectProcessor:
     def save_to_txt(self):
         """Сохранение в TXT файл"""
         with open(self.txt_file_path, "w", encoding="utf-8") as f:
+            # Формируем заголовок с учетом выбранных месяцев
+            period_text = f"{self.year} год"
+            if self.months:
+                month_names = self._get_month_names()
+                period_text = f"{month_names} {self.year} года"
+
             print(
-                f"\n\n\tСправка по количеству признанных рекламаций за {self.year} год на {self.today.strftime('%d-%m-%Y')}\n\n",
+                f"\n\n\tСправка по количеству признанных рекламаций\n\tза {period_text} на {self.today.strftime('%d-%m-%Y')}\n\n",
                 file=f,
             )
             f.write(self.result_df.to_string())
@@ -181,14 +227,21 @@ class AcceptDefectProcessor:
                 self.result_df.to_dict("records") if not self.result_df.empty else []
             )
 
+            # Формируем сообщение с учетом периода
+            period_text = f"{self.year} год"
+            if self.months:
+                month_names = self._get_month_names()
+                period_text = f"{month_names} {self.year} года"
+
             return {
                 "success": True,
-                "message": f"Отчет сформирован.",
+                "message": f"Отчет за {period_text} сформирован.",
                 "full_message": f"Файл отчета находится в папке {ACCEPT_DEFECT_DIR}",
                 "txt_path": self.txt_file_path,
                 "filename": os.path.basename(self.txt_file_path),
-                "report_data": report_data,  # ← Данные для показа на странице
+                "report_data": report_data,
                 "message_type": "success",
+                "period_text": period_text,  # Для использования в шаблоне
             }
 
         except Exception as e:

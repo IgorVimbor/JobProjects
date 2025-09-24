@@ -24,7 +24,7 @@
     <!-- Показываем карточку генерации отчета ТОЛЬКО если нет отчета -->
     {% if not download_info %}
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     <h5>Генерация отчета</h5>
@@ -38,15 +38,50 @@
                         <!-- Поле выбора года -->
                         <div class="mb-3">
                             <label for="year" class="form-label fw-bold">Год рекламаций:</label>
-                            <input type="number"
-                                class="form-control"
-                                id="year"
-                                name="year"
-                                value="{{ request.POST.year|default:'2025' }}"
-                                min="2020"
-                                max="2026"
-                                required>
+                            <select class="form-select" id="year" name="year" required>
+                                {% for year in available_years %}
+                                    <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
+
+                        <!-- Блок выбора месяцев -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Месяцы:</label>
+                            <div class="row">
+                                {% for quarter in months_by_quarters %}
+                                <div class="col-md-3">
+                                    <h6 class="text-primary mb-2">{{ quarter.title }}</h6>
+                                    {% for month in quarter.months %}
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            name="months"
+                                            value="{{ month.value }}"
+                                            id="month{{ month.value }}">
+                                        <label class="form-check-label" for="month{{ month.value }}">
+                                            {{ month.name }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Выберите нужные месяцы или оставьте все пустыми для отчета за весь год
+                            </small>
+                        </div>
+
+                        <!-- Кнопки управления
+                        <div class="d-flex gap-2 mb-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectAllMonths()">
+                                ✅ Выбрать все
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAllMonths()">
+                                ❌ Очистить все
+                            </button>
+                        </div>
+                         -->
 
                         <button type="submit" class="btn btn-primary btn-lg">
                             📈 Сформировать отчет
@@ -79,9 +114,9 @@
             <div class="card border-success">
                 <!--
                 <div class="card-header bg-success text-white">
-                    <h5>✅ Отчет готов</h5>
+                    <h5>✅ Отчет готов{% if download_info.period_text %} за {{ download_info.period_text }}{% endif %}</h5>
                 </div>
-                -->
+                 -->
                 <div class="card-body">
                     <p><strong>{{ download_info.message }}</strong></p>
 
@@ -92,8 +127,6 @@
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead class="table-primary">
-                                <!-- "table-dark" черный, "table-primary" мягкий синий, "table-info" голубой -->
-                                <!--  "table-secondary" серый, "bg-light" Обычный без фона (светлый) -->
                                     <tr>
                                         <th>Потребитель</th>
                                         <th>Изделие</th>
@@ -121,11 +154,9 @@
                     {% endif %}
                     <!-- Кнопки действий -->
                     <div class="d-flex gap-2 mt-3">
-                        <!--
                         <a href="{% url 'reports:accept_defect' %}" class="btn btn-primary">
                             🔄 Сформировать новый отчет
                         </a>
-                         -->
                         <button class="btn btn-secondary" onclick="this.closest('.card').style.display='none'">
                             ❌ Закрыть
                         </button>
@@ -136,4 +167,23 @@
     </div>
     {% endif %}
 </div>
+
+<!--
+<script>
+// JavaScript для управления чекбоксами месяцев
+function selectAllMonths() {
+    const checkboxes = document.querySelectorAll('input[name="months"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+}
+
+function clearAllMonths() {
+    const checkboxes = document.querySelectorAll('input[name="months"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+}
+</script>
+ -->
 {% endblock %}
