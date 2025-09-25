@@ -9,6 +9,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from reports.modules.length_study_module import LengthStudyProcessor
+from reclamations.models import Reclamation  # ДОБАВИЛИ импорт
 
 
 def length_study_page(request):
@@ -22,10 +23,31 @@ def length_study_page(request):
     if download_info:
         del request.session["length_study_info"]
 
+    # Получаем доступные годы
+    available_years = list(
+        Reclamation.objects.values_list("year", flat=True).distinct().order_by("-year")
+    )
+
+    # Список потребителей
+    available_consumers = [
+        {"value": "ММЗ", "name": "ММЗ"},
+        {"value": "Гомсельмаш", "name": "Гомсельмаш"},
+        {"value": "МАЗ", "name": "МАЗ"},
+        {"value": "ЯМЗ", "name": "ЯМЗ"},
+        {"value": "ПАЗ", "name": "ПАЗ"},
+        {"value": "Ростсельмаш", "name": "Ростсельмаш"},
+        {"value": "КАМАЗ", "name": "КАМАЗ"},
+        {"value": "УРАЛ", "name": "УРАЛ"},
+        {"value": "ПТЗ", "name": "ПТЗ"},
+    ]
+
     context = {
         "page_title": "Длительность исследования",
         "description": "Анализ длительности исследований с расчетом среднего и медианного значений и построением гистограмм",
         "download_info": download_info,
+        "available_years": available_years,  # Доступные годы
+        "current_year": datetime.now().year,  # Текущий год
+        "available_consumers": available_consumers,  # Список потребителей
     }
     return render(request, "reports/length_study.html", context)
 
@@ -35,13 +57,33 @@ def generate_report(request):
     # Получаем год из POST данных
     year = request.POST.get("year")
 
+    # Получаем потребителей
+    selected_consumers = request.POST.getlist("consumers")
+
     try:
         year = int(year) if year else datetime.now().year
     except (ValueError, TypeError):
         messages.error(request, "Некорректный год")
-        return redirect("reports:length-study")
+        return redirect("reports:length_study")
 
-    processor = LengthStudyProcessor(year=year)
+    # Простая валидация потребителей
+    consumers = []
+    if selected_consumers:
+        valid_consumers = [
+            "ММЗ",
+            "Гомсельмаш",
+            "МАЗ",
+            "ЯМЗ",
+            "ПАЗ",
+            "Ростсельмаш",
+            "КАМАЗ",
+            "УРАЛ",
+            "ПТЗ",
+        ]
+        consumers = [c for c in selected_consumers if c in valid_consumers]
+
+    # Создаем экземпляр класса LengthStudyProcessor с выбранным годом и пользователями
+    processor = LengthStudyProcessor(year=year, consumers=consumers)
     result = processor.generate_report()
 
     if result["success"]:

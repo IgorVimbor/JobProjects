@@ -11,7 +11,7 @@ import base64
 from io import BytesIO
 from datetime import date
 import os
-from django.db.models import Case, When, F
+from django.db.models import Case, When, F, Q
 from investigations.models import Investigation
 from reports.config.paths import BASE_REPORTS_DIR
 
@@ -19,22 +19,47 @@ from reports.config.paths import BASE_REPORTS_DIR
 class LengthStudyProcessor:
     """Анализ длительности исследований"""
 
-    def __init__(self, year=None):
+    def __init__(self, year=None, consumers=None):
         self.today = date.today()
         # self.current_year = self.today.year
         self.year = year or self.today.year  # Добавили год
+        self.consumers = consumers or []  # Список выбранных потребителей
         self.result_df = pd.DataFrame()
         self.df = pd.DataFrame()
         self.df_asp = pd.DataFrame()
         self.df_gp = pd.DataFrame()
 
+    def _get_consumer_names(self):
+        """Возвращает названия выбранных потребителей для отчета"""
+        if not self.consumers:
+            return "все потребители"
+
+        if len(self.consumers) == 1:
+            return self.consumers[0]
+        elif len(self.consumers) == 2:
+            return f"{self.consumers[0]} и {self.consumers[1]}"
+        else:
+            return f"{', '.join(self.consumers[:-1])} и {self.consumers[-1]}"
+
     def get_data_from_db(self):
-        """Получение данных с логикой подстановки дат"""
+        """Получение данных с логикой выбора года и потребителей"""
+        # Формируем фильтр
+        investigations_filter = Q(
+            act_date__isnull=False,  # Есть дата исследования
+            reclamation__year=self.year,  # Добавляем фильтр по году рекламации
+        )
+
+        # Добавляем фильтр по потребителям если они выбраны
+        if self.consumers:
+            # Создаем Q объект для поиска по содержанию любого из выбранных потребителей
+            consumer_q = Q()
+            for consumer in self.consumers:
+                consumer_q |= Q(reclamation__defect_period__name__icontains=consumer)
+
+            investigations_filter &= consumer_q
+
         queryset = (
-            Investigation.objects.filter(
-                act_date__isnull=False,  # Есть дата исследования
-                reclamation__year=self.year,  # Добавляем фильтр по году рекламации
-            )
+            Investigation.objects.filter(investigations_filter)
             .select_related("reclamation__defect_period")
             .annotate(
                 # Логика подстановки даты поступления
@@ -153,8 +178,13 @@ class LengthStudyProcessor:
             axes[2].set_title("Исследование по ГП")
             axes[2].set_xlim(-1, 40)
 
-        # Заголовок
-        fig.suptitle(f"{self.year} год", fontsize=16)
+        # Заголовок с учетом года и выбранных потребителей
+        title_text = f"{self.year} год"
+        if self.consumers:
+            consumer_names = self._get_consumer_names()
+            title_text = f"{consumer_names}, {self.year} год"
+
+        fig.suptitle(title_text, fontsize=16)
         plt.tight_layout()
 
         # Конвертируем в base64

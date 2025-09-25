@@ -25,13 +25,13 @@
     <!-- Показываем карточку генерации ТОЛЬКО если нет отчета -->
     {% if not download_info %}
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     <h5>Генерация статистики</h5>
                 </div>
                 <div class="card-body">
-                    <p>Статистический анализ длительности исследований по категориям</p>
+                    <p>Статистический анализ длительности исследований по потребителям и периодам эксплуатации</p>
 
                     <form method="post">
                         {% csrf_token %}
@@ -39,14 +39,69 @@
                         <!-- Поле выбора года -->
                         <div class="mb-3">
                             <label for="year" class="form-label fw-bold">Год для анализа:</label>
-                            <input type="number"
-                                class="form-control"
-                                id="year"
-                                name="year"
-                                value="{{ request.POST.year|default:'2025' }}"
-                                min="2020"
-                                max="2026"
-                                required>
+                            <select class="form-select" id="year" name="year" required>
+                                {% for year in available_years %}
+                                    <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Блок выбора потребителей -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Потребители:</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {% for consumer in available_consumers %}
+                                        {% if forloop.counter0 < 3 %}  <!-- Первые 3 в левой колонке -->
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input"
+                                                type="checkbox"
+                                                name="consumers"
+                                                value="{{ consumer.value }}"
+                                                id="consumer{{ forloop.counter }}">
+                                            <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                                {{ consumer.name }}
+                                            </label>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-4">
+                                    {% for consumer in available_consumers %}
+                                        {% if forloop.counter0 >= 3 and forloop.counter0 < 6 %}  <!-- 4-6 в средней колонке -->
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input"
+                                                type="checkbox"
+                                                name="consumers"
+                                                value="{{ consumer.value }}"
+                                                id="consumer{{ forloop.counter }}">
+                                            <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                                {{ consumer.name }}
+                                            </label>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-4">
+                                    {% for consumer in available_consumers %}
+                                        {% if forloop.counter0 >= 6 %}  <!-- Остальные в правой колонке -->
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input"
+                                                type="checkbox"
+                                                name="consumers"
+                                                value="{{ consumer.value }}"
+                                                id="consumer{{ forloop.counter }}">
+                                            <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                                {{ consumer.name }}
+                                            </label>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Выберите нужных потребителей или оставьте все пустыми для анализа всех потребителей в целом
+                            </small>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-lg">
@@ -132,11 +187,9 @@
 
                     <!-- Кнопки действий -->
                     <div class="d-flex gap-2 mt-4">
-                        <!--
                         <a href="{% url 'reports:length_study' %}" class="btn btn-primary">
                             🔄 Провести новый анализ
                         </a>
-                         -->
                         <button class="btn btn-secondary" onclick="this.closest('.card').style.display='none'">
                             ❌ Закрыть
                         </button>
