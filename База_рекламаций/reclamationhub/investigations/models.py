@@ -1,29 +1,40 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
+from django.core.files.storage import default_storage
 from django.utils import timezone
 import os
 
+from .storages import NoDuplicateFileStorage
 from reclamations.models import Reclamation
-
-
-# def investigation_act_path(instance, filename):
-#     """
-#     Функция для формирования пути сохранения файла pdf.
-#     Пробелы и спецсимволы в имени файла автоматически заменяются на подчеркивание.
-#     """
-#     from django.utils.encoding import force_str
-
-#     year = instance.act_number[:4]
-#     # Используем оригинальный номер акта исследования
-#     filename = force_str(f"{instance.act_number}.pdf")
-#     return f"investigations/{year}/{filename}"
 
 
 def get_default_act_number():
     """Возвращает строку с текущим годом и символом №"""
     current_year = timezone.now().year
     return f"{current_year} № "
+
+from django.conf import settings
+
+# def investigation_act_upload_path(instance, filename):
+#     """Функция для определения пути загрузки файлов актов исследования"""
+#     year = instance.reclamation.year
+#     # Структуры папок: acts/2025/2025__файл.pdf, acts/2026/2026__файл.pdf
+#     target_path = os.path.join('acts', str(year), filename)
+
+#     if default_storage.exists(target_path):
+#         if settings.DEBUG:
+#             print(f"Файл {filename} уже существует в папке {year} года")
+#         return target_path
+
+#     if settings.DEBUG:
+#         print(f"Создаем новый файл {filename} в папке {year} года")
+#     return target_path
+
+def investigation_act_upload_path(instance, filename):
+    """Функция для определения пути загрузки файлов актов исследования"""
+    year = instance.reclamation.year
+    return os.path.join('acts', str(year), filename)
 
 
 class Investigation(models.Model):
@@ -117,8 +128,9 @@ class Investigation(models.Model):
 
     # Сканированная копия акта исследования
     act_scan = models.FileField(
-        # upload_to=investigation_act_path,
-        upload_to="",  # пустая строка означает сохранение прямо в media
+        # upload_to="",  # пустая строка означает сохранение прямо в media
+        upload_to=investigation_act_upload_path,
+        storage=NoDuplicateFileStorage(),  # добавляем кастомный STORAGE
         verbose_name="Копия акта исследования",
         # help_text="Загрузите скан акта в формате PDF",
         null=True,
@@ -223,17 +235,52 @@ class Investigation(models.Model):
         # Обработка файла
         if self.pk:  # если запись уже существует
             try:
+                # Достаем текущую версию этого объекта из базы данных
                 old_instance = Investigation.objects.get(pk=self.pk)
+                # У старой версии БЫЛ файл → Файл УДАЛЯЕТСЯ (поле очищается) → Файл ЗАМЕНЯЕТСЯ на другой
                 if old_instance.act_scan and (
                     not self.act_scan or old_instance.act_scan != self.act_scan
                 ):
-                    old_instance.delete_act_scan()
+                    old_instance.delete_act_scan() # Удаляем старый файл с диска (из папки media)
             except Investigation.DoesNotExist:
                 pass
 
         # После сохранения акта исследования проверяем и обновляем статус рекламации
         super().save(*args, **kwargs)
         self.reclamation.update_status_on_investigation()
+
+    # def save(self, *args, **kwargs):
+    #     """Обновление статуса рекламации и обработка файлов"""
+
+    #     # НОВАЯ ЛОГИКА: Проверка дублирующихся файлов перед сохранением
+    #     if self.act_scan and hasattr(self.act_scan, 'file'):
+    #         original_filename = self.act_scan.name
+    #         year = self.reclamation.year
+    #         target_path = os.path.join('acts', str(year), original_filename)
+
+    #         if default_storage.exists(target_path):
+    #             # Файл уже существует - НЕ сохраняем новый, используем существующий
+    #             if settings.DEBUG:
+    #                 print(f"Файл {original_filename} уже существует, используем существующий")
+
+    #             # Заменяем загружаемый файл на ссылку на существующий
+    #             self.act_scan = target_path
+    #         # Если файла нет - Django сохранит новый
+
+    #     # ВАША СУЩЕСТВУЮЩАЯ ЛОГИКА: Обработка файла при обновлении
+    #     if self.pk:  # если запись уже существует
+    #         try:
+    #             old_instance = Investigation.objects.get(pk=self.pk)
+    #             if old_instance.act_scan and (
+    #                 not self.act_scan or old_instance.act_scan != self.act_scan
+    #             ):
+    #                 old_instance.delete_act_scan()
+    #         except Investigation.DoesNotExist:
+    #             pass
+
+    #     # После сохранения акта исследования проверяем и обновляем статус рекламации
+    #     super().save(*args, **kwargs)
+    #     self.reclamation.update_status_on_investigation()
 
     def delete(self, *args, **kwargs):
         """Переопределяем метод удаления"""
