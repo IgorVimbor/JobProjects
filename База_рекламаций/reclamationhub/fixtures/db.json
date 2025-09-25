@@ -49,7 +49,7 @@
   "pk": 2,
   "fields": {
     "password": "pbkdf2_sha256$600000$nGWRmKLyKqIuczkdneeDLi$nigd2a7PGqdlDy+3Ucg6Th00B9kRZWkvc/UoLXQdRvY=",
-    "last_login": "2025-09-24T05:33:44.890Z",
+    "last_login": "2025-09-25T08:32:04.749Z",
     "is_superuser": false,
     "username": "Ковалева",
     "first_name": "Василина Эдуардовна",
@@ -67917,7 +67917,7 @@
     "product_sender": "ЯМЗ",
     "receipt_invoice_number": "2510454",
     "receipt_invoice_date": "2025-09-01",
-    "updated_at": "2025-09-18T04:48:15.048Z"
+    "updated_at": "2025-09-25T08:06:34.115Z"
   }
 },
 {
@@ -69906,7 +69906,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-18T13:04:04.927Z"
+    "updated_at": "2025-09-25T12:11:17.489Z"
   }
 },
 {
@@ -69957,7 +69957,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-18T13:04:04.912Z"
+    "updated_at": "2025-09-25T12:11:40.073Z"
   }
 },
 {
@@ -70008,7 +70008,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:40:16.800Z"
+    "updated_at": "2025-09-25T12:11:56.909Z"
   }
 },
 {
@@ -70059,7 +70059,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:40:02.086Z"
+    "updated_at": "2025-09-25T12:12:30.548Z"
   }
 },
 {
@@ -70110,7 +70110,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:39:47.985Z"
+    "updated_at": "2025-09-25T12:12:45.444Z"
   }
 },
 {
@@ -70161,7 +70161,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:39:34.056Z"
+    "updated_at": "2025-09-25T12:13:02.683Z"
   }
 },
 {
@@ -70212,7 +70212,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:39:22.008Z"
+    "updated_at": "2025-09-25T12:13:45.115Z"
   }
 },
 {
@@ -70263,7 +70263,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:39:10.967Z"
+    "updated_at": "2025-09-25T12:14:19.500Z"
   }
 },
 {
@@ -70314,7 +70314,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:38:56.767Z"
+    "updated_at": "2025-09-25T12:31:50.324Z"
   }
 },
 {
@@ -70365,7 +70365,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:38:44.032Z"
+    "updated_at": "2025-09-25T12:22:31.781Z"
   }
 },
 {
@@ -70416,7 +70416,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:38:20.084Z"
+    "updated_at": "2025-09-25T12:20:52.094Z"
   }
 },
 {
@@ -70467,7 +70467,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-22T07:38:07.838Z"
+    "updated_at": "2025-09-25T12:23:46.388Z"
   }
 },
 {
@@ -71640,7 +71640,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-18T12:28:46.306Z"
+    "updated_at": "2025-09-25T13:28:16.742Z"
   }
 },
 {
@@ -71691,7 +71691,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-18T12:30:59.857Z"
+    "updated_at": "2025-09-25T13:27:38.700Z"
   }
 },
 {
@@ -71742,7 +71742,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-18T09:30:46.841Z"
+    "updated_at": "2025-09-25T13:27:04.027Z"
   }
 },
 {
@@ -71793,7 +71793,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "0080279",
     "receipt_invoice_date": "2025-09-03",
-    "updated_at": "2025-09-18T09:30:22.565Z"
+    "updated_at": "2025-09-25T13:26:01.142Z"
   }
 },
 {
@@ -71844,7 +71844,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "фото",
     "receipt_invoice_date": "2025-09-11",
-    "updated_at": "2025-09-22T07:47:59.702Z"
+    "updated_at": "2025-09-25T13:25:09.394Z"
   }
 },
 {
@@ -72063,7 +72063,7 @@
     "sender": null,
     "sender_outgoing_number": null,
     "message_sent_date": null,
-    "defect_period": 5,
+    "defect_period": 3,
     "product_name": 1,
     "product": 26,
     "product_number": null,
@@ -72099,7 +72099,7 @@
     "product_sender": "Буда-Кошелево-агросервис",
     "receipt_invoice_number": "1003231",
     "receipt_invoice_date": "2025-09-10",
-    "updated_at": "2025-09-22T12:02:38.182Z"
+    "updated_at": "2025-09-25T13:24:27.107Z"
   }
 },
 {
@@ -72114,7 +72114,7 @@
     "sender": null,
     "sender_outgoing_number": null,
     "message_sent_date": null,
-    "defect_period": 5,
+    "defect_period": 3,
     "product_name": 1,
     "product": 24,
     "product_number": null,
@@ -72150,7 +72150,7 @@
     "product_sender": "Буда-Кошелево-агросервис",
     "receipt_invoice_number": "1003231",
     "receipt_invoice_date": "2025-09-10",
-    "updated_at": "2025-09-22T12:01:35.177Z"
+    "updated_at": "2025-09-25T13:22:16.928Z"
   }
 },
 {
@@ -72165,7 +72165,7 @@
     "sender": null,
     "sender_outgoing_number": null,
     "message_sent_date": null,
-    "defect_period": 5,
+    "defect_period": 3,
     "product_name": 1,
     "product": 26,
     "product_number": null,
@@ -72201,7 +72201,7 @@
     "product_sender": "Буда-Кошелево-агросервис",
     "receipt_invoice_number": "1003231",
     "receipt_invoice_date": "2025-09-10",
-    "updated_at": "2025-09-22T12:02:10.002Z"
+    "updated_at": "2025-09-25T13:19:04.823Z"
   }
 },
 {
@@ -72252,7 +72252,7 @@
     "product_sender": "БелАгро-Сервис",
     "receipt_invoice_number": "76",
     "receipt_invoice_date": "2025-09-10",
-    "updated_at": "2025-09-23T12:31:38.480Z"
+    "updated_at": "2025-09-25T13:15:43.255Z"
   }
 },
 {
@@ -72303,7 +72303,7 @@
     "product_sender": "БелАгро-Сервис",
     "receipt_invoice_number": "76",
     "receipt_invoice_date": "2025-09-10",
-    "updated_at": "2025-09-23T12:32:02.019Z"
+    "updated_at": "2025-09-25T13:15:13.541Z"
   }
 },
 {
@@ -72558,7 +72558,7 @@
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-09-22T07:57:16.947Z"
+    "updated_at": "2025-09-25T12:59:27.159Z"
   }
 },
 {
@@ -72813,7 +72813,7 @@
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0137732",
     "receipt_invoice_date": "2025-09-15",
-    "updated_at": "2025-09-23T12:07:49.807Z"
+    "updated_at": "2025-09-25T12:58:02.957Z"
   }
 },
 {
@@ -72864,7 +72864,7 @@
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0137732",
     "receipt_invoice_date": "2025-09-15",
-    "updated_at": "2025-09-23T12:25:15.324Z"
+    "updated_at": "2025-09-25T12:56:49.897Z"
   }
 },
 {
@@ -72915,7 +72915,7 @@
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0137732",
     "receipt_invoice_date": "2025-09-15",
-    "updated_at": "2025-09-23T12:30:07.162Z"
+    "updated_at": "2025-09-25T12:54:07.746Z"
   }
 },
 {
@@ -72966,7 +72966,7 @@
     "product_sender": "СпецМиксТрейд",
     "receipt_invoice_number": "5300446",
     "receipt_invoice_date": "2025-09-15",
-    "updated_at": "2025-09-23T12:33:08.826Z"
+    "updated_at": "2025-09-25T12:53:07.166Z"
   }
 },
 {
@@ -73068,7 +73068,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "фото",
     "receipt_invoice_date": "2025-09-16",
-    "updated_at": "2025-09-24T07:56:14.973Z"
+    "updated_at": "2025-09-25T12:48:18.642Z"
   }
 },
 {
@@ -73119,7 +73119,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "фото",
     "receipt_invoice_date": "2025-09-17",
-    "updated_at": "2025-09-24T07:48:28.460Z"
+    "updated_at": "2025-09-25T12:49:12.814Z"
   }
 },
 {
@@ -73170,7 +73170,7 @@
     "product_sender": "ММЗ",
     "receipt_invoice_number": "фото",
     "receipt_invoice_date": "2025-09-17",
-    "updated_at": "2025-09-24T08:00:45.265Z"
+    "updated_at": "2025-09-25T12:45:53.715Z"
   }
 },
 {
@@ -73221,7 +73221,7 @@
     "product_sender": "БелАгро-Сервис",
     "receipt_invoice_number": "79",
     "receipt_invoice_date": "2025-09-17",
-    "updated_at": "2025-09-24T08:04:44.877Z"
+    "updated_at": "2025-09-25T12:45:16.858Z"
   }
 },
 {
@@ -73272,7 +73272,7 @@
     "product_sender": "БелАвтоМазСервис",
     "receipt_invoice_number": "79",
     "receipt_invoice_date": "2025-09-18",
-    "updated_at": "2025-09-24T11:18:13.147Z"
+    "updated_at": "2025-09-25T12:32:44.230Z"
   }
 },
 {
@@ -74854,6 +74854,312 @@
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
     "updated_at": "2025-09-24T05:24:54.678Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1442,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1441,
+    "incoming_number": null,
+    "message_received_date": "2025-09-25",
+    "sender": "ЯМЗ Желнина Наталия Владимировна",
+    "sender_outgoing_number": "2511599",
+    "message_sent_date": "2025-09-24",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "92642",
+    "consumer_act_date": "2025-06-02",
+    "country_rejected": "Россия",
+    "end_consumer": "Авторитэйл М",
+    "end_consumer_act_number": "92642",
+    "end_consumer_act_date": "2025-06-02",
+    "engine_brand": "53445.1000140-А32",
+    "engine_number": "P0184203",
+    "transport_name": null,
+    "transport_number": "X96C41R13P1149850",
+    "defect_detection_date": "2025-06-01",
+    "away_type": "kilometre",
+    "mileage_operating_time": "124167 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "отклонить (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-09-25",
+    "letter_sending_method": "ZhelninaNV@ymzmotor.ru",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-09-25T07:20:29.112Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1443,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1442,
+    "incoming_number": null,
+    "message_received_date": "2025-09-25",
+    "sender": "ЯМЗ Желнина Наталия Владимировна",
+    "sender_outgoing_number": "2511612",
+    "message_sent_date": "2025-09-24",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "95865",
+    "consumer_act_date": "2025-06-06",
+    "country_rejected": "Россия",
+    "end_consumer": "АвтоГАЗ-Сервис",
+    "end_consumer_act_number": "95865",
+    "end_consumer_act_date": "2025-06-06",
+    "engine_brand": "53445.1000140-А37",
+    "engine_number": "R0212876",
+    "transport_name": null,
+    "transport_number": "X96C41RB3R1159513",
+    "defect_detection_date": "2025-06-06",
+    "away_type": "kilometre",
+    "mileage_operating_time": "23823 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "отклонить (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-09-25",
+    "letter_sending_method": "ZhelninaNV@ymzmotor.ru",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-09-25T07:20:09.840Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1444,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1443,
+    "incoming_number": null,
+    "message_received_date": "2025-09-25",
+    "sender": "ЯМЗ Желнина Наталия Владимировна",
+    "sender_outgoing_number": "2511614",
+    "message_sent_date": "2025-09-24",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "96003",
+    "consumer_act_date": "2025-06-07",
+    "country_rejected": "Россия",
+    "end_consumer": "ЛуидорГарантия-Казань",
+    "end_consumer_act_number": "96003",
+    "end_consumer_act_date": "2025-06-07",
+    "engine_brand": "53445.1000140-А32",
+    "engine_number": "R0211655",
+    "transport_name": null,
+    "transport_number": "X96C41R13R1158743",
+    "defect_detection_date": "2025-06-07",
+    "away_type": "kilometre",
+    "mileage_operating_time": "89949 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "отклонить (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-09-25",
+    "letter_sending_method": "ZhelninaNV@ymzmotor.ru",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-09-25T07:19:46.272Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1445,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1444,
+    "incoming_number": null,
+    "message_received_date": "2025-09-25",
+    "sender": "ЯМЗ Желнина Наталия Владимировна",
+    "sender_outgoing_number": "2511629",
+    "message_sent_date": "2025-09-24",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "98256",
+    "consumer_act_date": "2025-06-11",
+    "country_rejected": "Россия",
+    "end_consumer": "Авто-ММ",
+    "end_consumer_act_number": "98256",
+    "end_consumer_act_date": "2025-06-11",
+    "engine_brand": "53445.1000140-А32",
+    "engine_number": "R0207493",
+    "transport_name": null,
+    "transport_number": "X96C41R33R1157614",
+    "defect_detection_date": "2025-06-11",
+    "away_type": "kilometre",
+    "mileage_operating_time": "147723 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "отклонить (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-09-25",
+    "letter_sending_method": "ZhelninaNV@ymzmotor.ru",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-09-25T07:19:24.944Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1446,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1445,
+    "incoming_number": null,
+    "message_received_date": "2025-09-25",
+    "sender": "ЯМЗ Желнина Наталия Владимировна",
+    "sender_outgoing_number": "2511630",
+    "message_sent_date": "2025-09-24",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "98548",
+    "consumer_act_date": "2025-06-11",
+    "country_rejected": "Россия",
+    "end_consumer": "Авторитэйл М",
+    "end_consumer_act_number": "98548",
+    "end_consumer_act_date": "2025-06-11",
+    "engine_brand": "53445.1000140-А32",
+    "engine_number": "P0187632",
+    "transport_name": null,
+    "transport_number": "X96C41R13P1150790",
+    "defect_detection_date": "2025-06-11",
+    "away_type": "kilometre",
+    "mileage_operating_time": "141272 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "отклонить (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-09-25",
+    "letter_sending_method": "ZhelninaNV@ymzmotor.ru",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-09-25T07:18:58.744Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1447,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1446,
+    "incoming_number": null,
+    "message_received_date": "2025-09-25",
+    "sender": "ЯМЗ Желнина Наталия Владимировна",
+    "sender_outgoing_number": "2511639",
+    "message_sent_date": "2025-09-24",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "99567",
+    "consumer_act_date": "2025-06-14",
+    "country_rejected": "Россия",
+    "end_consumer": "ЯрКамп-Сервис",
+    "end_consumer_act_number": "99567",
+    "end_consumer_act_date": "2025-06-14",
+    "engine_brand": "53445.1000140-А32",
+    "engine_number": "P0185702",
+    "transport_name": null,
+    "transport_number": "X96C41R13R1150375",
+    "defect_detection_date": "2025-06-14",
+    "away_type": "kilometre",
+    "mileage_operating_time": "91436 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "отклонить (более 90 дней)",
+    "outgoing_document_number": "эл. почта",
+    "outgoing_document_date": "2025-09-25",
+    "letter_sending_method": "ZhelninaNV@ymzmotor.ru",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-09-25T07:18:22.961Z"
   }
 },
 {
@@ -82095,7 +82401,7 @@
     "defective_supplier": null,
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__989_ЯМЗ_ТН_2510454_wX3S4OS.pdf",
+    "act_scan": "acts/2025/2025__989_ЯМЗ_ТН_2510454.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -82455,7 +82761,7 @@
     "defective_supplier": null,
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__989_ЯМЗ_ТН_2510454.pdf",
+    "act_scan": "acts/2025/2025__989_ЯМЗ_ТН_2510454.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -82615,7 +82921,7 @@
     "reclamation": 1303,
     "act_number": "2025 № 989",
     "act_date": "2025-09-08",
-    "solution": null,
+    "solution": "DEFLECT",
     "fault_type": "unknown",
     "guilty_department": "Не определено",
     "defect_causes": null,
@@ -82623,7 +82929,7 @@
     "defective_supplier": null,
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__989_ЯМЗ_ТН_2510454_C5xeVuU.pdf",
+    "act_scan": "acts/2025/2025__989_ЯМЗ_ТН_2510454.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -85911,7 +86217,7 @@
     "defective_supplier": null,
     "recipient": null,
     "shipment_date": null,
-    "act_scan": "2025__979_СоюзАгрегат_ра_3.pdf",
+    "act_scan": "acts/2025/2025__979_СоюзАгрегат_ра_3.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": "0338794",
@@ -87039,7 +87345,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-04",
-    "act_scan": "2025__986.pdf",
+    "act_scan": "acts/2025/2025__986_ММЗ_ра_1707ММЗ.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -88719,7 +89025,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-08",
-    "act_scan": "2025__985_ММЗ_ра_1697ММЗ.pdf",
+    "act_scan": "acts/2025/2025__985_ММЗ_ра_1697ММЗ.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -88767,7 +89073,7 @@
     "defective_supplier": null,
     "recipient": "udil_dop@mail.ru",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__991_Гомсельмаш__ра_797.pdf",
+    "act_scan": "acts/2025/2025__991_Гомсельмаш__ра_797.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -88791,7 +89097,7 @@
     "defective_supplier": null,
     "recipient": "udil_dop@mail.ru",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__992_Гомсельмаш__ра_797.pdf",
+    "act_scan": "acts/2025/2025__992_Гомсельмаш__ра_797.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -88815,7 +89121,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__987_ММЗ_ра_С183.pdf",
+    "act_scan": "acts/2025/2025__987_ММЗ_ра_С183.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -88839,7 +89145,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__988_ММЗ_ра_674_ВМ.pdf",
+    "act_scan": "acts/2025/2025__988_ММЗ_ра_674_ВМ.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -88863,7 +89169,7 @@
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__990_ЯМЗ_ТН_2510454.pdf",
+    "act_scan": "acts/2025/2025__990_ЯМЗ_ТН_2510454.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -88935,7 +89241,7 @@
     "defective_supplier": null,
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__989_ЯМЗ_ТН_2510454_IneRz0d.pdf",
+    "act_scan": "acts/2025/2025__989_ЯМЗ_ТН_2510454.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -88959,7 +89265,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-10",
-    "act_scan": "2025__1016_ММЗ_ра_3750.pdf",
+    "act_scan": "acts/2025/2025__1016_ММЗ_ра_3750.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -88983,7 +89289,7 @@
     "defective_supplier": "ММЗ",
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-10",
-    "act_scan": "2025__1015_ММЗ_ра_271.pdf",
+    "act_scan": "acts/2025/2025__1015_ММЗ_ра_271.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -89007,7 +89313,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-10",
-    "act_scan": "2025__1014_ММЗ_ра_3883.pdf",
+    "act_scan": "acts/2025/2025__1014_ММЗ_ра_3883.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -89031,7 +89337,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__993_ММЗ_ра_1691-25.pdf",
+    "act_scan": "acts/2025/2025__993_ММЗ_ра_1691-25.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -89055,7 +89361,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-09",
-    "act_scan": "2025__994_ММЗ_ра_2025-25.pdf",
+    "act_scan": "acts/2025/2025__994_ММЗ_ра_2025-25.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -89079,7 +89385,7 @@
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "ZhelninaNV@ymzmotor.ru",
     "shipment_date": "2025-03-18",
-    "act_scan": "2025__412_ЯМЗ_ра_27423.pdf",
+    "act_scan": "acts/2025/2025__412_ЯМЗ_ра_27423.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -89103,7 +89409,7 @@
     "defective_supplier": null,
     "recipient": null,
     "shipment_date": null,
-    "act_scan": "2025__476_ПАЗ_ра_117053.pdf",
+    "act_scan": "acts/2025/2025__476_ПАЗ_ра_117053.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -91671,7 +91977,7 @@
     "defective_supplier": null,
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1005_ММЗ_ра_2100-25.pdf",
+    "act_scan": "acts/2025/2025__1005_ММЗ_ра_2100-25.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -91695,7 +92001,7 @@
     "defective_supplier": null,
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1006_ММЗ_ра_578с-25.pdf",
+    "act_scan": "acts/2025/2025__1006_ММЗ_ра_578с-25.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -91979,11 +92285,11 @@
     "fault_type": "unknown",
     "guilty_department": "Не определено",
     "defect_causes": "выход из строя торцевого уплотнения",
-    "defect_causes_explanation": "\"IIC-WT16 03.24\"",
+    "defect_causes_explanation": "IIC-WT16 03.24",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН.pdf",
+    "act_scan": "acts\\2025\\2025__1009_ММЗ_ТН_0080279_ВН.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -92003,11 +92309,11 @@
     "fault_type": "unknown",
     "guilty_department": "Не определено",
     "defect_causes": "выход из строя торцевого уплотнения",
-    "defect_causes_explanation": "\"IIC-WT16 03.24\"",
+    "defect_causes_explanation": "IIC-WT16 03.24",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН_731rX9H.pdf",
+    "act_scan": "acts/2025/2025__1009_ММЗ_ТН_0080279_ВН.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -92031,7 +92337,7 @@
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН_XWwAHjw.pdf",
+    "act_scan": "acts\\2025\\2025__1009_ММЗ_ТН_0080279_ВН.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -92051,11 +92357,11 @@
     "fault_type": "unknown",
     "guilty_department": "Не определено",
     "defect_causes": "выход из строя торцевого уплотнения",
-    "defect_causes_explanation": "\"IIC-WT16 03.24\"",
+    "defect_causes_explanation": "IIC-WT16 03.24",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН_s4odk6D.pdf",
+    "act_scan": "acts\\2025\\2025__1009_ММЗ_ТН_0080279_ВН.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -92075,11 +92381,11 @@
     "fault_type": "unknown",
     "guilty_department": "Не определено",
     "defect_causes": "выход из строя торцевого уплотнения",
-    "defect_causes_explanation": "\"IIC-WT16 03.24\"",
+    "defect_causes_explanation": "IIC-WT16 03.24",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН_KlrXvdm.pdf",
+    "act_scan": "",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -92099,11 +92405,11 @@
     "fault_type": "unknown",
     "guilty_department": "Не определено",
     "defect_causes": "выход из строя торцевого уплотнения",
-    "defect_causes_explanation": "\"IIC-WT16 03.24\"",
+    "defect_causes_explanation": "IIC-WT16 03.24",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН_D5Xblbd.pdf",
+    "act_scan": "",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -92127,7 +92433,7 @@
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН_T7PJTCJ.pdf",
+    "act_scan": "",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -92151,7 +92457,7 @@
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН_CjFDYMX.pdf",
+    "act_scan": "",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -92175,7 +92481,7 @@
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН_Neadj6E.pdf",
+    "act_scan": "",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -92199,7 +92505,7 @@
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1009_ММЗ_ТН_0080279_ВН_AL4VSc1.pdf",
+    "act_scan": "",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -93975,7 +94281,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1017_ММЗ_ра_50-06-бн.pdf",
+    "act_scan": "acts/2025/2025__1017_ММЗ_ра_50-06-бн.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -94047,7 +94353,7 @@
     "defective_supplier": null,
     "recipient": "breklamats@mmz-motor.by",
     "shipment_date": "2025-09-16",
-    "act_scan": "2025__1020_ММЗ_ра_2184-25...pdf",
+    "act_scan": "acts/2025/2025__1020_ММЗ_ра_2184-25...pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -94067,11 +94373,11 @@
     "fault_type": "bza",
     "guilty_department": "Не определено",
     "defect_causes": "выход из строя торцевого уплотнения",
-    "defect_causes_explanation": "\"IIC-WT16 02.22\"",
+    "defect_causes_explanation": "IIC-WT16 02.22",
     "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": "budaservis@mail.ru",
     "shipment_date": "2025-09-17",
-    "act_scan": "2025__1021_ММЗ_ра_12.pdf",
+    "act_scan": "acts/2025/2025__1021_ММЗ_ра_12.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": "0073476",
@@ -94095,7 +94401,7 @@
     "defective_supplier": null,
     "recipient": "budaservis@mail.ru",
     "shipment_date": "2025-09-17",
-    "act_scan": "2025__1022_ММЗ_ра_11.pdf",
+    "act_scan": "acts/2025/2025__1022_ММЗ_ра_11.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": "0073476",
@@ -94119,7 +94425,7 @@
     "defective_supplier": null,
     "recipient": "budaservis@mail.ru",
     "shipment_date": "2025-09-17",
-    "act_scan": "2025__1023_ММЗ_ра_10.pdf",
+    "act_scan": "acts/2025/2025__1023_ММЗ_ра_10.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": "0073476",
@@ -94167,7 +94473,7 @@
     "defective_supplier": null,
     "recipient": "AA.Voynich@belagro.com",
     "shipment_date": "2025-09-23",
-    "act_scan": "2025__1025_БелАгроСервис_ра_1.pdf",
+    "act_scan": "acts/2025/2025__1025_БелАгроСервис_ра_1.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": "0338818",
@@ -94191,7 +94497,7 @@
     "defective_supplier": null,
     "recipient": "AA.Voynich@belagro.com",
     "shipment_date": "2025-09-23",
-    "act_scan": "2025__1026_БелАгроСервис_ра_бн.pdf",
+    "act_scan": "acts/2025/2025__1026_БелАгроСервис_ра_бн.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -94215,7 +94521,7 @@
     "defective_supplier": null,
     "recipient": "evseeva.n@bk.ru",
     "shipment_date": "2025-09-23",
-    "act_scan": "2025__1027_СпецМиксТрейд__ра_6.pdf",
+    "act_scan": "acts/2025/2025__1027_СпецМиксТрейд__ра_6.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -94647,7 +94953,7 @@
     "defective_supplier": null,
     "recipient": "ute@gomselmash.by",
     "shipment_date": "2025-09-23",
-    "act_scan": "2025__1031_Гомсельмаш_ра_3327.pdf",
+    "act_scan": "acts/2025/2025__1031_Гомсельмаш_ра_3327.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -94671,7 +94977,7 @@
     "defective_supplier": null,
     "recipient": "ute@gomselmash.by",
     "shipment_date": "2025-09-23",
-    "act_scan": "2025__1032_Гомсельмаш_ра_6175.pdf",
+    "act_scan": "acts/2025/2025__1032_Гомсельмаш_ра_6175.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -94695,7 +95001,7 @@
     "defective_supplier": null,
     "recipient": null,
     "shipment_date": null,
-    "act_scan": "2025__1033_Гомсельмаш_ра_2283.pdf",
+    "act_scan": "acts/2025/2025__1033_Гомсельмаш_ра_2283.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -95703,7 +96009,7 @@
     "defective_supplier": null,
     "recipient": "serv.gua@td-mmz.ru",
     "shipment_date": "2025-09-23",
-    "act_scan": "2025__1034_ТД_ММЗ_ра_1524.pdf",
+    "act_scan": "acts/2025/2025__1034_ТД_ММЗ_ра_1524.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -95727,7 +96033,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-23",
-    "act_scan": "2025__1035_ММЗ_ра_9564.pdf",
+    "act_scan": "acts/2025/2025__1035_ММЗ_ра_9564.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -95751,7 +96057,7 @@
     "defective_supplier": null,
     "recipient": "ruservice@mmz-motor.by",
     "shipment_date": "2025-09-23",
-    "act_scan": "2025__1036_ММЗ_ра_158-Т.pdf",
+    "act_scan": "acts/2025/2025__1036_ММЗ_ра_158-Т.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -95775,7 +96081,7 @@
     "defective_supplier": null,
     "recipient": "AA.Voynich@belagro.com",
     "shipment_date": "2025-09-23",
-    "act_scan": "2025__1037_БелАгро-Сервис_ра_1.pdf",
+    "act_scan": "acts/2025/2025__1037_БелАгро-Сервис_ра_1.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,
@@ -95799,7 +96105,7 @@
     "defective_supplier": null,
     "recipient": null,
     "shipment_date": null,
-    "act_scan": "2025__1038_Белавтомазсервис_ра_756.pdf",
+    "act_scan": "acts/2025/2025__1038_Белавтомазсервис_ра_756.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
     "shipment_invoice_number": null,

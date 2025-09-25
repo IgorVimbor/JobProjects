@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
-from django.core.files.storage import default_storage
 from django.utils import timezone
 import os
 
@@ -14,22 +13,6 @@ def get_default_act_number():
     current_year = timezone.now().year
     return f"{current_year} № "
 
-from django.conf import settings
-
-# def investigation_act_upload_path(instance, filename):
-#     """Функция для определения пути загрузки файлов актов исследования"""
-#     year = instance.reclamation.year
-#     # Структуры папок: acts/2025/2025__файл.pdf, acts/2026/2026__файл.pdf
-#     target_path = os.path.join('acts', str(year), filename)
-
-#     if default_storage.exists(target_path):
-#         if settings.DEBUG:
-#             print(f"Файл {filename} уже существует в папке {year} года")
-#         return target_path
-
-#     if settings.DEBUG:
-#         print(f"Создаем новый файл {filename} в папке {year} года")
-#     return target_path
 
 def investigation_act_upload_path(instance, filename):
     """Функция для определения пути загрузки файлов актов исследования"""
