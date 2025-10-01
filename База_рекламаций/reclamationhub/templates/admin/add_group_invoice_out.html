@@ -1,0 +1,40 @@
+<!--
+ Шаблон формы группового добавления накладной расхода (отгрузки) изделий после исследования.
+ Наследуются от базового шаблона, сохраняя всю базовую структуру и стили.
+ При необходимости можно добавлять свои стили или переопределять блоки
+-->
+
+{% extends "admin/group_form_base.html" %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:reclamations_reclamation_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; {{ title }}
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+{# Если нужны дополнительные стили специфичные для формы накладных #}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="text-info">🚧 {{ status }}</h3>
+                    <p><br>Здесь будет форма группового добавления накладной расхода (отгрузки)</p>
+
+                    <a href="{% url 'admin:reclamations_reclamation_changelist' %}" class="btn btn-secondary">
+                        ← Вернуться к рекламациям
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

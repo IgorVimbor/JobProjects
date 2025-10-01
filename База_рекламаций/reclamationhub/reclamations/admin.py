@@ -14,11 +14,15 @@ from datetime import datetime
 from reclamationhub.admin import admin_site
 from .models import Reclamation
 from sourcebook.models import Product
-from utils.excel.exporters import ReclamationExcelExporter
+
+# from utils.excel.exporters import ReclamationExcelExporter
 
 
-# Форма для ввода номеров отправителя (ПСА), актов и номера накладной
 class UpdateInvoiceNumberForm(forms.Form):
+    """Форма группового добавления накладной прихода рекламационных изделий.
+    В поля формы вводятся номер отправителя (ПСА) и/или акта рекламации и номер накладной прихода
+    """
+
     sender_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
         label="Исходящий номер отправителя (ПСА)",
@@ -81,6 +85,14 @@ class UpdateInvoiceNumberForm(forms.Form):
         return cleaned_data
 
 
+class UpdateInvoiceOutForm(forms.Form):
+    """Форма группового добавления накладной расхода (отгрузки) изделий после исследования.
+    В поля формы вводятся ............... и номер накладной расхода
+    """
+
+    pass
+
+
 class ReclamationAdminForm(forms.ModelForm):
     class Meta:
         model = Reclamation
@@ -91,7 +103,7 @@ class ReclamationAdminForm(forms.ModelForm):
             "measures_taken",
             "consumer_response",
             "pkd_number",
-            "reclamation_documents"
+            "reclamation_documents",
         ]
         date_fields = [
             "message_received_date",
@@ -167,12 +179,17 @@ class ReclamationAdminForm(forms.ModelForm):
 
 class YearListFilter(SimpleListFilter):
     """Класс для переопределения фильтра по году рекламации"""
-    title = 'Год рекламации'
-    parameter_name = 'year'
+
+    title = "Год рекламации"
+    parameter_name = "year"
 
     def lookups(self, request, model_admin):
         # Получаем все годы и сортируем по убыванию: 2026, 2025, 2024...
-        years = Reclamation.objects.values_list('year', flat=True).distinct().order_by('-year')
+        years = (
+            Reclamation.objects.values_list("year", flat=True)
+            .distinct()
+            .order_by("-year")
+        )
         return [(year, str(year)) for year in years]
 
     def queryset(self, request, queryset):
@@ -190,9 +207,11 @@ class YearListFilter(SimpleListFilter):
         # Возвращаем варианты выбора
         for lookup, title in self.lookup_choices:
             yield {
-                'selected': str(selected_value) == str(lookup),
-                'query_string': changelist.get_query_string({self.parameter_name: lookup}),
-                'display': title,
+                "selected": str(selected_value) == str(lookup),
+                "query_string": changelist.get_query_string(
+                    {self.parameter_name: lookup}
+                ),
+                "display": title,
             }
 
 
@@ -237,7 +256,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         "receipt_invoice_number",  # номер накладной поступления изделия
         "receipt_invoice_date",  # дата накладной поступления изделия
         "has_investigation_icon",  # акт исследования
-        "reclamation_documents"  # дополнительные сведения по рекламации
+        "reclamation_documents",  # дополнительные сведения по рекламации
     ]
 
     # Группировка полей в форме редактирования
@@ -396,19 +415,19 @@ class ReclamationAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         """Метод для настройки вывода рекламаций по текущему году по умолчанию"""
         # Проверяем есть ли фильтр по году от пользователя
-        user_year_filter = 'year' in request.GET
-        auto_year_filter = 'year__exact' in request.GET
+        user_year_filter = "year" in request.GET
+        auto_year_filter = "year__exact" in request.GET
 
         if user_year_filter and auto_year_filter:
             # Конфликт! Удаляем автоматический фильтр
             request.GET = request.GET.copy()
-            del request.GET['year__exact']
+            del request.GET["year__exact"]
 
         elif not user_year_filter and not auto_year_filter:
             # Никаких фильтров нет - добавляем текущий год
             current_year = datetime.now().year
             request.GET = request.GET.copy()
-            request.GET['year__exact'] = current_year
+            request.GET["year__exact"] = current_year
 
         return super().changelist_view(request, extra_context)
 
@@ -540,6 +559,7 @@ class ReclamationAdmin(admin.ModelAdmin):
     def display_number(self, obj):
         """Метод для отображения номера рекламации с учетом года (например, 2025-0001)"""
         return f"{obj.year}-{obj.yearly_number:04d}"
+
     # display_number.short_description = 'Номер рекламации'
 
     @admin.display(description="Статус рекламации")
@@ -657,17 +677,21 @@ class ReclamationAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            # для групповой накладной
-            path("add_invoice/", self.add_invoice_view, name="add_invoice"),
+            # для групповой накладной прихода
+            path(
+                "add_invoice_into/", self.add_invoice_into_view, name="add_invoice_into"
+            ),
+            # для групповой накладной расхода (отгрузки)
+            path("add_invoice_out/", self.add_invoice_out_view, name="add_invoice_out"),
             # для добавления акта утилизации
             path("add_disposal_act/", self.add_disposal_act, name="add_disposal_act"),
-            # для выгрузки в Excel
-            path("export-excel/", self.export_excel, name="export_excel"),
+            # # для выгрузки в Excel
+            # path("export-excel/", self.export_excel, name="export_excel"),
         ]
         return custom_urls + urls
 
-    def add_invoice_view(self, request):
-        """Метод группового добавления накладной"""
+    def add_invoice_into_view(self, request):
+        """Метод группового добавления накладной прихода рекламационных изделий"""
         context_vars = {
             "opts": Reclamation._meta,
             "app_label": Reclamation._meta.app_label,
@@ -802,9 +826,9 @@ class ReclamationAdmin(admin.ModelAdmin):
 
                     return render(
                         request,
-                        "admin/add_group_invoice_number.html",
+                        "admin/add_group_invoice_into.html",
                         {
-                            "title": "Добавление данных накладной прихода изделий",
+                            "title": "Добавление накладной прихода изделий",
                             "form": form,
                             "search_result": error_message,
                             "found_records": False,
@@ -814,9 +838,9 @@ class ReclamationAdmin(admin.ModelAdmin):
             else:
                 return render(
                     request,
-                    "admin/add_group_invoice_number.html",
+                    "admin/add_group_invoice_into.html",
                     {
-                        "title": "Добавление данных накладной прихода изделий",
+                        "title": "Добавление накладной прихода изделий",
                         "form": form,
                         **context_vars,
                     },
@@ -826,15 +850,36 @@ class ReclamationAdmin(admin.ModelAdmin):
 
         return render(
             request,
-            "admin/add_group_invoice_number.html",
+            "admin/add_group_invoice_into.html",
             {
-                "title": "Добавление данных накладной прихода изделий",
+                "title": "Добавление накладной прихода изделий",
                 "form": form,
                 **context_vars,
             },
         )
 
-    def export_excel(self, request):
-        """Метод для выгрузки данных по рекламациям и актам исследования в Excel"""
-        exporter = ReclamationExcelExporter()
-        return exporter.export_to_excel()
+    def add_invoice_out_view(self, request):
+        """Метод группового добавления накладной расхода (отгрузки) изделий
+        Заглушка .....
+        """
+        context_vars = {
+            "opts": Reclamation._meta,
+            "app_label": Reclamation._meta.app_label,
+            "has_view_permission": True,
+            "original": None,
+        }
+
+        return render(
+            request,
+            "admin/add_group_invoice_out.html",
+            {
+                "title": "Добавление накладной расхода (отгрузки) изделий",
+                "status": "В разработке...",
+                **context_vars,
+            },
+        )
+
+    # def export_excel(self, request):
+    #     """Метод для выгрузки данных по рекламациям и актам исследования в Excel"""
+    #     exporter = ReclamationExcelExporter()
+    #     return exporter.export_to_excel()
