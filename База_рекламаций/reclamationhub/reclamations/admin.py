@@ -221,6 +221,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         "product_name",  # наименование изделия
         "product",  # обозначение изделия
         "product_number",  # заводской номер изделия
+        "manufacture_date",  # дата изготовления
         "claimed_defect",  # дефект
         "consumer_act_number",  # номер акта приобретателя изделия
         "consumer_act_date",  # дата акта приобретателя изделия
