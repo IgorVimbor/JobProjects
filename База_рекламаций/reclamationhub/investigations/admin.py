@@ -172,6 +172,54 @@ class AddInvestigationForm(forms.ModelForm):
         return cleaned_data
 
 
+class UpdateInvoiceOutForm(forms.Form):
+    """Форма группового добавления накладной отгрузки изделий"""
+
+    act_numbers = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 3}),
+        label="Номера актов исследования",
+        help_text="(вводить через запятую, только номера без года, например: 123, 124, 125)",
+        required=False,
+    )
+    sender_numbers = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 3}),
+        label="Исходящий номер отправителя (ПСА)",
+        help_text="(вводить через запятую)",
+        required=False,
+    )
+    shipment_invoice_number = forms.CharField(
+        label="Номер накладной отгрузки", required=True
+    )
+    shipment_invoice_date = forms.DateField(
+        label="Дата накладной отгрузки",
+        widget=forms.DateInput(attrs={"type": "date"}),
+        required=True,
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Проверяем, что заполнено хотя бы одно поле с номерами
+        if not any(
+            [
+                cleaned_data.get("act_numbers"),
+                cleaned_data.get("sender_numbers"),
+            ]
+        ):
+            raise forms.ValidationError(
+                "Необходимо заполнить хотя бы одно поле с номерами актов или ПСА"
+            )
+
+        # Проверяем, что дата накладной не больше сегодняшней
+        invoice_date = cleaned_data.get("shipment_invoice_date")
+        if invoice_date and invoice_date > timezone.now().date():
+            raise forms.ValidationError(
+                {"shipment_invoice_date": "Дата не может быть больше сегодняшней"}
+            )
+
+        return cleaned_data
+
+
 class InvestigationAdminForm(forms.ModelForm):
     class Meta:
         model = Investigation
@@ -214,12 +262,17 @@ class InvestigationAdminForm(forms.ModelForm):
 
 class ReclamationYearListFilter(SimpleListFilter):
     """Класс для переопределения фильтра по году рекламации"""
-    title = 'Год рекламации'
-    parameter_name = 'reclamation__year'
+
+    title = "Год рекламации"
+    parameter_name = "reclamation__year"
 
     def lookups(self, request, model_admin):
         # Получаем все годы из рекламаций и сортируем по убыванию
-        years = Reclamation.objects.values_list('year', flat=True).distinct().order_by('-year')
+        years = (
+            Reclamation.objects.values_list("year", flat=True)
+            .distinct()
+            .order_by("-year")
+        )
         return [(year, str(year)) for year in years]
 
     def queryset(self, request, queryset):
@@ -237,9 +290,11 @@ class ReclamationYearListFilter(SimpleListFilter):
         # Возвращаем варианты выбора
         for lookup, title in self.lookup_choices:
             yield {
-                'selected': str(selected_value) == str(lookup),
-                'query_string': changelist.get_query_string({self.parameter_name: lookup}),
-                'display': title,
+                "selected": str(selected_value) == str(lookup),
+                "query_string": changelist.get_query_string(
+                    {self.parameter_name: lookup}
+                ),
+                "display": title,
             }
 
 
@@ -406,7 +461,11 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     # Поля для фильтрации
     # list_filter = ['reclamation__year', "reclamation__defect_period", "reclamation__product__product_type"]
-    list_filter = [ReclamationYearListFilter, "reclamation__defect_period", "reclamation__product__product_type"]
+    list_filter = [
+        ReclamationYearListFilter,
+        "reclamation__defect_period",
+        "reclamation__product__product_type",
+    ]
 
     # Поля для поиска
     search_fields = [
@@ -444,10 +503,15 @@ class InvestigationAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path(
+            path(  # для группового акта исследования
                 "add_group_investigation/",
                 self.add_group_investigation_view,
                 name="add_group_investigation",
+            ),
+            path(  # для групповой накладной расхода
+                "add_invoice_out/",
+                self.add_invoice_out_view,
+                name="add_invoice_out",
             ),
         ]
         return custom_urls + urls
@@ -455,19 +519,19 @@ class InvestigationAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         """Метод для настройки вывода актов исследования по текущему году по умолчанию"""
         # Проверяем есть ли фильтр по году от пользователя
-        user_year_filter = 'reclamation__year' in request.GET
-        auto_year_filter = 'reclamation__year__exact' in request.GET
+        user_year_filter = "reclamation__year" in request.GET
+        auto_year_filter = "reclamation__year__exact" in request.GET
 
         if user_year_filter and auto_year_filter:
             # Конфликт! Удаляем автоматический фильтр
             request.GET = request.GET.copy()
-            del request.GET['reclamation__year__exact']
+            del request.GET["reclamation__year__exact"]
 
         elif not user_year_filter and not auto_year_filter:
             # Никаких фильтров нет - добавляем текущий год
             current_year = datetime.now().year
             request.GET = request.GET.copy()
-            request.GET['reclamation__year__exact'] = current_year
+            request.GET["reclamation__year__exact"] = current_year
 
         return super().changelist_view(request, extra_context)
 
@@ -621,6 +685,169 @@ class InvestigationAdmin(admin.ModelAdmin):
                 "title": "Добавление группового акта исследования",
                 "form": form,
                 **context_vars,  # Добавляем переменные для breadcrumbs
+            },
+        )
+
+    # def add_invoice_out_view(self, request):
+    #     """Метод группового добавления накладной расхода (отгрузки) изделий
+    #     Заглушка .....
+    #     """
+    #     context_vars = {
+    #         "opts": Investigation._meta,
+    #         "app_label": Investigation._meta.app_label,
+    #         "has_view_permission": True,
+    #         "original": None,
+    #     }
+
+    #     return render(
+    #         request,
+    #         "admin/add_group_invoice_out.html",
+    #         {
+    #             "title": "Добавление накладной расхода (отгрузки) изделий",
+    #             "status": "В разработке...",
+    #             **context_vars,
+    #         },
+    #     )
+
+    def add_invoice_out_view(self, request):
+        """Метод группового добавления накладной отгрузки изделий"""
+        context_vars = {
+            "opts": Investigation._meta,
+            "app_label": Investigation._meta.app_label,
+            "has_view_permission": True,
+            "original": None,
+        }
+
+        if request.method == "POST":
+            form = UpdateInvoiceOutForm(request.POST)
+            if form.is_valid():
+                shipment_invoice_number = form.cleaned_data["shipment_invoice_number"]
+                shipment_invoice_date = form.cleaned_data["shipment_invoice_date"]
+
+                # Собираем все введенные номера
+                all_input_numbers = []
+                filter_q = Q()
+
+                # Обработка номеров актов исследования
+                if form.cleaned_data["act_numbers"]:
+                    act_list = [
+                        num.strip()
+                        for num in form.cleaned_data["act_numbers"].split(",")
+                        if num.strip()
+                    ]
+                    # Преобразуем в полные номера с текущим годом
+                    current_year = timezone.now().year
+                    full_act_numbers = [f"{current_year} № {num}" for num in act_list]
+
+                    all_input_numbers.extend(
+                        act_list
+                    )  # Для отчетов сохраняем исходные номера
+                    filter_q |= Q(act_number__in=full_act_numbers)
+
+                # Обработка номеров ПСА (через связь с Reclamation)
+                if form.cleaned_data["sender_numbers"]:
+                    sender_list = [
+                        num.strip()
+                        for num in form.cleaned_data["sender_numbers"].split(",")
+                        if num.strip()
+                    ]
+                    all_input_numbers.extend(sender_list)
+                    filter_q |= Q(reclamation__sender_outgoing_number__in=sender_list)
+
+                filtered_queryset = self.model.objects.filter(filter_q)
+
+                # Проверяем отсутствующие номера
+                found_numbers = set()
+                all_investigations = self.model.objects.all()
+                all_reclamations = Reclamation.objects.all()
+
+                for num in all_input_numbers:
+                    # Проверяем есть ли номер в актах исследования
+                    current_year = timezone.now().year
+                    full_act_number = f"{current_year} № {num}"
+                    if all_investigations.filter(act_number=full_act_number).exists():
+                        found_numbers.add(num)
+                    # Проверяем есть ли номер в ПСА рекламаций
+                    elif all_reclamations.filter(sender_outgoing_number=num).exists():
+                        found_numbers.add(num)
+
+                missing_numbers = [
+                    num for num in all_input_numbers if num not in found_numbers
+                ]
+
+                # Проверяем, найдены ли записи
+                if filtered_queryset.exists():
+                    # Обновляем данные накладной отгрузки
+                    updated_count = filtered_queryset.update(
+                        shipment_invoice_number=shipment_invoice_number,
+                        shipment_invoice_date=shipment_invoice_date,
+                    )
+
+                    # Формируем сообщения
+                    info_message = f"Введено номеров: {len(all_input_numbers)}"
+                    success_message = f"Обновлены данные накладной отгрузки для записей: {updated_count}"
+
+                    if missing_numbers:
+                        missing_text = ", ".join(missing_numbers)
+                        error_part = (
+                            f"Номера отсутствующие в базе данных: {missing_text}"
+                        )
+
+                        # Три отдельных сообщения с разными уровнями
+                        self.message_user(request, info_message, level=messages.INFO)
+                        self.message_user(
+                            request, success_message, level=messages.SUCCESS
+                        )
+                        self.message_user(request, error_part, level=messages.WARNING)
+                    else:
+                        # Два сообщения если все номера найдены
+                        self.message_user(request, info_message, level=messages.INFO)
+                        self.message_user(
+                            request, success_message, level=messages.SUCCESS
+                        )
+
+                    return HttpResponseRedirect(request.get_full_path())
+                else:
+                    # Все номера отсутствуют
+                    if missing_numbers:
+                        missing_text = ", ".join(missing_numbers)
+                        error_message = (
+                            f"Номера отсутствующие в базе данных: {missing_text}"
+                        )
+                    else:
+                        error_message = "Указанные номера в базе данных отсутствуют."
+
+                    return render(
+                        request,
+                        "admin/add_group_invoice_out.html",
+                        {
+                            "title": "Добавление накладной отгрузки изделий",
+                            "form": form,
+                            "search_result": error_message,
+                            "found_records": False,
+                            **context_vars,
+                        },
+                    )
+            else:
+                return render(
+                    request,
+                    "admin/add_group_invoice_out.html",
+                    {
+                        "title": "Добавление накладной отгрузки изделий",
+                        "form": form,
+                        **context_vars,
+                    },
+                )
+        else:
+            form = UpdateInvoiceOutForm()
+
+        return render(
+            request,
+            "admin/add_group_invoice_out.html",
+            {
+                "title": "Добавление накладной отгрузки изделий",
+                "form": form,
+                **context_vars,
             },
         )
 

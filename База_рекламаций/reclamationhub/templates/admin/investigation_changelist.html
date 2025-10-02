@@ -18,7 +18,12 @@
 {% block object-tools-items %}
     <li>
         <a href="{% url 'admin:add_group_investigation' %}" class="addlink">
-            Групповой акт исследования
+            Групп акт исследования
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'admin:add_invoice_out' %}" class="addlink">
+            Групп накладная отгрузки
         </a>
     </li>
     {{ block.super }}

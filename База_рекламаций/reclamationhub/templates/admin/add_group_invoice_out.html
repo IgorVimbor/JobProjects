@@ -10,7 +10,7 @@
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
-    &rsaquo; <a href="{% url 'admin:reclamations_reclamation_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; <a href="{% url 'admin:investigations_investigation_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
     &rsaquo; {{ title }}
 </div>
 {% endblock %}
@@ -20,21 +20,14 @@
 {# Если нужны дополнительные стили специфичные для формы накладных #}
 {% endblock %}
 
+<!-- Добавляем ссылку "Вернуться к рекламациям" внизу формы -->
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-info">🚧 {{ status }}</h3>
-                    <p><br>Здесь будет форма группового добавления накладной расхода (отгрузки)</p>
-
-                    <a href="{% url 'admin:reclamations_reclamation_changelist' %}" class="btn btn-secondary">
-                        ← Вернуться к рекламациям
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{{ block.super }}
+    <a href="{% url 'admin:investigations_investigation_changelist' %}" class="btn btn-secondary">
+        ← Вернуться к исследованиям
+    </a>
+    <br><br>
+    <a href="{% url 'admin:reclamations_reclamation_changelist' %}" class="btn btn-secondary">
+        ← Вернуться к рекламациям
+    </a>
 {% endblock %}

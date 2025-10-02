@@ -1,6 +1,15 @@
 <!-- Шаблон для добавления акта утилизации для рекламаций -->
 
 {% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:reclamations_reclamation_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; {{ title }}
+</div>
+{% endblock %}
 
 {% block content %}
 <div style="max-width: 400px; margin: 20px auto; padding: 20px;">
@@ -53,4 +62,11 @@
         </form>
     </div>
 </div>
+<a href="{% url 'admin:reclamations_reclamation_changelist' %}" class="btn btn-secondary">
+    ← Вернуться к рекламациям
+</a>
+<br><br>
+<a href="{% url 'admin:investigations_investigation_changelist' %}" class="btn btn-secondary">
+    ← Вернуться к исследованиям
+</a>
 {% endblock %}

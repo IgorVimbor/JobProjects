@@ -85,14 +85,6 @@ class UpdateInvoiceNumberForm(forms.Form):
         return cleaned_data
 
 
-class UpdateInvoiceOutForm(forms.Form):
-    """Форма группового добавления накладной расхода (отгрузки) изделий после исследования.
-    В поля формы вводятся ............... и номер накладной расхода
-    """
-
-    pass
-
-
 class ReclamationAdminForm(forms.ModelForm):
     class Meta:
         model = Reclamation
@@ -677,14 +669,12 @@ class ReclamationAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            # для групповой накладной прихода
-            path(
+            path(  # для групповой накладной прихода
                 "add_invoice_into/", self.add_invoice_into_view, name="add_invoice_into"
             ),
-            # для групповой накладной расхода (отгрузки)
-            path("add_invoice_out/", self.add_invoice_out_view, name="add_invoice_out"),
-            # для добавления акта утилизации
-            path("add_disposal_act/", self.add_disposal_act, name="add_disposal_act"),
+            path(  # для добавления акта утилизации
+                "add_disposal_act/", self.add_disposal_act, name="add_disposal_act"
+            ),
             # # для выгрузки в Excel
             # path("export-excel/", self.export_excel, name="export_excel"),
         ]
@@ -854,27 +844,6 @@ class ReclamationAdmin(admin.ModelAdmin):
             {
                 "title": "Добавление накладной прихода изделий",
                 "form": form,
-                **context_vars,
-            },
-        )
-
-    def add_invoice_out_view(self, request):
-        """Метод группового добавления накладной расхода (отгрузки) изделий
-        Заглушка .....
-        """
-        context_vars = {
-            "opts": Reclamation._meta,
-            "app_label": Reclamation._meta.app_label,
-            "has_view_permission": True,
-            "original": None,
-        }
-
-        return render(
-            request,
-            "admin/add_group_invoice_out.html",
-            {
-                "title": "Добавление накладной расхода (отгрузки) изделий",
-                "status": "В разработке...",
                 **context_vars,
             },
         )
