@@ -1,172 +1,18 @@
 from django.contrib import admin, messages
-from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.admin import SimpleListFilter
 from django.utils.html import format_html
-from django import forms
-from django.utils import timezone
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import path, reverse
-from django.db.models import Q
 from django.utils.safestring import mark_safe
 from datetime import datetime
 
 from reclamationhub.admin import admin_site
 from .models import Reclamation
-from sourcebook.models import Product
+from .forms import ReclamationAdminForm
+from .views import add_invoice_into_view, add_disposal_act_view
 
 # from utils.excel.exporters import ReclamationExcelExporter
-
-
-class UpdateInvoiceNumberForm(forms.Form):
-    """Форма группового добавления накладной прихода рекламационных изделий.
-    В поля формы вводятся номер отправителя (ПСА) и/или акта рекламации и номер накладной прихода
-    """
-
-    sender_numbers = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3}),
-        label="Исходящий номер отправителя (ПСА)",
-        help_text="(вводить через запятую)",
-        required=False,
-    )
-    consumer_act_numbers = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3}),
-        label="Номер акта приобретателя",
-        help_text="(вводить через запятую)",
-        required=False,
-    )
-    end_consumer_act_numbers = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3}),
-        label="Номер акта конечного потребителя",
-        help_text="(вводить через запятую)",
-        required=False,
-    )
-    received_date = forms.DateField(
-        label="Дата поступления изделий",
-        widget=forms.DateInput(attrs={"type": "date"}),
-        # widget=AdminDateWidget(),
-        required=True,
-    )
-    product_sender = forms.CharField(
-        max_length=200,
-        label="Организация-отправитель изделия",
-        required=True,
-    )
-    invoice_number = forms.CharField(label="Номер накладной", required=True)
-    invoice_date = forms.DateField(
-        label="Дата накладной",
-        widget=forms.DateInput(attrs={"type": "date"}),
-        # widget=AdminDateWidget(),
-        required=True,
-    )
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        # Проверяем, что заполнено хотя бы одно поле с номерами актов
-        if not any(
-            [
-                cleaned_data.get("sender_numbers"),
-                cleaned_data.get("consumer_act_numbers"),
-                cleaned_data.get("end_consumer_act_numbers"),
-            ]
-        ):
-            raise forms.ValidationError(
-                "Необходимо заполнить хотя бы одно поле с номерами актов"
-            )
-
-        # Проверяем, что дата накладной не больше сегодняшней
-        invoice_date = cleaned_data.get("invoice_date")
-        if invoice_date and invoice_date > timezone.now().date():
-            raise forms.ValidationError(
-                {"invoice_date": "Дата не может быть больше сегодняшней"}
-            )
-
-        return cleaned_data
-
-
-class ReclamationAdminForm(forms.ModelForm):
-    class Meta:
-        model = Reclamation
-        fields = "__all__"
-        # список полей с типом CharField для которых добавим возможность переноса строк
-        text_fields = [
-            "consumer_requirement",
-            "measures_taken",
-            "consumer_response",
-            "pkd_number",
-            "reclamation_documents",
-        ]
-        date_fields = [
-            "message_received_date",
-            "message_sent_date",
-            "consumer_act_date",
-            "end_consumer_act_date",
-            "defect_detection_date",
-            "outgoing_document_date",
-            "consumer_response_date",
-            "product_received_date",
-            "receipt_invoice_date",
-        ]  # список полей с типом DateField
-
-        widgets = {
-            "away_type": forms.RadioSelect(),  # Добавляем RadioSelect для away_type
-            **{  # устанавливаем высоту полей, возможность переноса строк и отключаем изменения размера
-                field: forms.TextInput(
-                    attrs={
-                        "style": "width: 600px; text-overflow: ellipsis; resize: none;"
-                    }
-                )
-                for field in text_fields
-            },
-            # **{  # устанавливаем виджет DateInput для полей дат
-            #     field: forms.DateInput(attrs={"type": "date"}) for field in date_fields
-            # },
-            **{  # устанавливаем виджет AdminDateWidget для полей дат
-                field: AdminDateWidget() for field in date_fields
-            },
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # Определяем тип изделия
-        if self.data and "product_name" in self.data:
-            # Если форма отправлена, берем тип из данных формы
-            product_type_id = self.data.get("product_name")
-        elif self.instance.pk and self.instance.product_name:
-            # Если редактируем существующую запись
-            product_type_id = self.instance.product_name.id
-        else:
-            # По умолчанию - водяные насосы
-            product_type_id = 1
-
-        # Фильтруем queryset в соответствии с типом изделия
-        filtered_queryset = Product.objects.filter(
-            product_type_id=product_type_id
-        ).order_by("nomenclature")
-
-        self.fields["product"] = forms.ModelChoiceField(
-            queryset=filtered_queryset,
-            label="Обозначение изделия",
-            required=True,
-            empty_label="---------",
-        )
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        # Проверяем соответствие продукта выбранному типу
-        product = cleaned_data.get("product")
-        product_name = cleaned_data.get("product_name")
-
-        if product and product_name:
-            if product.product_type_id != product_name.id:
-                self.add_error(
-                    "product", "Выбранное изделие не соответствует выбранному типу"
-                )
-
-        return cleaned_data
 
 
 class YearListFilter(SimpleListFilter):
@@ -463,7 +309,7 @@ class ReclamationAdmin(admin.ModelAdmin):
             f"../reclamation/{reclamation.pk}/change/#measures-section"
         )
 
-    # add_measures.short_description = "Редактировать запись"
+    # add_measures.short_description = "Редактировать запись"  # вариант присваивания наименования
 
     @admin.action(description="Добавить акт исследования для рекламации")
     def add_investigation(self, request, queryset):
@@ -486,73 +332,17 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     @admin.action(description="Добавить акт утилизации для выбранных рекламаций")
     def add_disposal_act(self, request, queryset):
-        # Если форма отправлена (POST-запрос)
-        if "apply" in request.POST:
-            disposal_act_number = request.POST.get("disposal_act_number")
-            disposal_act_date = request.POST.get("disposal_act_date")
-
-            if not disposal_act_number or not disposal_act_date:
-                self.message_user(
-                    request,
-                    "Укажите номер и дату акта утилизации",
-                    level="ERROR",
-                )
-                return HttpResponseRedirect(".")
-
-            success_count = 0
-            error_count = 0
-            no_investigation_count = 0
-
-            for reclamation in queryset:
-                if not hasattr(reclamation, "investigation"):
-                    no_investigation_count += 1
-                    continue
-
-                try:
-                    investigation = reclamation.investigation
-                    investigation.disposal_act_number = disposal_act_number
-                    investigation.disposal_act_date = disposal_act_date
-                    investigation.save()
-                    success_count += 1
-                except Exception as e:
-                    error_count += 1
-                    self.message_user(
-                        request,
-                        f"Ошибка при обновлении акта утилизации для рекламации {reclamation.id}: {str(e)}",
-                        level="ERROR",
-                    )
-
-            if success_count:
-                self.message_user(
-                    request,
-                    f"Акт утилизации успешно добавлен для {success_count} рекламации(-ий)",
-                )
-            if no_investigation_count:
-                self.message_user(
-                    request,
-                    f"Пропущено {no_investigation_count} рекламаций без актов исследования",
-                    level="WARNING",
-                )
-
-            return HttpResponseRedirect(".")
-
-        # Если это первый запрос (GET-запрос), показываем форму
-        context = {
-            "title": "Добавление акта утилизации",
-            "reclamations": queryset,
-            "count": queryset.count(),
-            "opts": self.model._meta,
-            "action": "add_disposal_act",
-            "action_checkbox_name": admin.helpers.ACTION_CHECKBOX_NAME,
-        }
-        return render(request, "admin/add_disposal_act.html", context)
+        """Метод группового добавления акта утилизации - делегируем вызов к функции из views.py"""
+        # Здесь используется self, а во views.py параметр admin_instance в функции -
+        # через него передаем ссылку на ReclamationAdmin для вызова message_user.
+        return add_disposal_act_view(self, request, queryset)
 
     @admin.display(description="Номер рекламации")
     def display_number(self, obj):
         """Метод для отображения номера рекламации с учетом года (например, 2025-0001)"""
         return f"{obj.year}-{obj.yearly_number:04d}"
 
-    # display_number.short_description = 'Номер рекламации'
+    # display_number.short_description = 'Номер рекламации'  # вариант присваивания наименования
 
     @admin.display(description="Статус рекламации")
     def status_colored(self, obj):
@@ -564,15 +354,12 @@ class ReclamationAdmin(admin.ModelAdmin):
             obj.get_status_display(),
         )
 
-    # status_colored.short_description = "Статус"
-
     # @admin.display(description="Исследование")
     # def has_investigation_icon(self, obj):
     #     """Метод для отображения номера акта исследования"""
     #     if obj.has_investigation:
     #         return obj.investigation.act_number
     #     return ""
-    # вариант присваивания наименования has_investigation_icon.short_description = "Исследование"
 
     @admin.display(description="Исследование")
     def has_investigation_icon(self, obj):
@@ -680,173 +467,14 @@ class ReclamationAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
+    # def add_invoice_into_view(self, request):
+    #     """Метод группового добавления накладной прихода рекламационных изделий"""
+    #     # Здесь используется self, а во views.py параметр admin_instance в функции -
+    #     # через него передаем ссылку на ReclamationAdmin для вызова message_user.
+
     def add_invoice_into_view(self, request):
-        """Метод группового добавления накладной прихода рекламационных изделий"""
-        context_vars = {
-            "opts": Reclamation._meta,
-            "app_label": Reclamation._meta.app_label,
-            "has_view_permission": True,
-            "original": None,
-        }
-
-        if request.method == "POST":
-            form = UpdateInvoiceNumberForm(request.POST)
-            if form.is_valid():
-                received_date = form.cleaned_data["received_date"]
-                product_sender = form.cleaned_data["product_sender"]
-                invoice_number = form.cleaned_data["invoice_number"]
-                invoice_date = form.cleaned_data["invoice_date"]
-
-                # Собираем все введенные номера
-                all_input_numbers = []
-                filter_q = Q()
-
-                if form.cleaned_data["sender_numbers"]:
-                    sender_list = [
-                        num.strip()
-                        for num in form.cleaned_data["sender_numbers"].split(",")
-                    ]
-                    all_input_numbers.extend(sender_list)
-                    filter_q |= Q(sender_outgoing_number__in=sender_list)
-                    # filter_q |= это операция побитового ИЛИ с присваиванием в Python,
-                    # которая в контексте Django Q-объектов используется для объединения
-                    # условий фильтрации через логическое ИЛИ (OR)
-
-                if form.cleaned_data["consumer_act_numbers"]:
-                    consumer_list = [
-                        num.strip()
-                        for num in form.cleaned_data["consumer_act_numbers"].split(",")
-                    ]
-                    all_input_numbers.extend(consumer_list)
-                    filter_q |= Q(consumer_act_number__in=consumer_list)
-
-                if form.cleaned_data["end_consumer_act_numbers"]:
-                    end_consumer_list = [
-                        num.strip()
-                        for num in form.cleaned_data["end_consumer_act_numbers"].split(
-                            ","
-                        )
-                    ]
-                    all_input_numbers.extend(end_consumer_list)
-                    filter_q |= Q(end_consumer_act_number__in=end_consumer_list)
-
-                filtered_queryset = self.model.objects.filter(filter_q)
-
-                # Проверяем отсутствующие номера
-                found_numbers = set()
-                all_reclamations = self.model.objects.all()
-
-                for num in all_input_numbers:
-                    if all_reclamations.filter(
-                        Q(sender_outgoing_number=num)
-                        | Q(consumer_act_number=num)
-                        | Q(end_consumer_act_number=num)
-                    ).exists():
-                        found_numbers.add(num)
-
-                missing_numbers = [
-                    num for num in all_input_numbers if num not in found_numbers
-                ]
-
-                # Проверяем, найдены ли записи
-                if filtered_queryset.exists():
-                    # Обновляем накладную и статус для записей со статусом NEW
-                    updated_count = filtered_queryset.filter(
-                        status=self.model.Status.NEW
-                    ).update(
-                        product_received_date=received_date,
-                        product_sender=product_sender,
-                        receipt_invoice_number=invoice_number,
-                        receipt_invoice_date=invoice_date,
-                        status=self.model.Status.IN_PROGRESS,
-                    )
-
-                    # Обновляем только накладную для остальных записей
-                    other_updated = filtered_queryset.exclude(
-                        status=self.model.Status.NEW
-                    ).update(
-                        product_received_date=received_date,
-                        product_sender=product_sender,
-                        receipt_invoice_number=invoice_number,
-                        receipt_invoice_date=invoice_date,
-                    )
-
-                    total_updated = updated_count + other_updated
-                    status_message = (
-                        f"Изменен статус для записей: {updated_count}"
-                        if updated_count
-                        else ""
-                    )
-
-                    # Формируем сообщения
-                    info_message = f"Введено номеров актов: {len(all_input_numbers)}"
-                    success_message = f"Обновлены данные накладной для записей: {total_updated} {status_message}"
-
-                    if missing_numbers:
-                        missing_text = ", ".join(missing_numbers)
-                        error_part = (
-                            f"Номер акта отсутствующий в базе данных: {missing_text}"
-                        )
-
-                        # Три отдельных сообщения с разными уровнями
-                        self.message_user(request, info_message, level=messages.INFO)
-                        self.message_user(
-                            request, success_message, level=messages.SUCCESS
-                        )
-                        self.message_user(request, error_part, level=messages.WARNING)
-                    else:
-                        # Два сообщения если все номера найдены
-                        self.message_user(request, info_message, level=messages.INFO)
-                        self.message_user(
-                            request, success_message, level=messages.SUCCESS
-                        )
-
-                    return HttpResponseRedirect(request.get_full_path())
-                else:
-                    # Все номера отсутствуют
-                    if missing_numbers:
-                        missing_text = ", ".join(missing_numbers)
-                        error_message = (
-                            f"Номер акта отсутствующий в базе данных: {missing_text}"
-                        )
-                    else:
-                        error_message = (
-                            "Указанные номера актов в базе данных отсутствуют."
-                        )
-
-                    return render(
-                        request,
-                        "admin/add_group_invoice_into.html",
-                        {
-                            "title": "Добавление накладной прихода изделий",
-                            "form": form,
-                            "search_result": error_message,
-                            "found_records": False,
-                            **context_vars,
-                        },
-                    )
-            else:
-                return render(
-                    request,
-                    "admin/add_group_invoice_into.html",
-                    {
-                        "title": "Добавление накладной прихода изделий",
-                        "form": form,
-                        **context_vars,
-                    },
-                )
-        else:
-            form = UpdateInvoiceNumberForm()
-
-        return render(
-            request,
-            "admin/add_group_invoice_into.html",
-            {
-                "title": "Добавление накладной прихода изделий",
-                "form": form,
-                **context_vars,
-            },
-        )
+        """Метод добавления группового акта исследования - делегируем вызов к функции из views.py"""
+        return add_invoice_into_view(self, request)
 
     # def export_excel(self, request):
     #     """Метод для выгрузки данных по рекламациям и актам исследования в Excel"""
