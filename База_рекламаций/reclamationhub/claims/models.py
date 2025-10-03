@@ -1,29 +1,18 @@
 from django.db import models
+from django.core.validators import MinValueValidator
+
 from reclamations.models import Reclamation
 
 
 class Claim(models.Model):
     """
     Модель претензии по рекламации.
-
     Связана с рекламацией (один к одному).
-    Содержит информацию:
-    - номер и дату претензии
-    - сумму претензии
-    - результат рассмотрения
-    - ответ БЗА
     """
 
-    class Result:
-        ACCEPTED = "ACCEPTED"
-        REJECTED = "REJECTED"
-        PARTIAL = "PARTIAL"
-
-        CHOICES = [
-            (ACCEPTED, "Принята"),
-            (REJECTED, "Отклонена"),
-            (PARTIAL, "Частично удовлетворена"),
-        ]
+    class Result(models.TextChoices):
+        ACCEPTED = "ACCEPTED", "Принята"
+        REJECTED = "REJECTED", "Отклонена"
 
     reclamation = models.OneToOneField(
         Reclamation,
@@ -32,56 +21,96 @@ class Claim(models.Model):
         verbose_name="Рекламация",
     )
 
-    number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="№ претензии"
+    registration_number = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        default="009-11/ ",
+        verbose_name="Номер ЮС регистрации",
     )
-    date = models.DateField(null=True, blank=True, verbose_name="Дата претензии")
-    amount = models.DecimalField(
+    registration_date = models.DateField(
+        null=True, blank=True, verbose_name="Дата регистрации"
+    )
+
+    claim_number = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name="Номер претензии"
+    )
+    claim_date = models.DateField(null=True, blank=True, verbose_name="Дата претензии")
+
+    claim_amount_all = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         null=True,
         blank=True,
         verbose_name="Сумма по претензии",
     )
-    response_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="№ ответа БЗА"
+
+    reclamation_act_number = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name="Номер акта рекламации"
     )
-    response_date = models.DateField(
-        null=True, blank=True, verbose_name="Дата ответа БЗА"
+
+    reclamation_act_date = models.DateField(
+        null=True, blank=True, verbose_name="Дата акта рекламации"
     )
-    result = models.CharField(
-        max_length=20,
-        choices=Result.CHOICES,
-        null=True,
-        blank=True,
-        verbose_name="Результат рассмотрения претензии",
-    )
-    bza_costs = models.DecimalField(
+
+    claim_amount_act = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name="Сумма затрат БЗА",
+        verbose_name="Сумма по акту",
+    )
+    investigation_act_number = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name="Номер акта исследования"
+    )
+    investigation_act_date = models.DateField(
+        null=True, blank=True, verbose_name="Дата акта исследования"
+    )
+    result = models.CharField(
+        max_length=20,
+        choices=Result.choices,
+        default=Result.REJECTED,
+        null=True,
+        blank=True,
+        verbose_name="Результат рассмотрения",
+    )
+    comment = models.CharField(
+        max_length=250, null=True, blank=True, verbose_name="Комментарий"
+    )
+    costs_act = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Признано по акту",
+    )
+    costs_all = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Признано по претензии",
+    )
+    response_number = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name="Номер ответа БЗА"
+    )
+    response_date = models.DateField(
+        null=True, blank=True, verbose_name="Дата ответа БЗА"
     )
 
     class Meta:
         db_table = "claim"
         verbose_name = "Претензия"
         verbose_name_plural = "Претензии"
-
-    class Meta:
-        db_table = "claim"
-        verbose_name = "Претензия"
-        verbose_name_plural = "Претензии"
-        ordering = ["-number"]  # сортировка по номеру претензии
+        ordering = ["-claim_number"]
         indexes = [
-            models.Index(fields=["number", "date"]),
+            models.Index(fields=["claim_number", "claim_date"]),
         ]
 
     def __str__(self):
-        if self.number and self.date:
-            return f"Претензия №{self.number} от {self.date}"
-        return f"Претензия отсутствует"
+        if self.claim_number and self.claim_date:
+            return f"Претензия №{self.claim_number} от {self.claim_date}"
+        return "Претензия (без номера)"
 
     @property
     def has_response(self):

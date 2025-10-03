@@ -12,10 +12,10 @@ from .forms import InvestigationAdminForm
 from .views import add_group_investigation_view, add_invoice_out_view
 
 
-class ReclamationYearListFilter(SimpleListFilter):
+class InvestigationYearListFilter(SimpleListFilter):
     """Класс для переопределения фильтра по году рекламации в админке InvestigationAdmin"""
 
-    title = "Год рекламации"
+    title = "Год исследований"
     parameter_name = "reclamation__year"
 
     def lookups(self, request, model_admin):
@@ -214,7 +214,7 @@ class InvestigationAdmin(admin.ModelAdmin):
     # Поля для фильтрации
     # list_filter = ['reclamation__year', "reclamation__defect_period", "reclamation__product__product_type"]
     list_filter = [
-        ReclamationYearListFilter,
+        InvestigationYearListFilter,
         "reclamation__defect_period",
         "reclamation__product__product_type",
     ]
