@@ -11,8 +11,12 @@ class Claim(models.Model):
     """
 
     class Result(models.TextChoices):
-        ACCEPTED = "ACCEPTED", "Принята"
-        REJECTED = "REJECTED", "Отклонена"
+        ACCEPTED = "ACCEPTED", "Принять"
+        REJECTED = "REJECTED", "Отклонить"
+
+    class Money(models.TextChoices):
+        RUR = "RUR", "RUR"
+        BYN = "BYN", "BYN"
 
     reclamation = models.OneToOneField(
         Reclamation,
@@ -25,7 +29,7 @@ class Claim(models.Model):
         max_length=100,
         null=True,
         blank=True,
-        default="009-11/ ",
+        default="009-11/",
         verbose_name="Номер ЮС регистрации",
     )
     registration_date = models.DateField(
@@ -36,6 +40,15 @@ class Claim(models.Model):
         max_length=100, null=True, blank=True, verbose_name="Номер претензии"
     )
     claim_date = models.DateField(null=True, blank=True, verbose_name="Дата претензии")
+
+    type_money = models.CharField(
+        max_length=10,
+        choices=Money.choices,
+        default=Money.RUR,
+        null=True,
+        blank=False,
+        verbose_name="Денежная единица",
+    )
 
     claim_amount_all = models.DecimalField(
         max_digits=12,
@@ -53,6 +66,10 @@ class Claim(models.Model):
         null=True, blank=True, verbose_name="Дата акта рекламации"
     )
 
+    engine_number = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name="Номер двигателя"
+    )
+
     claim_amount_act = models.DecimalField(
         max_digits=12,
         decimal_places=2,
@@ -60,22 +77,33 @@ class Claim(models.Model):
         blank=True,
         verbose_name="Сумма по акту",
     )
+    message_received_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Дата уведомления БЗА",
+    )
     investigation_act_number = models.CharField(
         max_length=100, null=True, blank=True, verbose_name="Номер акта исследования"
     )
     investigation_act_date = models.DateField(
         null=True, blank=True, verbose_name="Дата акта исследования"
     )
-    result = models.CharField(
-        max_length=20,
-        choices=Result.choices,
-        default=Result.REJECTED,
+    investigation_act_result = models.CharField(
+        max_length=100,
         null=True,
         blank=True,
-        verbose_name="Результат рассмотрения",
+        verbose_name="Результат расмотрения рекламации",
     )
     comment = models.CharField(
         max_length=250, null=True, blank=True, verbose_name="Комментарий"
+    )
+    result_claim = models.CharField(
+        max_length=20,
+        choices=Result.choices,
+        default=Result.ACCEPTED,
+        null=True,
+        blank=False,
+        verbose_name="Решение по претензии",
     )
     costs_act = models.DecimalField(
         max_digits=12,
@@ -109,8 +137,8 @@ class Claim(models.Model):
 
     def __str__(self):
         if self.claim_number and self.claim_date:
-            return f"Претензия №{self.claim_number} от {self.claim_date}"
-        return "Претензия (без номера)"
+            return f"№{self.claim_number} от {self.claim_date}"
+        return "без номера"
 
     @property
     def has_response(self):

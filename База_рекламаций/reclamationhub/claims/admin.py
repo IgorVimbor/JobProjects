@@ -49,6 +49,46 @@ class ClaimYearListFilter(SimpleListFilter):
             }
 
 
+class ConsumerListFilter(SimpleListFilter):
+    """Фильтр по потребителям. В фильтре будут показываться только "ММЗ", "ЯМЗ" и другие потребители
+    без суффиксов "-АСП" или "-эксплуатация". При выборе например "ММЗ" будут показаны все претензии,
+    где период выявления дефекта начинается с "ММЗ -".
+    """
+
+    title = "Потребитель"  # Название фильтра в админке
+    parameter_name = "consumer"  # Параметр в URL
+
+    def lookups(self, request, model_admin):
+        # Получаем все уникальные префиксы потребителей из PeriodDefect
+        consumers = set()
+
+        # Импортируем модель PeriodDefect из приложения sourcebook
+        from sourcebook.models import PeriodDefect
+
+        # Получаем все периоды дефектов
+        all_periods = PeriodDefect.objects.values_list("name", flat=True)
+
+        for period_name in all_periods:
+            if period_name and " - " in period_name:
+                # Извлекаем часть до " - " (например, "ММЗ" из "ММЗ - АСП")
+                consumer = period_name.split(" - ")[0].strip()
+                consumers.add(consumer)
+
+        # Возвращаем отсортированный список вариантов для фильтра
+        return [(consumer, consumer) for consumer in sorted(consumers)]
+        # В Django фильтрах метод lookups должен возвращать список кортежей, где:
+        # Первый элемент - значение для фильтрации (то, что попадет в self.value())
+        # Второй элемент - текст, который видит пользователь в интерфейсе
+
+    def queryset(self, request, queryset):
+        # Фильтруем queryset на основе выбранного значения
+        if self.value():
+            return queryset.filter(
+                reclamation__defect_period__name__startswith=f"{self.value()} - "
+            )
+        return queryset
+
+
 @admin.register(Claim, site=admin_site)
 class ClaimAdmin(admin.ModelAdmin):
 
@@ -57,6 +97,9 @@ class ClaimAdmin(admin.ModelAdmin):
         js = ("admin/js/custom_admin.js",)
 
     form = ClaimAdminForm
+
+    # Добавляем шаблон формы
+    change_list_template = "admin/claim_changelist.html"
 
     # Отображение полей в списке
     list_display = [
@@ -67,14 +110,20 @@ class ClaimAdmin(admin.ModelAdmin):
         "claim_number",
         "claim_date",
         "claim_amount_all",
+        # Рекламационный акт
+        "reclamation",
         "reclamation_act_number",
         "reclamation_act_date",
+        "engine_number",
         "claim_amount_act",
-        # Результат рассмотрения
-        "investigation_act_number",
+        # Акт исследования рекламации
+        "message_received_date",
+        "has_investigation_icon",
         "investigation_act_date",
-        "result",
+        "investigation_act_result",
         "comment",
+        # Решение по претензии
+        "result_colored",
         "costs_act",
         "costs_all",
         # Ответ БЗА
@@ -99,28 +148,46 @@ class ClaimAdmin(admin.ModelAdmin):
                 "fields": [
                     "claim_number",
                     "claim_date",
+                    "type_money",
                     "claim_amount_all",
+                ],
+            },
+        ),
+        (
+            "Рекламационный акт по претензии",
+            {
+                "fields": [
                     "reclamation_act_number",
                     "reclamation_act_date",
+                    "engine_number",
                     "claim_amount_act",
                 ],
             },
         ),
         (
-            "Результат рассмотрения",
+            "Акт исследования рекламации",
             {
                 "fields": [
+                    "message_received_date",
                     "investigation_act_number",
                     "investigation_act_date",
-                    "result",
+                    "investigation_act_result",
                     "comment",
+                ],
+            },
+        ),
+        (
+            "Решение по претензии",
+            {
+                "fields": [
+                    "result_claim",
                     "costs_act",
                     "costs_all",
                 ],
             },
         ),
         (
-            "Ответ БЗА",
+            "Ответ БЗА на претензию",
             {
                 "fields": [
                     "response_number",
@@ -133,8 +200,9 @@ class ClaimAdmin(admin.ModelAdmin):
     # Фильтры
     list_filter = [
         ClaimYearListFilter,
-        "result",
-        "reclamation__defect_period",
+        "result_claim",
+        # "reclamation__defect_period",
+        ConsumerListFilter,  # кастомный фильтр по потребителям
     ]
 
     # Поиск
@@ -167,6 +235,12 @@ class ClaimAdmin(admin.ModelAdmin):
                 "reclamation__product",
             )
         )
+
+    # # Для оптимизации запросов при отображении списка
+    # list_select_related = ["reclamation"]
+
+    # Метод get_queryset лучше и полнее оптимизирует запросы!
+    # -----------------------------------------------------------
 
     # Сортировка по умолчанию
     ordering = ["-claim_date"]
@@ -205,20 +279,41 @@ class ClaimAdmin(admin.ModelAdmin):
     #         return f"{obj.bza_costs:,.2f} ₽"
     #     return "-"
 
-    # @admin.display(description="Результат")
-    # def result_colored(self, obj):
-    #     """Цветное отображение результата"""
-    #     if obj.result == Claim.Result.ACCEPTED:
-    #         return format_html(
-    #             '<span style="color: green; font-weight: bold;">✓ {}</span>',
-    #             obj.get_result_display(),
-    #         )
-    #     elif obj.result == Claim.Result.REJECTED:
-    #         return format_html(
-    #             '<span style="color: red; font-weight: bold;">✗ {}</span>',
-    #             obj.get_result_display(),
-    #         )
-    #     return "-"
+    @admin.display(description="Акт исследования")
+    def has_investigation_icon(self, obj):
+        """Метод для отображения номера акта исследования как ссылки"""
+        # Проверяем, есть ли связанная рекламация и у неё есть исследование
+        if obj.reclamation and obj.reclamation.has_investigation:
+            # Получаем базовый URL
+            url = reverse("admin:investigations_investigation_changelist")
+            # Добавляем параметр фильтрации по номеру акта
+            filtered_url = (
+                f"{url}?act_number={obj.reclamation.investigation.act_number}"
+            )
+
+            return mark_safe(
+                f'<a href="{filtered_url}" '
+                f"onmouseover=\"this.style.fontWeight='bold'\" "  # жирный шрифт при наведении
+                f"onmouseout=\"this.style.fontWeight='normal'\" "  # нормальный шрифт
+                f'title="Перейти к акту исследования">'  # подсказка при наведении
+                f"{obj.reclamation.investigation.act_number}</a>"
+            )
+        return ""
+
+    @admin.display(description="Решение по претензии")
+    def result_colored(self, obj):
+        """Цветное отображение результата"""
+        if obj.result_claim == Claim.Result.ACCEPTED:
+            return format_html(
+                '<span style="color: green; font-weight: bold;">✓ {}</span>',
+                obj.get_result_claim_display(),
+            )
+        elif obj.result_claim == Claim.Result.REJECTED:
+            return format_html(
+                '<span style="color: red; font-weight: bold;">✗ {}</span>',
+                obj.get_result_claim_display(),
+            )
+        return "-"
 
     # @admin.display(description="Ответ")
     # def has_response_icon(self, obj):
@@ -230,6 +325,16 @@ class ClaimAdmin(admin.ModelAdmin):
     #     return mark_safe(
     #         '<span style="color: gray; font-size: 16px;" title="Ответ не получен">⏳</span>'
     #     )
+
+    # ==================== Переопределение стандартных методов ====================
+
+    def save_model(self, request, obj, form, change):
+        """Переопределяем метод для устанавления связи с рекламацией перед сохранением"""
+        # Устанавливаем связь с найденной рекламацией
+        if hasattr(form, "_found_reclamation"):
+            obj.reclamation = form._found_reclamation
+
+        super().save_model(request, obj, form, change)
 
     # ==================== Переопределение сообщений ====================
 

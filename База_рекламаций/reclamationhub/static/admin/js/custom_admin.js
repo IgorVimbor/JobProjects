@@ -140,6 +140,112 @@ window.addEventListener('load', function() {
     });
 });
 
+// Код для динамического изменения подписей валюты
+window.addEventListener('load', function() {
+    var moneySelect = document.getElementById('id_type_money'); // select вместо radio
+    var moneyFieldIds = [
+        'id_claim_amount_all',
+        'id_claim_amount_act',
+        'id_costs_act',
+        'id_costs_all'
+    ];
+
+    if (!moneySelect) return;
+
+    // Функция для обновления подписей валюты
+    function updateCurrencyLabels(currency) {
+        moneyFieldIds.forEach(function(fieldId) {
+            // Формируем id для help_text: id_поле_helptext
+            var helpTextId = fieldId + '_helptext';
+            var helpTextElement = document.getElementById(helpTextId);
+
+            if (helpTextElement) {
+                // Находим div внутри help_text и обновляем текст
+                var textDiv = helpTextElement.querySelector('div');
+                if (textDiv) {
+                    textDiv.textContent = `Валюта: ${currency}`;
+                } else {
+                    // Если div не найден, обновляем весь текст
+                    helpTextElement.textContent = `Валюта: ${currency}`;
+                }
+            }
+        });
+    }
+
+    // Обработчик изменения select
+    moneySelect.addEventListener('change', function() {
+        updateCurrencyLabels(this.value);
+    });
+
+    // Устанавливаем начальное значение при загрузке страницы
+    updateCurrencyLabels(moneySelect.value);
+});
+
+// Поиск и автозаполнение полей для претензий
+window.addEventListener('load', function() {
+    // Находим поля для поиска
+    var reclamationNumberField = document.getElementById('id_reclamation_act_number');
+    var reclamationDateField = document.getElementById('id_reclamation_act_date');
+    var engineNumberField = document.getElementById('id_engine_number');
+
+    // Если поля не найдены на странице, выходим из функции
+    if (!reclamationNumberField || !reclamationDateField || !engineNumberField) return;
+
+    // Функция для проверки и запуска поиска
+    function checkAndSearch() {
+        // Получаем значения из полей
+        var searchNumber = reclamationNumberField.value.trim();
+        var searchDate = reclamationDateField.value.trim();
+        var engineNumber = engineNumberField.value.trim();
+
+        var searchParams = '';
+
+        // Определяем тип поиска
+        if (searchNumber && searchDate && !engineNumber) {
+            // Поиск по номеру и дате акта
+            searchParams = `reclamation_act_number=${encodeURIComponent(searchNumber)}&reclamation_act_date=${encodeURIComponent(searchDate)}`;
+        } else if (engineNumber && !searchNumber && !searchDate) {
+            // Поиск по номеру двигателя
+            searchParams = `engine_number=${encodeURIComponent(engineNumber)}`;
+        } else {
+            // Не все условия выполнены для поиска
+            return;
+        }
+
+        // Отправляем AJAX запрос на сервер для поиска данных
+        fetch(`/admin/search-related-data/?${searchParams}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.found) {
+                    // Заполняем найденные поля
+                    fillField('id_engine_number', data.engine_number);
+                    fillField('id_reclamation_act_number', data.reclamation_act_number);
+                    fillField('id_reclamation_act_date', data.reclamation_act_date);
+                    fillField('id_message_received_date', data.message_received_date);
+                    fillField('id_investigation_act_number', data.investigation_act_number);
+                    fillField('id_investigation_act_date', data.investigation_act_date);
+                    fillField('id_investigation_act_result', data.investigation_act_result);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при поиске данных:', error);
+            });
+    }
+
+    // Добавляем обработчики события "потеря фокуса" на все поля
+    reclamationNumberField.addEventListener('blur', checkAndSearch);
+    reclamationDateField.addEventListener('blur', checkAndSearch);
+    engineNumberField.addEventListener('blur', checkAndSearch);
+
+    // Вспомогательная функция для заполнения полей формы
+    function fillField(fieldId, value) {
+        var field = document.getElementById(fieldId);
+        if (field && value) {
+            field.value = value;
+        }
+    }
+});
+
 // Обновление title для текстовых полей
 window.addEventListener('load', function() {
     // Находим все поля из списка text_fields в формах рекламаций и актов исследования

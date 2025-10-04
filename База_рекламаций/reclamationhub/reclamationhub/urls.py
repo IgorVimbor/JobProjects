@@ -24,12 +24,14 @@ from django.views.generic import RedirectView
 
 from reclamationhub.admin import admin_site
 from reclamations.views import get_products
+from claims.views import search_related_data
 
 
 urlpatterns = [
     path("", include("core.urls")),  # главная страница
     # path("", RedirectView.as_view(url="admin/", permanent=True)),
     path("admin/get_products/", get_products, name="get_products"),
+    path("admin/search-related-data/", search_related_data, name="search_related_data"),
     # Перенаправления для каждого приложения
     path(
         "admin/reclamations/",

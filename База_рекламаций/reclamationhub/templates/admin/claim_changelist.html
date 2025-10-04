@@ -1,0 +1,32 @@
+<!--
+ Дочерний шаблон страницы списка претензий.
+ В шаблон добавили кнопку для перехода на форму групповой накладной и экспорта в Excel
+-->
+
+{% extends 'admin/change_list.html' %}
+{% load i18n admin_urls %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; {{ cl.opts.verbose_name_plural|capfirst }}
+</div>
+{% endblock %}
+{% endif %}
+
+{% block object-tools-items %}
+    <!--
+    <li>
+        <a href="{% url 'admin:add_invoice_into' %}" class="addlink">
+            Групп накладная прихода
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'admin:add_invoice_out' %}" class="addlink">
+            Групп накладная отгрузки
+        </a>
+    </li>
+    -->
+    {{ block.super }}
+{% endblock %}
