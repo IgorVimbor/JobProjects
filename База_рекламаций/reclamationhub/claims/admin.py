@@ -101,7 +101,7 @@ class ClaimAdmin(admin.ModelAdmin):
     # Добавляем шаблон формы
     change_list_template = "admin/claim_changelist.html"
 
-    # Отображение полей в списке
+    # Отображение полей в таблице на админ-панели
     list_display = [
         # Регистрация
         "registration_number",
@@ -109,15 +109,17 @@ class ClaimAdmin(admin.ModelAdmin):
         # Претензия
         "claim_number",
         "claim_date",
+        "type_money",
         "claim_amount_all",
         # Рекламационный акт
-        "reclamation",
+        "reclamation_display",
         "reclamation_act_number",
         "reclamation_act_date",
         "engine_number",
         "claim_amount_act",
         # Акт исследования рекламации
         "message_received_date",
+        "receipt_invoice_number",
         "has_investigation_icon",
         "investigation_act_date",
         "investigation_act_result",
@@ -169,6 +171,7 @@ class ClaimAdmin(admin.ModelAdmin):
             {
                 "fields": [
                     "message_received_date",
+                    "receipt_invoice_number",
                     "investigation_act_number",
                     "investigation_act_date",
                     "investigation_act_result",
@@ -207,8 +210,8 @@ class ClaimAdmin(admin.ModelAdmin):
 
     # Поиск
     search_fields = [
-        "claim_number",
         "registration_number",
+        "claim_number",
         "response_number",
         "reclamation__sender_outgoing_number",
         "reclamation__id",
@@ -218,7 +221,7 @@ class ClaimAdmin(admin.ModelAdmin):
         """
     <p>ПОИСК ПО ПОЛЯМ:</p>
     <ul>
-        <li>НОМЕР ПРЕТЕНЗИИ ••• НОМЕР РЕГИСТРАЦИИ ••• НОМЕР ОТВЕТА БЗА</li>
+        <li>НОМЕР РЕГИСТРАЦИИ ••• НОМЕР ПРЕТЕНЗИИ ••• НОМЕР ОТВЕТА БЗА</li>
         <li>НОМЕР ПСА РЕКЛАМАЦИИ ••• ID РЕКЛАМАЦИИ</li>
     </ul>
     """
@@ -236,14 +239,14 @@ class ClaimAdmin(admin.ModelAdmin):
             )
         )
 
-    # # Для оптимизации запросов при отображении списка
+    # # Для оптимизации запросов можно использовать list_select_related
     # list_select_related = ["reclamation"]
 
     # Метод get_queryset лучше и полнее оптимизирует запросы!
     # -----------------------------------------------------------
 
     # Сортировка по умолчанию
-    ordering = ["-claim_date"]
+    ordering = ["-registration_number", "-claim_date"]
 
     # Отображение кнопок сохранения сверху и снизу
     save_on_top = True
@@ -252,32 +255,23 @@ class ClaimAdmin(admin.ModelAdmin):
 
     # ==================== Методы отображения ====================
 
-    # @admin.display(description="Рекламация")
-    # def reclamation_display(self, obj):
-    #     """Отображение связанной рекламации"""
-    #     reclamation = obj.reclamation
-    #     url = reverse("admin:reclamations_reclamation_changelist")
-    #     filtered_url = f"{url}?id={reclamation.id}"
+    @admin.display(description="Рекламация")
+    def reclamation_display(self, obj):
+        """Отображение связанной рекламации"""
+        reclamation = obj.reclamation
+        if reclamation:
+            url = reverse("admin:reclamations_reclamation_changelist")
+            filtered_url = f"{url}?id={reclamation.id}"
 
-    #     return mark_safe(
-    #         f'<a href="{filtered_url}" title="Перейти к рекламации">'
-    #         f"{reclamation.year}-{reclamation.yearly_number:04d}</a><br>"
-    #         f'<small>{reclamation.product_name.name if reclamation.product_name else "Не указано"}</small>'
-    #     )
-
-    # @admin.display(description="Сумма претензии")
-    # def claim_amount_display(self, obj):
-    #     """Отображение суммы претензии с форматированием"""
-    #     if obj.claim_amount:
-    #         return f"{obj.claim_amount:,.2f} ₽"
-    #     return "-"
-
-    # @admin.display(description="Признанная сумма")
-    # def bza_costs_display(self, obj):
-    #     """Отображение признанной суммы с форматированием"""
-    #     if obj.bza_costs:
-    #         return f"{obj.bza_costs:,.2f} ₽"
-    #     return "-"
+            return mark_safe(
+                f'<a href="{filtered_url}" '
+                f"onmouseover=\"this.style.fontWeight='bold'\" "  # жирный шрифт при наведении
+                f"onmouseout=\"this.style.fontWeight='normal'\" "  # нормальный шрифт
+                f'title="Перейти к акту исследования">'  # подсказка при наведении
+                f"{reclamation.year}-{reclamation.yearly_number:04d}</a><br>"
+                f"<small>{reclamation.product_name} {reclamation.product}</small>"
+            )
+        return ""
 
     @admin.display(description="Акт исследования")
     def has_investigation_icon(self, obj):
@@ -315,6 +309,20 @@ class ClaimAdmin(admin.ModelAdmin):
             )
         return "-"
 
+    # @admin.display(description="Сумма претензии")
+    # def claim_amount_display(self, obj):
+    #     """Отображение суммы претензии с форматированием"""
+    #     if obj.claim_amount:
+    #         return f"{obj.claim_amount:,.2f} ₽"
+    #     return "-"
+
+    # @admin.display(description="Признанная сумма")
+    # def bza_costs_display(self, obj):
+    #     """Отображение признанной суммы с форматированием"""
+    #     if obj.bza_costs:
+    #         return f"{obj.bza_costs:,.2f} ₽"
+    #     return "-"
+
     # @admin.display(description="Ответ")
     # def has_response_icon(self, obj):
     #     """Иконка наличия ответа"""
@@ -330,11 +338,15 @@ class ClaimAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """Переопределяем метод для устанавления связи с рекламацией перед сохранением"""
-        # Устанавливаем связь с найденной рекламацией
+        # Устанавливаем связь с найденной рекламацией (если есть)
         if hasattr(form, "_found_reclamation"):
             obj.reclamation = form._found_reclamation
 
         super().save_model(request, obj, form, change)
+
+        # Показываем предупреждение если рекламация не найдена
+        if hasattr(form, "_warning_message"):
+            messages.warning(request, form._warning_message)
 
     # ==================== Переопределение сообщений ====================
 

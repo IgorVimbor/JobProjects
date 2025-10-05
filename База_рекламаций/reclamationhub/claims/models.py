@@ -18,11 +18,15 @@ class Claim(models.Model):
         RUR = "RUR", "RUR"
         BYN = "BYN", "BYN"
 
-    reclamation = models.OneToOneField(
+    reclamation = models.ForeignKey(  # Было: OneToOneField
         Reclamation,
         on_delete=models.PROTECT,
-        related_name="claim",
+        related_name="claims",  # Было: "claim"
         verbose_name="Рекламация",
+        # Делаем поле необязательным, т.к. бывают претензии без привязки к рекламационному акту.
+        # В таком случае претензия просто регистрируется с обязательным комментарием.
+        null=True,
+        blank=True,
     )
 
     registration_number = models.CharField(
@@ -75,12 +79,18 @@ class Claim(models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        verbose_name="Сумма по акту",
+        verbose_name="Сумма по акту рекламации",
     )
     message_received_date = models.DateField(
         null=True,
         blank=True,
         verbose_name="Дата уведомления БЗА",
+    )
+    receipt_invoice_number = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Накладная прихода изделия",
     )
     investigation_act_number = models.CharField(
         max_length=100, null=True, blank=True, verbose_name="Номер акта исследования"
@@ -92,7 +102,7 @@ class Claim(models.Model):
         max_length=100,
         null=True,
         blank=True,
-        verbose_name="Результат расмотрения рекламации",
+        verbose_name="Результат расcмотрения рекламации",
     )
     comment = models.CharField(
         max_length=250, null=True, blank=True, verbose_name="Комментарий"

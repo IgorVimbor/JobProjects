@@ -1,4 +1,4 @@
-// Код для создания кнопки Свернуть / Развернуть фильтры на админ-панели Рекламаций
+// =============== Создание кнопки Свернуть / Развернуть фильтры на админ-панели ================
 
 window.addEventListener('load', function() {
     var filterSection = document.getElementById('changelist-filter');
@@ -37,7 +37,8 @@ window.addEventListener('load', function() {
     }
 });
 
-// Код для создания списков обозначений изделий в зависимости от наименования
+// ============= Создание выпадающих списков обозначений изделий в зависимости от наименования =============
+
 window.addEventListener('load', function() {
     var $ = django.jQuery;
     var productNameSelect = $('#id_product_name');
@@ -68,7 +69,8 @@ window.addEventListener('load', function() {
     }
 });
 
-// Код для прокрутки к секции "Принятые меры" для внесения данных
+// ============ Прокрутка формы "Рекламация" к секции "Принятые меры" для внесения данных ===============
+
 window.addEventListener('load', function() {
     // Если в URL есть #measures-section
     if (window.location.hash === '#measures-section') {
@@ -88,7 +90,8 @@ window.addEventListener('load', function() {
     }
 });
 
-// Обработка прокрутки к секции отправки акта исследования
+// ============ Прокрутка формы "Акт исследования" к секции отправки акта исследования ===============
+
 window.addEventListener('load', function() {
     // Если в URL есть #shipment-section
     if (window.location.hash === '#shipment-section') {
@@ -108,7 +111,8 @@ window.addEventListener('load', function() {
     }
 });
 
-// Код для автоматического добавления суффиксов в поле пробега/наработки
+// ================ Автоматическое добавление суффиксов в поле пробега/наработки ==================
+
 window.addEventListener('load', function() {
     var awayTypeRadios = document.querySelectorAll('input[type="radio"][name="away_type"]');
     var mileageField = document.getElementById('id_mileage_operating_time');
@@ -140,7 +144,8 @@ window.addEventListener('load', function() {
     });
 });
 
-// Код для динамического изменения подписей валюты
+// ================ Динамическое изменение подписей валюты в форме "Претензии" ================
+
 window.addEventListener('load', function() {
     var moneySelect = document.getElementById('id_type_money'); // select вместо radio
     var moneyFieldIds = [
@@ -181,7 +186,8 @@ window.addEventListener('load', function() {
     updateCurrencyLabels(moneySelect.value);
 });
 
-// Поиск и автозаполнение полей для претензий
+// =================== Поиск и автозаполнение полей для претензий =====================
+
 window.addEventListener('load', function() {
     // Находим поля для поиска
     var reclamationNumberField = document.getElementById('id_reclamation_act_number');
@@ -214,22 +220,29 @@ window.addEventListener('load', function() {
 
         // Отправляем AJAX запрос на сервер для поиска данных
         fetch(`/admin/search-related-data/?${searchParams}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.found) {
-                    // Заполняем найденные поля
-                    fillField('id_engine_number', data.engine_number);
-                    fillField('id_reclamation_act_number', data.reclamation_act_number);
-                    fillField('id_reclamation_act_date', data.reclamation_act_date);
-                    fillField('id_message_received_date', data.message_received_date);
-                    fillField('id_investigation_act_number', data.investigation_act_number);
-                    fillField('id_investigation_act_date', data.investigation_act_date);
-                    fillField('id_investigation_act_result', data.investigation_act_result);
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка при поиске данных:', error);
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.found) {
+                // Заполняем найденные поля
+                fillField('id_engine_number', data.engine_number);
+                fillField('id_reclamation_act_number', data.reclamation_act_number);
+                fillField('id_reclamation_act_date', data.reclamation_act_date);
+                fillField('id_message_received_date', data.message_received_date);
+                fillField('id_receipt_invoice_number', data.receipt_invoice_number);
+                fillField('id_investigation_act_number', data.investigation_act_number);
+                fillField('id_investigation_act_date', data.investigation_act_date);
+                fillField('id_investigation_act_result', data.investigation_act_result);
+            }
+
+            // Показываем предупреждение если есть
+            if (data.warning) {
+                showWarning(data.warning);
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при поиске данных:', error);
+        });
+
     }
 
     // Добавляем обработчики события "потеря фокуса" на все поля
@@ -244,9 +257,32 @@ window.addEventListener('load', function() {
             field.value = value;
         }
     }
+
+    // Функция для показа предупреждений
+    function showWarning(message) {
+        // Убираем старые предупреждения
+        removeWarnings();
+
+        var warning = document.createElement('div');
+        warning.className = 'alert alert-warning auto-warning';
+        warning.style.cssText = 'margin: 10px 0; padding: 10px; border-radius: 5px;';
+        warning.innerHTML = message;
+
+        // Вставляем после поля reclamation_act_date
+        var dateField = document.getElementById('id_reclamation_act_date');
+        if (dateField && dateField.parentElement) {
+            dateField.parentElement.insertAdjacentElement('afterend', warning);
+        }
+    }
+
+    function removeWarnings() {
+        var warnings = document.querySelectorAll('.auto-warning');
+        warnings.forEach(w => w.remove());
+    }
 });
 
-// Обновление title для текстовых полей
+// ==================== Обновление title для текстовых полей =====================
+
 window.addEventListener('load', function() {
     // Находим все поля из списка text_fields в формах рекламаций и актов исследования
     const textFields = document.querySelectorAll(`

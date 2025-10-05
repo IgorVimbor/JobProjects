@@ -381,12 +381,12 @@ class Reclamation(models.Model):
         )
         return mark_safe(
             f'<a href="{filtered_url}" '
-            # f'style="text-decoration: none; transition: font-weight 0.2s;" '
             f"onmouseover=\"this.style.fontWeight='bold'\" "
             f"onmouseout=\"this.style.fontWeight='normal'\" "
             f'title="Перейти к рекламации">'
-            # f"{self.pk}</a> - {self.product_name}<br>{self.product}"
-            f"{display_number}</a> - {self.product_name}<br>{self.product}"  # display_number вместо self.pk
+            f"{display_number}</a><br>"
+            f"{self.product_name} {self.product}"
+            # f'<small>{self.product_name} {self.product}</small>'
         )
 
     admin_display_by_reclamation.short_description = "Рекламация"

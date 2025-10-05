@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
+from django.db.models import Q
 from django.utils import timezone
 
 from .models import Claim
@@ -23,7 +24,8 @@ class ClaimAdminForm(forms.ModelForm):
         exclude = ["reclamation"]  # полностью исключаем из формы
 
         widgets = {
-            "result": forms.RadioSelect(),  # RadioSelect для результата
+            # "result_claim": forms.RadioSelect(),  # RadioSelect для результата
+            "comment": forms.Textarea(attrs={"rows": 2}),
             **{  # AdminDateWidget для полей дат
                 field: AdminDateWidget() for field in CLAIM_DATE_FIELDS
             },
@@ -85,49 +87,46 @@ class ClaimAdminForm(forms.ModelForm):
 
         reclamation_act_number = cleaned_data.get("reclamation_act_number")
         engine_number = cleaned_data.get("engine_number")
+        comment = cleaned_data.get("comment", "")
 
         # Ищем рекламацию
         found_reclamation = self._find_reclamation(
             reclamation_act_number, engine_number
         )
 
-        if not reclamation_act_number and not engine_number:
-            raise forms.ValidationError(
-                "Необходимо указать либо номер и дату рекламационного акта, "
-                "либо номер двигателя для поиска связанной рекламации."
-            )
+        if found_reclamation:
+            # Рекламация найдена - все отлично. Сохраняем рекламацию для save_model.
+            self._found_reclamation = found_reclamation
+        else:
+            # Рекламация НЕ найдена
+            if reclamation_act_number or engine_number:
+                # Требуем комментарий для объяснения
+                if not comment:
+                    raise forms.ValidationError(
+                        "Рекламация не найдена. Для сохранения претензии без связи "
+                        'необходимо заполнить поле "Комментарий" с объяснением.'
+                    )
 
-        if not found_reclamation:
-            if reclamation_act_number:
-                raise forms.ValidationError(
-                    f'Рекламация с номером акта "{reclamation_act_number}" не найдена. '
-                    f"Убедитесь, что рекламация существует в базе данных."
-                )
-            elif engine_number:
-                raise forms.ValidationError(
-                    f'Рекламация с номером двигателя "{engine_number}" не найдена. '
-                    f"Убедитесь, что рекламация существует в базе данных."
+                # Показываем предупреждение, но НЕ блокируем сохранение
+                self._warning_message = (  # Сохраняем предупреждение для показа после сохранения
+                    f"Внимание: рекламация с указанными данными не найдена. "
+                    f"Претензия сохранена без связи с рекламацией."
                 )
             else:
+                # Если вообще ничего не указано - требуем хотя бы один из критериев
                 raise forms.ValidationError(
                     "Необходимо указать либо номер и дату рекламационного акта, "
-                    "либо номер двигателя для поиска связанной рекламации."
+                    "либо номер двигателя, либо заполнить комментарий."
                 )
-
-        # Сохраняем найденную рекламацию для save_model
-        self._found_reclamation = found_reclamation
 
         return cleaned_data
 
     def _find_reclamation(self, reclamation_act_number, engine_number):
-        from django.db import models
-        from reclamations.models import Reclamation
-
         if reclamation_act_number:
             return Reclamation.objects.filter(
-                models.Q(sender_outgoing_number=reclamation_act_number)
-                | models.Q(consumer_act_number=reclamation_act_number)
-                | models.Q(end_consumer_act_number=reclamation_act_number)
+                Q(sender_outgoing_number=reclamation_act_number)
+                | Q(consumer_act_number=reclamation_act_number)
+                | Q(end_consumer_act_number=reclamation_act_number)
             ).first()
         elif engine_number:
             return Reclamation.objects.filter(engine_number=engine_number).first()
