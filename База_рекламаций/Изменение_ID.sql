@@ -254,16 +254,16 @@ SET SQL_SAFE_UPDATES=1;
 
 -- ------------- Быстрые запросы:
 
---# Все рекламации 2025 года - БЫСТРО (по индексу year)
+-- Все рекламации 2025 года - БЫСТРО (по индексу year)
 -- recs_2025 = Reclamation.objects.filter(year=2025)
 
---# Конкретная рекламация - ОЧЕНЬ БЫСТРО (по составному индексу)
+-- Конкретная рекламация - ОЧЕНЬ БЫСТРО (по составному индексу)
 -- rec = Reclamation.objects.get(year=2025, yearly_number=15)
 
---# Последние 10 рекламаций - БЫСТРО (по индексу сортировки)
+-- Последние 10 рекламаций - БЫСТРО (по индексу сортировки)
 -- recent = Reclamation.objects.order_by('-year', '-yearly_number')[:10]
 
---# За несколько лет
+-- За несколько лет
 -- multi_year = Reclamation.objects.filter(year__in=[2024, 2025, 2026])
 
 -- -------------- Архивирование старых данных ------------------------------
@@ -272,3 +272,24 @@ CREATE TABLE reclamation_archive AS
 SELECT * FROM reclamation WHERE year < 2021;
 
 DELETE FROM reclamation WHERE year < 2021;
+-- -------------------------------------------------------------------------
+
+
+-- ВСТАВКА ЗНАЧЕНИЙ В МНОЖЕСТВЕННЫЕ АКТЫ ИССЛЕДОВАНИЯ
+-- Вывод записей по конкретному множественному акту исследования
+select
+	act_number,
+	act_scan,
+	solution
+from investigation
+where act_number = '2025 № 879';
+
+-- Вставка имени файла акта исследования для множественных записей
+update investigation
+set act_scan = 'acts/2025/2025__879_ЯМЗ_ТН_2508612_.pdf'
+where act_number = '2025 № 879' and solution is null;
+
+-- Вставка значения 'ACCEPT' для множественных записей
+update investigation
+set solution = 'ACCEPT'
+where act_number = '2025 № 879' and solution is null;

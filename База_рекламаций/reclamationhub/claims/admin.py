@@ -105,18 +105,18 @@ class ClaimAdmin(admin.ModelAdmin):
     list_display = [
         # Регистрация
         "registration_number",
-        "registration_date",
+        # "registration_date",
         # Претензия
         "claim_number",
         "claim_date",
         "type_money",
-        "claim_amount_all",
+        "claim_amount_all_display",
         # Рекламационный акт
         "reclamation_display",
         "reclamation_act_number",
         "reclamation_act_date",
         "engine_number",
-        "claim_amount_act",
+        "claim_amount_act_display",
         # Акт исследования рекламации
         "message_received_date",
         "receipt_invoice_number",
@@ -126,8 +126,8 @@ class ClaimAdmin(admin.ModelAdmin):
         "comment",
         # Решение по претензии
         "result_colored",
-        "costs_act",
-        "costs_all",
+        "costs_act_display",
+        "costs_all_display",
         # Ответ БЗА
         "response_number",
         "response_date",
@@ -136,33 +136,12 @@ class ClaimAdmin(admin.ModelAdmin):
     # Группировка полей в форме
     fieldsets = [
         (
-            "Регистрация",
-            {
-                "fields": [
-                    "registration_number",
-                    "registration_date",
-                ],
-            },
-        ),
-        (
-            "Претензия",
-            {
-                "fields": [
-                    "claim_number",
-                    "claim_date",
-                    "type_money",
-                    "claim_amount_all",
-                ],
-            },
-        ),
-        (
-            "Рекламационный акт по претензии",
+            "Поиск по рекламационному акту и номеру двигателя",
             {
                 "fields": [
                     "reclamation_act_number",
                     "reclamation_act_date",
                     "engine_number",
-                    "claim_amount_act",
                 ],
             },
         ),
@@ -175,6 +154,20 @@ class ClaimAdmin(admin.ModelAdmin):
                     "investigation_act_number",
                     "investigation_act_date",
                     "investigation_act_result",
+                ],
+            },
+        ),
+        (
+            "Регистрация претензии",
+            {
+                "fields": [
+                    "registration_number",
+                    # "registration_date",
+                    "claim_number",
+                    "claim_date",
+                    "type_money",
+                    "claim_amount_all",
+                    "claim_amount_act",
                     "comment",
                 ],
             },
@@ -246,7 +239,7 @@ class ClaimAdmin(admin.ModelAdmin):
     # -----------------------------------------------------------
 
     # Сортировка по умолчанию
-    ordering = ["-registration_number", "-claim_date"]
+    ordering = ["-registration_number"]
 
     # Отображение кнопок сохранения сверху и снизу
     save_on_top = True
@@ -309,19 +302,38 @@ class ClaimAdmin(admin.ModelAdmin):
             )
         return "-"
 
-    # @admin.display(description="Сумма претензии")
-    # def claim_amount_display(self, obj):
-    #     """Отображение суммы претензии с форматированием"""
-    #     if obj.claim_amount:
-    #         return f"{obj.claim_amount:,.2f} ₽"
-    #     return "-"
+    @admin.display(description="Сумма по претензии")
+    def claim_amount_all_display(self, obj):
+        """Отображение суммы претензии с форматированием"""
+        if obj.claim_amount_all:
+            # Простое форматирование: 12450.15 -> "12 450.15"
+            amount_str = f"{obj.claim_amount_all:,.2f}"
+            return amount_str.replace(",", " ")
+        return "-"
 
-    # @admin.display(description="Признанная сумма")
-    # def bza_costs_display(self, obj):
-    #     """Отображение признанной суммы с форматированием"""
-    #     if obj.bza_costs:
-    #         return f"{obj.bza_costs:,.2f} ₽"
-    #     return "-"
+    @admin.display(description="Сумма по акту рекламации")
+    def claim_amount_act_display(self, obj):
+        """Отображение суммы по акту с форматированием"""
+        if obj.claim_amount_act:
+            amount_str = f"{obj.claim_amount_act:,.2f}"
+            return amount_str.replace(",", " ")
+        return "-"
+
+    @admin.display(description="Признано по претензии")
+    def costs_all_display(self, obj):
+        """Отображение признанной суммы претензии с форматированием"""
+        if obj.costs_all:
+            amount_str = f"{obj.costs_all:,.2f}"
+            return amount_str.replace(",", " ")
+        return "-"
+
+    @admin.display(description="Признано по акту")
+    def costs_act_display(self, obj):
+        """Отображение признанной суммы по акту с форматированием"""
+        if obj.costs_act:
+            amount_str = f"{obj.costs_act:,.2f}"
+            return amount_str.replace(",", " ")
+        return "-"
 
     # @admin.display(description="Ответ")
     # def has_response_icon(self, obj):

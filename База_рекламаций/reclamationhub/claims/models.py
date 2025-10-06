@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.utils.safestring import mark_safe
 
 from reclamations.models import Reclamation
 
@@ -34,16 +34,16 @@ class Claim(models.Model):
         null=True,
         blank=True,
         default="009-11/",
-        verbose_name="Номер ЮС регистрации",
+        verbose_name="Номер регистрации",
     )
-    registration_date = models.DateField(
-        null=True, blank=True, verbose_name="Дата регистрации"
-    )
+    # registration_date = models.DateField(
+    #     null=True, blank=True, verbose_name="Дата регистрации"
+    # )
 
     claim_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Номер претензии"
+        max_length=100, null=True, blank=False, verbose_name="Номер претензии"
     )
-    claim_date = models.DateField(null=True, blank=True, verbose_name="Дата претензии")
+    claim_date = models.DateField(null=True, blank=False, verbose_name="Дата претензии")
 
     type_money = models.CharField(
         max_length=10,
@@ -58,7 +58,7 @@ class Claim(models.Model):
         max_digits=12,
         decimal_places=2,
         null=True,
-        blank=True,
+        blank=False,
         verbose_name="Сумма по претензии",
     )
 
@@ -71,7 +71,16 @@ class Claim(models.Model):
     )
 
     engine_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Номер двигателя"
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Номер двигателя",
+        help_text=mark_safe(
+            "<li>При положительном результате поиска поля формы заполнятся автоматически.<br>"
+            "Переходите к регистрации претензии и заполнению формы далее.</li>"
+            "<li>Если поля формы НЕ заполнились - нажмите СОХРАНИТЬ для получения результатов поиска<br>"
+            "и добавьте комментарий для регистрации претензии.</li>"
+        ),
     )
 
     claim_amount_act = models.DecimalField(
@@ -84,7 +93,7 @@ class Claim(models.Model):
     message_received_date = models.DateField(
         null=True,
         blank=True,
-        verbose_name="Дата уведомления БЗА",
+        verbose_name="Дата уведомления",
     )
     receipt_invoice_number = models.CharField(
         max_length=100,
@@ -130,10 +139,10 @@ class Claim(models.Model):
         verbose_name="Признано по претензии",
     )
     response_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Номер ответа БЗА"
+        max_length=100, null=True, blank=True, verbose_name="Номер ответа на претензию"
     )
     response_date = models.DateField(
-        null=True, blank=True, verbose_name="Дата ответа БЗА"
+        null=True, blank=True, verbose_name="Дата ответа на претензию"
     )
 
     class Meta:
