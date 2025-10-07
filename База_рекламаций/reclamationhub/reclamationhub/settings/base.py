@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "investigations.apps.InvestigationsConfig",
     "claims.apps.ClaimsConfig",
     "reports.apps.ReportsConfig",
+    "analytics.apps.AnalyticsConfig",
     "core.apps.CoreConfig",
     "utils.apps.UtilsConfig",
 ]
@@ -58,10 +59,11 @@ INSTALLED_APPS = [
 ADMIN_APPS_ORDER = {
     "reclamations": 1,
     "investigations": 2,
-    "sourcebook": 3,
-    "reports": 4,
-    "claims": 5,
-    "auth": 6,
+    "claims": 3,
+    "sourcebook": 4,
+    "reports": 5,
+    "analitics": 6,
+    "auth": 7,
 }
 
 MIDDLEWARE = [

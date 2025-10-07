@@ -52,7 +52,8 @@ urlpatterns = [
         RedirectView.as_view(url="/admin/sourcebook/product/", permanent=True),
     ),
     path("admin/", admin_site.urls),
-    path("reports/", include("reports.urls")),  # приложение для аналитики
+    path("reports/", include("reports.urls")),  # приложение для справок
+    path("analytics/", include("analytics.urls")),  # приложение для аналитики
     path(  # редирект для отображения иконки
         "favicon.ico", RedirectView.as_view(url="/static/favicon.png", permanent=True)
     ),

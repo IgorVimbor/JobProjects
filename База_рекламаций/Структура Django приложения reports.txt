@@ -1,7 +1,7 @@
 reports/
 ├── views/
 │   ├── __init__.py
-│   ├── analytics.py          # + основная страница аналитики
+│   ├── references.py         # + основная страница отчетов
 │   ├── date_pretence.py      # + даты уведомления по номеру акта
 │   ├── accept_defect.py      # + признанные/непризнанные рекламации
 │   ├── length_study.py       # + длительность исследования
@@ -11,7 +11,7 @@ reports/
 │   └── engine_search.py      # поиск двигателя
 ├── templates/
 │   └── reports/
-│       ├── analytics.html    # главная страница (как главное окно)
+│       ├── references.html    # основная страница отчетов (как главное окно)
 │       ├── date_pretence.html
 │       ├── accept_defect.html
 │       ├── length_study.html

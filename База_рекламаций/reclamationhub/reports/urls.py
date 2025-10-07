@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    analytics,
+    references,
     enquiry_period,
     accept_defect,
     length_study,
@@ -12,7 +12,8 @@ from .views import (
 app_name = "reports"
 
 urlpatterns = [
-    path("", analytics.analytics_page, name="analytics"),
+    # Маршрут до основной страницы справок и отчетов
+    path("", references.reference_page, name="references"),
     # Маршрут для приложения "Справка за период"
     path("enquiry-period/", enquiry_period.enquiry_period_page, name="enquiry_period"),
     # Маршрут для приложения "Количество признанных/непризнанных"

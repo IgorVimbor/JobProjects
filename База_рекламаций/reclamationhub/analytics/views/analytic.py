@@ -14,7 +14,7 @@ from reclamations.models import Reclamation
 
 
 # # @login_required
-def analytics_page(request):
+def analytic_page(request):
     # Получаем выбранный год (по умолчанию текущий)
     selected_year = int(request.GET.get("year", date.today().year))
 
@@ -31,12 +31,12 @@ def analytics_page(request):
     ).count()
 
     context = {
-        "page_title": "Справки и отчеты",
-        "description": "Генерация отчетов и справок по дефектности изделий БЗА",
+        "page_title": "Аналитика",
+        "description": "Генерация аналитических материалов по дефектности изделий БЗА",
         # Данные для карточек
         "total_reclamations": total_reclamations,
         "new_reclamations": new_reclamations,
         "in_progress": in_progress,
         "closed_reclamations": closed_reclamations,
     }
-    return render(request, "reports/analytics.html", context)
+    return render(request, "analytics/analytic.html", context)

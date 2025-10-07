@@ -9,7 +9,7 @@
         <div class="col-12">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'reports:references' %}">Отчеты</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:analytic' %}">Аналитика</a></li>
                     <li class="breadcrumb-item active">{{ page_title }}</li>
                 </ol>
             </nav>
@@ -25,9 +25,9 @@
                 <div class="card-body text-center">
                     <h3 class="text-info">🚧 {{ status }}</h3>
                     <p>Модуль "{{ module_name }}" находится в стадии разработки</p>
-                    <p>Здесь будет информация по рекламациям, по которым отсутствуют акты исследования</p>
+                    <p>Здесь будет информация по пробегу (наработке) в эксплуатации по виду изделия и потребителю с возможностью сохранения в файл</p>
 
-                    <a href="{% url 'reports:references' %}" class="btn btn-secondary">
+                    <a href="{% url 'analytics:analytic' %}" class="btn btn-secondary">
                         ← Вернуться к аналитике
                     </a>
                 </div>

@@ -23,7 +23,7 @@ python manage.py runserver 0.0.0.0:8000 --settings=reclamationhub.settings.produ
 
 python manage.py startapp <название приложения>
 -- Например: python manage.py startapp sourcebook
-
+-- или python manage.py startapp analytics
 -----------------------------------------------------------------------------------
 
 3. Создание и применение миграций
