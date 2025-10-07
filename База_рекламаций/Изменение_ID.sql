@@ -293,3 +293,18 @@ where act_number = '2025 № 879' and solution is null;
 update investigation
 set solution = 'ACCEPT'
 where act_number = '2025 № 879' and solution is null;
+
+-- Все записи, где акт исследования (act_number) повторяется более одного раза
+SELECT
+    act_number,
+    act_scan,
+    solution
+FROM investigation
+WHERE act_number IN (
+    SELECT act_number
+    FROM investigation
+    GROUP BY act_number
+    HAVING COUNT(act_number) > 1
+)
+ORDER BY act_number;
+-- ----------------------------------------------------------------------------

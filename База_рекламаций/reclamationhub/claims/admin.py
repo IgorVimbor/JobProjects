@@ -136,7 +136,7 @@ class ClaimAdmin(admin.ModelAdmin):
     # Группировка полей в форме
     fieldsets = [
         (
-            "Поиск по рекламационному акту и номеру двигателя",
+            "1. ПОИСК по рекламационному акту или номеру двигателя",
             {
                 "fields": [
                     "reclamation_act_number",
@@ -158,7 +158,7 @@ class ClaimAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Регистрация претензии",
+            "2. РЕГИСТРАЦИЯ претензии",
             {
                 "fields": [
                     "registration_number",
@@ -173,7 +173,7 @@ class ClaimAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Решение по претензии",
+            "3. РЕШЕНИЕ по претензии",
             {
                 "fields": [
                     "result_claim",
@@ -183,7 +183,7 @@ class ClaimAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Ответ БЗА на претензию",
+            "4. ОТВЕТ на претензию",
             {
                 "fields": [
                     "response_number",
