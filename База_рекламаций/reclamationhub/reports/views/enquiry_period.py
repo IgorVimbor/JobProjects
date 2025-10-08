@@ -44,7 +44,7 @@ def enquiry_period_page(request):
 
     context = {
         "page_title": "Справка за период",
-        "description": f"Справка по количеству поступивших рекламаций за период {current_year} года",
+        "description": f"Справка по количеству поступивших сообщений за период {current_year} года",
         "last_metadata": last_metadata,
         "new_records_count": new_records_count,
         "download_info": download_info,  # актуальные данные для справки

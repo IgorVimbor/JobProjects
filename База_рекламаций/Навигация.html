@@ -1,0 +1,106 @@
+<!-- Замените часть навигации на этот код -->
+<div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'admin:reclamations_reclamation_changelist' %}">
+                Рекламации
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'admin:investigations_investigation_changelist' %}">
+                Акты исследования
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'admin:claims_claim_changelist' %}">
+                Претензии
+            </a>
+        </li>
+
+        <!-- Вариант 1 - Выпадающее меню для "Справки и отчеты" -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Справки и отчеты
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                <li><a class="dropdown-item" href="{% url 'reports:references' %}">Все справки</a></li>
+                <li><a class="dropdown-item" href="{% url 'reports:report1' %}">Справка 1</a></li>
+                <li><a class="dropdown-item" href="{% url 'reports:report2' %}">Справка 2</a></li>
+                <li><a class="dropdown-item" href="{% url 'reports:report3' %}">Отчет по периодам</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'reports:custom_report' %}">Настраиваемый отчет</a></li>
+            </ul>
+        </li>
+
+        <!-- Вариант 1 - Выпадающее меню для "Аналитика" -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="analyticsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Аналитика
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="analyticsDropdown">
+                <li><a class="dropdown-item" href="{% url 'analytics:analytic' %}">Общая аналитика</a></li>
+                <li><a class="dropdown-item" href="{% url 'analytics:charts' %}">Графики и диаграммы</a></li>
+                <li><a class="dropdown-item" href="{% url 'analytics:trends' %}">Анализ трендов</a></li>
+                <li><a class="dropdown-item" href="{% url 'analytics:dashboard' %}">Дашборд</a></li>
+            </ul>
+        </li>
+
+        <!-- Вариант 2 - Выпадающее меню для "Справки и отчеты" -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="{% url 'reports:references' %}" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Справки и отчеты
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                <li><a class="dropdown-item" href="{% url 'reports:references' %}">Все справки</a></li>
+                <li><a class="dropdown-item" href="{% url 'reports:report1' %}">Справка 1</a></li>
+                <li><a class="dropdown-item" href="{% url 'reports:report2' %}">Справка 2</a></li>
+                <li><a class="dropdown-item" href="{% url 'reports:report3' %}">Отчет по периодам</a></li>
+            </ul>
+        </li>
+
+        <!-- Вариант 2 - Выпадающее меню для "Аналитика" -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="{% url 'analytics:analytic' %}" id="analyticsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Аналитика
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="analyticsDropdown">
+                <li><a class="dropdown-item" href="{% url 'analytics:analytic' %}">Общая аналитика</a></li>
+                <li><a class="dropdown-item" href="{% url 'analytics:charts' %}">Графики и диаграммы</a></li>
+                <li><a class="dropdown-item" href="{% url 'analytics:trends' %}">Анализ трендов</a></li>
+            </ul>
+        </li>
+    </ul>
+
+    <!-- Остальные элементы навигации -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link fw-bold text-white" href="{% url 'admin:index' %}">Панель редактирования</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link fw-bold text-white" href="{% url 'export_excel' %}">
+                <i class="fas fa-file-excel"></i> Экспорт в Excel
+            </a>
+        </li>
+    </ul>
+</div>
+
+/* Улучшенные стили для выпадающего меню */
+.navbar-nav .dropdown-menu {
+    background-color: #417690;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.navbar-nav .dropdown-item {
+    color: white !important;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-nav .dropdown-item:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white !important;
+}
+
+.navbar-nav .dropdown-divider {
+    border-color: rgba(255,255,255,0.2);
+}
