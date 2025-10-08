@@ -51,31 +51,17 @@
                             Претензии
                         </a>
                     </li>
-                    <!-- Выпадающее меню для "Справки и отчеты" -->
-                    <li class="nav-item dropdown position-relative">
-                        <a class="nav-link dropdown-toggle text-white" href="{% url 'reports:references' %}">
+                    <li class="nav-item">
+                        <!-- <a class="nav-link text-white" href="#" onclick="alert('Раздел находится в разработке'); return false;"> -->
+                        <a class="nav-link text-white" href="{% url 'reports:references' %}" class="nav-link">
                             Справки и отчеты
                         </a>
-                        <ul class="dropdown-menu position-absolute hover-dropdown">
-                            <li><a class="dropdown-item" href="{% url 'reports:enquiry_period' %}">Справка по количеству сообщений</a></li>
-                            <li><a class="dropdown-item" href="{% url 'reports:length_study' %}">Длительность исследования рекламаций</a></li>
-                            <li><a class="dropdown-item" href="{% url 'reports:accept_defect' %}">Количество признанных рекламаций</a></li>
-                            <li><a class="dropdown-item" href="{% url 'reports:db_search' %}">Поиск по базе рекламаций</a></li>
-                            <li><a class="dropdown-item" href="{% url 'reports:date_pretence' %}">Даты уведомления по рекламациям</a></li>
-                        </ul>
                     </li>
-
-                    <!-- Выпадающее меню для "Аналитика" -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="{% url 'analytics:analytic' %}">
+                    <li class="nav-item">
+                        <!-- <a class="nav-link text-white" href="#" onclick="alert('Раздел находится в разработке'); return false;"> -->
+                        <a class="nav-link text-white" href="{% url 'analytics:analytic' %}" class="nav-link">
                             Аналитика
                         </a>
-                        <ul class="dropdown-menu position-absolute hover-dropdown">
-                            <li><a class="dropdown-item" href="{% url 'analytics:mileage_chart' %}">Диаграмма по пробегу</a></li>
-                            <li><a class="dropdown-item" href="{% url 'analytics:combined_chart' %}">Диаграммы по датам</a></li>
-                            <li><a class="dropdown-item" href="{% url 'analytics:product_defect' %}">Анализ дефектности по изделию</a></li>
-                            <li><a class="dropdown-item" href="{% url 'analytics:culprits_defect' %}">Анализ по виновникам дефектов</a></li>
-                        </ul>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -110,15 +96,3 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
-
-<style>
-.hover-dropdown {
-    display: none;
-    top: 100%;
-    left: 0;
-}
-
-.nav-item:hover .hover-dropdown {
-    display: block;
-}
-</style>
