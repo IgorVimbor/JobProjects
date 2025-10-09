@@ -17,8 +17,8 @@ class EnquiryPeriod(models.Model):
     report_date = models.DateField(verbose_name="Дата формирования справки")
 
     class Meta:
-        verbose_name = "Справка за период"
-        verbose_name_plural = "Справки за период"
+        verbose_name = "Справка по сообщениям за период"
+        verbose_name_plural = "Справки по сообщениям за период"
         ordering = ["-sequence_number"]  # сортировка по убыванию
 
     def __str__(self):

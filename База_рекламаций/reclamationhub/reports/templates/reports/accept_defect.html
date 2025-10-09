@@ -133,7 +133,7 @@
                                         <th>Количество</th>
                                         <th class="text-success">Признано</th>
                                         <th class="text-danger">Отклонено</th>
-                                        <th class="text-warning">Нет_решения</th>
+                                        <th class="text">Нет_решения</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -142,9 +142,27 @@
                                         <td>{{ row.Потребитель }}</td>
                                         <td>{{ row.Изделие }}</td>
                                         <td><strong>{{ row.Количество }}</strong></td>
-                                        <td class="text-success"><strong>{{ row.Признано }}</strong></td>
-                                        <td class="text-danger"><strong>{{ row.Отклонено }}</strong></td>
-                                        <td class="text-warning"><strong>{{ row.Не_поступало }}</strong></td>
+                                        <!-- <td class="text-success"><strong>{{ row.Признано }}</strong></td> -->
+                                        <td class="text-success">
+                                            <strong>{{ row.Признано }}</strong>
+                                            {% if row.Количество > 0 and row.Признано > 0 %}
+                                                ({% widthratio row.Признано row.Количество 100 %}%)
+                                            {% endif %}
+                                        </td>
+                                        <!-- <td class="text-danger"><strong>{{ row.Отклонено }}</strong></td> -->
+                                        <td class="text-danger">
+                                            <strong>{{ row.Отклонено }}</strong>
+                                            {% if row.Количество > 0 and row.Отклонено > 0 %}
+                                                ({% widthratio row.Отклонено row.Количество 100 %}%)
+                                            {% endif %}
+                                        </td>
+                                        <!-- <td class="text-warning"><strong>{{ row.Не_поступало }}</strong></td> -->
+                                        <td class="text">
+                                            <strong>{{ row.Не_поступало }}</strong>
+                                            {% if row.Количество > 0 and row.Не_поступало > 0 %}
+                                                ({% widthratio row.Не_поступало row.Количество 100 %}%)
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
