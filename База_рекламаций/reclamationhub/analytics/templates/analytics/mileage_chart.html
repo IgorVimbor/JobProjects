@@ -14,25 +14,216 @@
                 </ol>
             </nav>
 
-            <!-- <h1>{{ page_title }}</h1>  -->
             <h3 class="text-muted">{{ description }}</h3>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
+    <!-- Показываем карточку генерации отчета ТОЛЬКО если нет отчета -->
+    {% if not download_info %}
+    <div class="row mb-4">
+        <div class="col-md-10">
             <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-info">🚧 {{ status }}</h3>
-                    <p>Модуль "{{ module_name }}" находится в стадии разработки</p>
-                    <p>Здесь будет информация по пробегу (наработке) в эксплуатации по виду изделия и потребителю с возможностью сохранения в файл</p>
+                <div class="card-header">
+                    <h5>Параметры анализа</h5>
+                </div>
+                <div class="card-body">
+                    <p>Анализ распределения рекламаций по пробегу с построением гистограммы</p>
 
-                    <a href="{% url 'analytics:analytic' %}" class="btn btn-secondary">
-                        ← Вернуться к аналитике
-                    </a>
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Поле выбора года -->
+                        <div class="mb-3">
+                            <label for="year" class="form-label fw-bold">Год анализа:</label>
+                            <select class="form-select" id="year" name="year" required>
+                                {% for year in available_years %}
+                                    <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Поле для шага пробега -->
+                        <div class="mb-3">
+                            <label for="step" class="form-label fw-bold">Шаг разбиения пробега (км):</label>
+                            <select class="form-select" id="step" name="step" required>
+                                <option value="500">500 км</option>
+                                <option value="1000">1 000 км</option>
+                                <option value="2000">2 000 км</option>
+                                <option value="5000" selected>5 000 км</option>
+                                <option value="10000">10 000 км</option>
+                            </select>
+                            <small class="form-text text-muted">
+                                ✅ Выберите подходящий шаг для разбиения пробега
+                            </small>
+                        </div>
+
+                        <!-- Блок выбора потребителей -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Потребители:</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {% for consumer in available_consumers %}
+                                        {% if forloop.counter0 < 3 %}
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input"
+                                                type="checkbox"
+                                                name="consumers"
+                                                value="{{ consumer.value }}"
+                                                id="consumer{{ forloop.counter }}">
+                                            <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                                {{ consumer.name }}
+                                            </label>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-4">
+                                    {% for consumer in available_consumers %}
+                                        {% if forloop.counter0 >= 3 and forloop.counter0 < 6 %}
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input"
+                                                type="checkbox"
+                                                name="consumers"
+                                                value="{{ consumer.value }}"
+                                                id="consumer{{ forloop.counter }}">
+                                            <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                                {{ consumer.name }}
+                                            </label>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-4">
+                                    {% for consumer in available_consumers %}
+                                        {% if forloop.counter0 >= 6 %}
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input"
+                                                type="checkbox"
+                                                name="consumers"
+                                                value="{{ consumer.value }}"
+                                                id="consumer{{ forloop.counter }}">
+                                            <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                                {{ consumer.name }}
+                                            </label>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Выберите нужных потребителей или оставьте пустыми для анализа всех потребителей
+                            </small>
+                        </div>
+
+                        <!-- Блок выбора изделий -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Виды изделий:</label>
+                            <div class="row">
+                                {% for product in available_products %}
+                                <div class="col-md-3 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            name="products"
+                                            value="{{ product.value }}"
+                                            id="product{{ forloop.counter }}">
+                                        <label class="form-check-label" for="product{{ forloop.counter }}">
+                                            {{ product.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Выберите нужные изделия для анализа
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            📊 Сделать анализ
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
+
+    <!-- Сообщения -->
+    {% if messages %}
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Блок для отображения анализа -->
+    {% if download_info %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-body">
+                    <p><strong>{{ download_info.message }}</strong></p>
+
+                    <!-- График -->
+                    {% if download_info.chart_base64 %}
+                    <div class="mt-4">
+                        <!-- <h6>📊 Гистограмма распределения:</h6> -->
+                        <img src="data:image/png;base64,{{ download_info.chart_base64 }}"
+                             class="img-fluid"
+                             alt="Гистограмма пробега">
+                    </div>
+                    {% endif %}
+
+                    <!-- Таблица данных -->
+                    {% if download_info.table_data %}
+                    <div class="mt-4">
+                        <h6>📋 Данные по диапазонам:</h6>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Диапазон пробега (км)</th>
+                                        <th class="text-center">Количество</th>
+                                        <th>Процент</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for range, data in download_info.table_data.items %}
+                                    <tr>
+                                        <td>{{ range }}</td>
+                                        <td class="text-center"><strong>{{ data.count }}</strong></td>
+                                        <td>{{ data.percentage }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-muted mt-2">
+                            <strong>Итого проанализировано:</strong> {{ download_info.total_records }} записей
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Кнопки действий -->
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="{% url 'analytics:mileage_chart' %}" class="btn btn-primary">
+                            🔄 Новый анализ
+                        </a>
+                        <button class="btn btn-secondary" onclick="this.closest('.card').style.display='none'">
+                            ❌ Закрыть
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

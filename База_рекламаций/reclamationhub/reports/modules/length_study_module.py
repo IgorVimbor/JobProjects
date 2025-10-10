@@ -152,6 +152,12 @@ class LengthStudyProcessor:
         if self.df.empty:
             return None
 
+        # Заголовок с учетом года и выбранных потребителей
+        self.title_text = f"за {self.year} год"
+        if self.consumers:
+            consumer_names = self._get_consumer_names()
+            self.title_text = f"по {consumer_names} за {self.year} год"
+
         fig, axes = plt.subplots(1, 3, figsize=(12, 4))
 
         # Общая гистограмма
@@ -178,13 +184,7 @@ class LengthStudyProcessor:
             axes[2].set_title("Исследование по ГП")
             axes[2].set_xlim(-1, 40)
 
-        # Заголовок с учетом года и выбранных потребителей
-        title_text = f"{self.year} год"
-        if self.consumers:
-            consumer_names = self._get_consumer_names()
-            title_text = f"{consumer_names}, {self.year} год"
-
-        fig.suptitle(title_text, fontsize=16)
+        fig.suptitle(self.title_text, fontsize=16)
         plt.tight_layout()
 
         # Конвертируем в base64
@@ -204,18 +204,18 @@ class LengthStudyProcessor:
 
         # TXT файл
         txt_path = os.path.join(
-            BASE_REPORTS_DIR, f"Статистика длительности исследований_{today_str}.txt"
+            BASE_REPORTS_DIR, f"Длительность исследований_справка_{today_str}.txt"
         )
         with open(txt_path, "w", encoding="utf-8") as f:
             print(
-                f"\n\tСтатистика длительности исследований за {self.year} на {today_str}\n\n",
+                f"\n\tСтатистика длительности исследований {self.title_text} на {today_str}\n\n",
                 file=f,
             )
             f.write(self.result_df.to_string())
 
         # PNG файл
         png_path = os.path.join(
-            BASE_REPORTS_DIR, f"График длительности исследований_{today_str}.png"
+            BASE_REPORTS_DIR, f"Длительность исследований_график_{today_str}.png"
         )
 
         # Пересоздаем график для сохранения
@@ -242,7 +242,7 @@ class LengthStudyProcessor:
             axes[2].set_title("Исследование по ГП")
             axes[2].set_xlim(-1, 40)
 
-        fig.suptitle(f"{self.year} год", fontsize=16)
+        fig.suptitle(self.title_text, fontsize=16)
         plt.tight_layout()
         plt.savefig(png_path, dpi=300, bbox_inches="tight")
         plt.close(fig)

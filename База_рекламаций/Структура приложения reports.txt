@@ -1,30 +1,33 @@
 reports/
+│
 ├── views/
 │   ├── __init__.py
 │   ├── references.py         # + основная страница отчетов
 │   ├── date_pretence.py      # + даты уведомления по номеру акта
 │   ├── accept_defect.py      # + признанные/непризнанные рекламации
 │   ├── length_study.py       # + длительность исследования
-│   ├── not_acts.py           # + незакрытые акты
+│   ├── not_acts.py           # - незакрытые акты
 │   ├── enquiry_period.py     # + справка за период
-│   ├── db_search.py          # + поиск по базе
-│   └── engine_search.py      # поиск двигателя
+│   └── db_search.py          # + поиск по базе
+│
 ├── templates/
 │   └── reports/
-│       ├── references.html    # основная страница отчетов (как главное окно)
+│       ├── references.html   # основная страница отчетов (как главное окно)
 │       ├── date_pretence.html
 │       ├── accept_defect.html
 │       ├── length_study.html
 │       ├── not_acts.html
 │       ├── enquiry_period.html
-│       ├── db_search.html
-│       └── engine_search.html
-├── utils/
-│   ├── __init__.py
-│   ├── data_processing.py    # общие функции pandas
-│   ├── excel_export.py       # экспорт в Excel
-│   └── statistics.py         # расчеты статистики
-├── urls.py
-├── models.py
+│       └── db_search.html
+│
+├── modules/                  # модули для для расчетов и логики
+│   ├── accept_defect_modul.py
+│   ├── db_search_modul.py
+│   ├── enquiry_period_modul.py
+│   └── length_study_modul.py
+│
 ├── admin.py
-└── apps.py
+├── apps.py
+├── forms.py   # форма для приложения db_search
+├── models.py
+└── urls.py
