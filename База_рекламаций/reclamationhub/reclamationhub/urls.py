@@ -54,6 +54,7 @@ urlpatterns = [
     path("admin/", admin_site.urls),
     path("reports/", include("reports.urls")),  # приложение для справок
     path("analytics/", include("analytics.urls")),  # приложение для аналитики
+    path("utils/", include("utils.urls")),  # скачивание Excel
     path(  # редирект для отображения иконки
         "favicon.ico", RedirectView.as_view(url="/static/favicon.png", permanent=True)
     ),

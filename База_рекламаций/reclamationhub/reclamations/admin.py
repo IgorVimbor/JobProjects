@@ -12,8 +12,6 @@ from .models import Reclamation
 from .forms import ReclamationAdminForm
 from .views import add_invoice_into_view, add_disposal_act_view
 
-# from utils.excel.exporters import ReclamationExcelExporter
-
 
 class YearListFilter(SimpleListFilter):
     """Класс для переопределения фильтра по году рекламации"""
@@ -462,8 +460,6 @@ class ReclamationAdmin(admin.ModelAdmin):
             path(  # для добавления акта утилизации
                 "add_disposal_act/", self.add_disposal_act, name="add_disposal_act"
             ),
-            # # для выгрузки в Excel
-            # path("export-excel/", self.export_excel, name="export_excel"),
         ]
         return custom_urls + urls
 
@@ -475,8 +471,3 @@ class ReclamationAdmin(admin.ModelAdmin):
     def add_invoice_into_view(self, request):
         """Метод добавления группового акта исследования - делегируем вызов к функции из views.py"""
         return add_invoice_into_view(self, request)
-
-    # def export_excel(self, request):
-    #     """Метод для выгрузки данных по рекламациям и актам исследования в Excel"""
-    #     exporter = ReclamationExcelExporter()
-    #     return exporter.export_to_excel()

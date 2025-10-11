@@ -33,7 +33,7 @@ def mileage_chart_page(request):
         Reclamation.objects.values_list("year", flat=True).distinct().order_by("-year")
     )
 
-    # Получаем потребителей с суффиксом "- эксплуатация"
+    # Получаем потребителей с суффиксом "- эксплуатация" из модели PeriodDefect
     available_consumers_raw = (
         Reclamation.objects.select_related("defect_period")
         .filter(defect_period__name__icontains="- эксплуатация")
@@ -48,7 +48,7 @@ def mileage_chart_page(request):
         if consumer
     ]
 
-    # Получаем список изделий
+    # Получаем список изделий из модели ProductType
     available_products_raw = (
         Reclamation.objects.select_related("product_name")
         .values_list("product_name__name", flat=True)
@@ -81,7 +81,7 @@ def generate_report(request):
     step = request.POST.get("step")  # Шаг разбиения пробега
     # Получаем выбранных потребителей и изделия из чекбоксов
     selected_consumers = request.POST.getlist("consumers")
-    selected_products = request.POST.getlist("products")
+    selected_product = request.POST.get("product")
 
     # Валидация полей для которых предусмотрен выбор из предложенных - это защита от модификации HTML и прямых POST запросов.
     # Возможные атаки:
@@ -90,7 +90,7 @@ def generate_report(request):
     # Скрипты: автоматическая отправка с некорректными данными
     try:
         year = int(year) if year else datetime.now().year
-        step = int(step) if step else 5000  # Дефолт 5000
+        step = int(step) if step else 1000  # Дефолт 1000
     except (ValueError, TypeError):
         messages.error(request, "Некорректные данные")
         return redirect("analytics:mileage_chart")
@@ -117,30 +117,29 @@ def generate_report(request):
         consumers = [c for c in selected_consumers if c in valid_consumers]
 
     # Проверка наличия изделия - обязательно должно быть выбрано изделие
-    if not selected_products:
+    if not selected_product:
         messages.warning(request, "⚠️ Выберите изделие для анализа")
         return redirect("analytics:mileage_chart")
 
-    # Валидация изделий
+    # Валидация изделия
     valid_products = list(
         Reclamation.objects.values_list("product_name__name", flat=True).distinct()
     )
-    products = [p for p in selected_products if p in valid_products]
 
-    if not products:
-        messages.error(request, "Выбраны некорректные изделия")
+    if selected_product not in valid_products:
+        messages.error(request, "Выбрано некорректное изделие")
         return redirect("analytics:mileage_chart")
 
     # Генерируем анализ
     processor = MileageChartProcessor(
-        year=year, consumers=consumers, products=products, step=step
+        year=year, consumers=consumers, product=selected_product, step=step
     )
     result = processor.generate_report()
 
     if result["success"]:
         messages.success(request, f"✅ {result['message']}")
         request.session["mileage_chart_info"] = {
-            # "message": f"Анализ пробега для {result['filter_text']} за {result['year']} год",
+            "message": result["full_message"],
             "table_data": result["table_data"],
             "chart_base64": result["chart_base64"],
             "total_records": result["total_records"],

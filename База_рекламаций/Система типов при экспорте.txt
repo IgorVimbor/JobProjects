@@ -1,0 +1,127 @@
+Зачем нужна типизация?
+В Django модели поля ведут себя по-разному:
+
+Обычные поля: reclamation.sender → строка
+Choices поля: reclamation.status → код, но нужно отображение
+Связанные объекты: reclamation.product → объект, нужно str()
+Связанные поля: reclamation.investigation.act_number → может не существовать
+
+========================== Типы полей и их логика ==========================
+
+1. "type": "direct" - обычные поля
+
+'reclamation.sender': {
+    'header': 'Отправитель',
+    'field': 'sender',
+    'type': 'direct'  # ← Просто берем значение поля
+}
+
+-- В методе _get_field_value:
+
+if config['type'] == 'direct':
+    return getattr(reclamation, config['field'])  # reclamation.sender
+-----------------------------------------------------------------------------
+
+2. "type": "choice_display" - поля с choices
+
+-- В модели Reclamation:
+class Reclamation(models.Model):
+    STATUS_CHOICES = [
+        ('new', 'Новая'),
+        ('in_progress', 'В работе'),
+        ('closed', 'Закрыта'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+
+-- В конфигурации:
+'reclamation.status': {
+    'field': 'status',
+    'type': 'choice_display'  # ← Нужно человекочитаемое значение
+}
+
+-- В _get_field_value:
+elif config['type'] == 'choice_display':
+    return getattr(reclamation, f"get_{config['field']}_display")()
+    # reclamation.get_status_display() → "Новая" вместо "new"
+------------------------------------------------------------------------------
+
+3. "type": "related_str" - связанные объекты
+
+-- В модели:
+class Reclamation(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+-- В конфигурации:
+'reclamation.product': {
+    'field': 'product',
+    'type': 'related_str'  # ← Объект нужно превратить в строку
+}
+
+-- В _get_field_value:
+elif config['type'] == 'related_str':
+    related_obj = getattr(reclamation, config['field'])  # Объект Product
+    return str(related_obj) if related_obj else ""      # Вызываем __str__()
+-------------------------------------------------------------------------------
+
+4. "type": "related_field" - поля связанной модели
+
+-- Связь: Reclamation → Investigation (OneToOne)
+'investigation.act_number': {
+    'field': 'act_number',
+    'type': 'related_field'  # ← Поле из связанной модели
+}
+
+-- В _get_field_value:
+elif config['type'] == 'related_field':
+    try:
+        investigation = reclamation.investigation  # Может не существовать!
+        return getattr(investigation, config['field'])  # investigation.act_number
+    except Reclamation.investigation.RelatedObjectDoesNotExist:
+        return ""  # Если нет связанного объекта
+---------------------------------------------------------------------------------
+
+5. "type": "related_choice_display" - choices в связанной модели
+
+-- В модели Investigation:
+class Investigation(models.Model):
+    STATUS_CHOICES = [('pending', 'Ожидает'), ('done', 'Завершено')]
+    status = models.CharField(choices=STATUS_CHOICES)
+
+-- В конфигурации:
+'investigation.status': {
+    'field': 'status',
+    'type': 'related_choice_display'  # ← Choices + связанная модель
+}
+
+-- В _get_field_value:
+elif config['type'] == 'related_choice_display':
+    try:
+        investigation = reclamation.investigation
+        return getattr(investigation, f"get_{config['field']}_display")()
+        # investigation.get_status_display() → "Завершено"
+    except Reclamation.investigation.RelatedObjectDoesNotExist:
+        return ""
+-----------------------------------------------------------------------------------
+
+Пример работы:
+
+-- Данные в БД:
+reclamation.sender = "ОАО Завод"                    # строка
+reclamation.status = "in_progress"                  # код choice
+reclamation.product = <Product: Двигатель ABC-123>  # объект
+reclamation.investigation.act_number = "АКТ-001"    # поле связанной модели
+
+-- Результат в Excel:
+"Отправитель" → "ОАО Завод"           (direct)
+"Статус" → "В работе"                 (choice_display)
+"Изделие" → "Двигатель ABC-123"       (related_str)
+"Номер акта" → "АКТ-001"              (related_field)
+
+Преимущества такой системы:
+
+Универсальность - один метод обрабатывает все типы полей
+Безопасность - обработка случаев когда связанных объектов нет
+Читаемость - в Excel отображаются понятные значения
+Расширяемость - легко добавить новые типы полей
+Эта система делает экспортер по-настоящему универсальным!
+=====================================================================================

@@ -9,13 +9,12 @@ import json
 
 from reclamations.models import Reclamation
 from investigations.models import Investigation
-from utils.excel.exporters import ReclamationExcelExporter
 
 
 def home_view(request):
     """Главная страница с данными текущего года по умолчанию"""
     current_year = datetime.now().year
-    selected_year = request.GET.get('year', current_year)
+    selected_year = request.GET.get("year", current_year)
 
     try:
         selected_year = int(selected_year)
@@ -24,18 +23,18 @@ def home_view(request):
 
     # Получаем доступные годы для селектора
     available_years = list(
-        Reclamation.objects.values_list('year', flat=True)
-        .distinct()
-        .order_by('-year')
+        Reclamation.objects.values_list("year", flat=True).distinct().order_by("-year")
     )
 
     # Фильтруем данные по выбранному году
     year_filter = Q(year=selected_year)
 
     # Последние 5 рекламаций выбранного года
-    latest_reclamations = Reclamation.objects.select_related(
-        "product", "product_name"
-    ).filter(year_filter).order_by("-yearly_number")[:5]
+    latest_reclamations = (
+        Reclamation.objects.select_related("product", "product_name")
+        .filter(year_filter)
+        .order_by("-yearly_number")[:5]
+    )
 
     # Общее количество рекламаций за год
     total_reclamations = Reclamation.objects.filter(year_filter).count()
@@ -95,14 +94,14 @@ def home_view(request):
 
 def ajax_year_data(request):
     """AJAX endpoint для получения данных по выбранному году"""
-    year = request.GET.get('year')
+    year = request.GET.get("year")
     if not year:
-        return JsonResponse({'error': 'Не введен год'}, status=400)
+        return JsonResponse({"error": "Не введен год"}, status=400)
 
     try:
         year = int(year)
     except ValueError:
-        return JsonResponse({'error': 'Выбранный год отсутствует'}, status=400)
+        return JsonResponse({"error": "Выбранный год отсутствует"}, status=400)
 
     # Фильтр по году
     year_filter = Q(year=year)
@@ -113,8 +112,12 @@ def ajax_year_data(request):
         .filter(year_filter)
         .order_by("-yearly_number")[:5]
         .values(
-            'id', 'product_name__name', 'product__nomenclature',
-            'defect_period__name', 'claimed_defect', 'products_count'
+            "id",
+            "product_name__name",
+            "product__nomenclature",
+            "defect_period__name",
+            "claimed_defect",
+            "products_count",
         )
     )
 
@@ -151,18 +154,14 @@ def ajax_year_data(request):
         if item["month"]:
             item["month"] = item["month"].strftime("%Y-%m-%d")
 
-    return JsonResponse({
-        'latest_reclamations': latest_reclamations,
-        'total_reclamations': total_reclamations,
-        'new_reclamations': new_reclamations,
-        'in_progress': in_progress,
-        'closed_reclamations': closed_reclamations,
-        'products_data': products_data,
-        'monthly_data': monthly_data,
-    })
-
-
-def export_excel(request):
-    """Метод для экспорта в Excel"""
-    exporter = ReclamationExcelExporter()
-    return exporter.export_to_excel()
+    return JsonResponse(
+        {
+            "latest_reclamations": latest_reclamations,
+            "total_reclamations": total_reclamations,
+            "new_reclamations": new_reclamations,
+            "in_progress": in_progress,
+            "closed_reclamations": closed_reclamations,
+            "products_data": products_data,
+            "monthly_data": monthly_data,
+        }
+    )

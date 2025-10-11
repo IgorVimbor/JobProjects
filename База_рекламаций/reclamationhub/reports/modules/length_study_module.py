@@ -13,7 +13,11 @@ from datetime import date
 import os
 from django.db.models import Case, When, F, Q
 from investigations.models import Investigation
-from reports.config.paths import BASE_REPORTS_DIR
+from reports.config.paths import (
+    BASE_REPORTS_DIR,
+    get_length_study_txt_path,
+    get_length_study_png_path,
+)
 
 
 class LengthStudyProcessor:
@@ -200,12 +204,12 @@ class LengthStudyProcessor:
 
     def save_files(self):
         """Сохранение файлов на диск"""
-        today_str = self.today.strftime("%d-%m-%Y")
+
+        today_str = date.today().strftime("%d-%m-%Y")
 
         # TXT файл
-        txt_path = os.path.join(
-            BASE_REPORTS_DIR, f"Длительность исследований_справка_{today_str}.txt"
-        )
+        txt_path = get_length_study_txt_path()
+
         with open(txt_path, "w", encoding="utf-8") as f:
             print(
                 f"\n\tСтатистика длительности исследований {self.title_text} на {today_str}\n\n",
@@ -214,9 +218,7 @@ class LengthStudyProcessor:
             f.write(self.result_df.to_string())
 
         # PNG файл
-        png_path = os.path.join(
-            BASE_REPORTS_DIR, f"Длительность исследований_график_{today_str}.png"
-        )
+        png_path = get_length_study_png_path()
 
         # Пересоздаем график для сохранения
         fig, axes = plt.subplots(1, 3, figsize=(12, 4))

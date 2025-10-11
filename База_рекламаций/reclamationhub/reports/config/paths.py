@@ -49,30 +49,59 @@ def get_accept_defect_txt_path(sequence_number):
     )
 
 
-# # ==================== DB SEARCH ====================
+# ======================= DB SEARCH ======================
 # DB_SEARCH_DIR = os.path.join(BASE_REPORTS_DIR, "db_search")
+
+
 def get_db_search_txt_path():
     """Путь к TXT файлу отчета поиска"""
     filename = f"Результаты поиска по базе.txt"
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 
-# # ==================== LENGTH STUDY ====================
+# ====================== LENGTH STUDY =====================
 # LENGTH_STUDY_DIR = os.path.join(BASE_REPORTS_DIR, "length_study")
 
 
-# def get_length_study_excel_path(sequence_number):
-#     return os.path.join(
-#         LENGTH_STUDY_DIR, f"length_study_{sequence_number}_{date_today}.xlsx"
-#     )
+def get_length_study_txt_path():
+    """Путь к TXT файлу отчета по длительности исследований"""
+    filename = f"Длительность исследований_справка_{date_today}.txt"
+    return os.path.join(BASE_REPORTS_DIR, filename)
 
 
-# # ==================== NOT ACTS ====================
+def get_length_study_png_path():
+    """Путь к png файлу графиков по длительности исследований"""
+    filename = f"Длительность исследований_график_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+# # ======================= NOT ACTS ========================
 # NOT_ACTS_DIR = os.path.join(BASE_REPORTS_DIR, "not_acts")
 
 
-# # ==================== PRETENCE ====================
+# ====================== MILEAGE CHART ======================
 # PRETENCE_DIR = os.path.join(BASE_REPORTS_DIR, "pretence")
+
+
+def get_mileage_chart_txt_path():
+    """Путь к TXT файлу анализа по пробегу изделия"""
+    filename = f"Анализ по пробегу_справка_{date_today}.txt"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+def get_mileage_chart_png_path():
+    """Путь к png файлу графика анализа по пробегу изделия"""
+    filename = f"Анализ по пробегу_график_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+# ===================== EXCEL EXPORTER ======================
+
+
+def get_excel_exporter_path():
+    """Excel файл Базы рекламаций по выбранным столбцам"""
+    filename = f"ЖУРНАЛ РЕКЛАМАЦИЙ {year_now}_{date_today}.xlsx"
+    return os.path.join(BASE_REPORTS_DIR, filename)
 
 
 # # ==================== СОЗДАНИЕ ПАПОК ====================

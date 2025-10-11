@@ -12,22 +12,27 @@ from datetime import date
 from django.db.models import Q
 
 from reclamations.models import Reclamation
+from reports.config.paths import (
+    BASE_REPORTS_DIR,
+    get_mileage_chart_txt_path,
+    get_mileage_chart_png_path,
+)
 
 
 class MileageChartProcessor:
     """Анализ распределения рекламаций по пробегу"""
 
-    def __init__(self, year=None, consumers=None, products=None, step=5000):
+    def __init__(self, year=None, consumers=None, product=None, step=1000):
         self.today = date.today()
         self.year = year or self.today.year
         self.consumers = consumers or []  # Список потребителей
-        self.products = products or []  # Список изделий
+        self.product = product
         self.step = step  # Шаг разбиения пробега
         self.df = pd.DataFrame()
         self.bins_data = pd.Series()
 
     def value_probeg(self, str_in):
-        """Преобразование пробега в километры (ваша функция)"""
+        """Преобразование пробега в километры"""
         str_in = str(str_in).replace(",", ".").replace(" ", "").rstrip(".")
 
         if str_in.endswith("м/ч"):  # если строка заканчивается на м/ч
@@ -50,37 +55,33 @@ class MileageChartProcessor:
             else:
                 filter_parts.append(f"{len(self.consumers)} потребителей")
 
-        if self.products:
-            if len(self.products) == 1:
-                filter_parts.append(self.products[0])
-            else:
-                filter_parts.append(f"{len(self.products)} изделий")
+        if self.product:
+            filter_parts.append(self.product)
 
         if not filter_parts:
-            return "все потребители и изделия"
+            return "всех потребителей"
 
         return ", ".join(filter_parts)
 
     def get_data_from_db(self):
         """Получение и обработка данных из Django ORM"""
+        # Проверяем, что изделие выбрано
+        if not self.product:
+            return None, "Не выбрано изделие для анализа"
+
         # Формируем фильтр
         queryset_filter = Q(
-            year=self.year,
+            year=self.year,  # Фильтр по году
             away_type__in=["kilometre", "moto"],  # Исключаем "notdata" и "psi"
+            product_name__name=self.product,  # Фильтр по одному изделию
         )
 
-        # Добавляем фильтры по потребителям и изделиям
+        # Добавляем фильтры по потребителям
         if self.consumers:
             consumer_q = Q()
             for consumer in self.consumers:
                 consumer_q |= Q(defect_period__name=consumer)
             queryset_filter &= consumer_q
-
-        if self.products:
-            product_q = Q()
-            for product in self.products:
-                product_q |= Q(product_name__name=product)
-            queryset_filter &= product_q
 
         # Получаем данные
         queryset = (
@@ -97,8 +98,6 @@ class MileageChartProcessor:
         # Если нет данных ...
         if not queryset.exists():
             filter_text = self._get_filter_names()
-            if not self.products:
-                return None, "Не выбрано изделие для анализа"
             return None, f"Нет данных для {filter_text} за {self.year} год"
 
         # Преобразуем в DataFrame
@@ -134,7 +133,6 @@ class MileageChartProcessor:
                 return None, "После фильтрации аномальных значений данных не осталось"
 
             self.df = df
-            print(self.df)
             return True, f"Обработано записей: {len(df)}"
 
         except Exception as e:
@@ -167,19 +165,22 @@ class MileageChartProcessor:
 
         plt.figure(figsize=(12, 6))
 
-        # # Создаем график - вариант 1 (используем seaborn)
+        # Создаем график
+
+        # # вариант 1 (используем seaborn)
         # ax = sns.countplot(data=self.df, x="Пробег_бин")
         # ax.bar_label(ax.containers[0], label_type="edge")
 
-        # Создаем график - вариант 2 (используем matplotlib)
+        # вариант 2 (используем matplotlib)
         # # Подсчитываем количество в каждом бине
         # bin_counts = self.df["Пробег_бин"].value_counts().sort_index()
         # Используем уже отфильтрованные данные
         bin_counts = self.bins_data  # Вместо value_counts()
+        len_bin_counts = len(bin_counts)
 
         # Создаем столбчатую диаграмму
         bars = plt.bar(
-            range(len(bin_counts)),
+            range(len_bin_counts),
             bin_counts.values,
             color="skyblue",
             edgecolor="black",
@@ -204,9 +205,13 @@ class MileageChartProcessor:
             end = int(interval.right)
             x_labels.append(f"{start}-{end}")
 
-        # Настраиваем оси с подписями
-        plt.xticks(range(len(bin_counts)), x_labels, rotation=89)
-        # plt.xticks(rotation=45)
+        # Настраиваем подписи для оси X
+        # Если столбцов больше 10 - вертикальные подписи по оси Х, иначе - горизонтальные
+        if len_bin_counts > 10:
+            plt.xticks(range(len_bin_counts), x_labels, rotation=89)
+        else:
+            plt.xticks(range(len_bin_counts), x_labels)
+
         filter_text = self._get_filter_names()
         plt.title(
             f"Распределение по пробегу с шагом {self.step} км. для {filter_text} за {self.year} год"
@@ -215,8 +220,10 @@ class MileageChartProcessor:
         plt.ylabel("Количество")
 
         # Добавляем информацию в правый верхний угол
+
         # # вариант 1
         # plt.legend(fontsize=10, title=f"Всего дефектных изделий {len(self.df)} шт.")
+
         # # вариант 2 - Текст с общей информацией, заметками в любом месте графика по координатам
         # plt.figtext(  # Размещает текст в любом месте графика по координатам - (0.02, 0.02) означают левый нижний угол
         #     0.98,  # (0.98, 0.98) - координаты правого верхнего угла
@@ -227,6 +234,7 @@ class MileageChartProcessor:
         #     va="top",
         #     bbox=dict(boxstyle="round,pad=0.3", facecolor="lightgray"),
         # )
+
         # вариант 3 - Простой текст без рамки
         plt.text(
             0.98,
@@ -250,6 +258,89 @@ class MileageChartProcessor:
 
         return base64.b64encode(plot_data).decode("utf-8")
 
+    def save_files(self):
+        """Сохранение файлов на диск"""
+
+        # TXT файл
+        txt_path = get_mileage_chart_txt_path()
+        filter_text = self._get_filter_names()
+
+        with open(txt_path, "w", encoding="utf-8") as f:
+            print(
+                f"\n\tРаспределение по пробегу с шагом {self.step} км. для {filter_text} за {self.year} год\n\n",
+                file=f,
+            )
+            f.write(self.bins_data.to_string())
+
+        # PNG файл
+        png_path = get_mileage_chart_png_path()
+
+        # Пересоздаем график для сохранения
+        plt.figure(figsize=(12, 6))
+
+        # Используем уже отфильтрованные данные
+        bin_counts = self.bins_data
+        len_bin_counts = len(bin_counts)
+
+        # Создаем столбчатую диаграмму
+        bars = plt.bar(
+            range(len_bin_counts),
+            bin_counts.values,
+            color="skyblue",
+            edgecolor="black",
+        )
+
+        # Добавляем подписи на столбцы
+        for i, bar in enumerate(bars):
+            height = bar.get_height()
+            if height > 0:  # Показываем только ненулевые значения
+                plt.text(
+                    bar.get_x() + bar.get_width() / 2.0,
+                    height + 0.02,
+                    str(int(height)),
+                    ha="center",
+                    va="bottom",
+                )
+
+        # Создаем красивые подписи для оси X
+        x_labels = []
+        for interval in bin_counts.index:
+            start = int(interval.left)
+            end = int(interval.right)
+            x_labels.append(f"{start}-{end}")
+
+        # Настраиваем подписи для оси X
+        if len_bin_counts > 10:
+            plt.xticks(range(len_bin_counts), x_labels, rotation=89)
+        else:
+            plt.xticks(range(len_bin_counts), x_labels)
+
+        filter_text = self._get_filter_names()
+        plt.title(
+            f"Распределение по пробегу с шагом {self.step} км. для {filter_text} за {self.year} год"
+        )
+        plt.xlabel("Пробег (диапазоны)")
+        plt.ylabel("Количество")
+
+        # Добавляем информацию в правый верхний угол
+        plt.text(
+            0.98,
+            0.95,
+            f"Проанализировано рекламаций: {len(self.df)} шт.",
+            transform=plt.gca().transAxes,
+            ha="right",
+            va="top",
+            fontsize=10,
+        )
+
+        plt.tight_layout()
+
+        # Сохраняем в файл
+        plt.savefig(png_path, dpi=300, bbox_inches="tight")
+        plt.close()
+
+        return txt_path, png_path
+
     def generate_report(self):
         """Главный метод генерации отчета"""
         try:
@@ -266,7 +357,7 @@ class MileageChartProcessor:
                     "message_type": "error",
                 }
 
-            # Создаем график
+            # Создаем график для веб
             chart_base64 = self.create_chart_base64()
 
             # Преобразуем Interval ключи в строки и добавляем проценты
@@ -284,17 +375,22 @@ class MileageChartProcessor:
                     "percentage": percentage,
                 }
 
+            # Сохраняем файлы
+            txt_path, png_path = self.save_files()
+
             filter_text = self._get_filter_names()
 
             return {
                 "success": True,
                 "message": f"Анализ для {filter_text} завершен",
-                # table_data теперь содержит и count с обычными строковыми ключами и percentage с процентами
+                "full_message": f"Файлы с таблицей и графиком находятся в папке {BASE_REPORTS_DIR}",
                 "table_data": table_data,
                 "chart_base64": chart_base64,
                 "total_records": len(self.df),
                 "filter_text": filter_text,
                 "year": self.year,
+                "txt_path": txt_path,
+                "png_path": png_path,
                 "message_type": "success",
             }
 

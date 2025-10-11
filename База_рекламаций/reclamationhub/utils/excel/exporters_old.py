@@ -13,7 +13,7 @@ class ReclamationExcelExporter:
     def __init__(self):
         self.wb = Workbook()
         self.ws = self.wb.active
-        self.ws.title = "Рекламации и исследования"  # можно задать имя листа
+        self.ws.title = "База рекламаций"  # можно задать имя листа
 
     def _write_reclamation_data(self):
         """Метод для записи данных из базы данных в Excel"""

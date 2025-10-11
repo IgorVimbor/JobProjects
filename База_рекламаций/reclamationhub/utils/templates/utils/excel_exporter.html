@@ -1,0 +1,322 @@
+<!-- utils/templates/utils/excel_exporter.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-file-excel text-success"></i>
+                        {{ page_title }}
+                    </h3>
+                    <p class="text-muted mb-0">{{ description }}</p>
+                </div>
+
+                <div class="card-body">
+                    <!-- Быстрые действия -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="btn-toolbar" role="toolbar">
+                                <div class="btn-group me-2" role="group">
+                                    <button type="button" class="btn btn-success" onclick="quickExport()">
+                                        <i class="fas fa-bolt"></i> Быстрый экспорт
+                                    </button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-primary" onclick="selectAll()">
+                                        <i class="fas fa-check-square"></i> Выбрать все
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="clearAll()">
+                                        <i class="fas fa-square"></i> Очистить все
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post" id="exportForm">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <!-- Выбор полей -->
+                            <div class="col-md-8">
+                                <h5>Выберите поля для экспорта:</h5>
+
+                                {% for group_name, fields in grouped_fields.items %}
+                                <div class="field-group mb-4">
+                                    <h6 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-{% if group_name == 'Рекламации' %}exclamation-triangle{% else %}search{% endif %}"></i>
+                                        {{ group_name }}
+                                        <span class="badge bg-secondary">{{ fields|length }}</span>
+                                    </h6>
+
+                                    <div class="row">
+                                        {% for field in fields %}
+                                        <div class="col-md-6 col-lg-4 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input field-checkbox"
+                                                       type="checkbox"
+                                                       name="selected_fields"
+                                                       value="{{ field.key }}"
+                                                       id="field_{{ forloop.counter0 }}"
+                                                       data-group="{{ group_name }}">
+                                                <label class="form-check-label" for="field_{{ forloop.counter0 }}">
+                                                    {{ field.header }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Панели справа -->
+                            <div class="col-md-4">
+                                <div class="position-sticky" style="top: 20px;">
+                                    <!-- ИНФОРМАЦИОННАЯ ПАНЕЛЬ -->
+                                    <!-- <div class="card border-info mb-3">
+                                    <div class="card mt-3 border-warning">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-bolt"></i>
+                                                Быстрый экспорт
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="small mb-2">
+                                                <strong>{{ quick_fields_count }} полей</strong> включены в быстрый экспорт:
+                                            </p>
+                                            <div class="small" style="max-height: 200px; overflow-y: auto;">
+                                                <ol class="mb-0 ps-3">
+                                                    {% for field_name in quick_export_fields %}
+                                                    <li class="mb-1">{{ field_name }}</li>
+                                                    {% endfor %}
+                                                </ol>
+                                            </div>
+                                            <hr class="my-2">
+                                            <button type="button" class="btn btn-success btn-sm w-100" onclick="quickExport()">
+                                                <i class="fas fa-bolt"></i> Выполнить быстрый экспорт
+                                            </button>
+                                        </div>
+                                    </div>
+                                    -->
+
+                                    <!-- Информационная панель -->
+                                    <div class="card mt-3 border-warning">
+                                        <div class="card-body small">
+                                            <h6 class="text-warning">
+                                                <i class="fas fa-info-circle"></i>
+                                                Информация
+                                            </h6>
+                                            <ul class="mb-0">
+                                                <!-- <li>Всего доступно полей: <strong>{{ total_fields }}</strong></li> -->
+                                                <li>Быстрый экспорт включает основные поля:</li>
+                                                <div class="small" style="max-height: 200px; overflow-y: auto;">
+                                                    <ol class="mb-0 ps-3">
+                                                        {% for field_name in quick_export_fields %}
+                                                        <li class="mb-1">{{ field_name }}</li>
+                                                        {% endfor %}
+                                                    </ol>
+                                                </div>
+                                                <hr class="my-2">
+                                                <button type="button" class="btn btn-success btn-sm w-100" onclick="quickExport()">
+                                                    <i class="fas fa-bolt"></i> Выполнить быстрый экспорт
+                                                </button>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- ПАНЕЛЬ ПРЕДВАРИТЕЛЬНОГО ПРОСМОТРА -->
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-eye"></i>
+                                                Предпросмотр выбора
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="selection-info">
+                                                <p class="text-muted">Выберите поля для просмотра</p>
+                                            </div>
+
+                                            <div id="selected-fields-list" style="display: none;">
+                                                <p class="fw-bold">Выбрано полей: <span id="selected-count">0</span></p>
+                                                <div class="small">
+                                                    <ul id="fields-list" class="list-unstyled"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button type="submit" class="btn btn-success w-100" id="exportBtn" disabled>
+                                                <i class="fas fa-file-excel"></i>
+                                                Экспортировать в Excel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Сообщения -->
+            {% if messages %}
+            <div class="row">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<!-- Скрипты -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.field-checkbox');
+    const exportBtn = document.getElementById('exportBtn');
+    const selectedCount = document.getElementById('selected-count');
+    const fieldsList = document.getElementById('fields-list');
+    const selectedFieldsDiv = document.getElementById('selected-fields-list');
+    const selectionInfo = document.getElementById('selection-info');
+
+    // Обновление предпросмотра при изменении выбора
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updatePreview);
+    });
+
+    function updatePreview() {
+        const selected = document.querySelectorAll('.field-checkbox:checked');
+        const count = selected.length;
+
+        selectedCount.textContent = count;
+
+        if (count === 0) {
+            exportBtn.disabled = true;
+            selectedFieldsDiv.style.display = 'none';
+            selectionInfo.style.display = 'block';
+        } else {
+            exportBtn.disabled = false;
+            selectedFieldsDiv.style.display = 'block';
+            selectionInfo.style.display = 'none';
+
+            // Обновляем список выбранных полей
+            fieldsList.innerHTML = '';
+            selected.forEach((checkbox, index) => {
+                const label = document.querySelector(`label[for="${checkbox.id}"]`).textContent;
+                const group = checkbox.dataset.group;
+
+                const li = document.createElement('li');
+                li.className = 'mb-1';
+                li.innerHTML = `
+                    <span class="badge bg-${group === 'Рекламации' ? 'primary' : 'success'} me-1">${index + 1}</span>
+                    <small>${label}</small>
+                `;
+                fieldsList.appendChild(li);
+            });
+        }
+    }
+
+    // Первоначальное обновление
+    updatePreview();
+});
+
+// Вспомогательные функции
+function selectAll() {
+    document.querySelectorAll('.field-checkbox').forEach(cb => {
+        cb.checked = true;
+        cb.dispatchEvent(new Event('change'));
+    });
+}
+
+function clearAll() {
+    document.querySelectorAll('.field-checkbox').forEach(cb => {
+        cb.checked = false;
+        cb.dispatchEvent(new Event('change'));
+    });
+}
+
+function quickExport() {
+    if (confirm('Выполнить быстрый экспорт основных полей?')) {
+        window.location.href = "{% url 'utils:quick_export' %}";
+    }
+}
+
+function downloadTemplate() {
+    window.location.href = "{% url 'utils:excel_exporter' %}";
+}
+
+// Предотвращение случайной отправки формы
+document.getElementById('exportForm').addEventListener('submit', function(e) {
+    const selected = document.querySelectorAll('.field-checkbox:checked');
+    if (selected.length === 0) {
+        e.preventDefault();
+        alert('Выберите хотя бы одно поле для экспорта');
+        return false;
+    }
+
+    if (selected.length > 25) {
+        if (!confirm(`Выбрано ${selected.length} полей. Это может замедлить экспорт. Продолжить?`)) {
+            e.preventDefault();
+            return false;
+        }
+    }
+
+    // Показываем индикатор загрузки
+    const btn = document.getElementById('exportBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Экспортирую...';
+    btn.disabled = true;
+});
+</script>
+
+<style>
+.field-group {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid #dee2e6;
+}
+
+.form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.position-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.btn-toolbar .btn-group:not(:last-child) {
+    margin-right: 0.5rem;
+}
+
+#fields-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.card-header.bg-info {
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+</style>
+{% endblock %}
