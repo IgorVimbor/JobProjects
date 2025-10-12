@@ -18,34 +18,42 @@
                 </div>
 
                 <div class="card-body">
-                    <!-- Быстрые действия -->
-                    <div class="row mb-4">
-                        <div class="col-md-12">
-                            <div class="btn-toolbar" role="toolbar">
-                                <div class="btn-group me-2" role="group">
-                                    <button type="button" class="btn btn-success" onclick="quickExport()">
-                                        <i class="fas fa-bolt"></i> Быстрый экспорт
-                                    </button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-outline-primary" onclick="selectAll()">
-                                        <i class="fas fa-check-square"></i> Выбрать все
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="clearAll()">
-                                        <i class="fas fa-square"></i> Очистить все
-                                    </button>
+                    <form method="post" id="exportForm">
+                        {% csrf_token %}
+
+                        <!-- Выбор года -->
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="year" class="form-label fw-bold">Год экспорта данных:</label>
+                                    <select class="form-select" id="year" name="year" required>
+                                        {% for year in available_years %}
+                                            {% if year == "all" %}
+                                                <option value="all" {% if year == current_year %}selected{% endif %}>Все годы</option>
+                                            {% else %}
+                                                <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <form method="post" id="exportForm">
-                        {% csrf_token %}
 
                         <div class="row">
                             <!-- Выбор полей -->
                             <div class="col-md-8">
-                                <h5>Выберите поля для экспорта:</h5>
+                                <!-- ПЕРЕНОСИМ КНОПКИ СЮДА -->
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Выберите столбцы для экспорта:</h5>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="selectAll()">
+                                            <i class="fas fa-check-square"></i> Выбрать все
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAll()">
+                                            <i class="fas fa-square"></i> Очистить все
+                                        </button>
+                                    </div>
+                                </div>
 
                                 {% for group_name, fields in grouped_fields.items %}
                                 <div class="field-group mb-4">
@@ -59,13 +67,14 @@
                                         {% for field in fields %}
                                         <div class="col-md-6 col-lg-4 mb-2">
                                             <div class="form-check">
+                                                <!-- Используем field.key для уникального ID -->
                                                 <input class="form-check-input field-checkbox"
-                                                       type="checkbox"
-                                                       name="selected_fields"
-                                                       value="{{ field.key }}"
-                                                       id="field_{{ forloop.counter0 }}"
-                                                       data-group="{{ group_name }}">
-                                                <label class="form-check-label" for="field_{{ forloop.counter0 }}">
+                                                    type="checkbox"
+                                                    name="selected_fields"
+                                                    value="{{ field.key }}"
+                                                    id="field_{{ field.key|slugify }}"
+                                                    data-group="{{ group_name }}">
+                                                <label class="form-check-label" for="field_{{ field.key|slugify }}">
                                                     {{ field.header }}
                                                 </label>
                                             </div>
@@ -78,76 +87,40 @@
 
                             <!-- Панели справа -->
                             <div class="col-md-4">
-                                <div class="position-sticky" style="top: 20px;">
-                                    <!-- ИНФОРМАЦИОННАЯ ПАНЕЛЬ -->
-                                    <!-- <div class="card border-info mb-3">
-                                    <div class="card mt-3 border-warning">
-                                        <div class="card-header bg-info text-white">
-                                            <h6 class="mb-0">
-                                                <i class="fas fa-bolt"></i>
-                                                Быстрый экспорт
-                                            </h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <p class="small mb-2">
-                                                <strong>{{ quick_fields_count }} полей</strong> включены в быстрый экспорт:
-                                            </p>
-                                            <div class="small" style="max-height: 200px; overflow-y: auto;">
-                                                <ol class="mb-0 ps-3">
-                                                    {% for field_name in quick_export_fields %}
-                                                    <li class="mb-1">{{ field_name }}</li>
-                                                    {% endfor %}
-                                                </ol>
-                                            </div>
-                                            <hr class="my-2">
-                                            <button type="button" class="btn btn-success btn-sm w-100" onclick="quickExport()">
-                                                <i class="fas fa-bolt"></i> Выполнить быстрый экспорт
-                                            </button>
-                                        </div>
+                                <!-- Информационная панель - ТЕПЕРЬ НА ОДНОМ УРОВНЕ С КНОПКАМИ -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>ℹ️ Информация</h5>
                                     </div>
-                                    -->
-
-                                    <!-- Информационная панель -->
-                                    <div class="card mt-3 border-warning">
-                                        <div class="card-body small">
-                                            <h6 class="text-warning">
-                                                <i class="fas fa-info-circle"></i>
-                                                Информация
-                                            </h6>
-                                            <ul class="mb-0">
-                                                <!-- <li>Всего доступно полей: <strong>{{ total_fields }}</strong></li> -->
-                                                <li>Быстрый экспорт включает основные поля:</li>
-                                                <div class="small" style="max-height: 200px; overflow-y: auto;">
-                                                    <ol class="mb-0 ps-3">
-                                                        {% for field_name in quick_export_fields %}
-                                                        <li class="mb-1">{{ field_name }}</li>
-                                                        {% endfor %}
-                                                    </ol>
-                                                </div>
-                                                <hr class="my-2">
-                                                <button type="button" class="btn btn-success btn-sm w-100" onclick="quickExport()">
-                                                    <i class="fas fa-bolt"></i> Выполнить быстрый экспорт
-                                                </button>
-                                            </ul>
-                                        </div>
+                                    <div class="card-body">
+                                        <h6>Быстрый экспорт включает столбцы:</h6>
+                                        <ul class="mb-0">
+                                            {% for field_name in quick_export_fields %}
+                                                <li class="small">{{ field_name }}</li>
+                                            {% endfor %}
+                                        </ul>
                                     </div>
+                                    <div class="card-footer">
+                                        <button type="button" class="btn btn-success w-100" onclick="quickExport()">
+                                            <i class="fas fa-bolt"></i> Выполнить быстрый экспорт
+                                        </button>
+                                    </div>
+                                </div>
 
-
-                                    <!-- ПАНЕЛЬ ПРЕДВАРИТЕЛЬНОГО ПРОСМОТРА -->
-                                    <div class="card border-info">
-                                        <div class="card-header bg-info text-white">
-                                            <h6 class="mb-0">
-                                                <i class="fas fa-eye"></i>
-                                                Предпросмотр выбора
-                                            </h6>
+                                <!-- Панель предварительного просмотра -->
+                                <div class="mt-3">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>ℹ️ Предпросмотр выбора</h5>
                                         </div>
+
                                         <div class="card-body">
                                             <div id="selection-info">
-                                                <p class="text-muted">Выберите поля для просмотра</p>
+                                                <p class="text-muted">Просмотр выбранных столбцов</p>
                                             </div>
 
                                             <div id="selected-fields-list" style="display: none;">
-                                                <p class="fw-bold">Выбрано полей: <span id="selected-count">0</span></p>
+                                                <p class="fw-bold">Выбраны столбцы: <span id="selected-count">0</span></p>
                                                 <div class="small">
                                                     <ul id="fields-list" class="list-unstyled"></ul>
                                                 </div>
@@ -252,9 +225,9 @@ function clearAll() {
 }
 
 function quickExport() {
-    if (confirm('Выполнить быстрый экспорт основных полей?')) {
-        window.location.href = "{% url 'utils:quick_export' %}";
-    }
+    const selectedYear = document.getElementById('year').value;
+    const url = "{% url 'utils:quick_export' %}?year=" + selectedYear;
+    window.location.href = url;
 }
 
 function downloadTemplate() {

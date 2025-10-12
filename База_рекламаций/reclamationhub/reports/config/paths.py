@@ -98,9 +98,10 @@ def get_mileage_chart_png_path():
 # ===================== EXCEL EXPORTER ======================
 
 
-def get_excel_exporter_path():
+def get_excel_exporter_path(year):
     """Excel файл Базы рекламаций по выбранным столбцам"""
-    filename = f"ЖУРНАЛ РЕКЛАМАЦИЙ {year_now}_{date_today}.xlsx"
+    year_select = year if year else "все годы"
+    filename = f"ЖУРНАЛ УЧЕТА_{year_select}_{date_today}.xlsx"
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 

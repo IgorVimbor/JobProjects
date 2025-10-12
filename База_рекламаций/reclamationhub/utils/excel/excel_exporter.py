@@ -1,34 +1,31 @@
 from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Font
+from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
-from django.http import HttpResponse
-from datetime import datetime
-from urllib.parse import quote
-from django.apps import apps
 
 from reclamations.models import Reclamation
-from investigations.models import Investigation
-from reports.config.paths import BASE_REPORTS_DIR, get_excel_exporter_path
+from reports.config.paths import get_excel_exporter_path
 
 
 class UniversalExcelExporter:
     """Универсальный экспортер Excel с выбором полей"""
 
-    def __init__(self, selected_fields=None):
+    def __init__(self, selected_fields=None, year=None):
         self.wb = Workbook()
         self.ws = self.wb.active
         self.ws.title = "Выгрузка данных"
         self.selected_fields = selected_fields or []
+        # Доступные поля для экспорта
         self.field_config = self._get_field_configuration()
-        # Путь для сохранения файла
-        self.save_path = get_excel_exporter_path()
+        self.year = year  # Год данных из базы
+        # Путь для сохранения файла с учетом выбранного года
+        self.save_path = get_excel_exporter_path(year)
 
     def _get_field_configuration(self):
         """Конфигурация доступных полей для экспорта"""
         return {
             # Поля Reclamation
             "reclamation.id": {
-                "header": "ID рекламации",
+                "header": "Номер строки",
                 "model": "reclamation",
                 "field": "id",
                 "type": "direct",
@@ -216,6 +213,36 @@ class UniversalExcelExporter:
         except Exception:
             return ""
 
+    def _apply_cell_formatting(self, cell, is_header=False):
+        """Применить форматирование к ячейке"""
+
+        # Границы для всех ячеек
+        border = Border(
+            left=Side(style="thin"),
+            right=Side(style="thin"),
+            top=Side(style="thin"),
+            bottom=Side(style="thin"),
+        )
+
+        # Центрирование по центру (горизонтально и вертикально) + перенос строк
+        alignment = Alignment(wrap_text=True, horizontal="center", vertical="center")
+
+        if is_header:
+            # Заголовки: размер 8, не жирный
+            cell.font = Font(size=8, bold=False)
+            # Серый фон для заголовков
+            cell.fill = PatternFill(
+                start_color="D3D3D3", end_color="D3D3D3", fill_type="solid"
+            )
+        else:
+            # Обычные ячейки: размер 9
+            cell.font = Font(size=9)
+            # Фон по умолчанию (белый)
+
+        # Применяем границы и выравнивание ко всем ячейкам
+        cell.border = border
+        cell.alignment = alignment
+
     def _write_data(self):
         """Записать данные в Excel согласно выбранным полям"""
         if not self.selected_fields:
@@ -229,41 +256,87 @@ class UniversalExcelExporter:
 
         for col, header in enumerate(headers, 1):
             cell = self.ws.cell(row=1, column=col, value=header)
-            # Стиль заголовка
-            cell.fill = PatternFill(
-                start_color="D3D3D3", end_color="D3D3D3", fill_type="solid"
-            )
-            cell.font = Font(bold=True)
+            # Применяем форматирование заголовка
+            self._apply_cell_formatting(cell, is_header=True)
 
-        # Получаем данные с оптимизацией запросов
-        reclamations = (
-            Reclamation.objects.all()
-            .select_related("product_name", "product")
-            .prefetch_related("investigation")
-        )
+        # # Получаем данные с оптимизацией запросов
+        # reclamations = (
+        #     Reclamation.objects.all()
+        #     .select_related("product_name", "product")
+        #     .prefetch_related("investigation")
+        # )
+
+        # Получаем данные с фильтрацией по году
+        queryset = Reclamation.objects.select_related(
+            "product_name", "product"
+        ).prefetch_related("investigation")
+
+        # Применяем фильтр по году если выбран
+        if self.year and str(self.year) != "all":
+            queryset = queryset.filter(year=self.year)
+
+        reclamations = queryset
 
         # Записываем данные
         for row, reclamation in enumerate(reclamations, 2):
             for col, field_key in enumerate(self.selected_fields, 1):
                 if field_key in self.field_config:
                     value = self._get_field_value(reclamation, field_key)
-                    self.ws.cell(row=row, column=col, value=value)
+                    cell = self.ws.cell(row=row, column=col, value=value)
+                    # Применяем форматирование данных
+                    self._apply_cell_formatting(cell, is_header=False)
 
     def _adjust_column_width(self):
-        """Автоматическая настройка ширины колонок"""
-        for column in self.ws.columns:
-            max_length = 0
-            column_letter = get_column_letter(column[0].column)
+        """Настройка ширины колонок"""
+        # Словарь: название поля → ширина столбца
+        custom_widths = {
+            "Номер строки": 9,
+            "Дата поступления сообщения": 14,
+            "Период выявления дефекта": 17,
+            "Наименование изделия": 16,
+            "Обозначение изделия": 17,
+            "Количество изделий": 10,
+            "Номер изделия": 10,
+            "Дата изготовления": 10,
+            "Заявленный дефект": 20,
+            "Номер акта рекламации": 14,
+            "Дата акта рекламации": 14,
+            "Марка двигателя": 14,
+            "Номер двигателя": 14,
+            "Транспортное средство": 16,
+            "Пробег/наработка": 14,
+            "Номер акта исследования": 14,
+            "Дата акта исследования": 14,
+            "Заключение": 11,
+            "Причины дефекта": 22,
+            "Пояснения к причинам дефекта": 25,
+            "Поставщик дефектного комплектующего": 22,
+        }
 
-            for cell in column:
-                try:
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
-                except:
-                    pass
+        # Получаем заголовки для сопоставления
+        headers = []
+        for field_key in self.selected_fields:
+            if field_key in self.field_config:
+                headers.append(self.field_config[field_key]["header"])
 
-            adjusted_width = min(max_length + 2, 50)  # Ограничиваем максимальную ширину
-            self.ws.column_dimensions[column_letter].width = adjusted_width
+        # Устанавливаем ширину для каждого столбца
+        for col_num, header in enumerate(headers, 1):
+            column_letter = get_column_letter(col_num)
+
+            # Берем ширину из словаря или ставим дефолтную
+            width = custom_widths.get(header, 20)  # 20 - дефолтная ширина
+
+            self.ws.column_dimensions[column_letter].width = width
+
+    def _apply_filter_and_freeze_row(self):
+        """Добавить автофильтр к строке заголовков и закрепить заголовки"""
+        if self.ws.max_row > 1:  # Проверяем, что есть данные
+            # Фильтр только для первой строки (заголовки)
+            header_range = f"A1:{get_column_letter(len(self.selected_fields))}1"
+            self.ws.auto_filter.ref = header_range
+
+            # Закрепляем первую строку (заголовки)
+            self.ws.freeze_panes = "A2"
 
     def export_to_excel(self):
         """Основной метод экспорта в файл Excel"""
@@ -271,8 +344,9 @@ class UniversalExcelExporter:
         if not self.selected_fields:
             raise ValueError("Не выбраны поля для экспорта")
 
-        self._write_data()
-        self._adjust_column_width()
+        self._write_data()  # Записываем данные с форматированием
+        self._adjust_column_width()  # Настраиваем ширину столбцов
+        self._apply_filter_and_freeze_row()  # Добавляем фильтры и закрпляем заголовок
 
         # Сохраняем файл на диск
         self.wb.save(self.save_path)

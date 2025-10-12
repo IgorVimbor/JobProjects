@@ -3,7 +3,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
+from reclamations.models import Reclamation
 from utils.excel.excel_exporter import UniversalExcelExporter
+from reports.config.paths import BASE_REPORTS_DIR
 
 
 # Список полей для быстрого экспорта
@@ -17,6 +19,7 @@ QUICK_EXPORT_FIELDS = [
     "reclamation.claimed_defect",
     "reclamation.mileage_operating_time",
     "investigation.act_number",
+    "investigation.solution",
     "investigation.defect_causes",
     "investigation.defect_causes_explanation",
 ]
@@ -50,16 +53,23 @@ def excel_exporter_page(request):
             grouped_fields[group] = []
         grouped_fields[group].append(field)
 
+    # Получаем доступные годы
+    available_years = ["all"] + list(
+        Reclamation.objects.values_list("year", flat=True).distinct().order_by("-year")
+    )
+
     # Получаем названия полей быстрого экспорта
     quick_export_names = get_quick_export_field_names()
 
     context = {
         "page_title": "Универсальный экспорт данных",
-        "description": "Выберите поля для экспорта в Excel файл",
+        "description": "Для экспорта в Excel файл выберите столбцы или воспользуйтесь быстрым экспортом с предустановленным набором столбцов",
         "grouped_fields": grouped_fields,
         "total_fields": len(available_fields),
         "quick_export_fields": quick_export_names,
         "quick_fields_count": len(quick_export_names),
+        "available_years": available_years,
+        "current_year": "all",  # По умолчанию все годы
     }
 
     return render(request, "utils/excel_exporter.html", context)
@@ -70,6 +80,7 @@ def handle_export(request):
     try:
         # Получаем выбранные поля
         selected_fields = request.POST.getlist("selected_fields")
+        year = request.POST.get("year")  # Получаем выбранный год
 
         if not selected_fields:
             messages.warning(request, "⚠️ Выберите хотя бы одно поле для экспорта")
@@ -89,12 +100,30 @@ def handle_export(request):
             )
             return redirect("utils:excel_exporter")
 
-        # Создаем экспортер и генерируем файл
-        exporter = UniversalExcelExporter(selected_fields=selected_fields)
+        # Валидация года
+        available_years = ["all"] + list(
+            Reclamation.objects.values_list("year", flat=True).distinct()
+        )
+        if year not in [str(y) for y in available_years]:
+            messages.warning(request, "❌ Некорректный год")
+            return redirect("utils:excel_exporter")
+
+        # Преобразуем year для передачи в экспортер
+        export_year = None if year == "all" else int(year)
+
+        # Создаем экспортер с годом и генерируем файл
+        exporter = UniversalExcelExporter(
+            selected_fields=selected_fields, year=export_year
+        )
 
         # Вызываем экспорт и проверяем результат
         if exporter.export_to_excel():
-            messages.success(request, "✅ Экспорт завершен успешно!")
+            year_text = "все годы" if year == "all" else f"{year} год"
+            messages.success(request, f"✅ Экспорт за {year_text} завершен успешно!")
+            messages.success(
+                request,
+                f"✅ Файл ЖУРНАЛ УЧЕТА_{year_text}.xlsx находится в папке {BASE_REPORTS_DIR}",
+            )
         else:
             messages.warning(request, "❌ Ошибка при сохранении файла")
 
@@ -148,19 +177,32 @@ def get_fields_preview(request):
 def quick_export_reclamations(request):
     """Быстрый экспорт основных полей рекламаций"""
     try:
-        # Используем общую константу
-        exporter = UniversalExcelExporter(selected_fields=QUICK_EXPORT_FIELDS)
+        # Получаем год из GET параметров или используем текущий
+        year = request.GET.get("year", "all")
+        export_year = None if year == "all" else int(year)
+
+        # Создаем экспортер с годом используя общую константу
+        exporter = UniversalExcelExporter(
+            selected_fields=QUICK_EXPORT_FIELDS, year=export_year
+        )
 
         # Проверяем результат экспорта
         if exporter.export_to_excel():
-            messages.success(request, "✅ Быстрый экспорт выполнен успешно!")
+            year_text = "все годы" if year == "all" else f"{year} год"
+            messages.success(
+                request, f"✅ Быстрый экспорт за {year_text} выполнен успешно!"
+            )
+            messages.success(
+                request,
+                f"✅ Файл ЖУРНАЛ УЧЕТА_{year_text}.xlsx находится в папке {BASE_REPORTS_DIR}",
+            )
         else:
-            messages.error(request, "❌ Ошибка при быстром экспорте")
+            messages.warning(request, "❌ Ошибка при быстром экспорте")
 
         return redirect("utils:excel_exporter")
 
     except Exception as e:
-        messages.error(
+        messages.warning(
             request,
             f"❌ Ошибка при быстром экспорте! Возможно у вас открыт файл ЖУРНАЛА РЕКЛАМАЦИЙ. Закройте файл и повторите экспорт.",
         )
