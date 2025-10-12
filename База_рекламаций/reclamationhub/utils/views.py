@@ -63,7 +63,7 @@ def excel_exporter_page(request):
 
     context = {
         "page_title": "Универсальный экспорт данных",
-        "description": "Для экспорта в Excel файл выберите столбцы или воспользуйтесь быстрым экспортом с предустановленным набором столбцов",
+        "description": "✅ Для экспорта в Excel файл выберите столбцы или воспользуйтесь быстрым экспортом с предустановленным набором столбцов",
         "grouped_fields": grouped_fields,
         "total_fields": len(available_fields),
         "quick_export_fields": quick_export_names,
