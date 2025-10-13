@@ -195,9 +195,8 @@ def add_invoice_out_view(admin_instance, request):
             shipment_invoice_number = form.cleaned_data["shipment_invoice_number"]
             shipment_invoice_date = form.cleaned_data["shipment_invoice_date"]
 
-            # Собираем все введенные номера
-            all_input_numbers = []
-            filter_q = Q()
+            all_input_numbers = [] # Собираем все введенные номера
+            filter_q = Q()  # Инициализируем общий фильтр
 
             # Обработка номеров актов исследования
             if form.cleaned_data["act_numbers"]:
@@ -210,9 +209,9 @@ def add_invoice_out_view(admin_instance, request):
                 current_year = timezone.now().year
                 full_act_numbers = [f"{current_year} № {num}" for num in act_list]
 
-                all_input_numbers.extend(
-                    act_list
-                )  # Для отчетов сохраняем исходные номера
+                # Для информационных сообщений сохраняем исходные номера
+                all_input_numbers.extend(act_list)
+                # Добавляем полные номера в общий фильтр
                 filter_q |= Q(act_number__in=full_act_numbers)
 
             # Обработка номеров ПСА (через связь с Reclamation)
@@ -222,8 +221,32 @@ def add_invoice_out_view(admin_instance, request):
                     for num in form.cleaned_data["sender_numbers"].split(",")
                     if num.strip()
                 ]
-                all_input_numbers.extend(sender_list)
+                all_input_numbers.extend(sender_list)  # Сохраняем номера
+                # Добавляем номера в общий фильтр
                 filter_q |= Q(reclamation__sender_outgoing_number__in=sender_list)
+
+            # Обработка номеров актов рекламаций (через связь с Reclamation)
+            if form.cleaned_data["reclamation_act_numbers"]:
+                consumer_act_list = [
+                    num.strip()
+                    for num in form.cleaned_data["reclamation_act_numbers"].split(",")
+                    if num.strip()
+                ]
+                all_input_numbers.extend(consumer_act_list)  # Сохраняем номера
+                # Добавляем номера в общий фильтр
+                # Фильтруем по столбцу "Номер акта приобретаиеля изделия"
+                filter_q |= Q(reclamation__consumer_act_number__in=consumer_act_list)
+                # Фильтруем по столбцу "Номер акта конечного потребителя"
+                filter_q |= Q(reclamation__end_consumer_act_number__in=consumer_act_list)
+                # Django убирает дубликаты из результатов QuerySet, поэтому если одна запись подходит под оба условия
+                # (и по consumer_act_number, и по end_consumer_act_number), она появится в результате только один раз.
+
+            # Обработка номера накладной прихода (через связь с Reclamation)
+            if form.cleaned_data["receipt_invoice_number"]:
+                invoice_number = form.cleaned_data["receipt_invoice_number"].strip()
+                all_input_numbers.append(invoice_number)  # Сохраняем номер
+                # Добавляем номер в общий фильтр
+                filter_q |= Q(reclamation__receipt_invoice_number=invoice_number)
 
             filtered_queryset = Investigation.objects.filter(filter_q)
 
@@ -238,8 +261,17 @@ def add_invoice_out_view(admin_instance, request):
                 full_act_number = f"{current_year} № {num}"
                 if all_investigations.filter(act_number=full_act_number).exists():
                     found_numbers.add(num)
-                # Проверяем есть ли номер в ПСА рекламаций
+                # Проверяем есть ли номер в ПСА
                 elif all_reclamations.filter(sender_outgoing_number=num).exists():
+                    found_numbers.add(num)
+                # Проверяем есть ли номер в актах рекламаций Приобретателя изделия
+                elif all_reclamations.filter(consumer_act_number=num).exists():
+                    found_numbers.add(num)
+                # Проверяем есть ли номер в актах рекламаций Конечного потребителя
+                elif all_reclamations.filter(end_consumer_act_number=num).exists():
+                    found_numbers.add(num)
+                # Проверяем есть ли номер в накладных прихода
+                elif all_reclamations.filter(receipt_invoice_number=num).exists():
                     found_numbers.add(num)
 
             missing_numbers = [

@@ -191,20 +191,31 @@ class UpdateInvoiceOutForm(forms.Form):
     act_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
         label="Номера актов исследования",
-        help_text="(вводить через запятую, только номера без года, например: 123, 124, 125)",
+        help_text="Если несколько номеров - вводить через запятую только номера актов без года. Например: 123, 124, 125",
         required=False,
     )
     sender_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
         label="Исходящий номер отправителя (ПСА)",
-        help_text="(вводить через запятую)",
+        help_text="Если несколько номеров - вводить через запятую",
+        required=False,
+    )
+    receipt_invoice_number = forms.CharField(
+        label="Номер накладной ПРИХОДА",
+        help_text="Вводить один номер накладной",
+        required=False
+    )
+    reclamation_act_numbers = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 3}),
+        label="Номера актов рекламаций",
+        help_text="Если несколько номеров - вводить через запятую",
         required=False,
     )
     shipment_invoice_number = forms.CharField(
-        label="Номер накладной отгрузки", required=True
+        label="Номер накладной ОТГРУЗКИ", required=True
     )
     shipment_invoice_date = forms.DateField(
-        label="Дата накладной отгрузки",
+        label="Дата накладной ОТГРУЗКИ",
         widget=forms.DateInput(attrs={"type": "date"}),
         required=True,
     )
@@ -217,10 +228,12 @@ class UpdateInvoiceOutForm(forms.Form):
             [
                 cleaned_data.get("act_numbers"),
                 cleaned_data.get("sender_numbers"),
+                cleaned_data.get("receipt_invoice_number"),
+                cleaned_data.get("reclamation_act_numbers"),
             ]
         ):
             raise forms.ValidationError(
-                "Необходимо заполнить хотя бы одно поле с номерами актов или ПСА"
+                "Необходимо заполнить хотя бы одно поле с входными данными!"
             )
 
         # Проверяем, что дата накладной не больше сегодняшней
