@@ -195,7 +195,7 @@ def add_invoice_out_view(admin_instance, request):
             shipment_invoice_number = form.cleaned_data["shipment_invoice_number"]
             shipment_invoice_date = form.cleaned_data["shipment_invoice_date"]
 
-            all_input_numbers = [] # Собираем все введенные номера
+            all_input_numbers = []  # Собираем все введенные номера
             filter_q = Q()  # Инициализируем общий фильтр
 
             # Обработка номеров актов исследования
@@ -237,7 +237,9 @@ def add_invoice_out_view(admin_instance, request):
                 # Фильтруем по столбцу "Номер акта приобретаиеля изделия"
                 filter_q |= Q(reclamation__consumer_act_number__in=consumer_act_list)
                 # Фильтруем по столбцу "Номер акта конечного потребителя"
-                filter_q |= Q(reclamation__end_consumer_act_number__in=consumer_act_list)
+                filter_q |= Q(
+                    reclamation__end_consumer_act_number__in=consumer_act_list
+                )
                 # Django убирает дубликаты из результатов QuerySet, поэтому если одна запись подходит под оба условия
                 # (и по consumer_act_number, и по end_consumer_act_number), она появится в результате только один раз.
 

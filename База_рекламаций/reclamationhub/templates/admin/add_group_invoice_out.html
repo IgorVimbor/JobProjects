@@ -20,14 +20,72 @@
 {# Если нужны дополнительные стили специфичные для формы накладных #}
 {% endblock %}
 
-<!-- Добавляем ссылку "Вернуться к рекламациям" внизу формы -->
 {% block content %}
+
+<!-- Блок предварительного просмотра -->
+{% if preview_mode and preview_messages %}
+<ul class="messagelist">
+    <li><strong>Результаты предварительного просмотра:</strong></li>
+    {% for msg in preview_messages %}
+        <li class="{% if msg.level == 'info' %}info{% elif msg.level == 'success' %}success{% elif msg.level == 'warning' %}warning{% else %}error{% endif %}">
+            {{ msg.message }}
+        </li>
+    {% endfor %}
+    {% if found_records %}
+        <li class="info"><strong>Готово к применению записей: {{ records_count }}</strong></li>
+    {% endif %}
+</ul>
+{% endif %}
+
 {{ block.super }}
-    <a href="{% url 'admin:investigations_investigation_changelist' %}" class="btn btn-secondary">
-        ← Вернуться к исследованиям
-    </a>
-    <br><br>
-    <a href="{% url 'admin:reclamations_reclamation_changelist' %}" class="btn btn-secondary">
-        ← Вернуться к рекламациям
-    </a>
+
+<!-- JavaScript для добавления кнопки -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Находим форму
+    const form = document.querySelector('form[method="post"]');
+    if (!form) {
+        // если форма не найдена завершаем работу
+        return;
+    }
+
+    // Находим контейнер с кнопками
+    let submitRow = form.querySelector('.submit-row');
+    if (!submitRow) {
+        // Если нет .submit-row, ищем любые кнопки submit
+        const submitBtn = form.querySelector('input[type="submit"]');
+        if (submitBtn) {
+            submitRow = submitBtn.parentNode;
+        }
+    }
+
+    if (!submitRow) {
+        // если контейнер кнопок не найден завершаем работу
+        return;
+    }
+
+    // Создаем кнопку предварительного просмотра
+    const previewBtn = document.createElement('input');
+    previewBtn.type = 'submit';
+    previewBtn.name = 'action';
+    previewBtn.value = 'Предварительный просмотр';
+    previewBtn.className = 'default';
+    previewBtn.style.marginRight = '10px';
+
+    // Добавляем кнопку в начало контейнера
+    submitRow.insertBefore(previewBtn, submitRow.firstChild);
+
+});
+</script>
+
+<!-- Добавляем ссылку "Вернуться к рекламациям" внизу формы -->
+<a href="{% url 'admin:investigations_investigation_changelist' %}" class="btn btn-secondary">
+    ← Вернуться к исследованиям
+</a>
+<br><br>
+<a href="{% url 'admin:reclamations_reclamation_changelist' %}" class="btn btn-secondary">
+    ← Вернуться к рекламациям
+</a>
+
 {% endblock %}

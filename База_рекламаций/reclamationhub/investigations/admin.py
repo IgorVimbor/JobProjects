@@ -9,7 +9,8 @@ from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
 from .models import Investigation
 from .forms import InvestigationAdminForm
-from .views import add_group_investigation_view, add_invoice_out_view
+from .views.add_group_investigation import add_group_investigation_view
+from .views.add_invoice_out import add_invoice_out_view
 
 
 class InvestigationYearListFilter(SimpleListFilter):
@@ -287,22 +288,14 @@ class InvestigationAdmin(admin.ModelAdmin):
 
         return super().changelist_view(request, extra_context)
 
-    # def add_group_investigation_view(self, request):
-    #     """Метод добавления группового акта исследования ... Перенесен в views.py ..."""
-    #     # Здесь используется self, а во views.py параметр admin_instance в функции -
-    #     # через него передаем ссылку на InvestigationAdmin для вызова message_user.
-
     def add_group_investigation_view(self, request):
-        """Метод добавления группового акта исследования - делегируем вызов к функции из views.py"""
+        """Метод добавления группового акта исследования - делегируем вызов функции из views"""
+        # Здесь используется self, а во views.py параметр admin_instance
         return add_group_investigation_view(self, request)
 
-    # def add_invoice_out_view(self, request):
-    #     """Метод группового добавления накладной отгрузки изделий... Перенесен в views.py ..."""
-    #     # Здесь используется self, а во views.py параметр admin_instance в функции -
-    #     # через него передаем ссылку на InvestigationAdmin для вызова message_user.
-
     def add_invoice_out_view(self, request):
-        """Метод группового добавления накладной отгрузки изделий - делегируем вызов к функции из views.py"""
+        """Метод группового добавления накладной отгрузки изделий - делегируем вызов функции из views"""
+        # Здесь используется self, а во views.py параметр admin_instance
         return add_invoice_out_view(self, request)
 
     def get_form(self, request, obj=None, **kwargs):
