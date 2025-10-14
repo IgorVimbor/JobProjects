@@ -1,6 +1,7 @@
 # Файл с формами приложения актов исследований Investigation
 
 from django import forms
+from django.utils.safestring import mark_safe
 from django.contrib.admin.widgets import AdminDateWidget
 from django.db.models import Q
 from django.utils import timezone
@@ -34,20 +35,20 @@ class AddInvestigationForm(forms.ModelForm):
     # Поля для поиска рекламаций
     sender_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
-        label="Исходящие номера отправителя",
-        help_text="(вводить через запятую)",
+        label=mark_safe("<p>Исходящие номера отправителя<br>(номера ПСА)</p>"),
+        help_text="Если несколько номеров - вводить через запятую",
         required=False,
     )
     consumer_act_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
         label="Номера актов приобретателя",
-        help_text="(вводить через запятую)",
+        help_text="Если несколько номеров - вводить через запятую",
         required=False,
     )
     end_consumer_act_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
         label="Номера актов конечного потребителя",
-        help_text="(вводить через запятую)",
+        help_text="Если несколько номеров - вводить через запятую",
         required=False,
     )
 
@@ -196,14 +197,14 @@ class UpdateInvoiceOutForm(forms.Form):
     )
     sender_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
-        label="Исходящий номер отправителя (ПСА)",
+        label=mark_safe("<p>Исходящие номера отправителя<br>(номера ПСА)</p>"),
         help_text="Если несколько номеров - вводить через запятую",
         required=False,
     )
     receipt_invoice_number = forms.CharField(
         label="Номер накладной ПРИХОДА",
         help_text="Вводить один номер накладной",
-        required=False
+        required=False,
     )
     reclamation_act_numbers = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),

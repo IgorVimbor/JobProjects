@@ -87,7 +87,7 @@
 
 {% block content %}
 <div class="custom-form">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         <!-- Вывод ошибок формы -->
