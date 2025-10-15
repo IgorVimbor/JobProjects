@@ -261,13 +261,14 @@ document.getElementById('exportForm').addEventListener('submit', function(e) {
         alert('Выберите хотя бы одно поле для экспорта');
         return false;
     }
-
+    /*
     if (selected.length > 25) {
         if (!confirm(`Выбрано ${selected.length} полей. Это может замедлить экспорт. Продолжить?`)) {
             e.preventDefault();
             return false;
         }
     }
+    */
 
     // Показываем индикатор загрузки
     const btn = document.getElementById('exportBtn');

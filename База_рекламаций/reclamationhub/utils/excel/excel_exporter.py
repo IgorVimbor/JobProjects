@@ -120,6 +120,24 @@ class UniversalExcelExporter:
                 "field": "mileage_operating_time",
                 "type": "direct",
             },
+            "reclamation.receipt_invoice_number": {
+                "header": "Накладная прихода",
+                "model": "reclamation",
+                "field": "receipt_invoice_number",
+                "type": "direct",
+            },
+            "reclamation.receipt_invoice_date": {
+                "header": "Дата накладной прихода",
+                "model": "reclamation",
+                "field": "receipt_invoice_date",
+                "type": "direct",
+            },
+            "reclamation.pkd_number": {
+                "header": "Номер 8D (ПКД)",
+                "model": "reclamation",
+                "field": "pkd_number",
+                "type": "direct",
+            },
             # Поля Investigation
             "investigation.act_number": {
                 "header": "Номер акта исследования",
@@ -139,6 +157,12 @@ class UniversalExcelExporter:
                 "field": "solution",
                 "type": "related_choice_display",
             },
+            "investigation.guilty_department": {
+                "header": "Виновное подразделение",
+                "model": "investigation",
+                "field": "guilty_department",
+                "type": "related_field",
+            },
             "investigation.defect_causes": {
                 "header": "Причины дефекта",
                 "model": "investigation",
@@ -146,7 +170,7 @@ class UniversalExcelExporter:
                 "type": "related_field",
             },
             "investigation.defect_causes_explanation": {
-                "header": "Пояснения к причинам дефекта",
+                "header": "Пояснения к причинам",
                 "model": "investigation",
                 "field": "defect_causes_explanation",
                 "type": "related_field",
@@ -155,6 +179,18 @@ class UniversalExcelExporter:
                 "header": "Поставщик дефектного комплектующего",
                 "model": "investigation",
                 "field": "defective_supplier",
+                "type": "related_field",
+            },
+            "investigation.shipment_invoice_number": {
+                "header": "Накладная отгрузки",
+                "model": "investigation",
+                "field": "shipment_invoice_number",
+                "type": "related_field",
+            },
+            "investigation.shipment_invoice_date": {
+                "header": "Дата накладной отгрузки",
+                "model": "investigation",
+                "field": "shipment_invoice_date",
                 "type": "related_field",
             },
         }
@@ -305,12 +341,18 @@ class UniversalExcelExporter:
             "Номер двигателя": 14,
             "Транспортное средство": 16,
             "Пробег/наработка": 14,
+            "Накладная прихода": 11,
+            "Дата накладной прихода": 12,
+            "Номер 8D (ПКД)": 14,
             "Номер акта исследования": 14,
             "Дата акта исследования": 14,
             "Заключение": 11,
+            "Виновное подразделение": 13,
             "Причины дефекта": 22,
             "Пояснения к причинам дефекта": 25,
             "Поставщик дефектного комплектующего": 22,
+            "Накладная отгрузки": 11,
+            "Дата накладной отгрузки": 12,
         }
 
         # Получаем заголовки для сопоставления
