@@ -285,7 +285,7 @@ class ClaimAdmin(admin.ModelAdmin):
                 f'title="Перейти к акту исследования">'  # подсказка при наведении
                 f"{obj.reclamation.investigation.act_number}</a>"
             )
-        return ""
+        return obj.investigation_act_number
 
     @admin.display(description="Решение по претензии")
     def result_colored(self, obj):

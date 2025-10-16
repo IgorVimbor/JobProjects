@@ -176,7 +176,7 @@ class UniversalExcelExporter:
                 "type": "related_field",
             },
             "investigation.defective_supplier": {
-                "header": "Поставщик дефектного комплектующего",
+                "header": "Поставщик комплектующего",
                 "model": "investigation",
                 "field": "defective_supplier",
                 "type": "related_field",
@@ -350,7 +350,7 @@ class UniversalExcelExporter:
             "Виновное подразделение": 13,
             "Причины дефекта": 22,
             "Пояснения к причинам дефекта": 25,
-            "Поставщик дефектного комплектующего": 22,
+            "Поставщик комплектующего": 22,
             "Накладная отгрузки": 11,
             "Дата накладной отгрузки": 12,
         }
