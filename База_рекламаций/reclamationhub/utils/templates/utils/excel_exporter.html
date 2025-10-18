@@ -217,7 +217,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const li = document.createElement('li');
                 li.className = 'mb-1';
                 li.innerHTML = `
-                    <span class="badge bg-${group === 'Рекламации' ? 'primary' : 'success'} me-1">${index + 1}</span>
+                    <span class="badge ${
+                        // Рекламации - синий 'bg-primary'
+                        group === 'Рекламации' ? 'bg-primary' :
+                        // Исследования - зеленый 'bg-success'
+                        group === 'Исследования' ? 'bg-success' :
+                        // Претензии - оранжевый 'bg-warning' или bg-info для голубого
+                        group === 'Претензии' ? 'bg-warning' : 'bg-secondary'
+                        // Серый 'bg-secondary' для неизвестных групп
+                    } me-1">${index + 1}</span>
                     <small>${label}</small>
                 `;
                 fieldsList.appendChild(li);

@@ -31,7 +31,7 @@ def get_quick_export_field_names():
     field_names = []
     for field_key in QUICK_EXPORT_FIELDS:
         if field_key in exporter.field_config:
-            field_names.append(exporter.field_config[field_key]["header"])
+            field_names.append(exporter.field_config[field_key][0])  # [0] - заголовок
     return field_names
 
 
@@ -134,6 +134,10 @@ def handle_export(request):
         return redirect("utils:excel_exporter")
 
     except Exception as e:
+        # # ВРЕМЕННО: выводим реальную ошибку для отладки
+        # print(f"Реальная ошибка экспорта: {e}")
+        # import traceback
+        # traceback.print_exc()
         messages.warning(
             request,
             f"❌ Ошибка при экспорте! Возможно у вас открыт файл ЖУРНАЛА РЕКЛАМАЦИЙ. Закройте файл и повторите экспорт.",
@@ -156,12 +160,15 @@ def get_fields_preview(request):
 
         for field_key in selected_fields:
             if field_key in exporter.field_config:
-                config = exporter.field_config[field_key]
+                # Распаковываем кортеж
+                header, field_type = exporter.field_config[field_key]
+                model = field_key.split(".")[0]  # Извлекаем модель из ключа
+
                 field_info.append(
                     {
                         "key": field_key,
-                        "header": config["header"],
-                        "model": config["model"],
+                        "header": header,  # Используем распакованный заголовок
+                        "model": model,  # Используем извлеченную модель
                     }
                 )
 
@@ -202,6 +209,10 @@ def quick_export_reclamations(request):
         return redirect("utils:excel_exporter")
 
     except Exception as e:
+        # # ВРЕМЕННО: выводим реальную ошибку для отладки
+        # print(f"Реальная ошибка экспорта: {e}")
+        # import traceback
+        # traceback.print_exc()
         messages.warning(
             request,
             f"❌ Ошибка при быстром экспорте! Возможно у вас открыт файл ЖУРНАЛА РЕКЛАМАЦИЙ. Закройте файл и повторите экспорт.",

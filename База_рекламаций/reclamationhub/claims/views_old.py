@@ -20,51 +20,38 @@ def search_related_data(request):
     engine_number = request.GET.get("engine_number", "").strip()
 
     try:
-        # 1. Определяем тип поиска - по номеру рекламации или номеру двигателя
+        # 1. Определяем тип поиска и ищем рекламацию
         if search_number and search_date and not engine_number:
-            search_type = "by_act_number"
-            search_value = search_number
-        elif engine_number and not search_number and not search_date:
-            search_type = "by_engine_number"
-            search_value = engine_number
-        else:
-            return JsonResponse({"found": False})
-
-        # 2. Проверяем существующие претензии (до поиска рекламации!)
-        existing_claim_warning = _check_existing_claims_ajax(search_type, search_value)
-
-        # 3. Ищем рекламацию
-        if search_type == "by_act_number":
             # Поиск по номеру и дате рекламационного акта
+            search_type = "by_act_number"
             reclamation = Reclamation.objects.filter(
                 Q(sender_outgoing_number=search_number)
                 | Q(consumer_act_number=search_number)
                 | Q(end_consumer_act_number=search_number)
             ).first()
-        else:  # by_engine_number
+        elif engine_number and not search_number and not search_date:
             # Поиск по номеру двигателя
+            search_type = "by_engine_number"
             reclamation = Reclamation.objects.filter(
                 engine_number=engine_number
             ).first()
+        else:
+            return JsonResponse({"found": False})
 
-        # 4. Если рекламация НЕ найдена, но есть претензия - показываем предупреждение
-        if not reclamation:
-            if existing_claim_warning:
-                return JsonResponse({"found": False, "warning": existing_claim_warning})
-            else:
-                return JsonResponse({"found": False})
+        # 2. Проверяем, найдена ли рекламация
+        if not reclamation:  # Если условия не выполнены - просто ничего не делаем
+            return JsonResponse({"found": False})
 
-        # 5. Рекламация найдена - ищем связанное исследование (акт исследования)
+        # 3. Ищем связанное исследование (акт исследования)
         try:
             investigation = reclamation.investigation
         except Investigation.DoesNotExist:
-            # Рекламация есть, но исследования нет
-            if existing_claim_warning:
-                return JsonResponse({"found": False, "warning": existing_claim_warning})
-            else:
-                return JsonResponse({"found": False})
+            return JsonResponse({"found": False})
 
-        # 6. Формируем успешный ответ
+        # 4. Проверяем дублирование претензий
+        existing_claims = Claim.objects.filter(reclamation=reclamation)
+
+        # 5. Формируем базовый ответ по найденной информации
         response_data = {
             "found": True,
             "message_received_date": reclamation.message_received_date.strftime(
@@ -76,7 +63,7 @@ def search_related_data(request):
             "investigation_act_result": investigation.get_solution_display() or "",
         }
 
-        # 7. Добавляем специфичные поля в зависимости от типа поиска
+        # 6. Добавляем специфичные поля в зависимости от типа поиска
         if search_type == "by_act_number":
             # Искали по номеру акта - добавляем номер двигателя
             response_data["engine_number"] = reclamation.engine_number or ""
@@ -111,42 +98,22 @@ def search_related_data(request):
                     else ""
                 )
 
-        # 8. Добавляем предупреждение о претензии (если есть)
-        if existing_claim_warning:
-            response_data["warning"] = existing_claim_warning
+        # 7. Добавляем предупреждение о дублировании
+        if existing_claims.exists():
+            claims_info = []
+            for claim in existing_claims:
+                if claim.claim_number and claim.claim_date:
+                    claims_info.append(
+                        f"№{claim.claim_number} от {claim.claim_date.strftime('%d.%m.%Y')}"
+                    )
+                else:
+                    claims_info.append("без номера")
+
+            response_data["warning"] = (
+                f"⚠️ По этой рекламации уже есть претензия: {', '.join(claims_info)}"
+            )
 
         return JsonResponse(response_data)
 
     except Exception as e:
         return JsonResponse({"found": False})
-
-
-def _check_existing_claims_ajax(search_type, search_value):
-    """Проверка существующих претензий для AJAX поиска"""
-
-    if search_type == "by_act_number":
-        # 1. Проверяем связанные претензии
-        linked_claims = Claim.objects.filter(reclamation__isnull=False).filter(
-            Q(reclamation__sender_outgoing_number=search_value)
-            | Q(reclamation__consumer_act_number=search_value)
-            | Q(reclamation__end_consumer_act_number=search_value)
-        )
-
-        # 2. Проверяем несвязанные претензии
-        unlinked_claims = Claim.objects.filter(
-            reclamation__isnull=True, reclamation_act_number=search_value
-        )
-
-        # Возвращаем первую найденную претензию
-        existing_claim = linked_claims.first() or unlinked_claims.first()
-
-    elif search_type == "by_engine_number":
-        # Проверяем претензии по номеру двигателя
-        existing_claim = Claim.objects.filter(engine_number=search_value).first()
-    else:
-        return None
-
-    if existing_claim:
-        return f"⚠️ По этой рекламации уже есть претензия: {existing_claim}"
-
-    return None
