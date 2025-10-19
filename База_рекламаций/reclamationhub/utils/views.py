@@ -179,10 +179,10 @@ def get_fields_preview(request):
     return JsonResponse({"success": False, "message": "Метод не поддерживается"})
 
 
-# Альтернативный view для быстрого экспорта с предустановленным набором полей
+# view для быстрого экспорта с предустановленным набором полей
 @login_required
 def quick_export_reclamations(request):
-    """Быстрый экспорт основных полей рекламаций"""
+    """Быстрый экспорт данных из предустановленных полей"""
     try:
         # Получаем год из GET параметров или используем текущий
         year = request.GET.get("year", "all")
