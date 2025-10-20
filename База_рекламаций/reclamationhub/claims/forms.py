@@ -21,7 +21,7 @@ class ClaimAdminForm(forms.ModelForm):
     class Meta:
         model = Claim
         fields = "__all__"
-        exclude = ["reclamation"]  # полностью исключаем из формы
+        exclude = ["reclamations"]  # Вместо ["reclamation"]  # полностью исключаем из формы
 
         widgets = {
             # "result_claim": forms.RadioSelect(),  # RadioSelect для результата
@@ -82,25 +82,22 @@ class ClaimAdminForm(forms.ModelForm):
 
         # Валидация рекламационного акта и двигателя для установления связи с рекламацией
         # Если это редактирование существующей претензии - проверка не нужна
-        if self.instance.pk and self.instance.reclamation:
+        if self.instance.pk and self.instance.reclamations.exists():
             return cleaned_data
 
         reclamation_act_number = cleaned_data.get("reclamation_act_number")
         engine_number = cleaned_data.get("engine_number")
         comment = cleaned_data.get("comment", "")
 
-        # Ищем рекламацию
-        found_reclamation = self._find_reclamation(
-            reclamation_act_number, engine_number
-        )
+        # Ищем рекламации (может быть несколько)
+        found_reclamations = self._find_reclamations(reclamation_act_number, engine_number)
 
-        if found_reclamation:
+        if found_reclamations:
             # Рекламация найдена - все отлично. Сохраняем рекламацию для save_model.
-            self._found_reclamation = found_reclamation
+            self._found_reclamations = found_reclamations
         else:
-            # Рекламация НЕ найдена
+            # Рекламации НЕ найдены - требуем комментарий
             if reclamation_act_number or engine_number:
-                # Требуем комментарий для объяснения
                 if not comment:
                     raise forms.ValidationError(
                         "Рекламация не найдена. Для сохранения претензии без связи "
@@ -121,14 +118,15 @@ class ClaimAdminForm(forms.ModelForm):
 
         return cleaned_data
 
-    def _find_reclamation(self, reclamation_act_number, engine_number):
+    def _find_reclamations(self, reclamation_act_number, engine_number):
+        """Возвращает список найденных рекламаций"""
         if reclamation_act_number:
             return Reclamation.objects.filter(
                 Q(sender_outgoing_number=reclamation_act_number)
                 | Q(consumer_act_number=reclamation_act_number)
                 | Q(end_consumer_act_number=reclamation_act_number)
-            ).first()
+            )
         elif engine_number:
-            return Reclamation.objects.filter(engine_number=engine_number).first()
+            return Reclamation.objects.filter(engine_number=engine_number)
 
-        return None
+        return Reclamation.objects.none()

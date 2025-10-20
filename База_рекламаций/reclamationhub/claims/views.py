@@ -126,23 +126,28 @@ def _check_existing_claims_ajax(search_type, search_value):
 
     if search_type == "by_act_number":
         # 1. Проверяем связанные претензии
-        linked_claims = Claim.objects.filter(reclamation__isnull=False).filter(
-            Q(reclamation__sender_outgoing_number=search_value)
-            | Q(reclamation__consumer_act_number=search_value)
-            | Q(reclamation__end_consumer_act_number=search_value)
-        )
+        linked_claims = Claim.objects.filter(
+            Q(reclamations__sender_outgoing_number=search_value) |
+            Q(reclamations__consumer_act_number=search_value) |
+            Q(reclamations__end_consumer_act_number=search_value)
+        ).distinct()
 
-        # 2. Проверяем несвязанные претензии
+        # 2. Проверяем несвязанные претензии по полю reclamation_act_number
         unlinked_claims = Claim.objects.filter(
-            reclamation__isnull=True, reclamation_act_number=search_value
+            reclamation_act_number=search_value
+        ).exclude(
+            id__in=linked_claims.values_list('id', flat=True)  # Исключаем уже найденные
         )
 
         # Возвращаем первую найденную претензию
         existing_claim = linked_claims.first() or unlinked_claims.first()
 
     elif search_type == "by_engine_number":
-        # Проверяем претензии по номеру двигателя
-        existing_claim = Claim.objects.filter(engine_number=search_value).first()
+        # Проверяем по номеру двигателя (тут может быть и в reclamations и в поле engine_number)
+        existing_claim = Claim.objects.filter(
+            Q(engine_number=search_value) |
+            Q(reclamations__engine_number=search_value)
+        ).distinct().first()
     else:
         return None
 

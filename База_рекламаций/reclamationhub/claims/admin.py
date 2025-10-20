@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
+from django.db.models import Q
 from django.utils.html import format_html
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
@@ -7,6 +8,7 @@ from datetime import datetime
 
 from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
+from investigations.models import Investigation
 from .models import Claim
 from .forms import ClaimAdminForm
 
@@ -15,7 +17,7 @@ class ClaimYearListFilter(SimpleListFilter):
     """Фильтр по году рекламации для использования в ClaimAdmin"""
 
     title = "Год претензии"
-    parameter_name = "reclamation__year"
+    parameter_name = "reclamations__year"
 
     def lookups(self, request, model_admin):
         # Получаем все годы из рекламаций и сортируем по убыванию
@@ -28,7 +30,7 @@ class ClaimYearListFilter(SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value():
-            return queryset.filter(reclamation__year=self.value())
+            return queryset.filter(reclamations__year=self.value())
         return queryset
 
     def choices(self, changelist):
@@ -221,14 +223,25 @@ class ClaimAdmin(admin.ModelAdmin):
     )
 
     # Оптимизация запросов
+    # def get_queryset(self, request):
+    #     return (
+    #         super()
+    #         .get_queryset(request)
+    #         .select_related(
+    #             "reclamation",
+    #             "reclamation__product_name",
+    #             "reclamation__product",
+    #         )
+    #     )
+
     def get_queryset(self, request):
         return (
             super()
             .get_queryset(request)
-            .select_related(
-                "reclamation",
-                "reclamation__product_name",
-                "reclamation__product",
+            .prefetch_related(
+                "reclamations",  # ManyToManyField требует prefetch_related
+                "reclamations__product_name",
+                "reclamations__product",
             )
         )
 
@@ -250,42 +263,79 @@ class ClaimAdmin(admin.ModelAdmin):
 
     @admin.display(description="Рекламация")
     def reclamation_display(self, obj):
-        """Отображение связанной рекламации"""
-        reclamation = obj.reclamation
+        """Отображение связанной рекламации. Поиск рекламации проходит по номеру акта исследования"""
+
+        reclamation = None
+
+        # Ищем рекламацию по номеру акта исследования (если есть)
+        if obj.investigation_act_number:
+            try:
+                # investigation = Investigation.objects.get(act_number=obj.investigation_act_number)
+                investigation = Investigation.objects.filter(act_number=obj.investigation_act_number).first()
+                if investigation:
+                    reclamation = investigation.reclamation
+            except Investigation.DoesNotExist:
+                pass
+
+        # Если не найдена - ищем по номеру акта рекламации
+        if not reclamation and obj.reclamation_act_number:
+            reclamation = Reclamation.objects.filter(
+                Q(sender_outgoing_number=obj.reclamation_act_number) |
+                Q(consumer_act_number=obj.reclamation_act_number) |
+                Q(end_consumer_act_number=obj.reclamation_act_number)
+            ).first()
+
+        # Если ничего не найдено - берем первую из связанных
+        if not reclamation and obj.reclamations.exists():
+            reclamation = obj.reclamations.first()
+
         if reclamation:
             url = reverse("admin:reclamations_reclamation_changelist")
             filtered_url = f"{url}?id={reclamation.id}"
 
+        if reclamation:
+            url = reverse("admin:reclamations_reclamation_changelist")
+            # Добавляем год рекламации в параметры ссылки
+            filtered_url = f"{url}?id={reclamation.id}&year={reclamation.year}"
+
             return mark_safe(
                 f'<a href="{filtered_url}" '
-                f"onmouseover=\"this.style.fontWeight='bold'\" "  # жирный шрифт при наведении
-                f"onmouseout=\"this.style.fontWeight='normal'\" "  # нормальный шрифт
-                f'title="Перейти к акту исследования">'  # подсказка при наведении
+                f'onmouseover="this.style.fontWeight=\'bold\'" '
+                f'onmouseout="this.style.fontWeight=\'normal\'" '
+                f'title="Перейти к рекламации">'
                 f"{reclamation.year}-{reclamation.yearly_number:04d}</a><br>"
                 f"<small>{reclamation.product_name} {reclamation.product}</small>"
             )
+
         return ""
 
     @admin.display(description="Акт исследования")
     def has_investigation_icon(self, obj):
-        """Метод для отображения номера акта исследования как ссылки"""
-        # Проверяем, есть ли связанная рекламация и у неё есть исследование
-        if obj.reclamation and obj.reclamation.has_investigation:
-            # Получаем базовый URL
+        """Метод для отображения номера акта исследования как ссылки.
+        Отображает номер акта из претензии, а не из связанной рекламации"""
+
+        # Приоритет - номер акта из самой претензии
+        act_number = obj.investigation_act_number
+
+        # Если в претензии нет номера - берем из связанной рекламации
+        if not act_number and obj.reclamations.exists():
+            first_reclamation = obj.reclamations.first()
+            if first_reclamation and first_reclamation.has_investigation:
+                act_number = first_reclamation.investigation.act_number
+
+        if act_number:
             url = reverse("admin:investigations_investigation_changelist")
-            # Добавляем параметр фильтрации по номеру акта
-            filtered_url = (
-                f"{url}?act_number={obj.reclamation.investigation.act_number}"
-            )
+            filtered_url = f"{url}?act_number={act_number}"
 
             return mark_safe(
                 f'<a href="{filtered_url}" '
-                f"onmouseover=\"this.style.fontWeight='bold'\" "  # жирный шрифт при наведении
-                f"onmouseout=\"this.style.fontWeight='normal'\" "  # нормальный шрифт
-                f'title="Перейти к акту исследования">'  # подсказка при наведении
-                f"{obj.reclamation.investigation.act_number}</a>"
+                f'onmouseover="this.style.fontWeight=\'bold\'" '
+                f'onmouseout="this.style.fontWeight=\'normal\'" '
+                f'title="Перейти к акту исследования">'
+                f"{act_number}</a>"
             )
-        return obj.investigation_act_number
+
+        return "-"
 
     @admin.display(description="Решение по претензии")
     def result_colored(self, obj):
@@ -349,12 +399,24 @@ class ClaimAdmin(admin.ModelAdmin):
     # ==================== Переопределение стандартных методов ====================
 
     def save_model(self, request, obj, form, change):
-        """Переопределяем метод для устанавления связи с рекламацией перед сохранением"""
-        # Устанавливаем связь с найденной рекламацией (если есть)
-        if hasattr(form, "_found_reclamation"):
-            obj.reclamation = form._found_reclamation
+        """Переопределяем метод для установления связей с рекламациями перед сохранением"""
 
+        # Сначала сохраняем объект (обязательно для ManyToMany!)
         super().save_model(request, obj, form, change)
+
+        # Устанавливаем связи с найденными рекламациями (если есть)
+        if hasattr(form, "_found_reclamations") and form._found_reclamations.exists():
+            # Очищаем старые связи и устанавливаем новые
+            obj.reclamations.set(form._found_reclamations)
+
+            # Информационное сообщение
+            count = form._found_reclamations.count()
+            if count > 1:
+                messages.info(
+                    request,
+                    f"Претензия связана с {count} рекламациями: "
+                    f"{', '.join([str(r) for r in form._found_reclamations])}"
+                )
 
         # Показываем предупреждение если рекламация не найдена
         if hasattr(form, "_warning_message"):

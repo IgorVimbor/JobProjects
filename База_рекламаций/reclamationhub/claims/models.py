@@ -18,15 +18,14 @@ class Claim(models.Model):
         RUR = "RUR", "RUR"
         BYN = "BYN", "BYN"
 
-    reclamation = models.ForeignKey(  # Было: OneToOneField
+    reclamations = models.ManyToManyField(
         Reclamation,
-        on_delete=models.PROTECT,
-        related_name="claims",  # Было: "claim"
-        verbose_name="Рекламация",
+        related_name="claims",
+        verbose_name="Рекламации",
+        blank=True,
         # Делаем поле необязательным, т.к. бывают претензии без привязки к рекламационному акту.
         # В таком случае претензия просто регистрируется с обязательным комментарием.
-        null=True,
-        blank=True,
+        help_text="Рекламации, связанные с данной претензией"
     )
 
     registration_number = models.CharField(

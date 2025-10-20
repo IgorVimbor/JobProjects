@@ -76,7 +76,7 @@
                         <tbody>
                             {% for reclamation in latest_reclamations %}
                             <tr>
-                                <td>{{ reclamation.id }}</td>
+                                <td>{{ reclamation.yearly_number }}</td>
                                 <td>{{ reclamation.product_name }} - {{ reclamation.product }}</td>
                                 <td>{{ reclamation.defect_period }}</td>
                                 <td>{{ reclamation.claimed_defect|truncatechars:50 }}</td>
