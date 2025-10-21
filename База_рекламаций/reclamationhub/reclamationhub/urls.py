@@ -23,14 +23,16 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView
 
 from reclamationhub.admin import admin_site
-from reclamations.views import get_products
+from reclamations.views.product_utils import get_products
 from claims.views import search_related_data
 
 
 urlpatterns = [
-    path("", include("core.urls")),  # главная страница
     # path("", RedirectView.as_view(url="admin/", permanent=True)),
+    path("", include("core.urls")),  # главная страница
+    # AJAX endpoint для получения списка изделий в форме рекламации в зависимости от выбранного типа изделий
     path("admin/get_products/", get_products, name="get_products"),
+    # AJAX endpoint для подстановки данных по рекламации в форму претензии
     path("admin/search-related-data/", search_related_data, name="search_related_data"),
     # Перенаправления для каждого приложения
     path(

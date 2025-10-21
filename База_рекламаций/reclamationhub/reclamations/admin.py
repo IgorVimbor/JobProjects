@@ -8,9 +8,10 @@ from django.utils.safestring import mark_safe
 from datetime import datetime
 
 from reclamationhub.admin import admin_site
-from .models import Reclamation
-from .forms import ReclamationAdminForm
-from .views import add_invoice_into_view, add_disposal_act_view
+from reclamations.models import Reclamation
+from reclamations.forms import ReclamationAdminForm
+from reclamations.views.invoice_intake import add_invoice_into_view
+from reclamations.views.disposal_act import add_disposal_act_view
 
 
 class YearListFilter(SimpleListFilter):

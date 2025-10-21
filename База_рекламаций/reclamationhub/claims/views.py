@@ -1,3 +1,7 @@
+# AJAX endpoint для получения данных по рекламации в зависимости от результатов поиска.
+# Используется в форме добавления/изменения претензии для подстановки данных:
+# т.е. при успешном поиске данные по рекламации динамически загружаются в поля формы претензии.
+
 from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_http_methods
@@ -16,6 +20,7 @@ from .models import Claim
 # @require_POST - только POST
 # @require_http_methods(["GET", "POST"]) - GET и POST
 def search_related_data(request):
+    """Возвращает данные по рекламации по результатам поиска для подстановки в форму претензии"""
     search_number = request.GET.get("reclamation_act_number", "").strip()
     search_date = request.GET.get("reclamation_act_date", "").strip()
     engine_number = request.GET.get("engine_number", "").strip()
@@ -44,9 +49,17 @@ def search_related_data(request):
 
             # Поиск по номеру акта рекламации и соответствующей дате
             reclamation = Reclamation.objects.filter(
-                Q(sender_outgoing_number=search_number, message_sent_date=search_date_obj) |
-                Q(consumer_act_number=search_number, consumer_act_date=search_date_obj) |
-                Q(end_consumer_act_number=search_number, end_consumer_act_date=search_date_obj)
+                Q(
+                    sender_outgoing_number=search_number,
+                    message_sent_date=search_date_obj,
+                )
+                | Q(
+                    consumer_act_number=search_number, consumer_act_date=search_date_obj
+                )
+                | Q(
+                    end_consumer_act_number=search_number,
+                    end_consumer_act_date=search_date_obj,
+                )
             ).first()
         else:  # by_engine_number
             # Поиск по номеру двигателя
@@ -134,16 +147,16 @@ def _check_existing_claims_ajax(search_type, search_value):
     if search_type == "by_act_number":
         # 1. Проверяем связанные претензии
         linked_claims = Claim.objects.filter(
-            Q(reclamations__sender_outgoing_number=search_value) |
-            Q(reclamations__consumer_act_number=search_value) |
-            Q(reclamations__end_consumer_act_number=search_value)
+            Q(reclamations__sender_outgoing_number=search_value)
+            | Q(reclamations__consumer_act_number=search_value)
+            | Q(reclamations__end_consumer_act_number=search_value)
         ).distinct()
 
         # 2. Проверяем несвязанные претензии по полю reclamation_act_number
         unlinked_claims = Claim.objects.filter(
             reclamation_act_number=search_value
         ).exclude(
-            id__in=linked_claims.values_list('id', flat=True)  # Исключаем уже найденные
+            id__in=linked_claims.values_list("id", flat=True)  # Исключаем уже найденные
         )
 
         # Возвращаем первую найденную претензию
@@ -151,10 +164,14 @@ def _check_existing_claims_ajax(search_type, search_value):
 
     elif search_type == "by_engine_number":
         # Проверяем по номеру двигателя (тут может быть и в reclamations и в поле engine_number)
-        existing_claim = Claim.objects.filter(
-            Q(engine_number=search_value) |
-            Q(reclamations__engine_number=search_value)
-        ).distinct().first()
+        existing_claim = (
+            Claim.objects.filter(
+                Q(engine_number=search_value)
+                | Q(reclamations__engine_number=search_value)
+            )
+            .distinct()
+            .first()
+        )
     else:
         return None
 
