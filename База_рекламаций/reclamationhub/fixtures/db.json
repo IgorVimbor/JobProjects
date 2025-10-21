@@ -109,7 +109,7 @@
   "pk": 5,
   "fields": {
     "password": "pbkdf2_sha256$600000$gN1UhU3H39Ilk4WyXeqiUu$RTT+yABqNKf4co582j5hE/bnOH0zxwZI3SITQGKoPU0=",
-    "last_login": "2025-09-04T07:48:18.530Z",
+    "last_login": "2025-10-20T05:30:07.265Z",
     "is_superuser": false,
     "username": "Орловский",
     "first_name": "Максим Станиславович",
@@ -49527,14 +49527,14 @@
     "product_number": null,
     "manufacture_date": "11.23",
     "purchaser": "ЯМЗ",
-    "consumer_act_number": "8",
-    "consumer_act_date": "2025-04-22",
+    "consumer_act_number": "94155",
+    "consumer_act_date": "2025-06-04",
     "country_rejected": "Россия",
     "end_consumer": "Агросервис",
     "end_consumer_act_number": "8",
     "end_consumer_act_date": "2025-04-22",
     "engine_brand": "ЯМЗ 53645-31",
-    "engine_number": null,
+    "engine_number": "P0205757",
     "transport_name": "КR0000178",
     "transport_number": "023Т2425",
     "defect_detection_date": "2025-04-25",
@@ -49557,7 +49557,7 @@
     "product_sender": "ЯМЗ",
     "receipt_invoice_number": "2506222",
     "receipt_invoice_date": "2025-06-09",
-    "updated_at": "2025-09-18T04:48:15.298Z"
+    "updated_at": "2025-10-20T05:48:34.855Z"
   }
 },
 {
@@ -49578,8 +49578,8 @@
     "product_number": null,
     "manufacture_date": "06.23",
     "purchaser": "ЯМЗ",
-    "consumer_act_number": "10",
-    "consumer_act_date": "2025-05-19",
+    "consumer_act_number": "94205",
+    "consumer_act_date": "2025-06-04",
     "country_rejected": "Россия",
     "end_consumer": "АгроАСМ",
     "end_consumer_act_number": "10",
@@ -49608,7 +49608,7 @@
     "product_sender": "ЯМЗ",
     "receipt_invoice_number": "2506222",
     "receipt_invoice_date": "2025-06-09",
-    "updated_at": "2025-10-07T08:45:03.745Z"
+    "updated_at": "2025-10-20T06:57:21.165Z"
   }
 },
 {
@@ -67095,13 +67095,13 @@
     "consumer_response_number": null,
     "consumer_response_date": null,
     "pkd_number": null,
-    "volume_removal_reference": null,
+    "volume_removal_reference": "2025 №34",
     "reclamation_documents": null,
     "product_received_date": "2025-08-21",
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0856805",
     "receipt_invoice_date": "2025-08-20",
-    "updated_at": "2025-10-01T11:35:53.406Z"
+    "updated_at": "2025-10-20T09:50:57.656Z"
   }
 },
 {
@@ -67197,13 +67197,13 @@
     "consumer_response_number": null,
     "consumer_response_date": null,
     "pkd_number": null,
-    "volume_removal_reference": null,
+    "volume_removal_reference": "2025 №34",
     "reclamation_documents": null,
     "product_received_date": "2025-08-21",
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0856805",
     "receipt_invoice_date": "2025-08-20",
-    "updated_at": "2025-10-01T11:34:54.504Z"
+    "updated_at": "2025-10-20T09:51:17.821Z"
   }
 },
 {
@@ -67248,13 +67248,13 @@
     "consumer_response_number": null,
     "consumer_response_date": null,
     "pkd_number": null,
-    "volume_removal_reference": null,
+    "volume_removal_reference": "2025 №34",
     "reclamation_documents": null,
     "product_received_date": "2025-08-21",
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0856805",
     "receipt_invoice_date": "2025-08-20",
-    "updated_at": "2025-10-01T11:34:36.517Z"
+    "updated_at": "2025-10-20T09:51:41.099Z"
   }
 },
 {
@@ -72756,13 +72756,13 @@
     "consumer_response_number": null,
     "consumer_response_date": null,
     "pkd_number": null,
-    "volume_removal_reference": null,
+    "volume_removal_reference": "2025 №38",
     "reclamation_documents": null,
     "product_received_date": "2025-09-15",
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0137732",
     "receipt_invoice_date": "2025-09-15",
-    "updated_at": "2025-09-25T12:54:07.746Z"
+    "updated_at": "2025-10-20T09:50:25.860Z"
   }
 },
 {
@@ -73130,29 +73130,29 @@
     "year": 2024,
     "yearly_number": 1,
     "incoming_number": null,
-    "message_received_date": "2024-10-17",
+    "message_received_date": "2024-11-13",
     "sender": null,
     "sender_outgoing_number": null,
     "message_sent_date": null,
-    "defect_period": 1,
+    "defect_period": 3,
     "product_name": 1,
-    "product": 1,
+    "product": 24,
     "product_number": null,
     "manufacture_date": null,
-    "purchaser": null,
-    "consumer_act_number": "1023-24",
-    "consumer_act_date": null,
-    "country_rejected": "Россия",
-    "end_consumer": null,
-    "end_consumer_act_number": null,
-    "end_consumer_act_date": null,
-    "engine_brand": null,
-    "engine_number": null,
-    "transport_name": null,
+    "purchaser": "ММЗ",
+    "consumer_act_number": "1743-24",
+    "consumer_act_date": "2024-09-04",
+    "country_rejected": "Беларусь",
+    "end_consumer": "Полесская Нива",
+    "end_consumer_act_number": "1743-24",
+    "end_consumer_act_date": "2024-09-04",
+    "engine_brand": "Д-260.4S2-656",
+    "engine_number": "193395",
+    "transport_name": "Беларус-2022.3",
     "transport_number": null,
-    "defect_detection_date": null,
-    "away_type": "notdata",
-    "mileage_operating_time": "н/д",
+    "defect_detection_date": "2024-09-04",
+    "away_type": "moto",
+    "mileage_operating_time": "870 м/ч",
     "claimed_defect": "течь",
     "consumer_requirement": "исследование",
     "products_count": 1,
@@ -73166,11 +73166,11 @@
     "pkd_number": null,
     "volume_removal_reference": null,
     "reclamation_documents": null,
-    "product_received_date": "2024-10-17",
-    "product_sender": "ЯМЗ",
-    "receipt_invoice_number": "фото",
-    "receipt_invoice_date": "2024-10-17",
-    "updated_at": "2025-09-21T19:08:24.195Z"
+    "product_received_date": "2024-11-13",
+    "product_sender": "ММЗ",
+    "receipt_invoice_number": "0749601",
+    "receipt_invoice_date": "2024-11-13",
+    "updated_at": "2025-10-20T13:17:47.805Z"
   }
 },
 {
@@ -75408,13 +75408,13 @@
     "consumer_response_number": "16892/351",
     "consumer_response_date": "2025-10-06",
     "pkd_number": null,
-    "volume_removal_reference": null,
+    "volume_removal_reference": "2025 №38",
     "reclamation_documents": null,
     "product_received_date": "2025-09-30",
     "product_sender": "Гомсельмаш",
     "receipt_invoice_number": "0138653",
     "receipt_invoice_date": "2025-09-29",
-    "updated_at": "2025-10-10T05:28:38.604Z"
+    "updated_at": "2025-10-20T09:50:03.491Z"
   }
 },
 {
@@ -76179,7 +76179,7 @@
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-10-08T10:05:31.643Z"
+    "updated_at": "2025-10-20T08:02:04.509Z"
   }
 },
 {
@@ -76230,7 +76230,7 @@
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-10-06T05:34:12.847Z"
+    "updated_at": "2025-10-20T08:03:14.132Z"
   }
 },
 {
@@ -78583,7 +78583,7 @@
   "model": "reclamations.reclamation",
   "pk": 1520,
   "fields": {
-    "status": "CLOSED",
+    "status": "IN_PROGRESS",
     "year": 2025,
     "yearly_number": 1517,
     "incoming_number": null,
@@ -78627,7 +78627,7 @@
     "product_sender": null,
     "receipt_invoice_number": null,
     "receipt_invoice_date": null,
-    "updated_at": "2025-10-16T13:27:34.869Z"
+    "updated_at": "2025-10-20T05:50:01.652Z"
   }
 },
 {
@@ -79087,6 +79087,720 @@
     "receipt_invoice_number": "43",
     "receipt_invoice_date": "2025-10-15",
     "updated_at": "2025-10-16T13:25:07.937Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1530,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2024,
+    "yearly_number": 2,
+    "incoming_number": null,
+    "message_received_date": "2024-03-18",
+    "sender": "ЯМЗ Румянцева Светлана Валерьевна",
+    "sender_outgoing_number": null,
+    "message_sent_date": "2024-03-18",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": "08.22",
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "29666",
+    "consumer_act_date": "2024-06-18",
+    "country_rejected": "Россия",
+    "end_consumer": "Агрокомплект",
+    "end_consumer_act_number": "9 УР",
+    "end_consumer_act_date": "2024-02-22",
+    "engine_brand": "ЯМЗ-53645-А31",
+    "engine_number": "N0174506",
+    "transport_name": "К-525 ПР",
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "moto",
+    "mileage_operating_time": "758 м/ч",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": null,
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": "2024-04-09",
+    "product_sender": "ЯМЗ",
+    "receipt_invoice_number": "2402665",
+    "receipt_invoice_date": "2024-03-28",
+    "updated_at": "2025-10-20T08:06:41.700Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1531,
+  "fields": {
+    "status": "NEW",
+    "year": 2025,
+    "yearly_number": 1527,
+    "incoming_number": "010/1/863-01",
+    "message_received_date": "2025-10-20",
+    "sender": "Алипова Екатерина",
+    "sender_outgoing_number": "2510208357",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 13,
+    "product_name": 2,
+    "product": 68,
+    "product_number": "00504",
+    "manufacture_date": "09.25",
+    "purchaser": "ПАЗ",
+    "consumer_act_number": "2510208357",
+    "consumer_act_date": "2025-10-20",
+    "country_rejected": "Россия",
+    "end_consumer": "ПАЗ",
+    "end_consumer_act_number": "2510208357",
+    "end_consumer_act_date": "2025-10-20",
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "psi",
+    "mileage_operating_time": "ПСИ",
+    "claimed_defect": "заклинил",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "согласие на односторонние актирование  для возврата на исследование",
+    "outgoing_document_number": "010/1/700-02",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "AlipovaEE@ncavto.ru",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T09:28:48.520Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1532,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1528,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "Сычева",
+    "sender_outgoing_number": "2512733",
+    "message_sent_date": null,
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "2241",
+    "consumer_act_date": "2025-01-13",
+    "country_rejected": "Россия",
+    "end_consumer": "ИП Каратыгин Андрей Николаевич",
+    "end_consumer_act_number": "2241",
+    "end_consumer_act_date": "2025-01-13",
+    "engine_brand": "534230",
+    "engine_number": "P0189466",
+    "transport_name": null,
+    "transport_number": "X1M3204GDPS001546",
+    "defect_detection_date": "2024-12-12",
+    "away_type": "kilometre",
+    "mileage_operating_time": "79654 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T10:59:21.064Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1533,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1529,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2512735",
+    "message_sent_date": null,
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "3081",
+    "consumer_act_date": "2025-01-14",
+    "country_rejected": "Россия",
+    "end_consumer": "ИП Каратыгин Андрей Николаевич",
+    "end_consumer_act_number": "3081",
+    "end_consumer_act_date": "2025-01-14",
+    "engine_brand": "534230",
+    "engine_number": "P0188040",
+    "transport_name": null,
+    "transport_number": "X1M3204GDPS001515",
+    "defect_detection_date": "2024-12-18",
+    "away_type": "kilometre",
+    "mileage_operating_time": "79411 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T11:10:59.286Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1534,
+  "fields": {
+    "status": "NEW",
+    "year": 2025,
+    "yearly_number": 1530,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ-Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2512705",
+    "message_sent_date": null,
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "496",
+    "consumer_act_date": "2025-07-25",
+    "country_rejected": "Россия",
+    "end_consumer": "Авторитэйл ПРО",
+    "end_consumer_act_number": "496",
+    "end_consumer_act_date": "2025-07-25",
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": "2025-07-03",
+    "away_type": "kilometre",
+    "mileage_operating_time": "9620 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": null,
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T12:35:46.715Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1535,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1531,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ-Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2512731",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "6600",
+    "consumer_act_date": "2025-01-20",
+    "country_rejected": "Россия",
+    "end_consumer": "ООО \"Транспортный Центр Сервис\"",
+    "end_consumer_act_number": "6600",
+    "end_consumer_act_date": "2025-01-20",
+    "engine_brand": "534230",
+    "engine_number": "P0190196",
+    "transport_name": null,
+    "transport_number": "X1M3204GDPS001510",
+    "defect_detection_date": "2024-12-16",
+    "away_type": "kilometre",
+    "mileage_operating_time": "78261 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T12:41:19.874Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1536,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1532,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ-Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2512734",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "170669",
+    "consumer_act_date": "2024-12-16",
+    "country_rejected": "Россия",
+    "end_consumer": "ООО \"Транспортный Центр Сервис\"",
+    "end_consumer_act_number": "170669",
+    "end_consumer_act_date": "2024-12-16",
+    "engine_brand": "534230",
+    "engine_number": "P0189178",
+    "transport_name": null,
+    "transport_number": "X1M3204GDPS001645",
+    "defect_detection_date": "2024-12-11",
+    "away_type": "kilometre",
+    "mileage_operating_time": "108994 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T12:45:28.338Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1537,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1533,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ-Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2512737",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "3092",
+    "consumer_act_date": "2025-01-14",
+    "country_rejected": "Россия",
+    "end_consumer": "ООО \"Транспортный Центр Сервис\"",
+    "end_consumer_act_number": "3092",
+    "end_consumer_act_date": "2025-01-14",
+    "engine_brand": "534230",
+    "engine_number": "P0190194",
+    "transport_name": null,
+    "transport_number": "X1M3204GDPS001498",
+    "defect_detection_date": "2025-01-09",
+    "away_type": "kilometre",
+    "mileage_operating_time": "80875 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T12:49:00.860Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1538,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1534,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ-Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2312747",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "28667",
+    "consumer_act_date": "2025-02-22",
+    "country_rejected": "Россия",
+    "end_consumer": "ООО \"ЯРКАМП-СЕРВИС\"",
+    "end_consumer_act_number": "28667",
+    "end_consumer_act_date": "2025-02-22",
+    "engine_brand": "534230",
+    "engine_number": "P0193091",
+    "transport_name": null,
+    "transport_number": "X1M3204NDPS001859",
+    "defect_detection_date": "2025-02-03",
+    "away_type": "kilometre",
+    "mileage_operating_time": "122385 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T12:54:40.154Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1539,
+  "fields": {
+    "status": "NEW",
+    "year": 2025,
+    "yearly_number": 1535,
+    "incoming_number": "010/1/866-01",
+    "message_received_date": "2025-10-20",
+    "sender": "Конюх Евгений Михайлович",
+    "sender_outgoing_number": "15-43-9/170",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 3,
+    "product_name": 5,
+    "product": 85,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ММЗ",
+    "consumer_act_number": "464-Гр",
+    "consumer_act_date": "2025-10-03",
+    "country_rejected": "Россия",
+    "end_consumer": null,
+    "end_consumer_act_number": "464-Гр",
+    "end_consumer_act_date": "2025-10-03",
+    "engine_brand": "Д-260.9-832",
+    "engine_number": "199956",
+    "transport_name": "Амкодор 352С",
+    "transport_number": null,
+    "defect_detection_date": "2025-09-26",
+    "away_type": "moto",
+    "mileage_operating_time": "3120 м/ч",
+    "claimed_defect": "низкое давление",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "доставка на исследование",
+    "outgoing_document_number": "010/1/702-02",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T12:56:10.044Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1540,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1536,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ-Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2512741",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "41747",
+    "consumer_act_date": "2025-04-11",
+    "country_rejected": "Россия",
+    "end_consumer": "ООО \"Норд-Сервис\"",
+    "end_consumer_act_number": "41747",
+    "end_consumer_act_date": "2025-04-11",
+    "engine_brand": "534230",
+    "engine_number": "N0164452",
+    "transport_name": null,
+    "transport_number": "X1M3205SON0001486",
+    "defect_detection_date": "2024-04-11",
+    "away_type": "kilometre",
+    "mileage_operating_time": "117258 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T12:59:18.047Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1541,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1537,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ-Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2512739",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "9530",
+    "consumer_act_date": "2024-01-30",
+    "country_rejected": "Россия",
+    "end_consumer": "АО \"КОМПАНИЯ СИБИРЬАВТОЦЕНТР\"",
+    "end_consumer_act_number": "9530",
+    "end_consumer_act_date": "2024-01-30",
+    "engine_brand": "534230",
+    "engine_number": "P0185517",
+    "transport_name": null,
+    "transport_number": "X1M3205R2PS002108",
+    "defect_detection_date": "2024-01-30",
+    "away_type": "kilometre",
+    "mileage_operating_time": "5192 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T13:04:24.375Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1542,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1538,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ-Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2512740",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "11632",
+    "consumer_act_date": "2025-01-28",
+    "country_rejected": "Россия",
+    "end_consumer": "ООО \"Техцентр\"",
+    "end_consumer_act_number": "11632",
+    "end_consumer_act_date": "2025-01-28",
+    "engine_brand": "53423",
+    "engine_number": "P0204550",
+    "transport_name": null,
+    "transport_number": "X1M4234ЕОPS002067",
+    "defect_detection_date": "2025-01-27",
+    "away_type": "kilometre",
+    "mileage_operating_time": "60287 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T13:09:13.890Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
+  "pk": 1543,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1539,
+    "incoming_number": null,
+    "message_received_date": "2025-10-20",
+    "sender": "ЯМЗ-Сычева Татьяна Александровна",
+    "sender_outgoing_number": "2512743",
+    "message_sent_date": "2025-10-20",
+    "defect_period": 1,
+    "product_name": 1,
+    "product": 39,
+    "product_number": null,
+    "manufacture_date": null,
+    "purchaser": "ЯМЗ",
+    "consumer_act_number": "30014",
+    "consumer_act_date": "2025-02-25",
+    "country_rejected": "Россия",
+    "end_consumer": "МКП \"ТУЛГОРЭЛЕКТРОТРАНС\"",
+    "end_consumer_act_number": "30014",
+    "end_consumer_act_date": "2025-02-25",
+    "engine_brand": "53403",
+    "engine_number": "P0198325",
+    "transport_name": null,
+    "transport_number": "X1M4223LDPS000136",
+    "defect_detection_date": "2025-02-25",
+    "away_type": "kilometre",
+    "mileage_operating_time": "60248 км",
+    "claimed_defect": "течь",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "Отклонить (более 90 дней)",
+    "outgoing_document_number": "эл.почта",
+    "outgoing_document_date": "2025-10-20",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": null,
+    "product_sender": null,
+    "receipt_invoice_number": null,
+    "receipt_invoice_date": null,
+    "updated_at": "2025-10-20T13:14:32.949Z"
   }
 },
 {
@@ -86691,10 +87405,10 @@
     "act_scan": "acts/2025/2025__973_Гомсельмаш_ра_5104.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
-    "shipment_invoice_number": null,
-    "shipment_invoice_date": null,
-    "return_condition": null,
-    "return_condition_explanation": null
+    "shipment_invoice_number": "0047736",
+    "shipment_invoice_date": "2025-10-14",
+    "return_condition": "REPLACED",
+    "return_condition_explanation": "годен к использованию по назначению"
   }
 },
 {
@@ -86715,10 +87429,10 @@
     "act_scan": "acts/2025/2025__972_Гомсельмаш_ра_4336.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
-    "shipment_invoice_number": null,
-    "shipment_invoice_date": null,
-    "return_condition": null,
-    "return_condition_explanation": null
+    "shipment_invoice_number": "0047736",
+    "shipment_invoice_date": "2025-10-14",
+    "return_condition": "REPLACED",
+    "return_condition_explanation": "годен к использованию по назначению"
   }
 },
 {
@@ -86763,10 +87477,10 @@
     "act_scan": "acts/2025/2025__970_Гомсельмаш_ра_1165.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
-    "shipment_invoice_number": null,
-    "shipment_invoice_date": null,
-    "return_condition": null,
-    "return_condition_explanation": null
+    "shipment_invoice_number": "0047736",
+    "shipment_invoice_date": "2025-10-14",
+    "return_condition": "REPLACED",
+    "return_condition_explanation": "годен к использованию по назначению"
   }
 },
 {
@@ -97838,21 +98552,21 @@
   "pk": 806,
   "fields": {
     "reclamation": 1410,
-    "act_number": "2024 № 0001",
-    "act_date": "2024-10-18",
+    "act_number": "2024 № 1246",
+    "act_date": "2024-11-18",
     "solution": "ACCEPT",
     "fault_type": "bza",
-    "guilty_department": "Не определено",
-    "defect_causes": null,
-    "defect_causes_explanation": null,
-    "defective_supplier": null,
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16 07.22",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
     "recipient": null,
     "shipment_date": null,
     "act_scan": "",
     "disposal_act_number": null,
     "disposal_act_date": null,
-    "shipment_invoice_number": null,
-    "shipment_invoice_date": null,
+    "shipment_invoice_number": "0046795",
+    "shipment_invoice_date": "2024-12-23",
     "return_condition": null,
     "return_condition_explanation": null
   }
@@ -98907,10 +99621,10 @@
     "act_scan": "acts/2025/2025__1033_Гомсельмаш_ра_2283.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
-    "shipment_invoice_number": null,
-    "shipment_invoice_date": null,
-    "return_condition": null,
-    "return_condition_explanation": null
+    "shipment_invoice_number": "0047736",
+    "shipment_invoice_date": "2025-10-14",
+    "return_condition": "REPLACED",
+    "return_condition_explanation": "годен к использованию по назначению"
   }
 },
 {
@@ -110451,10 +111165,10 @@
     "act_scan": "acts/2025/2025__1044_Гомсельмаш_ра_2186.pdf",
     "disposal_act_number": null,
     "disposal_act_date": null,
-    "shipment_invoice_number": null,
-    "shipment_invoice_date": null,
-    "return_condition": null,
-    "return_condition_explanation": null
+    "shipment_invoice_number": "0047736",
+    "shipment_invoice_date": "2025-10-14",
+    "return_condition": "REPLACED",
+    "return_condition_explanation": "годен к использованию по назначению"
   }
 },
 {
@@ -110602,10 +111316,33 @@
   }
 },
 {
+  "model": "investigations.investigation",
+  "pk": 1339,
+  "fields": {
+    "reclamation": 1530,
+    "act_number": "2024 № 351",
+    "act_date": "2024-04-10",
+    "solution": "ACCEPT",
+    "fault_type": "bza",
+    "guilty_department": "ОЗ",
+    "defect_causes": "выход из строя торцевого уплотнения",
+    "defect_causes_explanation": "IIC-WT16",
+    "defective_supplier": "ISKRA INTER COMMERCE LTD",
+    "recipient": null,
+    "shipment_date": null,
+    "act_scan": "",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": null,
+    "shipment_invoice_date": null,
+    "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
   "model": "claims.claim",
   "pk": 1,
   "fields": {
-    "reclamation": 793,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110625,14 +111362,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      793
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 2,
   "fields": {
-    "reclamation": 923,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110652,14 +111391,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      923
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 3,
   "fields": {
-    "reclamation": 794,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110679,14 +111420,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      794
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 4,
   "fields": {
-    "reclamation": 919,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110706,14 +111449,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      919
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 5,
   "fields": {
-    "reclamation": 921,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110733,14 +111478,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      921
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 6,
   "fields": {
-    "reclamation": 924,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110760,14 +111507,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      924
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 7,
   "fields": {
-    "reclamation": 925,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110787,14 +111536,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      925
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 8,
   "fields": {
-    "reclamation": 926,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110814,14 +111565,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      926
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 9,
   "fields": {
-    "reclamation": 800,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110841,14 +111594,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      800
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 10,
   "fields": {
-    "reclamation": 755,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110868,14 +111623,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      755
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 11,
   "fields": {
-    "reclamation": 928,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110895,14 +111652,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      928
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 12,
   "fields": {
-    "reclamation": 929,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110922,14 +111681,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      929
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 13,
   "fields": {
-    "reclamation": 932,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110949,14 +111710,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      932
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 14,
   "fields": {
-    "reclamation": 1208,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -110976,14 +111739,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1208
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 15,
   "fields": {
-    "reclamation": 796,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111003,14 +111768,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      796
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 16,
   "fields": {
-    "reclamation": 797,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111030,14 +111797,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      797
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 17,
   "fields": {
-    "reclamation": 798,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111057,14 +111826,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      798
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 18,
   "fields": {
-    "reclamation": 799,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111084,14 +111855,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      799
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 19,
   "fields": {
-    "reclamation": 756,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111111,14 +111884,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      756
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 20,
   "fields": {
-    "reclamation": 808,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111138,14 +111913,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      808
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 21,
   "fields": {
-    "reclamation": 809,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111165,14 +111942,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      809
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 22,
   "fields": {
-    "reclamation": 810,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111192,14 +111971,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      810
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 23,
   "fields": {
-    "reclamation": 811,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111219,14 +112000,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      811
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 24,
   "fields": {
-    "reclamation": 1004,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111246,14 +112029,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1004
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 25,
   "fields": {
-    "reclamation": 1005,
     "registration_number": "009-11/308",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
@@ -111273,14 +112058,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1005
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 26,
   "fields": {
-    "reclamation": 1111,
     "registration_number": "009-11/309",
     "claim_number": "2508276704",
     "claim_date": "2025-08-27",
@@ -111300,14 +112087,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1111
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 27,
   "fields": {
-    "reclamation": 1106,
     "registration_number": "009-11/309",
     "claim_number": "2508276704",
     "claim_date": "2025-08-27",
@@ -111327,14 +112116,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1106
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 28,
   "fields": {
-    "reclamation": 1112,
     "registration_number": "009-11/309",
     "claim_number": "2508276704",
     "claim_date": "2025-08-27",
@@ -111354,14 +112145,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1112
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 29,
   "fields": {
-    "reclamation": 840,
     "registration_number": "009-11/309",
     "claim_number": "2508276704",
     "claim_date": "2025-08-27",
@@ -111381,14 +112174,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      840
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 30,
   "fields": {
-    "reclamation": 837,
     "registration_number": "009-11/310",
     "claim_number": "2508286740",
     "claim_date": "2025-08-28",
@@ -111408,14 +112203,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      837
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 31,
   "fields": {
-    "reclamation": 725,
     "registration_number": "009-11/310",
     "claim_number": "2508286740",
     "claim_date": "2025-08-28",
@@ -111435,14 +112232,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      725
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 32,
   "fields": {
-    "reclamation": 726,
     "registration_number": "009-11/310",
     "claim_number": "2508286740",
     "claim_date": "2025-08-28",
@@ -111462,14 +112261,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      726
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 33,
   "fields": {
-    "reclamation": 450,
     "registration_number": "009-11/311",
     "claim_number": "2508296745",
     "claim_date": "2025-08-29",
@@ -111489,14 +112290,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      450
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 34,
   "fields": {
-    "reclamation": 441,
     "registration_number": "009-11/311",
     "claim_number": "2508296745",
     "claim_date": "2025-08-29",
@@ -111516,41 +112319,45 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      441
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 35,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/314",
     "claim_number": "12-30-12-435",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
     "claim_amount_all": "726.60",
-    "reclamation_act_number": "09/03 (1743)",
+    "reclamation_act_number": "09/03",
     "reclamation_act_date": "2024-09-04",
     "engine_number": "193395",
     "claim_amount_act": "237.00",
-    "message_received_date": null,
+    "message_received_date": "2024-11-13",
     "receipt_invoice_number": "0749601",
     "investigation_act_number": "2024 № 1246",
     "investigation_act_date": "2024-11-18",
     "investigation_act_result": "Признать",
-    "comment": "В претензиях 2025 года нет.",
+    "comment": "Акт ММЗ № 1743-24",
     "result_claim": "ACCEPTED",
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1410
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 36,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/314",
     "claim_number": "12-30-12-435",
     "claim_date": "2025-09-17",
@@ -111570,14 +112377,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 37,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/314",
     "claim_number": "12-30-12-435",
     "claim_date": "2025-09-17",
@@ -111597,14 +112404,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 38,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/314",
     "claim_number": "12-30-12-435",
     "claim_date": "2025-09-17",
@@ -111624,14 +112431,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 39,
   "fields": {
-    "reclamation": 907,
     "registration_number": "009-11/315",
     "claim_number": "12-30-12-436",
     "claim_date": "2025-09-17",
@@ -111651,14 +112458,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      907
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 40,
   "fields": {
-    "reclamation": 593,
     "registration_number": "009-11/315",
     "claim_number": "12-30-12-436",
     "claim_date": "2025-09-17",
@@ -111678,14 +112487,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      593
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 41,
   "fields": {
-    "reclamation": 590,
     "registration_number": "009-11/315",
     "claim_number": "12-30-12-436",
     "claim_date": "2025-09-17",
@@ -111705,14 +112516,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      590
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 42,
   "fields": {
-    "reclamation": 600,
     "registration_number": "009-11/315",
     "claim_number": "12-30-12-436",
     "claim_date": "2025-09-17",
@@ -111732,14 +112545,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      600
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 43,
   "fields": {
-    "reclamation": 604,
     "registration_number": "009-11/316",
     "claim_number": "12-30-12-437",
     "claim_date": "2025-09-17",
@@ -111759,14 +112574,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      604
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 44,
   "fields": {
-    "reclamation": 605,
     "registration_number": "009-11/316",
     "claim_number": "12-30-12-437",
     "claim_date": "2025-09-17",
@@ -111786,14 +112603,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      605
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 45,
   "fields": {
-    "reclamation": 901,
     "registration_number": "009-11/317",
     "claim_number": "12-30-12-438",
     "claim_date": "2025-09-17",
@@ -111813,14 +112632,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      901
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 46,
   "fields": {
-    "reclamation": 900,
     "registration_number": "009-11/317",
     "claim_number": "12-30-12-438",
     "claim_date": "2025-09-17",
@@ -111840,14 +112661,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      900
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 47,
   "fields": {
-    "reclamation": 902,
     "registration_number": "009-11/317",
     "claim_number": "12-30-12-438",
     "claim_date": "2025-09-17",
@@ -111867,14 +112690,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      902
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 48,
   "fields": {
-    "reclamation": 897,
     "registration_number": "009-11/318",
     "claim_number": "12-30-12-439",
     "claim_date": "2025-09-17",
@@ -111894,14 +112719,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      897
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 49,
   "fields": {
-    "reclamation": 898,
     "registration_number": "009-11/318",
     "claim_number": "12-30-12-439",
     "claim_date": "2025-09-17",
@@ -111921,14 +112748,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      898
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 50,
   "fields": {
-    "reclamation": 909,
     "registration_number": "009-11/318",
     "claim_number": "12-30-13-439",
     "claim_date": "2025-09-17",
@@ -111948,14 +112777,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      909
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 51,
   "fields": {
-    "reclamation": 896,
     "registration_number": "009-11/318",
     "claim_number": "12-30-13-439",
     "claim_date": "2025-09-17",
@@ -111975,14 +112806,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      896
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 52,
   "fields": {
-    "reclamation": 1135,
     "registration_number": "009-11/319",
     "claim_number": "12-30-12-440",
     "claim_date": "2025-09-17",
@@ -112002,14 +112835,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1135
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 53,
   "fields": {
-    "reclamation": 40,
     "registration_number": "009-11/319",
     "claim_number": "12-30-12-440",
     "claim_date": "2025-09-17",
@@ -112029,14 +112864,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      40
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 54,
   "fields": {
-    "reclamation": 939,
     "registration_number": "009-11/322",
     "claim_number": "018-011-20а/193",
     "claim_date": "2025-08-11",
@@ -112054,16 +112891,18 @@
     "comment": null,
     "result_claim": "ACCEPTED",
     "costs_act": null,
-    "costs_all": null,
-    "response_number": null,
-    "response_date": null
+    "costs_all": "9156.00",
+    "response_number": "009-3127",
+    "response_date": "2025-10-16",
+    "reclamations": [
+      939
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 55,
   "fields": {
-    "reclamation": 730,
     "registration_number": "009-11/323",
     "claim_number": "018-011-20а/194",
     "claim_date": "2025-08-11",
@@ -112081,16 +112920,18 @@
     "comment": null,
     "result_claim": "ACCEPTED",
     "costs_act": null,
-    "costs_all": null,
-    "response_number": null,
-    "response_date": null
+    "costs_all": "9156.00",
+    "response_number": "009-3127",
+    "response_date": "2025-10-16",
+    "reclamations": [
+      730
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 56,
   "fields": {
-    "reclamation": 785,
     "registration_number": "009-11/324",
     "claim_number": "018-011-20а/195",
     "claim_date": "2025-08-11",
@@ -112108,16 +112949,18 @@
     "comment": null,
     "result_claim": "ACCEPTED",
     "costs_act": null,
-    "costs_all": null,
-    "response_number": null,
-    "response_date": null
+    "costs_all": "9156.00",
+    "response_number": "009-3127",
+    "response_date": "2025-10-16",
+    "reclamations": [
+      785
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 57,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/325",
     "claim_number": "2509046901",
     "claim_date": "2025-09-04",
@@ -112137,14 +112980,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 58,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/325",
     "claim_number": "2509046901",
     "claim_date": "2025-09-04",
@@ -112164,14 +113007,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 59,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/326",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
@@ -112191,14 +113034,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 60,
   "fields": {
-    "reclamation": 404,
     "registration_number": "009-11/326",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
@@ -112218,14 +113061,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      404
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 61,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/326",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
@@ -112245,14 +113090,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 62,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/326",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
@@ -112272,14 +113117,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 63,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/326",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
@@ -112299,14 +113144,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 64,
   "fields": {
-    "reclamation": 398,
     "registration_number": "009-11/326",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
@@ -112326,14 +113171,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      398
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 65,
   "fields": {
-    "reclamation": 225,
     "registration_number": "009-11/326",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
@@ -112353,14 +113200,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      225
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 66,
   "fields": {
-    "reclamation": null,
     "registration_number": "009-11/326",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
@@ -112380,14 +113229,14 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": []
   }
 },
 {
   "model": "claims.claim",
   "pk": 67,
   "fields": {
-    "reclamation": 855,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112407,14 +113256,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      855
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 68,
   "fields": {
-    "reclamation": 862,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112434,14 +113285,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      862
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 69,
   "fields": {
-    "reclamation": 864,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112461,14 +113314,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      864
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 70,
   "fields": {
-    "reclamation": 859,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112488,14 +113343,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      859
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 71,
   "fields": {
-    "reclamation": 866,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112515,14 +113372,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      866
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 72,
   "fields": {
-    "reclamation": 865,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112542,14 +113401,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      865
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 73,
   "fields": {
-    "reclamation": 863,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112569,14 +113430,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      863
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 74,
   "fields": {
-    "reclamation": 857,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112596,14 +113459,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      857
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 75,
   "fields": {
-    "reclamation": 860,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112623,14 +113488,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      860
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 76,
   "fields": {
-    "reclamation": 854,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112650,14 +113517,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      854
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 77,
   "fields": {
-    "reclamation": 861,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112677,14 +113546,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      861
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 78,
   "fields": {
-    "reclamation": 858,
     "registration_number": "009-11/327",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
@@ -112704,14 +113575,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      858
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 79,
   "fields": {
-    "reclamation": 387,
     "registration_number": "009-11/328",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
@@ -112731,14 +113604,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      387
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 80,
   "fields": {
-    "reclamation": 352,
     "registration_number": "009-11/328",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
@@ -112758,14 +113633,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      352
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 81,
   "fields": {
-    "reclamation": 353,
     "registration_number": "009-11/328",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
@@ -112785,14 +113662,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      353
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 82,
   "fields": {
-    "reclamation": 442,
     "registration_number": "009-11/328",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
@@ -112812,14 +113691,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      442
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 83,
   "fields": {
-    "reclamation": 412,
     "registration_number": "009-11/328",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
@@ -112839,14 +113720,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      412
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 84,
   "fields": {
-    "reclamation": 702,
     "registration_number": "009-11/329",
     "claim_number": "2509107130",
     "claim_date": "2025-09-10",
@@ -112866,14 +113749,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      702
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 85,
   "fields": {
-    "reclamation": 1012,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -112893,14 +113778,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1012
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 86,
   "fields": {
-    "reclamation": 998,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -112920,14 +113807,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      998
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 87,
   "fields": {
-    "reclamation": 930,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -112947,14 +113836,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      930
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 88,
   "fields": {
-    "reclamation": 1041,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -112974,14 +113865,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1041
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 89,
   "fields": {
-    "reclamation": 1001,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113001,14 +113894,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1001
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 90,
   "fields": {
-    "reclamation": 927,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113028,14 +113923,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      927
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 91,
   "fields": {
-    "reclamation": 1010,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113055,14 +113952,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1010
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 92,
   "fields": {
-    "reclamation": 997,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113082,14 +113981,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      997
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 93,
   "fields": {
-    "reclamation": 1109,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113109,14 +114010,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1109
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 94,
   "fields": {
-    "reclamation": 1022,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113136,14 +114039,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1022
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 95,
   "fields": {
-    "reclamation": 1023,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113163,14 +114068,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1023
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 96,
   "fields": {
-    "reclamation": 1011,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113190,14 +114097,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1011
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 97,
   "fields": {
-    "reclamation": 1024,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113217,14 +114126,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1024
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 98,
   "fields": {
-    "reclamation": 1040,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113244,14 +114155,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1040
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 99,
   "fields": {
-    "reclamation": 1054,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113271,14 +114184,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1054
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 100,
   "fields": {
-    "reclamation": 1000,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113298,14 +114213,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1000
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 101,
   "fields": {
-    "reclamation": 999,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113325,14 +114242,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      999
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 102,
   "fields": {
-    "reclamation": 1055,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113352,14 +114271,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1055
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 103,
   "fields": {
-    "reclamation": 931,
     "registration_number": "009-11/330",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
@@ -113379,14 +114300,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      931
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 104,
   "fields": {
-    "reclamation": 1165,
     "registration_number": "009-11/331",
     "claim_number": "2509157213",
     "claim_date": "2025-09-15",
@@ -113406,14 +114329,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1165
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 105,
   "fields": {
-    "reclamation": 465,
     "registration_number": "009-11/331",
     "claim_number": "2509157213",
     "claim_date": "2025-09-15",
@@ -113433,14 +114358,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      465
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 106,
   "fields": {
-    "reclamation": 835,
     "registration_number": "009-11/331",
     "claim_number": "2509157213",
     "claim_date": "2025-09-15",
@@ -113460,14 +114387,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      835
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 107,
   "fields": {
-    "reclamation": 1069,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113487,14 +114416,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1069
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 108,
   "fields": {
-    "reclamation": 1072,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113514,14 +114445,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1072
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 109,
   "fields": {
-    "reclamation": 1057,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113541,14 +114474,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1057
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 110,
   "fields": {
-    "reclamation": 1064,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113568,14 +114503,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1064
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 111,
   "fields": {
-    "reclamation": 1068,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113595,14 +114532,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1068
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 112,
   "fields": {
-    "reclamation": 1070,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113622,14 +114561,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1070
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 113,
   "fields": {
-    "reclamation": 1077,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113649,14 +114590,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1077
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 114,
   "fields": {
-    "reclamation": 1218,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113676,14 +114619,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1218
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 115,
   "fields": {
-    "reclamation": 1067,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113703,14 +114648,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1067
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 116,
   "fields": {
-    "reclamation": 1061,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113730,14 +114677,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1061
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 117,
   "fields": {
-    "reclamation": 1074,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113757,14 +114706,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1074
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 118,
   "fields": {
-    "reclamation": 1075,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113784,14 +114735,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1075
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 119,
   "fields": {
-    "reclamation": 1073,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113811,14 +114764,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1073
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 120,
   "fields": {
-    "reclamation": 1065,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113838,14 +114793,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1065
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 121,
   "fields": {
-    "reclamation": 1108,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113865,14 +114822,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1108
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 122,
   "fields": {
-    "reclamation": 1066,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113892,14 +114851,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1066
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 123,
   "fields": {
-    "reclamation": 1076,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113919,14 +114880,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1076
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 124,
   "fields": {
-    "reclamation": 1058,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113946,14 +114909,16 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1058
+    ]
   }
 },
 {
   "model": "claims.claim",
   "pk": 125,
   "fields": {
-    "reclamation": 1071,
     "registration_number": "009-11/332",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
@@ -113973,7 +114938,793 @@
     "costs_act": null,
     "costs_all": null,
     "response_number": null,
-    "response_date": null
+    "response_date": null,
+    "reclamations": [
+      1071
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 126,
+  "fields": {
+    "registration_number": "009-11/333",
+    "claim_number": "2509187358",
+    "claim_date": "2025-09-18",
+    "type_money": "RUR",
+    "claim_amount_all": "13642.26",
+    "reclamation_act_number": "94155",
+    "reclamation_act_date": "2025-06-04",
+    "engine_number": "P0205757",
+    "claim_amount_act": "6821.13",
+    "message_received_date": "2025-06-03",
+    "receipt_invoice_number": "2506222",
+    "investigation_act_number": "2025 № 848",
+    "investigation_act_date": "2025-06-23",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      945
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 127,
+  "fields": {
+    "registration_number": "009-11/333",
+    "claim_number": "2509187358",
+    "claim_date": "2025-09-18",
+    "type_money": "RUR",
+    "claim_amount_all": "13642.26",
+    "reclamation_act_number": "94205",
+    "reclamation_act_date": "2025-06-04",
+    "engine_number": "P0200305",
+    "claim_amount_act": "6821.13",
+    "message_received_date": "2025-06-03",
+    "receipt_invoice_number": "2506222",
+    "investigation_act_number": "2025 № 849",
+    "investigation_act_date": "2025-06-23",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      946
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 128,
+  "fields": {
+    "registration_number": "009-11/334",
+    "claim_number": "2509237505",
+    "claim_date": "2025-09-23",
+    "type_money": "RUR",
+    "claim_amount_all": "8232.54",
+    "reclamation_act_number": "132069",
+    "reclamation_act_date": "2024-10-09",
+    "engine_number": "Р0190662",
+    "claim_amount_act": "8232.54",
+    "message_received_date": "2025-07-01",
+    "receipt_invoice_number": "2508028",
+    "investigation_act_number": "2025 № 878",
+    "investigation_act_date": "2025-07-15",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1038
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 129,
+  "fields": {
+    "registration_number": "009-11/335",
+    "claim_number": "2509237537",
+    "claim_date": "2025-09-23",
+    "type_money": "RUR",
+    "claim_amount_all": "28240.72",
+    "reclamation_act_number": "15908",
+    "reclamation_act_date": "2025-02-04",
+    "engine_number": "P0189751",
+    "claim_amount_act": "8948.28",
+    "message_received_date": "2025-07-16",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1144
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 130,
+  "fields": {
+    "registration_number": "009-11/335",
+    "claim_number": "2509237537",
+    "claim_date": "2025-09-23",
+    "type_money": "RUR",
+    "claim_amount_all": "28240.72",
+    "reclamation_act_number": "19040",
+    "reclamation_act_date": "2025-02-07",
+    "engine_number": "P0200606",
+    "claim_amount_act": "10335.16",
+    "message_received_date": "2025-07-16",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1145
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 131,
+  "fields": {
+    "registration_number": "009-11/335",
+    "claim_number": "2509237537",
+    "claim_date": "2025-09-23",
+    "type_money": "RUR",
+    "claim_amount_all": "28240.72",
+    "reclamation_act_number": "17527",
+    "reclamation_act_date": "2025-02-05",
+    "engine_number": "P0187177",
+    "claim_amount_act": "8957.28",
+    "message_received_date": "2025-07-07",
+    "receipt_invoice_number": "2508612",
+    "investigation_act_number": "2025 № 879",
+    "investigation_act_date": "2025-07-15",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1053
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 132,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "76394",
+    "reclamation_act_date": "2025-05-08",
+    "engine_number": "M0144885",
+    "claim_amount_act": "10343.46",
+    "message_received_date": "2025-07-09",
+    "receipt_invoice_number": "2508612",
+    "investigation_act_number": "2025 № 906",
+    "investigation_act_date": "2025-07-21",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1079
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 133,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "90542",
+    "reclamation_act_date": "2025-05-29",
+    "engine_number": "P0203059",
+    "claim_amount_act": "8844.78",
+    "message_received_date": "2025-07-09",
+    "receipt_invoice_number": "2508727",
+    "investigation_act_number": "2025 № 948",
+    "investigation_act_date": "2025-08-12",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1085
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 134,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "74721",
+    "reclamation_act_date": "2025-05-06",
+    "engine_number": "P0190058",
+    "claim_amount_act": "8702.49",
+    "message_received_date": "2025-07-21",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1161
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 135,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "85991",
+    "reclamation_act_date": "2025-05-23",
+    "engine_number": "P0196938",
+    "claim_amount_act": "8751.41",
+    "message_received_date": "2025-08-04",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1220
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 136,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "73361",
+    "reclamation_act_date": "2025-05-02",
+    "engine_number": "R0214506",
+    "claim_amount_act": "8874.52",
+    "message_received_date": "2025-07-17",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1146
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 137,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "85398",
+    "reclamation_act_date": "2025-05-22",
+    "engine_number": "R0217910",
+    "claim_amount_act": "10104.41",
+    "message_received_date": "2025-08-04",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1217
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 138,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "83887",
+    "reclamation_act_date": "2025-05-21",
+    "engine_number": "N0177704",
+    "claim_amount_act": "9005.05",
+    "message_received_date": "2025-07-21",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1166
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 139,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "76462",
+    "reclamation_act_date": "2025-05-08",
+    "engine_number": "R0190058",
+    "claim_amount_act": "8661.26",
+    "message_received_date": "2025-07-21",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1162
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 140,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "81572",
+    "reclamation_act_date": "2025-05-17",
+    "engine_number": "R0218340",
+    "claim_amount_act": "9442.11",
+    "message_received_date": "2025-07-09",
+    "receipt_invoice_number": "2508727",
+    "investigation_act_number": "2025 № 948",
+    "investigation_act_date": "2025-08-12",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1084
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 141,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "77658",
+    "reclamation_act_date": "2025-05-12",
+    "engine_number": "P0186331",
+    "claim_amount_act": "8918.75",
+    "message_received_date": "2025-07-21",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1163
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 142,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "73603",
+    "reclamation_act_date": "2025-05-03",
+    "engine_number": "P0201414",
+    "claim_amount_act": "10647.45",
+    "message_received_date": "2025-07-09",
+    "receipt_invoice_number": "2508612",
+    "investigation_act_number": "2025 № 879",
+    "investigation_act_date": "2025-07-15",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1078
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 143,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "77679",
+    "reclamation_act_date": "2025-05-12",
+    "engine_number": "N0160391",
+    "claim_amount_act": "10120.09",
+    "message_received_date": "2025-07-09",
+    "receipt_invoice_number": "2508727",
+    "investigation_act_number": "2025 № 948",
+    "investigation_act_date": "2025-08-12",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1083
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 144,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "77790",
+    "reclamation_act_date": "2025-05-12",
+    "engine_number": "P0205750",
+    "claim_amount_act": "9134.39",
+    "message_received_date": "2025-07-21",
+    "receipt_invoice_number": "2509497",
+    "investigation_act_number": "2025 № 950",
+    "investigation_act_date": "2025-08-18",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1164
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 145,
+  "fields": {
+    "registration_number": "009-11/336",
+    "claim_number": "2509247597",
+    "claim_date": "2025-09-24",
+    "type_money": "RUR",
+    "claim_amount_all": "164549.58",
+    "reclamation_act_number": "76578",
+    "reclamation_act_date": "2025-05-09",
+    "engine_number": "P0189861",
+    "claim_amount_act": "42999.41",
+    "message_received_date": "2025-08-04",
+    "receipt_invoice_number": "фото",
+    "investigation_act_number": "2025 № 932",
+    "investigation_act_date": "2025-08-05",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1219
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 146,
+  "fields": {
+    "registration_number": "009-11/337",
+    "claim_number": "2509267629",
+    "claim_date": "2025-09-26",
+    "type_money": "RUR",
+    "claim_amount_all": "16882.36",
+    "reclamation_act_number": "29666",
+    "reclamation_act_date": "2024-06-18",
+    "engine_number": "N0174506",
+    "claim_amount_act": "16882.36",
+    "message_received_date": "2024-03-18",
+    "receipt_invoice_number": "2402665",
+    "investigation_act_number": "2024 № 351",
+    "investigation_act_date": "2024-04-10",
+    "investigation_act_result": "Признать",
+    "comment": null,
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1530
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 147,
+  "fields": {
+    "registration_number": "009-11/338",
+    "claim_number": "05-22/174",
+    "claim_date": "2025-09-26",
+    "type_money": "BYN",
+    "claim_amount_all": "964.62",
+    "reclamation_act_number": "15-291",
+    "reclamation_act_date": "2025-08-28",
+    "engine_number": "ПСИ",
+    "claim_amount_act": "134.32",
+    "message_received_date": "2025-09-01",
+    "receipt_invoice_number": "0080687",
+    "investigation_act_number": "2025 № 1050",
+    "investigation_act_date": "2025-10-06",
+    "investigation_act_result": "Признать",
+    "comment": "водяной насос 3LD-1307010-Б - 1 шт. недорезана резьба К3/8",
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1311
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 148,
+  "fields": {
+    "registration_number": "009-11/338",
+    "claim_number": "05-22/174",
+    "claim_date": "2025-09-26",
+    "type_money": "BYN",
+    "claim_amount_all": "964.62",
+    "reclamation_act_number": "15-291",
+    "reclamation_act_date": "2025-08-28",
+    "engine_number": "ПСИ",
+    "claim_amount_act": "134.32",
+    "message_received_date": "2025-09-01",
+    "receipt_invoice_number": "0080687",
+    "investigation_act_number": "2025 № 1044-1",
+    "investigation_act_date": "2025-10-01",
+    "investigation_act_result": "Признать",
+    "comment": "масляный насос 260-1011020 - 1 шт. нет производительности",
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1311
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 149,
+  "fields": {
+    "registration_number": "009-11/338",
+    "claim_number": "05-22/174",
+    "claim_date": "2025-09-26",
+    "type_money": "BYN",
+    "claim_amount_all": "964.62",
+    "reclamation_act_number": "15-291",
+    "reclamation_act_date": "2025-08-28",
+    "engine_number": "ПСИ",
+    "claim_amount_act": "134.32",
+    "message_received_date": "2025-09-01",
+    "receipt_invoice_number": "0080687",
+    "investigation_act_number": null,
+    "investigation_act_date": null,
+    "investigation_act_result": "Признать",
+    "comment": "ТКР6-00.01 - 1 шт. нет наддува",
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1311
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 150,
+  "fields": {
+    "registration_number": "009-11/339",
+    "claim_number": "05-22/175",
+    "claim_date": "2025-09-26",
+    "type_money": "BYN",
+    "claim_amount_all": "484.34",
+    "reclamation_act_number": "15-305",
+    "reclamation_act_date": "2025-09-08",
+    "engine_number": "ПСИ",
+    "claim_amount_act": "3.21",
+    "message_received_date": "2025-09-04",
+    "receipt_invoice_number": "0080686",
+    "investigation_act_number": "2025 № 1043-1",
+    "investigation_act_date": "2025-10-01",
+    "investigation_act_result": "Признать",
+    "comment": "ЦМФ 260-1028010 - 1 шт. раковина",
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1319
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 151,
+  "fields": {
+    "registration_number": "009-11/339",
+    "claim_number": "05-22/175",
+    "claim_date": "2025-09-26",
+    "type_money": "BYN",
+    "claim_amount_all": "484.34",
+    "reclamation_act_number": "15-305",
+    "reclamation_act_date": "2025-09-08",
+    "engine_number": "ПСИ",
+    "claim_amount_act": "3.21",
+    "message_received_date": "2025-09-04",
+    "receipt_invoice_number": "0080686",
+    "investigation_act_number": "2025 № 1049",
+    "investigation_act_date": "2025-10-06",
+    "investigation_act_result": "Признать",
+    "comment": "водяной насос 260-1307116-06 нет крыльчатки",
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1319
+    ]
+  }
+},
+{
+  "model": "claims.claim",
+  "pk": 152,
+  "fields": {
+    "registration_number": "009-11/340",
+    "claim_number": "05-22/176",
+    "claim_date": "2025-09-26",
+    "type_money": "BYN",
+    "claim_amount_all": "2488.36",
+    "reclamation_act_number": "15-308",
+    "reclamation_act_date": "2025-09-09",
+    "engine_number": "опытные образцы",
+    "claim_amount_act": "16.48",
+    "message_received_date": "2025-09-05",
+    "receipt_invoice_number": "0080688",
+    "investigation_act_number": null,
+    "investigation_act_date": null,
+    "investigation_act_result": "Признать",
+    "comment": "10 шт.",
+    "result_claim": "ACCEPTED",
+    "costs_act": null,
+    "costs_all": null,
+    "response_number": null,
+    "response_date": null,
+    "reclamations": [
+      1328
+    ]
   }
 },
 {
