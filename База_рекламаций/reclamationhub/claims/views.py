@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q
+from datetime import datetime
 
 from reclamations.models import Reclamation
 from investigations.models import Investigation
@@ -35,11 +36,17 @@ def search_related_data(request):
 
         # 3. Ищем рекламацию
         if search_type == "by_act_number":
-            # Поиск по номеру и дате рекламационного акта
+            # Преобразуем дату из DD.MM.YYYY в YYYY-MM-DD
+            try:
+                search_date_obj = datetime.strptime(search_date, "%d.%m.%Y").date()
+            except ValueError:
+                return JsonResponse({"found": False, "error": "Неверный формат даты"})
+
+            # Поиск по номеру акта рекламации и соответствующей дате
             reclamation = Reclamation.objects.filter(
-                Q(sender_outgoing_number=search_number)
-                | Q(consumer_act_number=search_number)
-                | Q(end_consumer_act_number=search_number)
+                Q(sender_outgoing_number=search_number, message_sent_date=search_date_obj) |
+                Q(consumer_act_number=search_number, consumer_act_date=search_date_obj) |
+                Q(end_consumer_act_number=search_number, end_consumer_act_date=search_date_obj)
             ).first()
         else:  # by_engine_number
             # Поиск по номеру двигателя

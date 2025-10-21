@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
 from django.db.models import Q
 from django.utils import timezone
+from datetime import datetime
 
 from .models import Claim
 from reclamations.models import Reclamation
@@ -86,11 +87,13 @@ class ClaimAdminForm(forms.ModelForm):
             return cleaned_data
 
         reclamation_act_number = cleaned_data.get("reclamation_act_number")
+        reclamation_act_date = cleaned_data.get("reclamation_act_date")
         engine_number = cleaned_data.get("engine_number")
         comment = cleaned_data.get("comment", "")
 
         # Ищем рекламации (может быть несколько)
-        found_reclamations = self._find_reclamations(reclamation_act_number, engine_number)
+        # found_reclamations = self._find_reclamations(reclamation_act_number, engine_number)
+        found_reclamations = self._find_reclamations(reclamation_act_number, reclamation_act_date, engine_number)
 
         if found_reclamations:
             # Рекламация найдена - все отлично. Сохраняем рекламацию для save_model.
@@ -118,14 +121,35 @@ class ClaimAdminForm(forms.ModelForm):
 
         return cleaned_data
 
-    def _find_reclamations(self, reclamation_act_number, engine_number):
+    def _find_reclamations(self, reclamation_act_number, reclamation_act_date, engine_number):
         """Возвращает список найденных рекламаций"""
         if reclamation_act_number:
+            # Если есть дата - ищем точно по номеру и дате
+            if reclamation_act_date:
+                try:
+                    # Проверяем, что за объект в reclamation_act_date
+                    if isinstance(reclamation_act_date, str):
+                        # Если строка - преобразуем
+                        search_date_obj = datetime.strptime(reclamation_act_date, "%Y-%m-%d").date()
+                    else:
+                        # Если уже date объект - используем как есть
+                        search_date_obj = reclamation_act_date
+
+                    return Reclamation.objects.filter(
+                        Q(sender_outgoing_number=reclamation_act_number, message_sent_date=search_date_obj) |
+                        Q(consumer_act_number=reclamation_act_number, consumer_act_date=search_date_obj) |
+                        Q(end_consumer_act_number=reclamation_act_number, end_consumer_act_date=search_date_obj)
+                    )
+                except Exception:
+                    pass
+
+            # Если даты нет - ищем только по номеру
             return Reclamation.objects.filter(
-                Q(sender_outgoing_number=reclamation_act_number)
-                | Q(consumer_act_number=reclamation_act_number)
-                | Q(end_consumer_act_number=reclamation_act_number)
+                Q(sender_outgoing_number=reclamation_act_number) |
+                Q(consumer_act_number=reclamation_act_number) |
+                Q(end_consumer_act_number=reclamation_act_number)
             )
+        # Иначе ищем по номеру двигателя
         elif engine_number:
             return Reclamation.objects.filter(engine_number=engine_number)
 

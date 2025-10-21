@@ -263,35 +263,21 @@ class ClaimAdmin(admin.ModelAdmin):
 
     @admin.display(description="Рекламация")
     def reclamation_display(self, obj):
-        """Отображение связанной рекламации. Поиск рекламации проходит по номеру акта исследования"""
+        """Отображение рекламации найденной по данным из претензии"""
 
         reclamation = None
 
-        # Ищем рекламацию по номеру акта исследования (если есть)
-        if obj.investigation_act_number:
-            try:
-                # investigation = Investigation.objects.get(act_number=obj.investigation_act_number)
-                investigation = Investigation.objects.filter(act_number=obj.investigation_act_number).first()
-                if investigation:
-                    reclamation = investigation.reclamation
-            except Investigation.DoesNotExist:
-                pass
-
-        # Если не найдена - ищем по номеру акта рекламации
-        if not reclamation and obj.reclamation_act_number:
+        # 1. Ищем по номеру и дате акта рекламации
+        if obj.reclamation_act_number and obj.reclamation_act_date:
             reclamation = Reclamation.objects.filter(
-                Q(sender_outgoing_number=obj.reclamation_act_number) |
-                Q(consumer_act_number=obj.reclamation_act_number) |
-                Q(end_consumer_act_number=obj.reclamation_act_number)
+                Q(sender_outgoing_number=obj.reclamation_act_number, message_sent_date=obj.reclamation_act_date) |
+                Q(consumer_act_number=obj.reclamation_act_number, consumer_act_date=obj.reclamation_act_date) |
+                Q(end_consumer_act_number=obj.reclamation_act_number, end_consumer_act_date=obj.reclamation_act_date)
             ).first()
 
-        # Если ничего не найдено - берем первую из связанных
-        if not reclamation and obj.reclamations.exists():
-            reclamation = obj.reclamations.first()
-
-        if reclamation:
-            url = reverse("admin:reclamations_reclamation_changelist")
-            filtered_url = f"{url}?id={reclamation.id}"
+        # 2. Если не найдена - ищем по номеру двигателя (если есть)
+        elif obj.engine_number:
+            reclamation = Reclamation.objects.filter(engine_number=obj.engine_number).first()
 
         if reclamation:
             url = reverse("admin:reclamations_reclamation_changelist")
