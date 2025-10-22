@@ -86,7 +86,7 @@ class ConsumerListFilter(SimpleListFilter):
         # Фильтруем queryset на основе выбранного значения
         if self.value():
             return queryset.filter(
-                reclamation__defect_period__name__startswith=f"{self.value()} - "
+                reclamations__defect_period__name__startswith=f"{self.value()} - "
             )
         return queryset
 
@@ -286,6 +286,8 @@ class ClaimAdmin(admin.ModelAdmin):
 
             return mark_safe(
                 f'<a href="{filtered_url}" '
+                f'target="_blank" '  # открывать в новой вкладке
+                f'rel="noopener" '   # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
                 f'onmouseover="this.style.fontWeight=\'bold\'" '
                 f'onmouseout="this.style.fontWeight=\'normal\'" '
                 f'title="Перейти к рекламации">'
@@ -315,6 +317,8 @@ class ClaimAdmin(admin.ModelAdmin):
 
             return mark_safe(
                 f'<a href="{filtered_url}" '
+                f'target="_blank" '  # открывать в новой вкладке
+                f'rel="noopener" '   # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
                 f'onmouseover="this.style.fontWeight=\'bold\'" '
                 f'onmouseout="this.style.fontWeight=\'normal\'" '
                 f'title="Перейти к акту исследования">'

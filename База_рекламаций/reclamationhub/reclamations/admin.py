@@ -373,6 +373,8 @@ class ReclamationAdmin(admin.ModelAdmin):
             # )
             return mark_safe(
                 f'<a href="{filtered_url}" '
+                f'target="_blank" '  # открывать в новой вкладке
+                f'rel="noopener" '   # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
                 f"onmouseover=\"this.style.fontWeight='bold'\" "  # жирный шрифт при наведении
                 f"onmouseout=\"this.style.fontWeight='normal'\" "  # нормальный шрифт
                 f'title="Перейти к акту исследования">'  # подсказка при наведении
