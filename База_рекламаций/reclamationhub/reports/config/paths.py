@@ -80,7 +80,6 @@ def get_length_study_png_path():
 
 
 # ====================== MILEAGE CHART ======================
-# PRETENCE_DIR = os.path.join(BASE_REPORTS_DIR, "pretence")
 
 
 def get_mileage_chart_txt_path():
@@ -92,6 +91,33 @@ def get_mileage_chart_txt_path():
 def get_mileage_chart_png_path():
     """Путь к png файлу графика анализа по пробегу изделия"""
     filename = f"Анализ по пробегу_график_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+# ====================== COMBINED CHART ======================
+
+
+def get_defect_chart_product_path():
+    """Путь к png файлу графика по обозначению изделия"""
+    filename = f"Анализ по обозначению изделия_график_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+def get_defect_chart_manufacture_path():
+    """Путь к png файлу графика по дате изготовления изделия"""
+    filename = f"Анализ по дате изготовления изделия_график_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+def get_defect_chart_message_path():
+    """Путь к png файлу графика по дате сообщения"""
+    filename = f"Анализ по дате сообщения_график_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+def get_defect_chart_combined_path():
+    """Путь к png файлу сводного графика по дате изготовления изделия и сообщения"""
+    filename = f"Анализ по дате изготовления + сообщения_график_{date_today}.png"
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 

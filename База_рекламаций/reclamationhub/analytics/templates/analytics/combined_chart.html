@@ -14,25 +14,219 @@
                 </ol>
             </nav>
 
-            <!-- <h1>{{ page_title }}</h1>  -->
             <h3 class="text-muted">{{ description }}</h3>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
+    <!-- Показываем карточку генерации отчета ТОЛЬКО если нет отчета -->
+    {% if not download_info %}
+    <div class="row mb-4">
+        <div class="col-md-10">
             <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-info">🚧 {{ status }}</h3>
-                    <p>Модуль "{{ module_name }}" находится в стадии разработки</p>
-                    <p>Здесь будут диаграммы по дате уведомления о дефекте, дате изготовления изделия и совмещенная диаграмма с возможностью сохранения в файл</p>
+                <div class="card-header">
+                    <h5>Параметры анализа</h5>
+                </div>
+                <div class="card-body">
+                    <p>Анализ распределения рекламаций по датам с построением диаграмм</p>
 
-                    <a href="{% url 'analytics:analytic' %}" class="btn btn-secondary">
-                        ← Вернуться к аналитике
-                    </a>
+                    <form method="post" id="chartForm">
+                        {% csrf_token %}
+
+                        <!-- Поле выбора года -->
+                        <div class="mb-3">
+                            <label for="year" class="form-label fw-bold">Год анализа:</label>
+                            <select class="form-select" id="year" name="year" required>
+                                <option value="all">Все годы</option>
+                                {% for year in available_years %}
+                                    {% if year != "all" %}
+                                    <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Блок выбора потребителей -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Потребители:</label>
+                            <div class="row">
+                                {% for consumer in available_consumers %}
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            name="consumers"
+                                            value="{{ consumer.value }}"
+                                            id="consumer{{ forloop.counter }}">
+                                        <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                            {{ consumer.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Выберите нужных потребителей или оставьте пустыми для анализа всех потребителей
+                            </small>
+                        </div>
+
+                        <!-- Блок выбора изделий (ОДНО изделие - radio buttons) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Вид изделия:</label>
+                            <div class="row">
+                                {% for product in available_products %}
+                                <div class="col-md-3 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="radio"
+                                            name="product"
+                                            value="{{ product.value }}"
+                                            id="product{{ forloop.counter }}"
+                                            required>
+                                        <label class="form-check-label" for="product{{ forloop.counter }}">
+                                            {{ product.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Выберите <strong>одно</strong> изделие для анализа (обязательно)
+                            </small>
+                        </div>
+
+                        <!-- Кнопки выбора типа графика -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Выберите тип графика:</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="submit" name="chart_type" value="product" class="btn btn-outline-primary">
+                                    По обозначению изделия
+                                </button>
+                                <button type="submit" name="chart_type" value="manufacture" class="btn btn-outline-primary">
+                                    По дате изготовления
+                                </button>
+                                <button type="submit" name="chart_type" value="message" class="btn btn-outline-primary">
+                                    По дате сообщения
+                                </button>
+                                <button type="submit" name="chart_type" value="combined" class="btn btn-outline-primary">
+                                    Сводный график
+                                </button>
+                                <button type="submit" name="chart_type" value="all" class="btn btn-primary">
+                                    Все графики сразу
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
+
+    <!-- Сообщения -->
+    {% if messages %}
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Блок для отображения анализа -->
+    {% if download_info %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-body">
+                    <p><strong>{{ download_info.message }}</strong></p>
+                    <p class="text-muted">
+                        Фильтр: {{ download_info.filter_text }} |
+                        Год: {% if download_info.year == "all" %}Все годы{% else %}{{ download_info.year }}{% endif %} |
+                        Всего рекламаций: {{ download_info.total_records }}
+                    </p>
+
+                    <!-- Графики -->
+                    {% if download_info.charts %}
+
+                        <!-- График по изделию -->
+                        {% if download_info.charts.product %}
+                        <div class="mt-4 border-top pt-4">
+                            <h5>📊 {{ download_info.charts.product.title }}</h5>
+                            <img src="data:image/png;base64,{{ download_info.charts.product.base64 }}"
+                                 class="img-fluid"
+                                 alt="График по изделию">
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    💾 Файл сохранён: <code>{{ download_info.charts.product.png_path }}</code>
+                                </small>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- График по дате изготовления -->
+                        {% if download_info.charts.manufacture %}
+                        <div class="mt-4 border-top pt-4">
+                            <h5>📅 {{ download_info.charts.manufacture.title }}</h5>
+                            <img src="data:image/png;base64,{{ download_info.charts.manufacture.base64 }}"
+                                 class="img-fluid"
+                                 alt="График по дате изготовления">
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    💾 Файл сохранён: <code>{{ download_info.charts.manufacture.png_path }}</code>
+                                </small>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- График по дате сообщения -->
+                        {% if download_info.charts.message %}
+                        <div class="mt-4 border-top pt-4">
+                            <h5>📬 {{ download_info.charts.message.title }}</h5>
+                            <img src="data:image/png;base64,{{ download_info.charts.message.base64 }}"
+                                 class="img-fluid"
+                                 alt="График по дате сообщения">
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    💾 Файл сохранён: <code>{{ download_info.charts.message.png_path }}</code>
+                                </small>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Совмещенный график -->
+                        {% if download_info.charts.combined %}
+                        <div class="mt-4 border-top pt-4">
+                            <h5>📈 {{ download_info.charts.combined.title }}</h5>
+                            <img src="data:image/png;base64,{{ download_info.charts.combined.base64 }}"
+                                 class="img-fluid"
+                                 alt="Совмещенный график">
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    💾 Файл сохранён: <code>{{ download_info.charts.combined.png_path }}</code>
+                                </small>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    {% endif %}
+
+                    <!-- Кнопки действий -->
+                    <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                        <a href="{% url 'analytics:combined_chart' %}" class="btn btn-primary">
+                            🔄 Новый анализ
+                        </a>
+                        <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                            ⬆️ Вверх
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
