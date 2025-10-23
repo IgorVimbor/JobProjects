@@ -208,16 +208,15 @@ class ClaimAdmin(admin.ModelAdmin):
         "registration_number",
         "claim_number",
         "response_number",
-        "reclamation__sender_outgoing_number",
-        "reclamation__id",
+        "reclamation_act_number",
+        "comment",
     ]
 
     search_help_text = mark_safe(
         """
     <p>ПОИСК ПО ПОЛЯМ:</p>
     <ul>
-        <li>НОМЕР РЕГИСТРАЦИИ ••• НОМЕР ПРЕТЕНЗИИ ••• НОМЕР ОТВЕТА БЗА</li>
-        <li>НОМЕР ПСА РЕКЛАМАЦИИ ••• ID РЕКЛАМАЦИИ</li>
+        <li>НОМЕР РЕГИСТРАЦИИ ••• НОМЕР ПРЕТЕНЗИИ ••• НОМЕР АКТА РЕКЛАМАЦИИ ••• НОМЕР ОТВЕТА БЗА ••• КОММЕНТАРИИ</li>
     </ul>
     """
     )

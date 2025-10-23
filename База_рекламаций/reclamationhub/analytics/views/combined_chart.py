@@ -65,7 +65,7 @@ def combined_chart_page(request):
 
     context = {
         "page_title": "Диаграммы по датам",
-        "description": "Диаграммы по дате уведомления о дефекте, изготовления изделия или совмещенная диаграмма",
+        "description": "Диаграммы распределения по обозначению изделия, дате уведомления о дефекте, изготовления изделия или совмещенная диаграмма",
         "download_info": download_info,
         "available_years": available_years,
         "current_year": datetime.now().year,

@@ -11,7 +11,10 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-white bg-info">
+        <!-- Кликабельная карточка -->
+        <div class="card text-white bg-info clickable-card"
+             onclick="openReclamationsFilter('NEW')"
+             title="Показать новые рекламации">
             <div class="card-body">
                 <h5 class="card-title">Новые</h5>
                 <p class="card-text display-4">{{ new_reclamations }}</p>
@@ -19,7 +22,10 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-white bg-warning">
+        <!-- Кликабельная карточка -->
+        <div class="card text-white bg-warning clickable-card"
+             onclick="openReclamationsFilter('IN_PROGRESS')"
+             title="Показать рекламации в работе">
             <div class="card-body">
                 <h5 class="card-title">В работе</h5>
                 <p class="card-text display-4">{{ in_progress }}</p>
@@ -35,3 +41,23 @@
         </div>
     </div>
 </div>
+
+<!-- CSS стили для hover эффектов при наведении на карточки -->
+<style>
+.clickable-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.clickable-card:hover {
+    transform: scale(1.02);
+}
+</style>
+
+<!-- Функция формирования URL для перехода при клике на карточку -->
+<script>
+function openReclamationsFilter(status) {
+    const currentYear = document.getElementById('yearSelector').value || new Date().getFullYear();
+    const url = `/admin/reclamations/reclamation/?status__exact=${status}&year__exact=${currentYear}`;
+    window.open(url, '_blank');
+}
+</script>
