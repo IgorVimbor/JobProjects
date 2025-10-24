@@ -29,9 +29,7 @@ def accept_defect_page(request):
 
     # Получаем доступные годы для селектора
     available_years = list(
-        Reclamation.objects.values_list('year', flat=True)
-        .distinct()
-        .order_by('-year')
+        Reclamation.objects.values_list("year", flat=True).distinct().order_by("-year")
     )
 
     # Список месяцев по кварталам
@@ -42,7 +40,7 @@ def accept_defect_page(request):
                 {"value": 1, "name": "Январь"},
                 {"value": 2, "name": "Февраль"},
                 {"value": 3, "name": "Март"},
-            ]
+            ],
         },
         {
             "title": "II квартал",
@@ -50,7 +48,7 @@ def accept_defect_page(request):
                 {"value": 4, "name": "Апрель"},
                 {"value": 5, "name": "Май"},
                 {"value": 6, "name": "Июнь"},
-            ]
+            ],
         },
         {
             "title": "III квартал",
@@ -58,7 +56,7 @@ def accept_defect_page(request):
                 {"value": 7, "name": "Июль"},
                 {"value": 8, "name": "Август"},
                 {"value": 9, "name": "Сентябрь"},
-            ]
+            ],
         },
         {
             "title": "IV квартал",
@@ -66,12 +64,12 @@ def accept_defect_page(request):
                 {"value": 10, "name": "Октябрь"},
                 {"value": 11, "name": "Ноябрь"},
                 {"value": 12, "name": "Декабрь"},
-            ]
+            ],
         },
     ]
 
     context = {
-        "page_title": "Признанные/непризнанные рекламации",
+        "page_title": "% Признанных рекламаций",
         "description": "Отчет по количеству признанных/непризнанных рекламаций по потребителям и изделиям",
         "download_info": download_info,
         "available_years": available_years,
@@ -113,7 +111,9 @@ def generate_report(request):
             # Например: модификации HTML (добавить <option value="2030">2030</option>), прямые POST запросы
             if year > current_year:
                 # Будущий год - нет данных
-                messages.error(request, f"Нельзя формировать отчет за будущий {year} год")
+                messages.error(
+                    request, f"Нельзя формировать отчет за будущий {year} год"
+                )
                 return redirect("reports:accept_defect")
             # Защиту по году можно убрать, тогда ниже не elif, а if
             elif year == current_year:
@@ -121,11 +121,22 @@ def generate_report(request):
                 future_months = [month for month in months if month > current_month]
                 if future_months:
                     month_names = {
-                        1: "январь", 2: "февраль", 3: "март", 4: "апрель",
-                        5: "май", 6: "июнь", 7: "июль", 8: "август",
-                        9: "сентябрь", 10: "октябрь", 11: "ноябрь", 12: "декабрь"
+                        1: "январь",
+                        2: "февраль",
+                        3: "март",
+                        4: "апрель",
+                        5: "май",
+                        6: "июнь",
+                        7: "июль",
+                        8: "август",
+                        9: "сентябрь",
+                        10: "октябрь",
+                        11: "ноябрь",
+                        12: "декабрь",
                     }
-                    future_names = [month_names[month] for month in sorted(future_months)]
+                    future_names = [
+                        month_names[month] for month in sorted(future_months)
+                    ]
 
                     if len(future_names) == 1:
                         msg = f"❌ Месяц {future_names[0]} {year} года еще не наступил"
@@ -149,7 +160,9 @@ def generate_report(request):
         request.session["accept_defect_download_info"] = {
             "message": result["full_message"],
             "report_data": result["report_data"],
-            "period_text": result.get("period_text", f"{year} год"),  # Для отображения периода
+            "period_text": result.get(
+                "period_text", f"{year} год"
+            ),  # Для отображения периода
         }
     else:
         if result["message_type"] == "info":
