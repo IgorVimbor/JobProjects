@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     analytic,
     combined_chart,
-    culprits_defect,
+    consumer_defect,
     mileage_chart,
     product_defect,
 )
@@ -15,9 +15,9 @@ urlpatterns = [
     path("", analytic.analytic_page, name="analytic"),
     # Маршрут для приложения 'Совмещенная диаграмма'
     path("combined_chart/", combined_chart.combined_chart_page, name="combined_chart"),
-    # Маршрут для приложения 'Анализ по виновникам дефектов'
+    # Маршрут для приложения 'Анализ дефектности по потребителю'
     path(
-        "culprits_defect/", culprits_defect.culprits_defect_page, name="culprits_defect"
+        "consumer_defect/", consumer_defect.consumer_defect_page, name="consumer_defect"
     ),
     # Маршрут для приложения 'Диаграмма по пробегу (наработке)'
     path("mileage_chart/", mileage_chart.mileage_chart_page, name="mileage_chart"),

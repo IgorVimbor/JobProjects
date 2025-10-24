@@ -4,7 +4,7 @@ from .views import (
     enquiry_period,
     accept_defect,
     length_study,
-    not_acts,
+    culprits_defect,
     date_pretence,
     db_search,
 )
@@ -27,8 +27,10 @@ urlpatterns = [
         db_search.download_search_report,
         name="download_search_report",
     ),
-    # Маршрут для приложения "Незакрытые акты рекламаций"
-    path("not-acts/", not_acts.not_acts_page, name="not_acts"),
+    # Маршрут для приложения "Справка по виновникам дефектов"
+    path(
+        "culprits_defect/", culprits_defect.culprits_defect_page, name="culprits_defect"
+    ),
     # Маршрут для приложения "Даты уведомления по рекламациям"
     path("date-pretence/", date_pretence.date_pretence_page, name="date_pretence"),
 ]

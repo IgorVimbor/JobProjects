@@ -32,7 +32,7 @@ def reference_page(request):
 
     context = {
         "page_title": "Справки и отчеты",
-        "description": "Генерация отчетов и справок по дефектности изделий БЗА",
+        "description": "Генерация справок и отчетов по рекламациям на изделия БЗА",
         # Данные для карточек
         "total_reclamations": total_reclamations,
         "new_reclamations": new_reclamations,
