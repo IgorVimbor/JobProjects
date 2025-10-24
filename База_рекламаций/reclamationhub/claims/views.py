@@ -94,6 +94,11 @@ def search_related_data(request):
             "investigation_act_number": investigation.act_number or "",
             "investigation_act_date": investigation.act_date.strftime("%d.%m.%Y"),
             "investigation_act_result": investigation.get_solution_display() or "",
+            "consumer_name": (
+                Claim.extract_consumer_prefix(reclamation.defect_period.name)
+                if reclamation.defect_period
+                else ""
+            ),
         }
 
         # 7. Добавляем специфичные поля в зависимости от типа поиска

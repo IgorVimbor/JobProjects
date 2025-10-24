@@ -57416,6 +57416,57 @@
 },
 {
   "model": "reclamations.reclamation",
+  "pk": 1100,
+  "fields": {
+    "status": "CLOSED",
+    "year": 2025,
+    "yearly_number": 1100,
+    "incoming_number": null,
+    "message_received_date": "2025-07-09",
+    "sender": null,
+    "sender_outgoing_number": null,
+    "message_sent_date": null,
+    "defect_period": 4,
+    "product_name": 2,
+    "product": 57,
+    "product_number": "12209",
+    "manufacture_date": "03.24",
+    "purchaser": "ММЗ",
+    "consumer_act_number": null,
+    "consumer_act_date": null,
+    "country_rejected": "Беларусь",
+    "end_consumer": "МТЗ",
+    "end_consumer_act_number": "3769",
+    "end_consumer_act_date": "2025-06-27",
+    "engine_brand": "Д-243.S2",
+    "engine_number": "25607",
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": null,
+    "away_type": "notdata",
+    "mileage_operating_time": "н/д",
+    "claimed_defect": "не качает",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": null,
+    "outgoing_document_number": null,
+    "outgoing_document_date": null,
+    "letter_sending_method": null,
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": "2025-07-09",
+    "product_sender": "ММЗ",
+    "receipt_invoice_number": "0871069",
+    "receipt_invoice_date": "2025-07-09",
+    "updated_at": "2025-10-03T07:34:19.828Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
   "pk": 1101,
   "fields": {
     "status": "CLOSED",
@@ -80978,6 +81029,57 @@
 },
 {
   "model": "reclamations.reclamation",
+  "pk": 1567,
+  "fields": {
+    "status": "NEW",
+    "year": 2025,
+    "yearly_number": 1563,
+    "incoming_number": "010/1/757-01",
+    "message_received_date": "2025-09-04",
+    "sender": "АЗ УРАЛ",
+    "sender_outgoing_number": "б/н",
+    "message_sent_date": "2025-09-04",
+    "defect_period": 9,
+    "product_name": 2,
+    "product": 45,
+    "product_number": "05691",
+    "manufacture_date": "07.2025",
+    "purchaser": "АЗ УРАЛ",
+    "consumer_act_number": "000000322",
+    "consumer_act_date": "2025-09-09",
+    "country_rejected": "Россия",
+    "end_consumer": "АЗ УРАЛ",
+    "end_consumer_act_number": "000000322",
+    "end_consumer_act_date": "2025-09-09",
+    "engine_brand": null,
+    "engine_number": null,
+    "transport_name": null,
+    "transport_number": null,
+    "defect_detection_date": "2025-09-04",
+    "away_type": "notdata",
+    "mileage_operating_time": "н/д",
+    "claimed_defect": "медленно качает",
+    "consumer_requirement": "исследование",
+    "products_count": 1,
+    "measures_taken": "сделан запрос на доставку компрессора в ОАО \"БЗА\" на исследование",
+    "outgoing_document_number": "010/1/579-02",
+    "outgoing_document_date": "2025-09-04",
+    "letter_sending_method": "эл.почта",
+    "consumer_response": null,
+    "consumer_response_number": null,
+    "consumer_response_date": null,
+    "pkd_number": null,
+    "volume_removal_reference": null,
+    "reclamation_documents": null,
+    "product_received_date": "2025-10-22",
+    "product_sender": "АЗ УРАЛ",
+    "receipt_invoice_number": "УР-91757",
+    "receipt_invoice_date": "2025-10-07",
+    "updated_at": "2025-10-22T10:51:22.310Z"
+  }
+},
+{
+  "model": "reclamations.reclamation",
   "pk": 1568,
   "fields": {
     "status": "NEW",
@@ -83313,6 +83415,30 @@
     "shipment_invoice_number": "0073545",
     "shipment_invoice_date": "2025-10-09",
     "return_condition": null,
+    "return_condition_explanation": null
+  }
+},
+{
+  "model": "investigations.investigation",
+  "pk": 90,
+  "fields": {
+    "reclamation": 1100,
+    "act_number": "2025 № 888",
+    "act_date": "2025-07-16",
+    "solution": "DEFLECT",
+    "fault_type": "consumer",
+    "guilty_department": "Не определено",
+    "defect_causes": "нарушение условий эксплуатации",
+    "defect_causes_explanation": "попадание влаги в воздушную полость компрессора",
+    "defective_supplier": null,
+    "recipient": "bprpotk@mmz-motor.by",
+    "shipment_date": "2025-07-25",
+    "act_scan": "acts\\2025\\2025__888_ММЗ_ра_3769.pdf",
+    "disposal_act_number": null,
+    "disposal_act_date": null,
+    "shipment_invoice_number": "0073546",
+    "shipment_invoice_date": "2025-10-09",
+    "return_condition": "REPAIRED",
     "return_condition_explanation": null
   }
 },
@@ -113729,6 +113855,7 @@
   "pk": 1,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -113758,6 +113885,7 @@
   "pk": 2,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -113787,6 +113915,7 @@
   "pk": 3,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -113816,6 +113945,7 @@
   "pk": 4,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -113845,6 +113975,7 @@
   "pk": 5,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -113874,6 +114005,7 @@
   "pk": 6,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -113903,6 +114035,7 @@
   "pk": 7,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -113932,6 +114065,7 @@
   "pk": 8,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -113961,6 +114095,7 @@
   "pk": 9,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -113990,6 +114125,7 @@
   "pk": 10,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114019,6 +114155,7 @@
   "pk": 11,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114048,6 +114185,7 @@
   "pk": 12,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114077,6 +114215,7 @@
   "pk": 13,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114106,6 +114245,7 @@
   "pk": 14,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114135,6 +114275,7 @@
   "pk": 15,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114164,6 +114305,7 @@
   "pk": 16,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114193,6 +114335,7 @@
   "pk": 17,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114222,6 +114365,7 @@
   "pk": 18,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114251,6 +114395,7 @@
   "pk": 19,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114280,6 +114425,7 @@
   "pk": 20,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114309,6 +114455,7 @@
   "pk": 21,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114338,6 +114485,7 @@
   "pk": 22,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114367,6 +114515,7 @@
   "pk": 23,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114396,6 +114545,7 @@
   "pk": 24,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114425,6 +114575,7 @@
   "pk": 25,
   "fields": {
     "registration_number": "009-11/308",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508226589",
     "claim_date": "2025-08-22",
     "type_money": "RUR",
@@ -114454,6 +114605,7 @@
   "pk": 26,
   "fields": {
     "registration_number": "009-11/309",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508276704",
     "claim_date": "2025-08-27",
     "type_money": "RUR",
@@ -114483,6 +114635,7 @@
   "pk": 27,
   "fields": {
     "registration_number": "009-11/309",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508276704",
     "claim_date": "2025-08-27",
     "type_money": "RUR",
@@ -114512,6 +114665,7 @@
   "pk": 28,
   "fields": {
     "registration_number": "009-11/309",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508276704",
     "claim_date": "2025-08-27",
     "type_money": "RUR",
@@ -114541,6 +114695,7 @@
   "pk": 29,
   "fields": {
     "registration_number": "009-11/309",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508276704",
     "claim_date": "2025-08-27",
     "type_money": "RUR",
@@ -114570,6 +114725,7 @@
   "pk": 30,
   "fields": {
     "registration_number": "009-11/310",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508286740",
     "claim_date": "2025-08-28",
     "type_money": "RUR",
@@ -114599,6 +114755,7 @@
   "pk": 31,
   "fields": {
     "registration_number": "009-11/310",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508286740",
     "claim_date": "2025-08-28",
     "type_money": "RUR",
@@ -114628,6 +114785,7 @@
   "pk": 32,
   "fields": {
     "registration_number": "009-11/310",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508286740",
     "claim_date": "2025-08-28",
     "type_money": "RUR",
@@ -114657,6 +114815,7 @@
   "pk": 33,
   "fields": {
     "registration_number": "009-11/311",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508296745",
     "claim_date": "2025-08-29",
     "type_money": "RUR",
@@ -114686,6 +114845,7 @@
   "pk": 34,
   "fields": {
     "registration_number": "009-11/311",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2508296745",
     "claim_date": "2025-08-29",
     "type_money": "RUR",
@@ -114715,6 +114875,7 @@
   "pk": 35,
   "fields": {
     "registration_number": "009-11/314",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-435",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114744,6 +114905,7 @@
   "pk": 36,
   "fields": {
     "registration_number": "009-11/314",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-435",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114771,6 +114933,7 @@
   "pk": 37,
   "fields": {
     "registration_number": "009-11/314",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-435",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114798,6 +114961,7 @@
   "pk": 38,
   "fields": {
     "registration_number": "009-11/314",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-435",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114825,6 +114989,7 @@
   "pk": 39,
   "fields": {
     "registration_number": "009-11/315",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-436",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114854,6 +115019,7 @@
   "pk": 40,
   "fields": {
     "registration_number": "009-11/315",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-436",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114883,6 +115049,7 @@
   "pk": 41,
   "fields": {
     "registration_number": "009-11/315",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-436",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114912,6 +115079,7 @@
   "pk": 42,
   "fields": {
     "registration_number": "009-11/315",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-436",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114941,6 +115109,7 @@
   "pk": 43,
   "fields": {
     "registration_number": "009-11/316",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-437",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114970,6 +115139,7 @@
   "pk": 44,
   "fields": {
     "registration_number": "009-11/316",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-437",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -114999,6 +115169,7 @@
   "pk": 45,
   "fields": {
     "registration_number": "009-11/317",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-438",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -115028,6 +115199,7 @@
   "pk": 46,
   "fields": {
     "registration_number": "009-11/317",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-438",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -115057,6 +115229,7 @@
   "pk": 47,
   "fields": {
     "registration_number": "009-11/317",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-438",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -115086,6 +115259,7 @@
   "pk": 48,
   "fields": {
     "registration_number": "009-11/318",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-439",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -115115,6 +115289,7 @@
   "pk": 49,
   "fields": {
     "registration_number": "009-11/318",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-439",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -115144,6 +115319,7 @@
   "pk": 50,
   "fields": {
     "registration_number": "009-11/318",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-13-439",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -115173,6 +115349,7 @@
   "pk": 51,
   "fields": {
     "registration_number": "009-11/318",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-13-439",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -115202,6 +115379,7 @@
   "pk": 52,
   "fields": {
     "registration_number": "009-11/319",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-440",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -115231,6 +115409,7 @@
   "pk": 53,
   "fields": {
     "registration_number": "009-11/319",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-440",
     "claim_date": "2025-09-17",
     "type_money": "BYN",
@@ -115260,6 +115439,7 @@
   "pk": 54,
   "fields": {
     "registration_number": "009-11/322",
+    "consumer_name": "ПАЗ",
     "claim_number": "018-011-20а/193",
     "claim_date": "2025-08-11",
     "type_money": "RUR",
@@ -115289,6 +115469,7 @@
   "pk": 55,
   "fields": {
     "registration_number": "009-11/323",
+    "consumer_name": "ПАЗ",
     "claim_number": "018-011-20а/194",
     "claim_date": "2025-08-11",
     "type_money": "RUR",
@@ -115318,6 +115499,7 @@
   "pk": 56,
   "fields": {
     "registration_number": "009-11/324",
+    "consumer_name": "ПАЗ",
     "claim_number": "018-011-20а/195",
     "claim_date": "2025-08-11",
     "type_money": "RUR",
@@ -115347,6 +115529,7 @@
   "pk": 57,
   "fields": {
     "registration_number": "009-11/325",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509046901",
     "claim_date": "2025-09-04",
     "type_money": "RUR",
@@ -115374,6 +115557,7 @@
   "pk": 58,
   "fields": {
     "registration_number": "009-11/325",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509046901",
     "claim_date": "2025-09-04",
     "type_money": "RUR",
@@ -115401,6 +115585,7 @@
   "pk": 59,
   "fields": {
     "registration_number": "009-11/326",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
     "type_money": "RUR",
@@ -115428,6 +115613,7 @@
   "pk": 60,
   "fields": {
     "registration_number": "009-11/326",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
     "type_money": "RUR",
@@ -115457,6 +115643,7 @@
   "pk": 61,
   "fields": {
     "registration_number": "009-11/326",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
     "type_money": "RUR",
@@ -115484,6 +115671,7 @@
   "pk": 62,
   "fields": {
     "registration_number": "009-11/326",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
     "type_money": "RUR",
@@ -115511,6 +115699,7 @@
   "pk": 63,
   "fields": {
     "registration_number": "009-11/326",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
     "type_money": "RUR",
@@ -115538,6 +115727,7 @@
   "pk": 64,
   "fields": {
     "registration_number": "009-11/326",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
     "type_money": "RUR",
@@ -115567,6 +115757,7 @@
   "pk": 65,
   "fields": {
     "registration_number": "009-11/326",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
     "type_money": "RUR",
@@ -115596,6 +115787,7 @@
   "pk": 66,
   "fields": {
     "registration_number": "009-11/326",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509056942",
     "claim_date": "2025-09-05",
     "type_money": "RUR",
@@ -115623,6 +115815,7 @@
   "pk": 67,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115652,6 +115845,7 @@
   "pk": 68,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115681,6 +115875,7 @@
   "pk": 69,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115710,6 +115905,7 @@
   "pk": 70,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115739,6 +115935,7 @@
   "pk": 71,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115768,6 +115965,7 @@
   "pk": 72,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115797,6 +115995,7 @@
   "pk": 73,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115826,6 +116025,7 @@
   "pk": 74,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115855,6 +116055,7 @@
   "pk": 75,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115884,6 +116085,7 @@
   "pk": 76,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115913,6 +116115,7 @@
   "pk": 77,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115942,6 +116145,7 @@
   "pk": 78,
   "fields": {
     "registration_number": "009-11/327",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509087013",
     "claim_date": "2025-09-08",
     "type_money": "RUR",
@@ -115971,6 +116175,7 @@
   "pk": 79,
   "fields": {
     "registration_number": "009-11/328",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
     "type_money": "RUR",
@@ -116000,6 +116205,7 @@
   "pk": 80,
   "fields": {
     "registration_number": "009-11/328",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
     "type_money": "RUR",
@@ -116029,6 +116235,7 @@
   "pk": 81,
   "fields": {
     "registration_number": "009-11/328",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
     "type_money": "RUR",
@@ -116058,6 +116265,7 @@
   "pk": 82,
   "fields": {
     "registration_number": "009-11/328",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
     "type_money": "RUR",
@@ -116087,6 +116295,7 @@
   "pk": 83,
   "fields": {
     "registration_number": "009-11/328",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509107120",
     "claim_date": "2025-09-10",
     "type_money": "RUR",
@@ -116116,6 +116325,7 @@
   "pk": 84,
   "fields": {
     "registration_number": "009-11/329",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509107130",
     "claim_date": "2025-09-10",
     "type_money": "RUR",
@@ -116145,6 +116355,7 @@
   "pk": 85,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116174,6 +116385,7 @@
   "pk": 86,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116203,6 +116415,7 @@
   "pk": 87,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116232,6 +116445,7 @@
   "pk": 88,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116261,6 +116475,7 @@
   "pk": 89,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116290,6 +116505,7 @@
   "pk": 90,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116319,6 +116535,7 @@
   "pk": 91,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116348,6 +116565,7 @@
   "pk": 92,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116377,6 +116595,7 @@
   "pk": 93,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116406,6 +116625,7 @@
   "pk": 94,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116435,6 +116655,7 @@
   "pk": 95,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116464,6 +116685,7 @@
   "pk": 96,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116493,6 +116715,7 @@
   "pk": 97,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116522,6 +116745,7 @@
   "pk": 98,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116551,6 +116775,7 @@
   "pk": 99,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116580,6 +116805,7 @@
   "pk": 100,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116609,6 +116835,7 @@
   "pk": 101,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116638,6 +116865,7 @@
   "pk": 102,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116667,6 +116895,7 @@
   "pk": 103,
   "fields": {
     "registration_number": "009-11/330",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509117143",
     "claim_date": "2025-09-11",
     "type_money": "RUR",
@@ -116696,6 +116925,7 @@
   "pk": 104,
   "fields": {
     "registration_number": "009-11/331",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157213",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116725,6 +116955,7 @@
   "pk": 105,
   "fields": {
     "registration_number": "009-11/331",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157213",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116754,6 +116985,7 @@
   "pk": 106,
   "fields": {
     "registration_number": "009-11/331",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157213",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116783,6 +117015,7 @@
   "pk": 107,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116812,6 +117045,7 @@
   "pk": 108,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116841,6 +117075,7 @@
   "pk": 109,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116870,6 +117105,7 @@
   "pk": 110,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116899,6 +117135,7 @@
   "pk": 111,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116928,6 +117165,7 @@
   "pk": 112,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116957,6 +117195,7 @@
   "pk": 113,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -116986,6 +117225,7 @@
   "pk": 114,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117015,6 +117255,7 @@
   "pk": 115,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117044,6 +117285,7 @@
   "pk": 116,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117073,6 +117315,7 @@
   "pk": 117,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117102,6 +117345,7 @@
   "pk": 118,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117131,6 +117375,7 @@
   "pk": 119,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117160,6 +117405,7 @@
   "pk": 120,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117189,6 +117435,7 @@
   "pk": 121,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117218,6 +117465,7 @@
   "pk": 122,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117247,6 +117495,7 @@
   "pk": 123,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117276,6 +117525,7 @@
   "pk": 124,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117305,6 +117555,7 @@
   "pk": 125,
   "fields": {
     "registration_number": "009-11/332",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509157235",
     "claim_date": "2025-09-15",
     "type_money": "RUR",
@@ -117334,6 +117585,7 @@
   "pk": 126,
   "fields": {
     "registration_number": "009-11/333",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509187358",
     "claim_date": "2025-09-18",
     "type_money": "RUR",
@@ -117363,6 +117615,7 @@
   "pk": 127,
   "fields": {
     "registration_number": "009-11/333",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509187358",
     "claim_date": "2025-09-18",
     "type_money": "RUR",
@@ -117392,6 +117645,7 @@
   "pk": 128,
   "fields": {
     "registration_number": "009-11/334",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509237505",
     "claim_date": "2025-09-23",
     "type_money": "RUR",
@@ -117421,6 +117675,7 @@
   "pk": 129,
   "fields": {
     "registration_number": "009-11/335",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509237537",
     "claim_date": "2025-09-23",
     "type_money": "RUR",
@@ -117450,6 +117705,7 @@
   "pk": 130,
   "fields": {
     "registration_number": "009-11/335",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509237537",
     "claim_date": "2025-09-23",
     "type_money": "RUR",
@@ -117479,6 +117735,7 @@
   "pk": 131,
   "fields": {
     "registration_number": "009-11/335",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509237537",
     "claim_date": "2025-09-23",
     "type_money": "RUR",
@@ -117508,6 +117765,7 @@
   "pk": 132,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117537,6 +117795,7 @@
   "pk": 133,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117566,6 +117825,7 @@
   "pk": 134,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117595,6 +117855,7 @@
   "pk": 135,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117624,6 +117885,7 @@
   "pk": 136,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117653,6 +117915,7 @@
   "pk": 137,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117682,6 +117945,7 @@
   "pk": 138,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117711,6 +117975,7 @@
   "pk": 139,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117740,6 +118005,7 @@
   "pk": 140,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117769,6 +118035,7 @@
   "pk": 141,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117798,6 +118065,7 @@
   "pk": 142,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117827,6 +118095,7 @@
   "pk": 143,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117856,6 +118125,7 @@
   "pk": 144,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117885,6 +118155,7 @@
   "pk": 145,
   "fields": {
     "registration_number": "009-11/336",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509247597",
     "claim_date": "2025-09-24",
     "type_money": "RUR",
@@ -117914,6 +118185,7 @@
   "pk": 146,
   "fields": {
     "registration_number": "009-11/337",
+    "consumer_name": "ЯМЗ",
     "claim_number": "2509267629",
     "claim_date": "2025-09-26",
     "type_money": "RUR",
@@ -117943,6 +118215,7 @@
   "pk": 147,
   "fields": {
     "registration_number": "009-11/338",
+    "consumer_name": "ММЗ",
     "claim_number": "05-22/174",
     "claim_date": "2025-09-26",
     "type_money": "BYN",
@@ -117972,6 +118245,7 @@
   "pk": 148,
   "fields": {
     "registration_number": "009-11/338",
+    "consumer_name": "ММЗ",
     "claim_number": "05-22/174",
     "claim_date": "2025-09-26",
     "type_money": "BYN",
@@ -118001,6 +118275,7 @@
   "pk": 149,
   "fields": {
     "registration_number": "009-11/338",
+    "consumer_name": "ММЗ",
     "claim_number": "05-22/174",
     "claim_date": "2025-09-26",
     "type_money": "BYN",
@@ -118030,6 +118305,7 @@
   "pk": 150,
   "fields": {
     "registration_number": "009-11/339",
+    "consumer_name": "ММЗ",
     "claim_number": "05-22/175",
     "claim_date": "2025-09-26",
     "type_money": "BYN",
@@ -118059,6 +118335,7 @@
   "pk": 151,
   "fields": {
     "registration_number": "009-11/339",
+    "consumer_name": "ММЗ",
     "claim_number": "05-22/175",
     "claim_date": "2025-09-26",
     "type_money": "BYN",
@@ -118088,6 +118365,7 @@
   "pk": 152,
   "fields": {
     "registration_number": "009-11/340",
+    "consumer_name": "ММЗ",
     "claim_number": "05-22/176",
     "claim_date": "2025-09-26",
     "type_money": "BYN",
@@ -118117,6 +118395,7 @@
   "pk": 153,
   "fields": {
     "registration_number": "009-11/348",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-459",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118146,6 +118425,7 @@
   "pk": 157,
   "fields": {
     "registration_number": "009-11/347",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-458",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118173,6 +118453,7 @@
   "pk": 158,
   "fields": {
     "registration_number": "009-11/347",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-458",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118200,6 +118481,7 @@
   "pk": 159,
   "fields": {
     "registration_number": "009-11/347",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-458",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118227,6 +118509,7 @@
   "pk": 160,
   "fields": {
     "registration_number": "009-11/347",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-458",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118254,6 +118537,7 @@
   "pk": 161,
   "fields": {
     "registration_number": "009-11/347",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-458",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118281,6 +118565,7 @@
   "pk": 162,
   "fields": {
     "registration_number": "009-11/346",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-457",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118308,6 +118593,7 @@
   "pk": 163,
   "fields": {
     "registration_number": "009-11/346",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-457",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118335,6 +118621,7 @@
   "pk": 164,
   "fields": {
     "registration_number": "009-11/346",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-457",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118362,6 +118649,7 @@
   "pk": 165,
   "fields": {
     "registration_number": "009-11/346",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-457",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118389,6 +118677,7 @@
   "pk": 166,
   "fields": {
     "registration_number": "009-11/346",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-457",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118416,6 +118705,7 @@
   "pk": 168,
   "fields": {
     "registration_number": "009-11/345",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-456",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118445,6 +118735,7 @@
   "pk": 169,
   "fields": {
     "registration_number": "009-11/345",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-456",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118474,6 +118765,7 @@
   "pk": 170,
   "fields": {
     "registration_number": "009-11/345",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-456",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118503,6 +118795,7 @@
   "pk": 171,
   "fields": {
     "registration_number": "009-11/345",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-456",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118532,6 +118825,7 @@
   "pk": 172,
   "fields": {
     "registration_number": "009-11/347",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-458",
     "claim_date": "2025-10-09",
     "type_money": "BYN",
@@ -118559,6 +118853,7 @@
   "pk": 173,
   "fields": {
     "registration_number": "009-11/344",
+    "consumer_name": "ММЗ",
     "claim_number": "15-48/5-43",
     "claim_date": "2025-10-08",
     "type_money": "BYN",
@@ -118588,6 +118883,7 @@
   "pk": 174,
   "fields": {
     "registration_number": "009-11/343",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-454",
     "claim_date": "2025-10-06",
     "type_money": "BYN",
@@ -118617,6 +118913,7 @@
   "pk": 175,
   "fields": {
     "registration_number": "009-11/343",
+    "consumer_name": "ММЗ",
     "claim_number": "12-30-12-454",
     "claim_date": "2025-10-06",
     "type_money": "BYN",

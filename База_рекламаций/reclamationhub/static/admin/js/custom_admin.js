@@ -232,6 +232,7 @@ window.addEventListener('load', function() {
                 fillField('id_investigation_act_number', data.investigation_act_number);
                 fillField('id_investigation_act_date', data.investigation_act_date);
                 fillField('id_investigation_act_result', data.investigation_act_result);
+                fillField('id_consumer_name', data.consumer_name);
             }
 
             // Показываем предупреждение если есть

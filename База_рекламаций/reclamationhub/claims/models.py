@@ -25,7 +25,7 @@ class Claim(models.Model):
         blank=True,
         # Делаем поле необязательным, т.к. бывают претензии без привязки к рекламационному акту.
         # В таком случае претензия просто регистрируется с обязательным комментарием.
-        help_text="Рекламации, связанные с данной претензией"
+        help_text="Рекламации, связанные с данной претензией",
     )
 
     registration_number = models.CharField(
@@ -38,6 +38,12 @@ class Claim(models.Model):
     # registration_date = models.DateField(
     #     null=True, blank=True, verbose_name="Дата регистрации"
     # )
+
+    consumer_name = models.CharField(
+        max_length=100,
+        verbose_name="Потребитель",
+        help_text="Заполняется автоматически или вручную (ЯМЗ, ММЗ, ПТЗ и т.д.)",
+    )  # Поле обязательное
 
     claim_number = models.CharField(
         max_length=100, null=True, blank=False, verbose_name="Номер претензии"
@@ -162,3 +168,17 @@ class Claim(models.Model):
     def has_response(self):
         """Проверяет наличие ответа на претензию"""
         return bool(self.response_number and self.response_date)
+
+    @staticmethod
+    def extract_consumer_prefix(period_name):
+        """
+        Извлекает префикс потребителя из полного названия
+        "ЯМЗ - эксплуатация" → "ЯМЗ"
+        """
+        if not period_name:
+            return ""
+
+        if " - " in period_name:
+            return period_name.split(" - ")[0].strip()
+
+        return period_name.strip()

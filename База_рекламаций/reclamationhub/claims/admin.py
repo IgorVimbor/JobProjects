@@ -8,7 +8,7 @@ from datetime import datetime
 
 from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
-from investigations.models import Investigation
+from sourcebook.models import PeriodDefect
 from .models import Claim
 from .forms import ClaimAdminForm
 
@@ -61,23 +61,14 @@ class ConsumerListFilter(SimpleListFilter):
     parameter_name = "consumer"  # Параметр в URL
 
     def lookups(self, request, model_admin):
-        # Получаем все уникальные префиксы потребителей из PeriodDefect
-        consumers = set()
-
-        # Импортируем модель PeriodDefect из приложения sourcebook
-        from sourcebook.models import PeriodDefect
-
-        # Получаем все периоды дефектов
-        all_periods = PeriodDefect.objects.values_list("name", flat=True)
-
-        for period_name in all_periods:
-            if period_name and " - " in period_name:
-                # Извлекаем часть до " - " (например, "ММЗ" из "ММЗ - АСП")
-                consumer = period_name.split(" - ")[0].strip()
-                consumers.add(consumer)
-
+        # Получаем названия потребителей из поля "consumer_name"
+        consumers = (
+            Claim.objects.values_list("consumer_name", flat=True)
+            .distinct()
+            .order_by("consumer_name")
+        )
         # Возвращаем отсортированный список вариантов для фильтра
-        return [(consumer, consumer) for consumer in sorted(consumers)]
+        return [(consumer, consumer) for consumer in consumers if consumer]
         # В Django фильтрах метод lookups должен возвращать список кортежей, где:
         # Первый элемент - значение для фильтрации (то, что попадет в self.value())
         # Второй элемент - текст, который видит пользователь в интерфейсе
@@ -85,10 +76,45 @@ class ConsumerListFilter(SimpleListFilter):
     def queryset(self, request, queryset):
         # Фильтруем queryset на основе выбранного значения
         if self.value():
-            return queryset.filter(
-                reclamations__defect_period__name__startswith=f"{self.value()} - "
-            )
+            return queryset.filter(consumer_name=self.value())
         return queryset
+
+
+# class ConsumerListFilter(SimpleListFilter):
+#     """Фильтр по потребителям. В фильтре будут показываться только "ММЗ", "ЯМЗ" и другие потребители
+#     без суффиксов "-АСП" или "-эксплуатация". При выборе например "ММЗ" будут показаны все претензии,
+#     где период выявления дефекта начинается с "ММЗ -".
+#     """
+
+#     title = "Потребитель"  # Название фильтра в админке
+#     parameter_name = "consumer"  # Параметр в URL
+
+#     def lookups(self, request, model_admin):
+#         # Получаем все уникальные префиксы потребителей из PeriodDefect
+#         consumers = set()
+
+#         # Получаем все периоды дефектов
+#         all_periods = PeriodDefect.objects.values_list("name", flat=True)
+
+#         for period_name in all_periods:
+#             if period_name and " - " in period_name:
+#                 # Извлекаем часть до " - " (например, "ММЗ" из "ММЗ - АСП")
+#                 consumer = period_name.split(" - ")[0].strip()
+#                 consumers.add(consumer)
+
+#         # Возвращаем отсортированный список вариантов для фильтра
+#         return [(consumer, consumer) for consumer in sorted(consumers)]
+#         # В Django фильтрах метод lookups должен возвращать список кортежей, где:
+#         # Первый элемент - значение для фильтрации (то, что попадет в self.value())
+#         # Второй элемент - текст, который видит пользователь в интерфейсе
+
+#     def queryset(self, request, queryset):
+#         # Фильтруем queryset на основе выбранного значения
+#         if self.value():
+#             return queryset.filter(
+#                 reclamations__defect_period__name__startswith=f"{self.value()} - "
+#             )
+#         return queryset
 
 
 @admin.register(Claim, site=admin_site)
@@ -109,6 +135,7 @@ class ClaimAdmin(admin.ModelAdmin):
         "registration_number",
         # "registration_date",
         # Претензия
+        "consumer_display",
         "claim_number",
         "claim_date",
         "type_money",
@@ -165,6 +192,7 @@ class ClaimAdmin(admin.ModelAdmin):
                 "fields": [
                     "registration_number",
                     # "registration_date",
+                    "consumer_name",
                     "claim_number",
                     "claim_date",
                     "type_money",
@@ -260,6 +288,11 @@ class ClaimAdmin(admin.ModelAdmin):
 
     # ==================== Методы отображения ====================
 
+    @admin.display(description="Потребитель", ordering="consumer_name")
+    def consumer_display(self, obj):
+        """Отображение потребителя"""
+        return obj.consumer_name
+
     @admin.display(description="Рекламация")
     def reclamation_display(self, obj):
         """Отображение рекламации найденной по данным из претензии"""
@@ -269,14 +302,25 @@ class ClaimAdmin(admin.ModelAdmin):
         # 1. Ищем по номеру и дате акта рекламации
         if obj.reclamation_act_number and obj.reclamation_act_date:
             reclamation = Reclamation.objects.filter(
-                Q(sender_outgoing_number=obj.reclamation_act_number, message_sent_date=obj.reclamation_act_date) |
-                Q(consumer_act_number=obj.reclamation_act_number, consumer_act_date=obj.reclamation_act_date) |
-                Q(end_consumer_act_number=obj.reclamation_act_number, end_consumer_act_date=obj.reclamation_act_date)
+                Q(
+                    sender_outgoing_number=obj.reclamation_act_number,
+                    message_sent_date=obj.reclamation_act_date,
+                )
+                | Q(
+                    consumer_act_number=obj.reclamation_act_number,
+                    consumer_act_date=obj.reclamation_act_date,
+                )
+                | Q(
+                    end_consumer_act_number=obj.reclamation_act_number,
+                    end_consumer_act_date=obj.reclamation_act_date,
+                )
             ).first()
 
         # 2. Если не найдена - ищем по номеру двигателя (если есть)
         elif obj.engine_number:
-            reclamation = Reclamation.objects.filter(engine_number=obj.engine_number).first()
+            reclamation = Reclamation.objects.filter(
+                engine_number=obj.engine_number
+            ).first()
 
         if reclamation:
             url = reverse("admin:reclamations_reclamation_changelist")
@@ -286,9 +330,9 @@ class ClaimAdmin(admin.ModelAdmin):
             return mark_safe(
                 f'<a href="{filtered_url}" '
                 f'target="_blank" '  # открывать в новой вкладке
-                f'rel="noopener" '   # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
-                f'onmouseover="this.style.fontWeight=\'bold\'" '
-                f'onmouseout="this.style.fontWeight=\'normal\'" '
+                f'rel="noopener" '  # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
+                f"onmouseover=\"this.style.fontWeight='bold'\" "
+                f"onmouseout=\"this.style.fontWeight='normal'\" "
                 f'title="Перейти к рекламации">'
                 f"{reclamation.year}-{reclamation.yearly_number:04d}</a><br>"
                 f"<small>{reclamation.product_name} {reclamation.product}</small>"
@@ -317,9 +361,9 @@ class ClaimAdmin(admin.ModelAdmin):
             return mark_safe(
                 f'<a href="{filtered_url}" '
                 f'target="_blank" '  # открывать в новой вкладке
-                f'rel="noopener" '   # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
-                f'onmouseover="this.style.fontWeight=\'bold\'" '
-                f'onmouseout="this.style.fontWeight=\'normal\'" '
+                f'rel="noopener" '  # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
+                f"onmouseover=\"this.style.fontWeight='bold'\" "
+                f"onmouseout=\"this.style.fontWeight='normal'\" "
                 f'title="Перейти к акту исследования">'
                 f"{act_number}</a>"
             )
@@ -404,7 +448,7 @@ class ClaimAdmin(admin.ModelAdmin):
                 messages.info(
                     request,
                     f"Претензия связана с {count} рекламациями: "
-                    f"{', '.join([str(r) for r in form._found_reclamations])}"
+                    f"{', '.join([str(r) for r in form._found_reclamations])}",
                 )
 
         # Показываем предупреждение если рекламация не найдена
