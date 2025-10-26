@@ -34,9 +34,11 @@ def date_pretence_page(request):
             )
 
         # Ищем ВСЕ записи с таким номером претензии
-        claims = Claim.objects.filter(claim_number=claim_number).select_related(
-            "reclamation"
+        claims = Claim.objects.filter(claim_number=claim_number).prefetch_related(
+            "reclamations"
         )
+        # select_related - для ForeignKey и OneToOneField
+        # prefetch_related - для ManyToManyField и обратных связей
 
         if not claims.exists():
             return render(

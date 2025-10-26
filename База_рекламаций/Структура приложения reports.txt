@@ -6,7 +6,7 @@ reports/
 │   ├── date_pretence.py      # + даты уведомления по номеру акта
 │   ├── accept_defect.py      # + признанные/непризнанные рекламации
 │   ├── length_study.py       # + длительность исследования
-│   ├── not_acts.py           # - незакрытые акты
+│   ├── culprits_defect.py    # - дефекты по виновникам
 │   ├── enquiry_period.py     # + справка за период
 │   └── db_search.py          # + поиск по базе
 │
@@ -16,11 +16,11 @@ reports/
 │       ├── date_pretence.html
 │       ├── accept_defect.html
 │       ├── length_study.html
-│       ├── not_acts.html
+│       ├── culprits_defect.html
 │       ├── enquiry_period.html
 │       └── db_search.html
 │
-├── modules/                  # модули для для расчетов и логики
+├── modules/                  # модули для расчетов и логики
 │   ├── accept_defect_modul.py
 │   ├── db_search_modul.py
 │   ├── enquiry_period_modul.py
