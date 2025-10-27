@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
 from django.http import HttpResponseRedirect
-from django.urls import path
+from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 from datetime import datetime
 
@@ -117,6 +117,42 @@ class InvestigationAdmin(admin.ModelAdmin):
         """Отображение номера 8D (ПКД) из модели reclamation при наличии"""
         return obj.reclamation.pkd_number
 
+    @admin.display(description="Претензия")
+    def has_claim(self, obj):
+        """Метод для отображения номера претензии как ссылки"""
+
+        # Проверяем, есть ли связанная рекламация
+        if not obj.reclamation:
+            return ""
+
+        # Получаем претензии через рекламацию
+        claims = obj.reclamation.claims.all()
+
+        if not claims.exists():
+            return ""
+
+        # Формируем список ссылок (вертикально)
+        links = []
+        for claim in claims:
+            # Базовый URL списка претензий
+            url = reverse("admin:claims_claim_changelist")
+            # Добавляем фильтрацию по номеру регистрации
+            filtered_url = f"{url}?registration_number={claim.registration_number}"
+
+            link = (
+                f'<a href="{filtered_url}" '
+                f'target="_blank" '
+                f'rel="noopener" '
+                f"onmouseover=\"this.style.fontWeight='bold'\" "
+                f"onmouseout=\"this.style.fontWeight='normal'\" "
+                f'title="Перейти к претензии">'
+                f"{claim.registration_number}</a>"
+            )
+            links.append(link)
+
+        # Возвращаем список через <br> (вертикально)
+        return mark_safe("<br>".join(links))
+
     # Отображаем все поля модели Investigation
     list_display = [
         "act_number",
@@ -140,6 +176,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         "shipment_invoice_date",
         "return_condition",
         "return_condition_explanation",
+        "has_claim",  # претензия
     ]
 
     # Группировка полей

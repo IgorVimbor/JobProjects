@@ -94,6 +94,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         "receipt_invoice_date",  # дата накладной поступления изделия
         "has_investigation_icon",  # акт исследования
         "reclamation_documents",  # дополнительные сведения по рекламации
+        "has_claim",  # претензия
     ]
 
     # Группировка полей в форме редактирования
@@ -374,13 +375,43 @@ class ReclamationAdmin(admin.ModelAdmin):
             return mark_safe(
                 f'<a href="{filtered_url}" '
                 f'target="_blank" '  # открывать в новой вкладке
-                f'rel="noopener" '   # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
+                f'rel="noopener" '  # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
                 f"onmouseover=\"this.style.fontWeight='bold'\" "  # жирный шрифт при наведении
                 f"onmouseout=\"this.style.fontWeight='normal'\" "  # нормальный шрифт
                 f'title="Перейти к акту исследования">'  # подсказка при наведении
                 f"{obj.investigation.act_number}</a>"
             )
         return ""
+
+    @admin.display(description="Претензия")
+    def has_claim(self, obj):
+        """Метод для отображения номера претензии как ссылки"""
+        claims = obj.claims.all()
+
+        if not claims.exists():
+            return ""
+
+        # Формируем список ссылок (вертикально)
+        links = []
+        for claim in claims:
+            # Базовый URL списка претензий
+            url = reverse("admin:claims_claim_changelist")
+            # Добавляем фильтрацию по номеру регистрации
+            filtered_url = f"{url}?registration_number={claim.registration_number}"
+
+            link = (
+                f'<a href="{filtered_url}" '
+                f'target="_blank" '
+                f'rel="noopener" '
+                f"onmouseover=\"this.style.fontWeight='bold'\" "
+                f"onmouseout=\"this.style.fontWeight='normal'\" "
+                f'title="Перейти к претензии">'
+                f"{claim.registration_number}</a>"
+            )
+            links.append(link)
+
+        # Возвращаем список через <br> (вертикально)
+        return mark_safe("<br>".join(links))
 
     def response_add(self, request, obj, post_url_continue=None):
         """Переопределяем стандартный метод вывода сообщения при добавлении рекламации"""
