@@ -103,10 +103,10 @@ def generate_claims_table(claims, claim_number):
     content.append("-" * 95)
     headers = [
         "№ п/п".ljust(5),
-        "Акт рекламации".ljust(22),
+        "Акт рекламации".ljust(27),
         "Акт исследования".ljust(20),
         "Дата уведомления".ljust(17),
-        "Накладная прихода".ljust(20),
+        "Приход на БЗА".ljust(20),
     ]
     content.append(" | ".join(headers))
     content.append("-" * 95)
@@ -149,7 +149,7 @@ def generate_claims_table(claims, claim_number):
         # Формируем строку таблицы
         row = [
             str(i).ljust(5),
-            reclamation_act[:30].ljust(22),
+            reclamation_act[:30].ljust(27),
             investigation_act[:25].ljust(20),
             (
                 claim.message_received_date.strftime("%d.%m.%Y")
@@ -162,5 +162,8 @@ def generate_claims_table(claims, claim_number):
 
     content.append("-" * 95)
     content.append(f"Всего записей: {claims.count()}")
+    content.append("")  # пустая строка
+    content.append("Если в столбце 'Приход на БЗА' указан номер ТТН - изделие поступало на БЗА")
+    content.append("Если в столбце указано 'фото' - изделие НЕ поступало")
 
     return "\n".join(content)
