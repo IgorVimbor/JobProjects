@@ -24,15 +24,19 @@ def search_related_data(request):
     search_number = request.GET.get("reclamation_act_number", "").strip()
     search_date = request.GET.get("reclamation_act_date", "").strip()
     engine_number = request.GET.get("engine_number", "").strip()
+    investigation_act_number = request.GET.get("investigation_act_number", "").strip()
 
     try:
-        # 1. Определяем тип поиска - по номеру рекламации или номеру двигателя
-        if search_number and search_date and not engine_number:
+        # 1. Определяем тип поиска: акт рекламации → двигатель → акт исследования
+        if search_number and search_date and not engine_number and not investigation_act_number:
             search_type = "by_act_number"
             search_value = search_number
-        elif engine_number and not search_number and not search_date:
+        elif engine_number and not search_number and not search_date and not investigation_act_number:
             search_type = "by_engine_number"
             search_value = engine_number
+        elif investigation_act_number and not search_number and not search_date and not engine_number:
+            search_type = "by_investigation_act"
+            search_value = investigation_act_number
         else:
             return JsonResponse({"found": False})
 
@@ -61,11 +65,18 @@ def search_related_data(request):
                     end_consumer_act_date=search_date_obj,
                 )
             ).first()
-        else:  # by_engine_number
+        elif search_type == "by_engine_number":
             # Поиск по номеру двигателя
             reclamation = Reclamation.objects.filter(
                 engine_number=engine_number
             ).first()
+        elif search_type == "by_investigation_act":
+            # Поиск по номеру акта исследования
+            try:
+                investigation = Investigation.objects.get(act_number=investigation_act_number)
+                reclamation = investigation.reclamation
+            except Investigation.DoesNotExist:
+                reclamation = None
 
         # 4. Если рекламация НЕ найдена, но есть претензия - показываем предупреждение
         if not reclamation:
@@ -87,9 +98,7 @@ def search_related_data(request):
         # 6. Формируем успешный ответ
         response_data = {
             "found": True,
-            "message_received_date": reclamation.message_received_date.strftime(
-                "%d.%m.%Y"
-            ),
+            "message_received_date": reclamation.message_received_date.strftime("%d.%m.%Y"),
             "receipt_invoice_number": reclamation.receipt_invoice_number or "",
             "investigation_act_number": investigation.act_number or "",
             "investigation_act_date": investigation.act_date.strftime("%d.%m.%Y"),
@@ -130,6 +139,32 @@ def search_related_data(request):
                 response_data["reclamation_act_number"] = (
                     reclamation.sender_outgoing_number
                 )
+                response_data["reclamation_act_date"] = (
+                    reclamation.message_sent_date.strftime("%d.%m.%Y")
+                    if reclamation.message_sent_date
+                    else ""
+                )
+        elif search_type == "by_investigation_act":
+            # Искали по акту исследования - добавляем номер и дату акта рекламации + номер двигателя
+            response_data["engine_number"] = reclamation.engine_number or ""
+
+            # Определяем приоритет для номера акта рекламации
+            if reclamation.consumer_act_number:
+                response_data["reclamation_act_number"] = reclamation.consumer_act_number
+                response_data["reclamation_act_date"] = (
+                    reclamation.consumer_act_date.strftime("%d.%m.%Y")
+                    if reclamation.consumer_act_date
+                    else ""
+                )
+            elif reclamation.end_consumer_act_number:
+                response_data["reclamation_act_number"] = reclamation.end_consumer_act_number
+                response_data["reclamation_act_date"] = (
+                    reclamation.end_consumer_act_date.strftime("%d.%m.%Y")
+                    if reclamation.end_consumer_act_date
+                    else ""
+                )
+            elif reclamation.sender_outgoing_number:
+                response_data["reclamation_act_number"] = reclamation.sender_outgoing_number
                 response_data["reclamation_act_date"] = (
                     reclamation.message_sent_date.strftime("%d.%m.%Y")
                     if reclamation.message_sent_date
@@ -177,6 +212,11 @@ def _check_existing_claims_ajax(search_type, search_value):
             .distinct()
             .first()
         )
+    elif search_type == "by_investigation_act":
+        # Проверяем претензии по номеру акта исследования
+        existing_claim = Claim.objects.filter(
+            investigation_act_number=search_value
+        ).first()
     else:
         return None
 

@@ -193,6 +193,7 @@ window.addEventListener('load', function() {
     var reclamationNumberField = document.getElementById('id_reclamation_act_number');
     var reclamationDateField = document.getElementById('id_reclamation_act_date');
     var engineNumberField = document.getElementById('id_engine_number');
+    var investigationActField = document.getElementById('id_investigation_act_number');
 
     // Если поля не найдены на странице, выходим из функции
     if (!reclamationNumberField || !reclamationDateField || !engineNumberField) return;
@@ -203,16 +204,20 @@ window.addEventListener('load', function() {
         var searchNumber = reclamationNumberField.value.trim();
         var searchDate = reclamationDateField.value.trim();
         var engineNumber = engineNumberField.value.trim();
+        var investigationActNumber = investigationActField.value.trim();
 
         var searchParams = '';
 
-        // Определяем тип поиска
-        if (searchNumber && searchDate && !engineNumber) {
-            // Поиск по номеру и дате акта
+        // Определяем тип поиска: акт рекламации → двигатель → акт исследования
+        if (searchNumber && searchDate && !engineNumber && !investigationActNumber) {
+            // Поиск по номеру и дате акта рекламации
             searchParams = `reclamation_act_number=${encodeURIComponent(searchNumber)}&reclamation_act_date=${encodeURIComponent(searchDate)}`;
-        } else if (engineNumber && !searchNumber && !searchDate) {
+        } else if (engineNumber && !searchNumber && !searchDate && !investigationActNumber) {
             // Поиск по номеру двигателя
             searchParams = `engine_number=${encodeURIComponent(engineNumber)}`;
+        } else if (investigationActNumber && !searchNumber && !searchDate && !engineNumber) {  // ← НОВОЕ
+            // Поиск по номеру акта исследования
+            searchParams = `investigation_act_number=${encodeURIComponent(investigationActNumber)}`;
         } else {
             // Не все условия выполнены для поиска
             return;
@@ -250,6 +255,7 @@ window.addEventListener('load', function() {
     reclamationNumberField.addEventListener('blur', checkAndSearch);
     reclamationDateField.addEventListener('blur', checkAndSearch);
     engineNumberField.addEventListener('blur', checkAndSearch);
+    investigationActField.addEventListener('blur', checkAndSearch);
 
     // Вспомогательная функция для заполнения полей формы
     function fillField(fieldId, value) {

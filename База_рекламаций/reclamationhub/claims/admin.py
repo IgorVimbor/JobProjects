@@ -165,23 +165,23 @@ class ClaimAdmin(admin.ModelAdmin):
     # Группировка полей в форме
     fieldsets = [
         (
-            "1. ПОИСК по рекламационному акту или номеру двигателя",
+            "1. ПОИСК по рекламационному акту, номеру двигателя или акту исследования",
             {
                 "fields": [
                     "reclamation_act_number",
                     "reclamation_act_date",
                     "engine_number",
+                    "investigation_act_number",
+                    "investigation_act_date",
                 ],
             },
         ),
         (
-            "Акт исследования рекламации",
+            "Дата уведомления и решение по исследованию",
             {
                 "fields": [
                     "message_received_date",
                     "receipt_invoice_number",
-                    "investigation_act_number",
-                    "investigation_act_date",
                     "investigation_act_result",
                 ],
             },
@@ -250,17 +250,6 @@ class ClaimAdmin(admin.ModelAdmin):
     )
 
     # Оптимизация запросов
-    # def get_queryset(self, request):
-    #     return (
-    #         super()
-    #         .get_queryset(request)
-    #         .select_related(
-    #             "reclamation",
-    #             "reclamation__product_name",
-    #             "reclamation__product",
-    #         )
-    #     )
-
     def get_queryset(self, request):
         return (
             super()
@@ -293,6 +282,53 @@ class ClaimAdmin(admin.ModelAdmin):
         """Отображение потребителя"""
         return obj.consumer_name
 
+    # @admin.display(description="Рекламация")
+    # def reclamation_display(self, obj):
+    #     """Отображение рекламации найденной по данным из претензии"""
+
+    #     reclamation = None
+
+    #     # 1. Ищем по номеру и дате акта рекламации
+    #     if obj.reclamation_act_number and obj.reclamation_act_date:
+    #         reclamation = Reclamation.objects.filter(
+    #             Q(
+    #                 sender_outgoing_number=obj.reclamation_act_number,
+    #                 message_sent_date=obj.reclamation_act_date,
+    #             )
+    #             | Q(
+    #                 consumer_act_number=obj.reclamation_act_number,
+    #                 consumer_act_date=obj.reclamation_act_date,
+    #             )
+    #             | Q(
+    #                 end_consumer_act_number=obj.reclamation_act_number,
+    #                 end_consumer_act_date=obj.reclamation_act_date,
+    #             )
+    #         ).first()
+
+    #     # 2. Если не найдена - ищем по номеру двигателя (если есть)
+    #     elif obj.engine_number:
+    #         reclamation = Reclamation.objects.filter(
+    #             engine_number=obj.engine_number
+    #         ).first()
+
+    #     if reclamation:
+    #         url = reverse("admin:reclamations_reclamation_changelist")
+    #         # Добавляем год рекламации в параметры ссылки
+    #         filtered_url = f"{url}?id={reclamation.id}&year={reclamation.year}"
+
+    #         return mark_safe(
+    #             f'<a href="{filtered_url}" '
+    #             f'target="_blank" '  # открывать в новой вкладке
+    #             f'rel="noopener" '  # для безопасности (предотвращает доступ новой вкладки к родительскому окну)
+    #             f"onmouseover=\"this.style.fontWeight='bold'\" "
+    #             f"onmouseout=\"this.style.fontWeight='normal'\" "
+    #             f'title="Перейти к рекламации">'
+    #             f"{reclamation.year}-{reclamation.yearly_number:04d}</a><br>"
+    #             f"<small>{reclamation.product_name} {reclamation.product}</small>"
+    #         )
+
+    #     return ""
+
     @admin.display(description="Рекламация")
     def reclamation_display(self, obj):
         """Отображение рекламации найденной по данным из претензии"""
@@ -316,11 +352,23 @@ class ClaimAdmin(admin.ModelAdmin):
                 )
             ).first()
 
-        # 2. Если не найдена - ищем по номеру двигателя (если есть)
-        elif obj.engine_number:
+        # 2. Если не найдена - ищем по номеру двигателя
+        if not reclamation and obj.engine_number:
             reclamation = Reclamation.objects.filter(
                 engine_number=obj.engine_number
             ).first()
+
+        # 3. Если не найдена - ищем по номеру акта исследования
+        if not reclamation and obj.investigation_act_number:
+            try:
+                from investigations.models import Investigation
+                investigation = Investigation.objects.filter(
+                    act_number=obj.investigation_act_number
+                ).first()
+                if investigation:
+                    reclamation = investigation.reclamation
+            except Investigation.DoesNotExist:
+                pass
 
         if reclamation:
             url = reverse("admin:reclamations_reclamation_changelist")

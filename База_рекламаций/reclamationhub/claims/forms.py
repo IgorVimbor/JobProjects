@@ -6,6 +6,7 @@ from datetime import datetime
 
 from .models import Claim
 from reclamations.models import Reclamation
+from investigations.models import Investigation
 
 
 # Константы для виджетов форм
@@ -81,7 +82,7 @@ class ClaimAdminForm(forms.ModelForm):
                     bza_sum, "Признанная сумма не может превышать сумму претензии"
                 )
 
-        # Валидация рекламационного акта и двигателя для установления связи с рекламацией
+        # Валидация рекламационного акта, двигателя или акта исследования для установления связи с рекламацией
         # Если это редактирование существующей претензии - проверка не нужна
         if self.instance.pk and self.instance.reclamations.exists():
             return cleaned_data
@@ -89,40 +90,50 @@ class ClaimAdminForm(forms.ModelForm):
         reclamation_act_number = cleaned_data.get("reclamation_act_number")
         reclamation_act_date = cleaned_data.get("reclamation_act_date")
         engine_number = cleaned_data.get("engine_number")
+        investigation_act_number = cleaned_data.get("investigation_act_number")
         comment = cleaned_data.get("comment", "")
 
         # Ищем рекламации (может быть несколько)
         # found_reclamations = self._find_reclamations(reclamation_act_number, engine_number)
-        found_reclamations = self._find_reclamations(reclamation_act_number, reclamation_act_date, engine_number)
+        found_reclamations = self._find_reclamations(
+            reclamation_act_number,
+            reclamation_act_date,
+            engine_number,
+            investigation_act_number
+        )
 
         if found_reclamations:
             # Рекламация найдена - все отлично. Сохраняем рекламацию для save_model.
             self._found_reclamations = found_reclamations
         else:
             # Рекламации НЕ найдены - требуем комментарий
-            if reclamation_act_number or engine_number:
+            if reclamation_act_number or engine_number or investigation_act_number:
                 if not comment:
                     raise forms.ValidationError(
                         "Рекламация не найдена. Для сохранения претензии без связи "
-                        'необходимо заполнить поле "Комментарий" с объяснением.'
+                        "необходимо заполнить поле 'Комментарий' с объяснением."
                     )
 
                 # Показываем предупреждение, но НЕ блокируем сохранение
                 self._warning_message = (  # Сохраняем предупреждение для показа после сохранения
-                    f"Внимание: рекламация с указанными данными не найдена. "
-                    f"Претензия сохранена без связи с рекламацией."
+                    "Внимание: рекламация с указанными данными не найдена. "
+                    "Претензия сохранена без связи с рекламацией."
                 )
             else:
                 # Если вообще ничего не указано - требуем хотя бы один из критериев
                 raise forms.ValidationError(
-                    "Необходимо указать либо номер и дату рекламационного акта, "
-                    "либо номер двигателя, либо заполнить комментарий."
+                    "Рекламация не найдена. Для сохранения претензии без связи "
+                    "необходимо указать либо номер и дату рекламационного акта, "
+                    "либо номер двигателя, либо номер акта исследования, "
+                    "либо заполнить комментарий."
                 )
 
         return cleaned_data
 
-    def _find_reclamations(self, reclamation_act_number, reclamation_act_date, engine_number):
+    def _find_reclamations(self, reclamation_act_number, reclamation_act_date, engine_number, investigation_act_number):
         """Возвращает список найденных рекламаций"""
+
+        # 1. Поиск по номеру акта рекламации (ВЫСШИЙ ПРИОРИТЕТ)
         if reclamation_act_number:
             # Если есть дата - ищем точно по номеру и дате
             if reclamation_act_date:
@@ -149,8 +160,17 @@ class ClaimAdminForm(forms.ModelForm):
                 Q(consumer_act_number=reclamation_act_number) |
                 Q(end_consumer_act_number=reclamation_act_number)
             )
-        # Иначе ищем по номеру двигателя
+
+        # 2. Поиск по номеру двигателя
         elif engine_number:
             return Reclamation.objects.filter(engine_number=engine_number)
+
+        # 3. Поиск по номеру акта исследования
+        elif investigation_act_number:
+            try:
+                investigation = Investigation.objects.get(act_number=investigation_act_number)
+                return Reclamation.objects.filter(id=investigation.reclamation.id)
+            except Investigation.DoesNotExist:
+                pass
 
         return Reclamation.objects.none()
