@@ -24,7 +24,7 @@ from django.views.generic import RedirectView
 
 from reclamationhub.admin import admin_site
 from reclamations.views.product_utils import get_products
-from claims.views import search_related_data
+from claims.views.claim_form import search_related_data
 
 
 urlpatterns = [
@@ -56,6 +56,7 @@ urlpatterns = [
     path("admin/", admin_site.urls),
     path("reports/", include("reports.urls")),  # приложение для справок
     path("analytics/", include("analytics.urls")),  # приложение для аналитики
+    path("claims/", include("claims.urls")),  # аналитика претензий
     path("utils/", include("utils.urls")),  # скачивание Excel
     path(  # редирект для отображения иконки
         "favicon.ico", RedirectView.as_view(url="/static/favicon.png", permanent=True)

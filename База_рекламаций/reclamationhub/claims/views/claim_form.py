@@ -10,7 +10,7 @@ from datetime import datetime
 
 from reclamations.models import Reclamation
 from investigations.models import Investigation
-from .models import Claim
+from claims.models import Claim
 
 
 # В нашем случае: AJAX поиск только для сотрудников + только GET запросы.
@@ -28,13 +28,28 @@ def search_related_data(request):
 
     try:
         # 1. Определяем тип поиска: акт рекламации → двигатель → акт исследования
-        if search_number and search_date and not engine_number and not investigation_act_number:
+        if (
+            search_number
+            and search_date
+            and not engine_number
+            and not investigation_act_number
+        ):
             search_type = "by_act_number"
             search_value = search_number
-        elif engine_number and not search_number and not search_date and not investigation_act_number:
+        elif (
+            engine_number
+            and not search_number
+            and not search_date
+            and not investigation_act_number
+        ):
             search_type = "by_engine_number"
             search_value = engine_number
-        elif investigation_act_number and not search_number and not search_date and not engine_number:
+        elif (
+            investigation_act_number
+            and not search_number
+            and not search_date
+            and not engine_number
+        ):
             search_type = "by_investigation_act"
             search_value = investigation_act_number
         else:
@@ -73,7 +88,9 @@ def search_related_data(request):
         elif search_type == "by_investigation_act":
             # Поиск по номеру акта исследования
             try:
-                investigation = Investigation.objects.get(act_number=investigation_act_number)
+                investigation = Investigation.objects.get(
+                    act_number=investigation_act_number
+                )
                 reclamation = investigation.reclamation
             except Investigation.DoesNotExist:
                 reclamation = None
@@ -98,7 +115,9 @@ def search_related_data(request):
         # 6. Формируем успешный ответ
         response_data = {
             "found": True,
-            "message_received_date": reclamation.message_received_date.strftime("%d.%m.%Y"),
+            "message_received_date": reclamation.message_received_date.strftime(
+                "%d.%m.%Y"
+            ),
             "receipt_invoice_number": reclamation.receipt_invoice_number or "",
             "investigation_act_number": investigation.act_number or "",
             "investigation_act_date": investigation.act_date.strftime("%d.%m.%Y"),
@@ -150,21 +169,27 @@ def search_related_data(request):
 
             # Определяем приоритет для номера акта рекламации
             if reclamation.consumer_act_number:
-                response_data["reclamation_act_number"] = reclamation.consumer_act_number
+                response_data["reclamation_act_number"] = (
+                    reclamation.consumer_act_number
+                )
                 response_data["reclamation_act_date"] = (
                     reclamation.consumer_act_date.strftime("%d.%m.%Y")
                     if reclamation.consumer_act_date
                     else ""
                 )
             elif reclamation.end_consumer_act_number:
-                response_data["reclamation_act_number"] = reclamation.end_consumer_act_number
+                response_data["reclamation_act_number"] = (
+                    reclamation.end_consumer_act_number
+                )
                 response_data["reclamation_act_date"] = (
                     reclamation.end_consumer_act_date.strftime("%d.%m.%Y")
                     if reclamation.end_consumer_act_date
                     else ""
                 )
             elif reclamation.sender_outgoing_number:
-                response_data["reclamation_act_number"] = reclamation.sender_outgoing_number
+                response_data["reclamation_act_number"] = (
+                    reclamation.sender_outgoing_number
+                )
                 response_data["reclamation_act_date"] = (
                     reclamation.message_sent_date.strftime("%d.%m.%Y")
                     if reclamation.message_sent_date
