@@ -4,27 +4,18 @@ claims/
 │
 ├── modules/                          # Процессоры для аналитики
 │   ├── __init__.py
-│   ├── dashboard_processor.py        # Класс DashboardProcessor
-│   ├── financial_analysis.py         # Класс FinancialAnalysisProcessor
-│   └── ...
+│   ├── dashboard_processor.py        # DashboardProcessor
+│   └── financial_analysis.py
 │
 ├── views/                            # Представления
 │   ├── __init__.py
 │   ├── claim_form.py                 # Существующая логика (search_related_data)
-│   └── analytics.py                  # НОВОЕ: dashboard_view, financial_view, ...
+│   └── analytics.py                  # dashboard_view
 │
-├── templates/
+├── templates/                        # Шаблоны аналитики
 │   └── claims/
-│       ├── analytics/                # Шаблоны аналитики
-│       │   ├── dashboard.html
-│       │   ├── financial_analysis.html
-│       │   └── ...
-│       └── ...                       # Существующие шаблоны
-│
-├── static/
-│   └── claims/
-│       └── js/
-│           └── claim_form.js         # Ваш существующий JS
+│       ├── dashboard.html
+│       └── financial_analysis.html
 │
 ├── __init__.py
 ├── admin.py
