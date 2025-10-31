@@ -76,10 +76,15 @@ class Claim(models.Model):
     )
 
     engine_number = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
-        verbose_name="Номер двигателя",
+        max_length=100, null=True, blank=True, verbose_name="Номер двигателя"
+    )
+
+    investigation_act_number = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name="Номер акта исследования"
+    )
+
+    investigation_act_date = models.DateField(
+        null=True, blank=True, verbose_name="Дата акта исследования",
         help_text=mark_safe(
             "<li>При положительном результате поиска поля формы заполнятся автоматически.<br>"
             "Переходите к регистрации претензии и заполнению формы далее.</li>"
@@ -105,12 +110,6 @@ class Claim(models.Model):
         null=True,
         blank=True,
         verbose_name="Накладная прихода изделия",
-    )
-    investigation_act_number = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name="Номер акта исследования"
-    )
-    investigation_act_date = models.DateField(
-        null=True, blank=True, verbose_name="Дата акта исследования"
     )
     investigation_act_result = models.CharField(
         max_length=100,

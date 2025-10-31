@@ -177,7 +177,7 @@ class ClaimAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Дата уведомления и решение по исследованию",
+            "Дата уведомления и решение по рекламации",
             {
                 "fields": [
                     "message_received_date",

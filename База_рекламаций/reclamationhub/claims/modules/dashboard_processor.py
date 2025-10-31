@@ -183,7 +183,7 @@ class DashboardProcessor:
 
         return {"labels": labels, "amounts": amounts, "costs": costs}
 
-    def get_top_consumers(self, limit=5):
+    def get_top_consumers(self):  # def get_top_consumers(self, limit=5):
         """TOP потребителей по суммам претензий
         Возвращает:
         [
@@ -240,7 +240,7 @@ class DashboardProcessor:
         # Сортируем по сумме (по убыванию)
         sorted_consumers = sorted(
             consumer_data.items(), key=lambda x: x[1]["amount"], reverse=True
-        )[:limit]
+        )  # [:limit]  # если нужен ТОП-5 добавить в функциии limit=5 и [:limit]
 
         # Формируем результат
         result = []

@@ -32,7 +32,7 @@ def analytic_page(request):
 
     context = {
         "page_title": "Аналитика",
-        "description": "Генерация аналитических материалов по дефектности изделий БЗА",
+        "description": "Генерация аналитических материалов по дефектности изделий и претензиям",
         # Данные для карточек
         "total_reclamations": total_reclamations,
         "new_reclamations": new_reclamations,
