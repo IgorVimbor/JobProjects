@@ -131,6 +131,29 @@ def get_excel_exporter_path(year):
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 
+# ========================= CLAIMS ===========================
+
+
+def get_claims_dashboard_chart_path(year):
+    """Путь к PNG графику Dashboard претензий"""
+    filename = f"Dashboard претензий {year}_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+def get_claims_dashboard_table_path(year):
+    """Путь к TXT таблице TOP потребителей"""
+    filename = f"Претензии {year}_TOP потребители_{date_today}.txt"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+def get_consumer_analysis_chart_path(consumer_name, year):
+    """Путь к PNG графику анализа по потребителю"""
+    # Очищаем название от спецсимволов
+    safe_name = consumer_name.replace(" ", "_").replace("/", "_").replace("\\", "_")
+    filename = f"Претензии {safe_name} {year}_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
 # # ==================== СОЗДАНИЕ ПАПОК ====================
 # # Создаем все необходимые папки
 # for directory in [

@@ -14,7 +14,38 @@ def dashboard_view(request):
     """Страница Dashboard претензий"""
 
     if request.method == "POST":
-        return generate_dashboard(request)
+        action = request.POST.get("action")
+
+        if action == "save_files":
+            # ОБРАБОТКА СОХРАНЕНИЯ ФАЙЛОВ
+            year = request.POST.get("year")
+            exchange_rate = request.POST.get("exchange_rate")
+
+            try:
+                year = int(year)
+                exchange_rate_decimal = Decimal(str(exchange_rate).replace(",", "."))
+            except (ValueError, TypeError, InvalidOperation):
+                messages.error(request, "Некорректные параметры")
+                return redirect("claims:dashboard")
+
+            # Создаем процессор и сохраняем файлы
+            processor = DashboardProcessor(
+                year=year, exchange_rate=exchange_rate_decimal
+            )
+            result = processor.save_to_files()
+
+            if result["success"]:
+                messages.success(
+                    request, f"✅ Файлы сохранены в папку {result['base_dir']}"
+                )
+            else:
+                messages.error(request, f"❌ Ошибка при сохранении: {result['error']}")
+
+            return redirect("claims:dashboard")
+
+        else:
+            # ОБЫЧНАЯ ГЕНЕРАЦИЯ DASHBOARD
+            return generate_dashboard(request)
 
     # GET запрос - показываем форму
     dashboard_data = request.session.get("claims_dashboard_data", None)
@@ -93,7 +124,7 @@ def generate_dashboard(request):
     result = processor.generate_dashboard()
 
     if result["success"]:
-        messages.success(request, f"✅ Dashboard за {year} год сформирован")
+        # messages.success(request, f"✅ Dashboard за {year} год сформирован")
 
         # Сохраняем результаты в session
         # ⚠️ ВАЖНО: конвертируем данные для JSON сериализации

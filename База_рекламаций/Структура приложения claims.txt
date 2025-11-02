@@ -5,17 +5,24 @@ claims/
 ├── modules/                          # Процессоры для аналитики
 │   ├── __init__.py
 │   ├── dashboard_processor.py        # DashboardProcessor
-│   └── financial_analysis.py
+│   └── consumer_analysis.py          # ConsumerAnalysisProcessor
 │
 ├── views/                            # Представления
 │   ├── __init__.py
 │   ├── claim_form.py                 # Существующая логика (search_related_data)
-│   └── analytics.py                  # dashboard_view
+│   ├── claim_main.py                 # claim_page - основная страница аналитики претензий
+│   ├── dashboard.py                  # dashboard_view - страница дашборда
+│   ├── consumer_analysis.py          # consumer_analysis_view - страница по потребителю
+│   ├── reclamation_to_claim          # reclamation_to_claim_view - страница рекламация -> претензия
+│   └── claim_prognosis               # claim_prognosis_view - страница прогноза претензий
 │
 ├── templates/                        # Шаблоны аналитики
 │   └── claims/
+│       ├── claim_main.html
 │       ├── dashboard.html
-│       └── financial_analysis.html
+│       ├── consumer_analysis.html
+│       ├── reclamation_to_claim.html
+│       └── claim_prognosis.html
 │
 ├── __init__.py
 ├── admin.py

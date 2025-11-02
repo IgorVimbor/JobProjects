@@ -1,5 +1,5 @@
-<!-- claims/templates/claims/dashboard.html -->
-<!-- Шаблон Dashboard аналитики претензий -->
+<!-- claims/templates/claims/consumer_analysis.html -->
+<!-- Шаблон анализа претензий по потребителю -->
 
 {% extends 'base.html' %}
 {% load static %}
@@ -22,9 +22,10 @@
     </div>
 
     <!-- Показываем форму ТОЛЬКО если нет результатов -->
-    {% if not dashboard_data %}
+    {% if not analysis_data %}
     <div class="row mb-4">
-        <div class="col-md-8">
+        <!-- Форма выбора -->
+        <div class="col-lg-8">
             <div class="card">
                 <div class="card-header">
                     <h5>🔍 Параметры анализа</h5>
@@ -43,6 +44,31 @@
                             </select>
                         </div>
 
+                        <!-- Поле выбора потребителя -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold mb-2">Выберите потребителя:</label>
+                            <div class="row">
+                                {% for consumer in available_consumers %}
+                                <div class="col-md-2 mb-2 flex-fill">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="radio"
+                                            name="consumer"
+                                            value="{{ consumer }}"
+                                            id="consumer{{ forloop.counter }}"
+                                            required>
+                                        <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                            {{ consumer }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Выберите одного потребителя для анализа
+                            </small>
+                        </div>
+
                         <!-- Поле ввода курса -->
                         <div class="mb-3">
                             <label for="exchange_rate" class="form-label fw-bold">
@@ -56,30 +82,19 @@
                                        name="exchange_rate"
                                        placeholder="0.03"
                                        value="0.03"
-                                       step="0.0001"
                                        required>
                                 <span class="input-group-text">BYN</span>
                             </div>
-                            <small class="form-text text-muted">
-                                Введите текущий курс. Все суммы будут конвертированы в BYN по этому курсу.
-                            </small>
-                        </div>
-
-                        <!-- Информационная панель -->
-                        <div class="alert alert-info">
-                            <strong>ℹ️ Что анализируется:</strong>
-                            <ul class="mb-0 mt-2">
-                                <li>Финансовые показатели (выставлено/признано)</li>
-                                <li>Динамика по месяцам</li>
-                                <li>TOP потребителей по суммам</li>
-                            </ul>
                         </div>
 
                         <!-- Кнопки -->
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                📊 Сформировать Dashboard
+                            <button type="submit" class="btn btn-primary">
+                                📊 Сделать анализ
                             </button>
+                            <a href="{% url 'claims:dashboard' %}" class="btn btn-secondary">
+                                ❌ Отмена
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -87,22 +102,24 @@
         </div>
 
         <!-- Справка -->
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
                     <h5>ℹ️ Справка</h5>
                 </div>
                 <div class="card-body">
-                    <h6>Что включает Dashboard:</h6>
+                    <h6>Что анализируется:</h6>
+                    <p class="small">Динамика претензий по месяцам для выбранного потребителя.</p>
+
+                    <h6>Результаты:</h6>
                     <ul class="small">
-                        <li>Карточки с ключевыми метриками</li>
+                        <li>Общие показатели (количество, суммы)</li>
                         <li>График динамики по месяцам</li>
-                        <li>TOP потребителей</li>
-                        <li>Возможность сохранения в файлы</li>
+                        <li>Возможность сохранить в PNG файл</li>
                     </ul>
 
-                    <h6>Параметры:</h6>
-                    <p class="small mb-0">Год анализа и курс валюты</p>
+                    <h6>Валюта:</h6>
+                    <p class="small">Все суммы конвертируются в BYN по указанному курсу.</p>
                 </div>
             </div>
         </div>
@@ -124,28 +141,28 @@
     {% endif %}
 
     <!-- Блок результатов -->
-    {% if dashboard_data %}
+    {% if analysis_data %}
 
-    <!-- Заголовок с параметрами -->
+    <!-- Заголовок -->
     <div class="row mb-3">
         <div class="col-12">
             <div class="alert alert-success">
-                Курс валют: 1 RUR = {{ dashboard_data.exchange_rate }} BYN
+                <strong>Анализ: {{ analysis_data.consumer }}</strong> |
+                Год: {{ analysis_data.year }} |
+                Курс: 1 RUR = {{ analysis_data.exchange_rate }} BYN
             </div>
         </div>
     </div>
 
     <!-- Карточки с метриками -->
     <div class="row mb-4">
-        <!-- Всего претензий -->
+        <!-- Количество претензий -->
         <div class="col-lg-4 col-md-6 mb-3">
             <div class="card border-primary">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Количество претензий</h6>
-                    <h3 class="card-title text-primary">{{ dashboard_data.summary_cards.total_claims }}</h3>
-                    <small class="text-muted">
-                        по <strong>{{ dashboard_data.summary_cards.total_acts }}</strong> актам рекламаций
-                    </small>
+                    <h3 class="card-title text-primary">{{ analysis_data.summary_data.total_claims }}</h3>
+                    <small class="text-muted">шт.</small>
                 </div>
             </div>
         </div>
@@ -154,8 +171,8 @@
         <div class="col-lg-4 col-md-6 mb-3">
             <div class="card border-warning">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Выставлено (руб.)</h6>
-                    <h3 class="card-title text-warning">{{ dashboard_data.summary_cards.total_amount_byn }}</h3>
+                    <h6 class="card-subtitle mb-2 text-muted">Выставлено расходов</h6>
+                    <h3 class="card-title text-warning">{{ analysis_data.summary_data.total_amount_byn }}</h3>
                     <small class="text-muted">BYN</small>
                 </div>
             </div>
@@ -165,16 +182,16 @@
         <div class="col-lg-4 col-md-6 mb-3">
             <div class="card border-success">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Признано (руб.)</h6>
-                    <h3 class="card-title text-success">{{ dashboard_data.summary_cards.total_costs_byn }}</h3>
-                    <small class="text-muted">BYN, что составляет <strong>{{ dashboard_data.summary_cards.acceptance_percent }}%</strong></small>
+                    <h6 class="card-subtitle mb-2 text-muted">Признано расходов</h6>
+                    <h3 class="card-title text-success">{{ analysis_data.summary_data.total_costs_byn }}</h3>
+                    <small class="text-muted">BYN ({{ analysis_data.summary_data.acceptance_percent }}%)</small>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- График динамики -->
-    {% if dashboard_data.monthly_dynamics.labels %}
+    {% if analysis_data.monthly_dynamics.labels %}
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
@@ -182,48 +199,7 @@
                     <h5>📈 Динамика по месяцам</h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="monthlyChart" height="80"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- TOP потребителей -->
-    {% if dashboard_data.top_consumers %}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5>По потребителям</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th>№ п/п</th>
-                                    <th>Потребитель</th>
-                                    <th>Количество претензий</th>
-                                    <th>Сумма выставлено (BYN)</th>
-                                    <th>Сумма признано (BYN)</th>
-                                    <th>Процент признания</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for consumer in dashboard_data.top_consumers %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td><strong>{{ consumer.consumer }}</strong></td>
-                                    <td>{{ consumer.count }}</td>
-                                    <td>{{ consumer.amount }}</td>
-                                    <td>{{ consumer.costs }}</td>
-                                    <td>{{ consumer.acceptance_percent }}%</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    <canvas id="consumerChart" height="80"></canvas>
                 </div>
             </div>
         </div>
@@ -234,11 +210,11 @@
     <div class="row mt-3 mb-4">
         <div class="col-12">
             <div class="d-flex gap-2">
-                <a href="{% url 'claims:dashboard' %}" class="btn btn-primary">
+                <a href="{% url 'claims:consumer_analysis' %}" class="btn btn-primary">
                     🔄 Новый анализ
                 </a>
-                <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                    ⬆️ Вверх
+                <button class="btn btn-secondary" onclick="window.close()">
+                    ❌ Закрыть окно
                 </button>
                 <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
                     💾 Сохранить в файлы
@@ -251,47 +227,43 @@
 </div>
 
 <!-- JavaScript для графика -->
-{% if dashboard_data and dashboard_data.monthly_dynamics.labels %}
+{% if analysis_data and analysis_data.monthly_dynamics.labels %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('monthlyChart').getContext('2d');
+    const ctx = document.getElementById('consumerChart').getContext('2d');
 
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: {{ dashboard_data.monthly_dynamics.labels|safe }},
+            labels: {{ analysis_data.monthly_dynamics.labels|safe }},
             datasets: [
                 {
                     label: 'Выставлено (BYN)',
-                    data: {{ dashboard_data.monthly_dynamics.amounts|safe }},
+                    data: {{ analysis_data.monthly_dynamics.amounts|safe }},
                     borderColor: 'rgb(255, 193, 7)',
                     backgroundColor: 'rgba(255, 193, 7, 0.1)',
                     tension: 0.3,
                     fill: true,
-                    // datalabels для этого dataset
                     datalabels: {
                         anchor: 'end',
                         align: 'top',
-                        // color: 'rgb(255, 193, 7)',  // Желтый
-                        color: 'rgb(204, 102, 0)',  // Темно-оранжевый
+                        color: 'rgb(204, 102, 0)',
                         font: {
                             weight: 'normal',
                             size: 11
                         },
                         formatter: function(value) {
-                            if (value === 0) return '';  // Скрываем нули (показываем только если > 0)
-                            return value.toFixed(2);  // Форматируем число (2 знака после запятой)
+                            return value.toFixed(2);
                         }
                     }
                 },
                 {
                     label: 'Признано (BYN)',
-                    data: {{ dashboard_data.monthly_dynamics.costs|safe }},
+                    data: {{ analysis_data.monthly_dynamics.costs|safe }},
                     borderColor: 'rgb(25, 135, 84)',
                     backgroundColor: 'rgba(25, 135, 84, 0.1)',
                     tension: 0.3,
                     fill: true,
-                    // datalabels для этого dataset
                     datalabels: {
                         anchor: 'end',
                         align: 'bottom',
@@ -301,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             size: 11
                         },
                         formatter: function(value) {
-                            if (value === 0) return '';
                             return value.toFixed(2);
                         }
                     }
@@ -318,10 +289,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 title: {
                     display: true,
-                    text: 'Динамика претензий по месяцам (BYN)'
+                    text: 'Динамика претензий {{ analysis_data.consumer }} за {{ analysis_data.year }} год (BYN)'
                 },
                 datalabels: {
-                    display: true  // true - подписи на точках, false - нет
+                    display: true
                 }
             },
             scales: {
@@ -340,32 +311,3 @@ document.addEventListener('DOMContentLoaded', function() {
 {% endif %}
 
 {% endblock %}
-
-<!-- Параметры datalabels (справка):
-datalabels: {
-    display: true,            // Показывать подписи
-    anchor: 'end',            // Позиция якоря: start, center, end
-    align: 'top',             // Выравнивание: top, bottom, left, right, center
-    offset: 5,                // Отступ от точки (px)
-    color: 'black',           // Цвет текста
-    backgroundColor: 'white', // Фон подписи (опционально)
-    borderRadius: 3,          // Скругление фона
-    font: {
-        weight: 'bold',
-        size: 11
-    },
-    formatter: function(value, context) {
-        if (value === 0) return '';  // Скрываем нули (показываем только если > 0)
-        return value.toFixed(2);     // Форматируем число (2 знака после запятой)
-    }
-}
-
-Параметры font.weight:
-font: {
-    weight: 'normal',   // Обычный
-    weight: 'bold',     // Жирный
-    weight: '300',      // Тонкий
-    weight: '600',      // Полужирный
-    size: 11
-}
--->

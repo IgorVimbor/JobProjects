@@ -1,5 +1,14 @@
 # claims/modules/dashboard_processor.py
 
+from reports.config.paths import (
+    get_claims_dashboard_chart_path,
+    get_claims_dashboard_table_path,
+    BASE_REPORTS_DIR,
+)
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import date
 from decimal import Decimal
@@ -284,3 +293,89 @@ class DashboardProcessor:
                 "success": False,
                 "error": f"Ошибка при генерации Dashboard: {str(e)}",
             }
+
+    def save_to_files(self):
+        """Сохранение графика и таблицы Dashboard в файлы"""
+        try:
+            # Получаем данные для сохранения
+            summary_cards = self.get_summary_cards()
+            monthly_dynamics = self.get_monthly_dynamics()
+            top_consumers = self.get_top_consumers()
+
+            # 1. Сохраняем график
+            chart_path = get_claims_dashboard_chart_path(self.year)
+
+            if monthly_dynamics["labels"]:
+                plt.figure(figsize=(12, 6))
+
+                plt.plot(
+                    monthly_dynamics["labels"],
+                    monthly_dynamics["amounts"],
+                    marker="o",
+                    label="Выставлено (BYN)",
+                    color="orange",
+                    linewidth=2,
+                )
+                plt.plot(
+                    monthly_dynamics["labels"],
+                    monthly_dynamics["costs"],
+                    marker="o",
+                    label="Признано (BYN)",
+                    color="green",
+                    linewidth=2,
+                )
+
+                plt.title(
+                    f"Динамика претензий за {self.year} год (BYN)",
+                    fontsize=14,
+                    fontweight="bold",
+                )
+                plt.xlabel("Месяц")
+                plt.ylabel("Сумма (BYN)")
+                plt.legend()
+                plt.grid(True, alpha=0.3)
+                plt.tight_layout()
+
+                plt.savefig(chart_path, dpi=300, bbox_inches="tight")
+                plt.close()
+
+            # 2. Сохраняем таблицу
+            table_path = get_claims_dashboard_table_path(self.year)
+
+            with open(table_path, "w", encoding="utf-8") as f:
+                f.write(f"TOP ПОТРЕБИТЕЛЕЙ ПО СУММАМ ПРЕТЕНЗИЙ ЗА {self.year} ГОД\n")
+                f.write(f"Курс: 1 RUR = {self.exchange_rate} BYN\n")
+                f.write("=" * 100 + "\n\n")
+
+                # Заголовок таблицы
+                f.write(
+                    f"{'№':<5}{'Потребитель':<30}{'Претензий':<15}"
+                    f"{'Выставлено':<20}{'Признано':<20}{'%':<10}\n"
+                )
+                f.write("-" * 100 + "\n")
+
+                # Данные
+                for idx, consumer in enumerate(top_consumers, 1):
+                    f.write(
+                        f"{idx:<5}"
+                        f"{consumer['consumer']:<30}"
+                        f"{consumer['count']:<15}"
+                        f"{consumer['amount']:<20}"
+                        f"{consumer['costs']:<20}"
+                        f"{consumer['acceptance_percent']:<10}\n"
+                    )
+
+                f.write("\n" + "=" * 100 + "\n")
+                f.write(f"Всего претензий: {summary_cards['total_claims']}\n")
+                f.write(f"Выставлено: {summary_cards['total_amount_byn']} BYN\n")
+                f.write(f"Признано: {summary_cards['total_costs_byn']} BYN\n")
+
+            return {
+                "success": True,
+                "chart_path": chart_path,
+                "table_path": table_path,
+                "base_dir": BASE_REPORTS_DIR,
+            }
+
+        except Exception as e:
+            return {"success": False, "error": str(e)}
