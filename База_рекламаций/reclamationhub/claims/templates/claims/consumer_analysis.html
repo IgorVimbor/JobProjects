@@ -247,13 +247,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     datalabels: {
                         anchor: 'end',
                         align: 'top',
-                        color: 'rgb(204, 102, 0)',
+                        color: 'rgb(204, 102, 0)',  // Темно-оранжевый
                         font: {
                             weight: 'normal',
                             size: 11
                         },
                         formatter: function(value) {
-                            return value.toFixed(2);
+                            if (value === 0) return '';  // Скрываем нули (показываем только если > 0)
+                            return value.toFixed(2);  // Форматируем число (2 знака после запятой)
                         }
                     }
                 },
@@ -273,7 +274,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             size: 11
                         },
                         formatter: function(value) {
-                            return value.toFixed(2);
+                            if (value === 0) return '';  // Скрываем нули (показываем только если > 0)
+                            return value.toFixed(2);  // Форматируем число (2 знака после запятой)
                         }
                     }
                 }
