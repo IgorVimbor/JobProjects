@@ -1,11 +1,20 @@
 # claims/modules/consumer_analysis_processor.py
-"""
-Процессор для анализа претензий по конкретному потребителю
-"""
+"""Процессор для анализа претензий по конкретному потребителю"""
 
 import pandas as pd
 from datetime import date
 from decimal import Decimal
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+from reports.config.paths import (
+    get_consumer_analysis_chart_path,
+    get_consumer_analysis_table_path,
+    BASE_REPORTS_DIR,
+)
 
 from claims.models import Claim
 
@@ -178,3 +187,145 @@ class ConsumerAnalysisProcessor:
                 "success": False,
                 "error": f"Ошибка при генерации анализа: {str(e)}",
             }
+
+    def save_to_files(self):
+        """Сохранение графика и таблицы анализа потребителя в файлы"""
+        try:
+            # Получаем данные для сохранения
+            analysis_data = self.generate_analysis()
+
+            if not analysis_data["success"]:
+                return {
+                    "success": False,
+                    "error": "Не удалось сгенерировать данные для сохранения",
+                }
+
+            # 1. Сохраняем график
+            chart_path = get_consumer_analysis_chart_path(self.year, self.consumer)
+
+            monthly_dynamics = analysis_data["monthly_dynamics"]
+
+            if monthly_dynamics["labels"]:
+                plt.figure(figsize=(12, 6))
+
+                # Линии графика
+                plt.plot(
+                    monthly_dynamics["labels"],
+                    monthly_dynamics["amounts"],
+                    marker="o",
+                    label="Выставлено (BYN)",
+                    color="orange",
+                    linewidth=2,
+                )
+                plt.plot(
+                    monthly_dynamics["labels"],
+                    monthly_dynamics["costs"],
+                    marker="o",
+                    label="Признано (BYN)",
+                    color="green",
+                    linewidth=2,
+                )
+
+                # Добавляем подписи данных
+                for i, (label, amount, cost) in enumerate(
+                    zip(
+                        monthly_dynamics["labels"],
+                        monthly_dynamics["amounts"],
+                        monthly_dynamics["costs"],
+                    )
+                ):
+                    plt.annotate(
+                        f"{amount:,.0f}".replace(",", "."),
+                        (i, amount),
+                        textcoords="offset points",
+                        xytext=(0, 10),
+                        ha="center",
+                        fontsize=8,
+                        bbox=dict(
+                            boxstyle="round,pad=0.3", facecolor="white", alpha=0.7
+                        ),
+                        color="orange",
+                        fontweight="bold",
+                    )
+
+                    plt.annotate(
+                        f"{cost:,.0f}".replace(",", "."),
+                        (i, cost),
+                        textcoords="offset points",
+                        xytext=(0, -15),
+                        ha="center",
+                        fontsize=8,
+                        bbox=dict(
+                            boxstyle="round,pad=0.3", facecolor="white", alpha=0.7
+                        ),
+                        color="green",
+                        fontweight="bold",
+                    )
+
+                plt.title(
+                    f"Динамика претензий по потребителю '{self.consumer}' за {self.year} год (BYN)",
+                    fontsize=14,
+                    fontweight="bold",
+                )
+                plt.xlabel("Месяц")
+                plt.ylabel("Сумма (BYN)")
+                plt.legend()
+                plt.grid(True, alpha=0.3)
+                plt.tight_layout()
+
+                plt.savefig(chart_path, dpi=300, bbox_inches="tight")
+                plt.close()
+
+            # 2. Сохраняем таблицу по месяцам
+            table_path = get_consumer_analysis_table_path(self.year, self.consumer)
+
+            with open(table_path, "w", encoding="utf-8") as f:
+                f.write(
+                    f"АНАЛИЗ ПРЕТЕНЗИЙ ПО ПОТРЕБИТЕЛЮ '{self.consumer}' ЗА {self.year} ГОД\n"
+                )
+                f.write(f"Курс: 1 RUR = {self.exchange_rate} BYN\n")
+                f.write("=" * 80 + "\n\n")
+
+                # Таблица по месяцам - используем данные из monthly_dynamics
+                f.write(
+                    f"{'Месяц':<15}{'Выставлено (BYN)':<20}{'Признано (BYN)':<20}\n"
+                )
+                f.write("-" * 55 + "\n")
+
+                monthly_dynamics = analysis_data["monthly_dynamics"]
+                total_amount = 0
+                total_costs = 0
+
+                for month, amount, cost in zip(
+                    monthly_dynamics["labels"],
+                    monthly_dynamics["amounts"],
+                    monthly_dynamics["costs"],
+                ):
+                    f.write(f"{month:<15}{amount:<20.2f}{cost:<20.2f}\n")
+                    total_amount += amount
+                    total_costs += cost
+
+                f.write("\n" + "=" * 55 + "\n")
+                f.write(f"ИТОГО:\n")
+                f.write(
+                    f"Всего претензий: {analysis_data['summary_data']['total_claims']}\n"
+                )
+                f.write(
+                    f"Выставлено: {analysis_data['summary_data']['total_amount_byn']} BYN\n"
+                )
+                f.write(
+                    f"Признано: {analysis_data['summary_data']['total_costs_byn']} BYN\n"
+                )
+                f.write(
+                    f"Процент признания: {analysis_data['summary_data']['acceptance_percent']}%\n"
+                )
+
+            return {
+                "success": True,
+                "base_dir": BASE_REPORTS_DIR,
+                "chart_path": chart_path,
+                "table_path": table_path,
+            }
+
+        except Exception as e:
+            return {"success": False, "error": str(e)}

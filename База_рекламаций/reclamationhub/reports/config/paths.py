@@ -146,11 +146,15 @@ def get_claims_dashboard_table_path(year):
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 
-def get_consumer_analysis_chart_path(consumer_name, year):
+def get_consumer_analysis_chart_path(year, consumer_name):
     """Путь к PNG графику анализа по потребителю"""
-    # Очищаем название от спецсимволов
-    safe_name = consumer_name.replace(" ", "_").replace("/", "_").replace("\\", "_")
-    filename = f"Претензии {safe_name} {year}_{date_today}.png"
+    filename = f"Претензии {consumer_name} {year}_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+def get_consumer_analysis_table_path(year, consumer_name):
+    """Путь к таблице анализа по потребителю"""
+    filename = f"Претензии {consumer_name} {year}_{date_today}.txt"
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 

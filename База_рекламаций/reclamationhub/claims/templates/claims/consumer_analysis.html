@@ -216,9 +216,19 @@
                 <button class="btn btn-secondary" onclick="window.close()">
                     ❌ Закрыть окно
                 </button>
-                <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
-                    💾 Сохранить в файлы
-                </button>
+                {% if analysis_data %}
+                <!-- Обернули кнопку в форму -->
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <!-- Передаем ВСЕ необходимые параметры для повторной генерации -->
+                    <input type="hidden" name="year" value="{{ analysis_data.year }}">
+                    <input type="hidden" name="consumer" value="{{ analysis_data.consumer }}">
+                    <input type="hidden" name="exchange_rate" value="{{ analysis_data.exchange_rate }}">
+                    <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
+                        💾 Сохранить в файлы
+                    </button>
+                </form>
+                {% endif %}
             </div>
         </div>
     </div>

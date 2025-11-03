@@ -308,6 +308,7 @@ class DashboardProcessor:
             if monthly_dynamics["labels"]:
                 plt.figure(figsize=(12, 6))
 
+                # Линии графика
                 plt.plot(
                     monthly_dynamics["labels"],
                     monthly_dynamics["amounts"],
@@ -325,6 +326,47 @@ class DashboardProcessor:
                     linewidth=2,
                 )
 
+                # Добавляем подписи данных
+                for i, (label, amount, cost) in enumerate(
+                    zip(
+                        monthly_dynamics["labels"],
+                        monthly_dynamics["amounts"],
+                        monthly_dynamics["costs"],
+                    )
+                ):
+                    # Подпись для оранжевой линии (amounts)
+                    plt.annotate(
+                        # Форматирование с разделителями тысяч
+                        f"{amount:,.0f}".replace(",", "."),
+                        (i, amount),
+                        textcoords="offset points",
+                        xytext=(0, 10),  # Смещение вверх на 10 пикселей
+                        ha="center",  # горизонтальное выравнивание ('center', 'left', 'right')
+                        # va - вертикальное выравнивание ('center', 'top', 'bottom')
+                        fontsize=8,  # размер шрифта
+                        bbox=dict(  #  рамка вокруг текста
+                            boxstyle="round,pad=0.3", facecolor="white", alpha=0.7
+                        ),
+                        color="orange",  # цвет текста
+                        fontweight="bold",  # жирность шрифта
+                    )
+
+                    # Подпись для зеленой линии (costs)
+                    plt.annotate(
+                        f"{cost:,.0f}".replace(",", "."),
+                        (i, cost),
+                        textcoords="offset points",
+                        xytext=(0, -15),  # Смещение вниз на 15 пикселей
+                        ha="center",
+                        fontsize=8,
+                        bbox=dict(
+                            boxstyle="round,pad=0.3", facecolor="white", alpha=0.7
+                        ),
+                        color="green",
+                        fontweight="bold",
+                    )
+
+                # Подпись графика
                 plt.title(
                     f"Динамика претензий за {self.year} год (BYN)",
                     fontsize=14,

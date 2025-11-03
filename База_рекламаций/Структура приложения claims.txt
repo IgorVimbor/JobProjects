@@ -4,25 +4,25 @@ claims/
 │
 ├── modules/                          # Процессоры для аналитики
 │   ├── __init__.py
-│   ├── dashboard_processor.py        # DashboardProcessor
-│   └── consumer_analysis.py          # ConsumerAnalysisProcessor
+│   ├── dashboard_processor.py        # + DashboardProcessor
+│   └── consumer_analysis.py          # + ConsumerAnalysisProcessor
 │
 ├── views/                            # Представления
 │   ├── __init__.py
-│   ├── claim_form.py                 # Существующая логика (search_related_data)
-│   ├── claim_main.py                 # claim_page - основная страница аналитики претензий
-│   ├── dashboard.py                  # dashboard_view - страница дашборда
-│   ├── consumer_analysis.py          # consumer_analysis_view - страница по потребителю
-│   ├── reclamation_to_claim          # reclamation_to_claim_view - страница рекламация -> претензия
-│   └── claim_prognosis               # claim_prognosis_view - страница прогноза претензий
+│   ├── claim_form.py                 # + Существующая логика (search_related_data)
+│   ├── claim_main.py                 # + основная страница аналитики претензий
+│   ├── dashboard.py                  # + страница дашборда
+│   ├── consumer_analysis.py          # + страница по потребителю
+│   ├── reclamation_to_claim          # - страница рекламация -> претензия (заглушка)
+│   └── claim_prognosis               # - страница прогноза претензий (заглушка)
 │
-├── templates/                        # Шаблоны аналитики
+├── templates/                           # Шаблоны аналитики
 │   └── claims/
-│       ├── claim_main.html
-│       ├── dashboard.html
-│       ├── consumer_analysis.html
-│       ├── reclamation_to_claim.html
-│       └── claim_prognosis.html
+│       ├── claim_main.html              # +
+│       ├── dashboard.html               # +
+│       ├── consumer_analysis.html       # +
+│       ├── reclamation_to_claim.html    # - (заглушка)
+│       └── claim_prognosis.html         # - (заглушка)
 │
 ├── __init__.py
 ├── admin.py
