@@ -48,7 +48,7 @@
                             <label class="form-label fw-bold mb-2">Выберите потребителей:</label>
                             <div class="row">
                                 {% for consumer in available_consumers %}
-                                <div class="col-md-3 mb-2">
+                                <div class="col-md-2 mb-2 flex-fill">
                                     <div class="form-check">
                                         <input class="form-check-input"
                                             type="checkbox"
@@ -133,7 +133,9 @@
                     </ul>
 
                     <h6>Параметры:</h6>
-                    <p class="small mb-0">Год, потребители и курс валюты</p>
+                    <ul class="small">
+                        <li>Год, потребители и курс валюты</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -184,7 +186,9 @@
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Количество претензий</h6>
                     <h3 class="card-title text-primary">{{ analysis_data.summary_data.total_claims }}</h3>
-                    <small class="text-muted">штук</small>
+                    <small class="text-muted">
+                        по <strong>{{ analysis_data.summary_data.total_acts }}</strong> актам рекламаций
+                    </small>
                 </div>
             </div>
         </div>
@@ -249,7 +253,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover">
+                        <table class="table table-hover">
                             <thead class="table-primary">
                                 <tr>
                                     <th>Потребитель</th>
@@ -272,7 +276,7 @@
                                         <td class="text-end">
                                             {% if row.type == "Количество" %}
                                                 {% if month_value > 0 %}
-                                                    <span class="badge bg-primary">{{ month_value }}</span>
+                                                    <span class="badge bg-white text-dark border border-dark">{{ month_value }}</span>
                                                 {% else %}
                                                     <span class="text-muted">-</span>
                                                 {% endif %}
@@ -303,7 +307,7 @@
                                 </tr>
                                 <!-- Итоговые данные -->
                                 <tr class="table-warning">
-                                    <td colspan="{{ analysis_data.monthly_table.month_names|length|add:2 }}" class="fw-bold text-center">
+                                    <td colspan="{{ analysis_data.monthly_table.month_names|length|add:2 }}" class="text-center">
                                         <strong>ИТОГО ПО ВСЕМ ПОТРЕБИТЕЛЯМ</strong>
                                     </td>
                                 </tr>
@@ -317,7 +321,7 @@
                                     <td class="text-end">
                                         {% if row.type == "Количество" %}
                                             {% if month_value > 0 %}
-                                                <span class="badge bg-dark">{{ month_value }}</span>
+                                                <span class="badge bg-white text-dark border border-dark">{{ month_value }}</span>
                                             {% else %}
                                                 <span class="text-muted">-</span>
                                             {% endif %}
@@ -352,7 +356,6 @@
                 <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                     ⬆️ Вверх
                 </button>
-
                 <!-- Кнопка сохранения в файлы -->
                 <form method="post" style="display: inline;">
                     {% csrf_token %}

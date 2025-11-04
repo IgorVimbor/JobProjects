@@ -138,7 +138,7 @@
     <!-- Карточки с метриками -->
     <div class="row mb-4">
         <!-- Всего претензий -->
-        <div class="col-lg-4 col-md-6 mb-3">
+        <div class="col-lg-3 col-md-6 mb-3">
             <div class="card border-primary">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Количество претензий</h6>
@@ -151,10 +151,10 @@
         </div>
 
         <!-- Выставлено -->
-        <div class="col-lg-4 col-md-6 mb-3">
+        <div class="col-lg-3 col-md-6 mb-3">
             <div class="card border-warning">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Выставлено (руб.)</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Выставлено</h6>
                     <h3 class="card-title text-warning">{{ dashboard_data.summary_cards.total_amount_byn }}</h3>
                     <small class="text-muted">BYN</small>
                 </div>
@@ -162,12 +162,23 @@
         </div>
 
         <!-- Признано -->
-        <div class="col-lg-4 col-md-6 mb-3">
+        <div class="col-lg-3 col-md-6 mb-3">
             <div class="card border-success">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Признано (руб.)</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Признано</h6>
                     <h3 class="card-title text-success">{{ dashboard_data.summary_cards.total_costs_byn }}</h3>
-                    <small class="text-muted">BYN, что составляет <strong>{{ dashboard_data.summary_cards.acceptance_percent }}%</strong></small>
+                    <small class="text-muted">BYN</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Процент признания -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Процент признания</h6>
+                    <h3 class="card-title text-info">{{ dashboard_data.summary_cards.acceptance_percent }}%</h3>
+                    <small class="text-muted">от выставленной суммы</small>
                 </div>
             </div>
         </div>
@@ -240,12 +251,7 @@
                 <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                     ⬆️ Вверх
                 </button>
-                <!--
-                <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
-                    💾 Сохранить в файлы
-                </button>
-                 -->
-                <!-- Обернули кнопку в форму -->
+                <!-- Кнопка сохранения в файлы (обернули кнопку в форму) -->
                 <form method="post" style="display: inline;">
                     {% csrf_token %}
                     <!-- Передаем параметры для повторной генерации -->
