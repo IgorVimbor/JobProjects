@@ -1,3 +1,6 @@
+<!-- claims/templates/claims/reclamation_to_claim.html -->
+<!-- Шаблон анализа конверсии рекламация → претензия -->
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -14,24 +17,585 @@
                 </ol>
             </nav>
 
-            <!-- <h1>{{ page_title }}</h1>  -->
             <h3 class="text-muted">{{ description }}</h3>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
+    <!-- Показываем форму ТОЛЬКО если нет результатов -->
+    {% if not analysis_data %}
+    <div class="row mb-4">
+        <div class="col-md-8">
             <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-info">🚧 {{ status }}</h3>
-                    <p>Модуль "{{ module_name }}" находится в стадии разработки</p>
+                <div class="card-header">
+                    <h5>🔍 Параметры анализа</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
 
-                    <a href="{% url 'analytics:analytic' %}" class="btn btn-secondary">
-                        ← Вернуться к аналитике
-                    </a>
+                        <!-- Поле выбора года -->
+                        <div class="mb-3">
+                            <label for="year" class="form-label fw-bold">Год анализа рекламаций:</label>
+                            <select class="form-select" id="year" name="year" required>
+                                {% for year in available_years %}
+                                    <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-text text-muted">
+                                Выберите год рекламаций для анализа конверсии
+                            </small>
+                        </div>
+
+                        <!-- Поле выбора потребителей -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold mb-2">Выберите потребителей:</label>
+                            <div class="row">
+                                {% for consumer in available_consumers %}
+                                <div class="col-md-2 mb-2 flex-fill">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            name="consumers"
+                                            value="{{ consumer }}"
+                                            id="consumer{{ forloop.counter }}">
+                                        <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                            {{ consumer }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Выберите потребителей для анализа или оставьте пустыми для анализа всех потребителей
+                            </small>
+                        </div>
+
+                        <!-- Поле ввода курса -->
+                        <div class="mb-3">
+                            <label for="exchange_rate" class="form-label fw-bold">
+                                Курс НБ РБ на {{ current_date }}:
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">1 RUR =</span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="exchange_rate"
+                                       name="exchange_rate"
+                                       placeholder="0.03"
+                                       value="0.03"
+                                       step="0.0001"
+                                       required>
+                                <span class="input-group-text">BYN</span>
+                            </div>
+                            <small class="form-text text-muted">
+                                Введите текущий курс. Все суммы будут конвертированы в BYN по этому курсу.
+                            </small>
+                        </div>
+
+                        <!-- Информационная панель -->
+                        <div class="alert alert-info">
+                            <strong>ℹ️ Что анализируется:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li><strong>Группа A:</strong> Рекламации из базы → конверсия в претензии</li>
+                                <li><strong>Группа B:</strong> Претензии без связи с рекламациями</li>
+                                <li>Динамика конверсии по месяцам</li>
+                                <li>Распределение по срокам эскалации</li>
+                            </ul>
+                        </div>
+
+                        <!-- Кнопки -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                📊 Сформировать анализ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Справка -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>ℹ️ Справка</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Группа A: Рекламации из базы</h6>
+                    <ul class="small">
+                        <li>Конверсия: % рекламаций → признанные претензии</li>
+                        <li>Средний срок эскалации (дней)</li>
+                        <li>Динамика конверсии по месяцам</li>
+                        <li>TOP потребителей с высокой конверсией</li>
+                    </ul>
+
+                    <h6>Группа B: Претензии без связи</h6>
+                    <ul class="small">
+                        <li>Претензии по рекламациям до {{ available_years.0 }} года</li>
+                        <li>Распределение по срокам эскалации</li>
+                        <li>Финансовый анализ</li>
+                    </ul>
+
+                    <h6>Результат включает:</h6>
+                    <ul class="small">
+                        <li>Сводные карточки с метриками</li>
+                        <li>Графики динамики и распределения</li>
+                        <li>Детальную таблицу по потребителям</li>
+                        <li>Возможность сохранения в файлы</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
+
+    <!-- Сообщения -->
+    {% if messages %}
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Блок результатов -->
+    {% if analysis_data %}
+
+    <!-- Заголовок с параметрами -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="alert alert-success">
+                <strong>
+                    {% if analysis_data.all_consumers_mode %}
+                        📊 Анализ конверсии рекламация → претензия по всем потребителям за {{ analysis_data.year }} год
+                    {% elif analysis_data.consumers|length == 1 %}
+                        📊 Анализ конверсии рекламация → претензия по потребителю "{{ analysis_data.consumers.0 }}" за {{ analysis_data.year }} год
+                    {% else %}
+                        📊 Анализ конверсии рекламация → претензия по {{ analysis_data.consumers|length }} потребителям за {{ analysis_data.year }} год
+                    {% endif %}
+                </strong>
+                <br>
+                <small>Курс валют: 1 RUR = {{ analysis_data.exchange_rate }} BYN</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ГРУППА A: РЕКЛАМАЦИИ ИЗ БАЗЫ ========== -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h4 class="text-primary">📋 Группа A: Рекламации из базы</h4>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Карточки Группы A (всегда для ВСЕХ потребителей) -->
+    <div class="row mb-4">
+        <!-- Всего рекламаций -->
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card border-primary">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Всего рекламаций</h6>
+                    <h3 class="card-title text-primary">{{ analysis_data.group_a.summary_cards.total_reclamations }}</h3>
+                    <small class="text-muted">за {{ analysis_data.year }} год</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Переросли в претензии -->
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Переросли в претензии</h6>
+                    <h3 class="card-title text-warning">
+                        {{ analysis_data.group_a.summary_cards.escalated_reclamations }}
+                        <small class="text-muted">({{ analysis_data.group_a.summary_cards.escalation_rate }}%)</small>
+                    </h3>
+                    <small class="text-muted">конверсия рекламация → претензия</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Средний срок эскалации -->
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Средний срок эскалации</h6>
+                    <h3 class="card-title text-info">{{ analysis_data.group_a.summary_cards.average_days }}</h3>
+                    <small class="text-muted">дней от рекламации до претензии</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- График 1: Динамика конверсии по месяцам -->
+    {% if analysis_data.group_a.monthly_conversion.labels %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>📈 Динамика конверсии по месяцам</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="conversionChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- График 2: Распределение по срокам (Группа A) -->
+    {% if analysis_data.group_a.time_distribution.counts %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>⏱️ Распределение по срокам эскалации (Группа A)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="timeDistributionChartA" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Таблица TOP потребителей -->
+    {% if analysis_data.group_a.top_consumers %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>🏆 TOP потребителей по конверсии</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>№</th>
+                                    <th>Потребитель</th>
+                                    <th>Рекламаций</th>
+                                    <th>Претензий</th>
+                                    <th>Конверсия (%)</th>
+                                    <th>Средний срок (дней)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for consumer in analysis_data.group_a.top_consumers %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><strong>{{ consumer.consumer }}</strong></td>
+                                    <td>{{ consumer.total_reclamations }}</td>
+                                    <td>{{ consumer.escalated }}</td>
+                                    <td>
+                                        {% if consumer.conversion_rate >= 40 %}
+                                            <span class="badge bg-danger">{{ consumer.conversion_rate }}% ⚠️</span>
+                                        {% elif consumer.conversion_rate >= 20 %}
+                                            <span class="badge bg-warning text-dark">{{ consumer.conversion_rate }}%</span>
+                                        {% else %}
+                                            <span class="badge bg-success">{{ consumer.conversion_rate }}% ✅</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ consumer.average_days }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ========== ГРУППА B: ПРЕТЕНЗИИ БЕЗ СВЯЗИ ========== -->
+    <div class="row mb-3 mt-5">
+        <div class="col-12">
+            <h4 class="text-danger">🔴 Группа B: Претензии без связи с рекламациями</h4>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Карточки Группы B -->
+    <div class="row mb-4">
+        <!-- Претензий без связи -->
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card border-danger">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Претензий без связи</h6>
+                    <h3 class="card-title text-danger">{{ analysis_data.group_b.summary_cards.claims_without_link }}</h3>
+                    <small class="text-muted">признанных претензий за {{ analysis_data.year }} год</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Претензий без даты рекламации -->
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Без даты рекламации</h6>
+                    <h3 class="card-title text-warning">{{ analysis_data.group_b.summary_cards.claims_without_date }}</h3>
+                    <small class="text-muted">невозможно рассчитать срок эскалации</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Общая сумма -->
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Общая сумма</h6>
+                    <h3 class="card-title text-success">{{ analysis_data.group_b.summary_cards.total_amount_byn }}</h3>
+                    <small class="text-muted">BYN (признано по претензиям)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- График: Распределение по срокам (Группа B) -->
+    {% if analysis_data.group_b.time_distribution.counts %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>⏱️ Распределение по срокам эскалации (Группа B)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="timeDistributionChartB" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Кнопки действий -->
+    <div class="row mt-3 mb-4">
+        <div class="col-12">
+            <div class="d-flex gap-2">
+                <a href="{% url 'claims:reclamation_to_claim' %}" class="btn btn-primary">
+                    🔄 Новый анализ
+                </a>
+                <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    ⬆️ Вверх
+                </button>
+                <!-- Кнопка сохранения в файлы -->
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <!-- Передаем параметры для повторной генерации -->
+                    <input type="hidden" name="year" value="{{ analysis_data.year }}">
+                    {% for consumer in analysis_data.consumers %}
+                    <input type="hidden" name="consumers" value="{{ consumer }}">
+                    {% endfor %}
+                    <input type="hidden" name="exchange_rate" value="{{ analysis_data.exchange_rate }}">
+                    <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
+                        💾 Сохранить в файлы
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
 </div>
+
+<!-- JavaScript для графиков -->
+{% if analysis_data %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // График 1: Динамика конверсии по месяцам
+    {% if analysis_data.group_a.monthly_conversion.labels %}
+    const ctxConversion = document.getElementById('conversionChart').getContext('2d');
+    new Chart(ctxConversion, {
+        type: 'line',
+        data: {
+            labels: {{ analysis_data.group_a.monthly_conversion.labels|safe }},
+            datasets: [{
+                label: 'Конверсия (%)',
+                data: {{ analysis_data.group_a.monthly_conversion.conversion_rates|safe }},
+                borderColor: 'rgb(255, 165, 0)',
+                backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                tension: 0.3,
+                fill: true,
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    color: 'rgb(204, 102, 0)',
+                    font: {
+                        weight: 'bold',
+                        size: 11
+                    },
+                    formatter: function(value) {
+                        if (value === 0) return '';
+                        return value.toFixed(1) + '%';
+                    }
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Процент рекламаций, переросших в претензии'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Конверсия (%)'
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+
+    // График 2: Распределение по срокам (Группа A)
+    {% if analysis_data.group_a.time_distribution.counts %}
+    const ctxTimeA = document.getElementById('timeDistributionChartA').getContext('2d');
+    new Chart(ctxTimeA, {
+        type: 'bar',
+        data: {
+            labels: {{ analysis_data.group_a.time_distribution.labels|safe }},
+            datasets: [{
+                label: 'Количество претензий',
+                data: {{ analysis_data.group_a.time_distribution.counts|safe }},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',   // 0-90: красный
+                    'rgba(255, 159, 64, 0.7)',   // 91-180: оранжевый
+                    'rgba(255, 205, 86, 0.7)',   // 181-270: желтый
+                    'rgba(75, 192, 192, 0.7)',   // 271-360: бирюзовый
+                    'rgba(54, 162, 235, 0.7)'    // >360: синий
+                ],
+                borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(54, 162, 235)'
+                ],
+                borderWidth: 1,
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    color: 'black',
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    formatter: function(value) {
+                        if (value === 0) return '';
+                        return value;
+                    }
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Срок от рекламации до претензии (дней)'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Количество'
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+
+    // График 3: Распределение по срокам (Группа B)
+    {% if analysis_data.group_b.time_distribution.counts %}
+    const ctxTimeB = document.getElementById('timeDistributionChartB').getContext('2d');
+    new Chart(ctxTimeB, {
+        type: 'bar',
+        data: {
+            labels: {{ analysis_data.group_b.time_distribution.labels|safe }},
+            datasets: [{
+                label: 'Количество претензий',
+                data: {{ analysis_data.group_b.time_distribution.counts|safe }},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(255, 205, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(54, 162, 235, 0.7)'
+                ],
+                borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(54, 162, 235)'
+                ],
+                borderWidth: 1,
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    color: 'black',
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    formatter: function(value) {
+                        if (value === 0) return '';
+                        return value;
+                    }
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Срок от рекламации до претензии (претензии без связи)'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Количество'
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+
+});
+</script>
+{% endif %}
+
 {% endblock %}

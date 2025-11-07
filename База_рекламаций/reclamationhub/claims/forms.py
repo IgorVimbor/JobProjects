@@ -23,7 +23,7 @@ class ClaimAdminForm(forms.ModelForm):
     class Meta:
         model = Claim
         fields = "__all__"
-        exclude = ["reclamations"]  # Вместо ["reclamation"]  # полностью исключаем из формы
+        exclude = ["reclamations"]  # полностью исключаем из формы
 
         widgets = {
             # "result_claim": forms.RadioSelect(),  # RadioSelect для результата
@@ -99,7 +99,7 @@ class ClaimAdminForm(forms.ModelForm):
             reclamation_act_number,
             reclamation_act_date,
             engine_number,
-            investigation_act_number
+            investigation_act_number,
         )
 
         if found_reclamations:
@@ -130,7 +130,13 @@ class ClaimAdminForm(forms.ModelForm):
 
         return cleaned_data
 
-    def _find_reclamations(self, reclamation_act_number, reclamation_act_date, engine_number, investigation_act_number):
+    def _find_reclamations(
+        self,
+        reclamation_act_number,
+        reclamation_act_date,
+        engine_number,
+        investigation_act_number,
+    ):
         """Возвращает список найденных рекламаций"""
 
         # 1. Поиск по номеру акта рекламации (ВЫСШИЙ ПРИОРИТЕТ)
@@ -141,24 +147,35 @@ class ClaimAdminForm(forms.ModelForm):
                     # Проверяем, что за объект в reclamation_act_date
                     if isinstance(reclamation_act_date, str):
                         # Если строка - преобразуем
-                        search_date_obj = datetime.strptime(reclamation_act_date, "%Y-%m-%d").date()
+                        search_date_obj = datetime.strptime(
+                            reclamation_act_date, "%Y-%m-%d"
+                        ).date()
                     else:
                         # Если уже date объект - используем как есть
                         search_date_obj = reclamation_act_date
 
                     return Reclamation.objects.filter(
-                        Q(sender_outgoing_number=reclamation_act_number, message_sent_date=search_date_obj) |
-                        Q(consumer_act_number=reclamation_act_number, consumer_act_date=search_date_obj) |
-                        Q(end_consumer_act_number=reclamation_act_number, end_consumer_act_date=search_date_obj)
+                        Q(
+                            sender_outgoing_number=reclamation_act_number,
+                            message_sent_date=search_date_obj,
+                        )
+                        | Q(
+                            consumer_act_number=reclamation_act_number,
+                            consumer_act_date=search_date_obj,
+                        )
+                        | Q(
+                            end_consumer_act_number=reclamation_act_number,
+                            end_consumer_act_date=search_date_obj,
+                        )
                     )
                 except Exception:
                     pass
 
             # Если даты нет - ищем только по номеру
             return Reclamation.objects.filter(
-                Q(sender_outgoing_number=reclamation_act_number) |
-                Q(consumer_act_number=reclamation_act_number) |
-                Q(end_consumer_act_number=reclamation_act_number)
+                Q(sender_outgoing_number=reclamation_act_number)
+                | Q(consumer_act_number=reclamation_act_number)
+                | Q(end_consumer_act_number=reclamation_act_number)
             )
 
         # 2. Поиск по номеру двигателя
@@ -168,7 +185,9 @@ class ClaimAdminForm(forms.ModelForm):
         # 3. Поиск по номеру акта исследования
         elif investigation_act_number:
             try:
-                investigation = Investigation.objects.get(act_number=investigation_act_number)
+                investigation = Investigation.objects.get(
+                    act_number=investigation_act_number
+                )
                 return Reclamation.objects.filter(id=investigation.reclamation.id)
             except Investigation.DoesNotExist:
                 pass

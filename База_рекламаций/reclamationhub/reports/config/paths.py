@@ -158,6 +158,18 @@ def get_consumer_analysis_table_path(year, consumer_name):
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 
+def get_reclamation_to_claim_chart_path(year, consumer_name):
+    """Путь к PNG графику анализа конверсии рекламация-претензия"""
+    filename = f"Конверсия рекламация-претензия {consumer_name} {year}_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
+def get_reclamation_to_claim_table_path(year, consumer_name):
+    """Путь к таблице анализа конверсии рекламация-претензия"""
+    filename = f"Конверсия рекламация-претензия {consumer_name} {year}_{date_today}.txt"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
 # # ==================== СОЗДАНИЕ ПАПОК ====================
 # # Создаем все необходимые папки
 # for directory in [
