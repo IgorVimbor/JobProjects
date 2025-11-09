@@ -105,7 +105,7 @@ def reclamation_to_claim_view(request):
 
                 context = {
                     **base_context,
-                    "analysis_data": format_analysis_data(analysis_result),
+                    "conversion_data": format_analysis_data(analysis_result),
                 }
                 return render(request, "claims/reclamation_to_claim.html", context)
             else:
@@ -132,7 +132,7 @@ def reclamation_to_claim_view(request):
 
                 context = {
                     **base_context,
-                    "analysis_data": format_analysis_data(result),
+                    "conversion_data": format_analysis_data(result),
                 }
                 return render(request, "claims/reclamation_to_claim.html", context)
             else:

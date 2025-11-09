@@ -6,6 +6,7 @@ from .views import (
     dashboard,
     consumer_analysis,
     reclamation_to_claim,
+    time_analysis,
     claim_prognosis,
 )
 
@@ -28,6 +29,8 @@ urlpatterns = [
         reclamation_to_claim.reclamation_to_claim_view,
         name="reclamation_to_claim",
     ),
+    # Временной анализ изготовление - рекламация - претензия
+    path("time-analysis/", time_analysis.time_analysis_view, name="time_analysis"),
     path(  # Прогноз по претензиям
         "claim-prognosis/", claim_prognosis.claim_prognosis_view, name="claim_prognosis"
     ),

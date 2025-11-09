@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import date
 from decimal import Decimal
 from django.db.models import Prefetch
+from django.db.models import Q
 
 import matplotlib
 
@@ -69,8 +70,7 @@ class ReclamationToClaimProcessor:
         return consumer_act_date or end_consumer_act_date
 
     def _extract_consumer_prefix(self, consumer_name):
-        """
-        ✅ НОВОЕ: Извлекает префикс потребителя
+        """Извлекает префикс потребителя
         "ПАЗ - АСП" → "ПАЗ"
         "ПАЗ - эксплуатация" → "ПАЗ"
         "ЯМЗ" → "ЯМЗ"
@@ -78,14 +78,12 @@ class ReclamationToClaimProcessor:
         return Claim.extract_consumer_prefix(consumer_name)
 
     def _consumer_matches_filter(self, consumer_name):
-        """
-        ✅ НОВОЕ: Проверка, соответствует ли потребитель фильтру
-
+        """Проверка, соответствует ли потребитель фильтру
         Учитывает префиксы:
         Фильтр: "ПАЗ"
-        Потребитель: "ПАЗ - АСП" → True ✅
-        Потребитель: "ПАЗ - эксплуатация" → True ✅
-        Потребитель: "ЯМЗ" → False ❌
+        Потребитель: "ПАЗ - АСП" → True
+        Потребитель: "ПАЗ - эксплуатация" → True
+        Потребитель: "ЯМЗ" → False
         """
         if self.all_consumers_mode:
             return True
@@ -117,7 +115,7 @@ class ReclamationToClaimProcessor:
             claim_date__lte=self.today,
         )
 
-        # ✅ Предзагружаем только признанные претензии + потребителя
+        # Предзагружаем только признанные претензии + потребителя
         self._reclamations_cache = (
             Reclamation.objects.filter(year=self.year)
             .select_related("defect_period")  # Для определения потребителя
@@ -194,12 +192,56 @@ class ReclamationToClaimProcessor:
 
         return self._dataframe_cache
 
+    def _count_reclamations_by_consumer(self):
+        """Подсчет рекламаций по потребителям (фильтрация на уровне БД)"""
+
+        # Фильтруем рекламации на уровне БД
+        if not self.all_consumers_mode:
+            # Формируем Q фильтр для выбранных потребителей
+            q_filters = Q()
+
+            for consumer in self.consumers:
+                consumer_prefix = self._extract_consumer_prefix(consumer)
+                # Ищем по началу строки (LIKE 'ЯМЗ%')
+                q_filters |= Q(defect_period__name__istartswith=consumer_prefix)
+
+            reclamations_all = (
+                Reclamation.objects.filter(year=self.year)
+                .filter(q_filters)
+                .select_related("defect_period")
+            )
+        else:
+            # Все рекламации
+            reclamations_all = Reclamation.objects.filter(
+                year=self.year
+            ).select_related("defect_period")
+
+        consumer_reclamation_count = {}
+
+        for reclamation in reclamations_all:
+            # Получаем имя потребителя из defect_period
+            if not reclamation.defect_period or not reclamation.defect_period.name:
+                continue
+
+            period_name = reclamation.defect_period.name
+            consumer_prefix = self._extract_consumer_prefix(period_name)
+
+            consumer_reclamation_count[consumer_prefix] = (
+                consumer_reclamation_count.get(consumer_prefix, 0) + 1
+            )
+
+        return consumer_reclamation_count
+
     # ========== ГРУППА A: Рекламации из базы ==========
 
     def get_group_a_summary(self):
-        """Карточки для Группы A (всегда для ВСЕХ потребителей)"""
-        reclamations = self._get_reclamations_with_claims()
-        total_reclamations = reclamations.count()
+        """Карточки для Группы A (учитывает фильтр по потребителям)"""
+
+        # Считаем рекламации с учетом фильтра по потребителям
+        consumer_reclamation_count = self._count_reclamations_by_consumer()
+
+        # Общее количество рекламаций (с учетом фильтра)
+        total_reclamations = sum(consumer_reclamation_count.values())
 
         if total_reclamations == 0:
             return {
@@ -212,6 +254,7 @@ class ReclamationToClaimProcessor:
         df = self._build_dataframe()
 
         if df.empty:
+            # Есть рекламации, но нет претензий
             return {
                 "total_reclamations": total_reclamations,
                 "escalated_reclamations": 0,
@@ -219,11 +262,14 @@ class ReclamationToClaimProcessor:
                 "average_days": 0,
             }
 
+        # Количество уникальных рекламаций с претензиями
         escalated_count = df["reclamation_id"].nunique()
 
+        # Средний срок
         days_series = df["days"].dropna()
         average_days = round(days_series.mean()) if len(days_series) > 0 else 0
 
+        # Процент эскалации
         escalation_rate = round((escalated_count / total_reclamations) * 100, 1)
 
         return {
@@ -234,17 +280,39 @@ class ReclamationToClaimProcessor:
         }
 
     def get_group_a_monthly_conversion(self):
-        """График: Динамика конверсии по месяцам"""
-        reclamations = self._get_reclamations_with_claims()
+        """График динамики конверсии по месяцам (учитывает фильтр по потребителям)"""
 
-        if not reclamations.exists():
+        # Считаем рекламации с учетом фильтра
+        consumer_reclamation_count = self._count_reclamations_by_consumer()
+
+        if not consumer_reclamation_count:
             return {"labels": [], "conversion_rates": []}
+
+        # ✅ Фильтруем рекламации на уровне БД
+        if not self.all_consumers_mode:
+            q_filters = Q()
+            for consumer in self.consumers:
+                consumer_prefix = self._extract_consumer_prefix(consumer)
+                q_filters |= Q(defect_period__name__istartswith=consumer_prefix)
+
+            reclamations_all = (
+                Reclamation.objects.filter(year=self.year)
+                .filter(q_filters)
+                .select_related("defect_period")
+            )
+        else:
+            reclamations_all = Reclamation.objects.filter(
+                year=self.year
+            ).select_related("defect_period")
 
         df = self._build_dataframe()
 
-        # Считаем общее количество рекламаций по месяцам
+        # Считаем количество рекламаций по месяцам
         monthly_total = {}
-        for reclamation in reclamations:
+
+        for reclamation in reclamations_all:
+            # ✅ Дополнительная проверка не нужна (уже отфильтровано в queryset)
+
             if reclamation.message_received_date:
                 month = reclamation.message_received_date.month
                 monthly_total[month] = monthly_total.get(month, 0) + 1
@@ -252,7 +320,7 @@ class ReclamationToClaimProcessor:
         if not monthly_total:
             return {"labels": [], "conversion_rates": []}
 
-        # Считаем эскалации по месяцам
+        # Считаем эскалации по месяцам через DataFrame
         if df.empty:
             monthly_escalated = {}
         else:
@@ -308,9 +376,7 @@ class ReclamationToClaimProcessor:
         return {"labels": intervals_labels, "counts": intervals_counts}
 
     def get_group_a_top_consumers(self):
-        """
-        ✅ ИСПРАВЛЕНО: Таблица TOP потребителей
-
+        """Таблица TOP потребителей
         Логика:
         - total_reclamations: из таблицы Reclamation по defect_period.name
         - escalated: количество УНИКАЛЬНЫХ рекламаций с признанными претензиями
@@ -335,40 +401,8 @@ class ReclamationToClaimProcessor:
 
         consumer_stats.columns = ["consumer", "escalated", "average_days"]
 
-        # ✅ ПРАВИЛЬНЫЙ подсчет ВСЕХ рекламаций по потребителям из Reclamation
-        reclamations_all = Reclamation.objects.filter(year=self.year).select_related(
-            "defect_period"
-        )  # Предзагружаем defect_period
-
-        consumer_reclamation_count = {}
-
-        for reclamation in reclamations_all:
-            # Получаем имя потребителя из defect_period
-            if not reclamation.defect_period or not reclamation.defect_period.name:
-                continue
-
-            period_name = (
-                reclamation.defect_period.name
-            )  # "ПАЗ - АСП", "ПАЗ - эксплуатация"
-            consumer_prefix = self._extract_consumer_prefix(period_name)  # "ПАЗ"
-
-            # Фильтр по выбранным потребителям
-            if not self.all_consumers_mode:
-                # Проверяем совпадение префикса с выбранными
-                matches = False
-                for selected_consumer in self.consumers:
-                    selected_prefix = self._extract_consumer_prefix(selected_consumer)
-                    if consumer_prefix == selected_prefix:
-                        matches = True
-                        break
-
-                if not matches:
-                    continue
-
-            # Увеличиваем счетчик рекламаций для этого потребителя
-            consumer_reclamation_count[consumer_prefix] = (
-                consumer_reclamation_count.get(consumer_prefix, 0) + 1
-            )
+        # ✅ Используем общий метод для подсчета ВСЕХ рекламаций
+        consumer_reclamation_count = self._count_reclamations_by_consumer()
 
         # Добавляем total_reclamations к статистике
         consumer_stats["total_reclamations"] = (
@@ -378,8 +412,7 @@ class ReclamationToClaimProcessor:
             .astype(int)
         )
 
-        # ✅ Считаем конверсию правильно
-        # Конверсия = (рекламаций с признанными претензиями / всего рекламаций) * 100
+        # Считаем конверсию
         consumer_stats["conversion_rate"] = (
             (consumer_stats["escalated"] / consumer_stats["total_reclamations"]) * 100
         ).round(1)

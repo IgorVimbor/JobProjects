@@ -1,0 +1,174 @@
+<!-- claims/templates/claims/blocks/time_analysis_results.html -->
+<!-- Блок результатов временного анализа: изготовление → рекламация → претензия -->
+
+<!-- Заголовок с параметрами -->
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <strong>
+                {% if time_analysis_data.all_consumers_mode %}
+                    ⏱️ Временной анализ по всем потребителям за {{ time_analysis_data.year }} год
+                {% elif time_analysis_data.consumers|length == 1 %}
+                    ⏱️ Временной анализ по потребителю "{{ time_analysis_data.consumers.0 }}" за {{ time_analysis_data.year }} год
+                {% else %}
+                    ⏱️ Временной анализ по {{ time_analysis_data.consumers|length }} потребителям за {{ time_analysis_data.year }} год
+                {% endif %}
+            </strong>
+            <br>
+            <small>Анализ распределения по датам: изготовление → рекламация → претензия</small>
+        </div>
+    </div>
+</div>
+
+<!-- График временного анализа -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>📊 Распределение по месяцам: изготовление → рекламация → претензия</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="timeAnalysisChart" height="80"></canvas>
+
+                <!-- Легенда и пояснения -->
+                <div class="mt-3">
+                    <div class="alert alert-light">
+                        <h6 class="mb-2">ℹ️ Пояснение к графику:</h6>
+                        <ul class="small mb-0">
+                            <li><strong style="color: #4CAF50;">■ Изготовлено:</strong> Дата изготовления изделий (из рекламаций)</li>
+                            <li><strong style="color: #FF9800;">■ Рекламации:</strong> Дата получения сообщения о дефекте</li>
+                            <li><strong style="color: #F44336;">■ Претензии:</strong> Дата признанных претензий</li>
+                        </ul>
+                        <p class="small text-muted mb-0 mt-2">
+                            <strong>Примечание:</strong> Рекламации без даты изготовления учитываются только в сериях "Рекламации" и "Претензии".
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Кнопки действий -->
+<div class="row mt-3 mb-4">
+    <div class="col-12">
+        <div class="d-flex gap-2">
+            <a href="{% url 'claims:time_analysis' %}" class="btn btn-primary">
+                🔄 Новый анализ
+            </a>
+            <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                ⬆️ Вверх
+            </button>
+
+            <!-- Переключение на анализ конверсии -->
+            <a href="{% url 'claims:reclamation_to_claim' %}" class="btn btn-outline-primary">
+                📊 Перейти к анализу конверсии
+            </a>
+
+            <!-- Кнопка сохранения в файлы -->
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="year" value="{{ time_analysis_data.year }}">
+                {% for consumer in time_analysis_data.consumers %}
+                <input type="hidden" name="consumers" value="{{ consumer }}">
+                {% endfor %}
+                <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
+                    💾 Сохранить график
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript для графика -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('timeAnalysisChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ time_analysis_data.monthly_data.labels_formatted|safe }},
+            datasets: [
+                {
+                    label: 'Изготовлено',
+                    data: {{ time_analysis_data.monthly_data.manufacture|safe }},
+                    backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                    borderColor: 'rgb(76, 175, 80)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Рекламации',
+                    data: {{ time_analysis_data.monthly_data.reclamations|safe }},
+                    backgroundColor: 'rgba(255, 152, 0, 0.7)',
+                    borderColor: 'rgb(255, 152, 0)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Претензии',
+                    data: {{ time_analysis_data.monthly_data.claims|safe }},
+                    backgroundColor: 'rgba(244, 67, 54, 0.7)',
+                    borderColor: 'rgb(244, 67, 54)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: { size: 12, weight: 'bold' }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Количество изделий, рекламаций и претензий по месяцам',
+                    font: { size: 14, weight: 'bold' }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].label;
+                        },
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + ' шт.';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Период',
+                        font: { size: 12, weight: 'bold' }
+                    },
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Количество (шт.)',
+                        font: { size: 12, weight: 'bold' }
+                    },
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            return Number.isInteger(value) ? value : '';
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>

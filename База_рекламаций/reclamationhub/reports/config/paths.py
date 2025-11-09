@@ -170,6 +170,12 @@ def get_reclamation_to_claim_table_path(year, consumer_name):
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 
+def get_time_analysis_chart_path(year, consumer_name):
+    """Путь к графику временного анализа"""
+    filename = f"Временной анализ {consumer_name} {year}_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)
+
+
 # # ==================== СОЗДАНИЕ ПАПОК ====================
 # # Создаем все необходимые папки
 # for directory in [
