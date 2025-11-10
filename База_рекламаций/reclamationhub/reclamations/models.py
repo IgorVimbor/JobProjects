@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
 from datetime import datetime
+import re
 
 from sourcebook.models import PeriodDefect, ProductType, Product
 
@@ -113,10 +114,10 @@ class Reclamation(models.Model):
         verbose_name="Обозначение изделия",
     )
     product_number = models.CharField(
-        max_length=10, null=True, blank=True, verbose_name="Номер изделия"
+        max_length=10, null=True, blank=True, verbose_name="Номер изделия", help_text="При отсутствии данных оставьте поле пустым"
     )
     manufacture_date = models.CharField(
-        max_length=10, null=True, blank=True, verbose_name="Дата изготовления"
+        max_length=10, null=True, blank=True, verbose_name="Дата изготовления", help_text="Данные вводите в формате ММ.ГГ или оставьте поле пустым"
     )
 
     # ---------------------------- Рекламационный акт -------------------------------

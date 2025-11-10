@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
 from django.utils import timezone
+import re
 
 from sourcebook.models import Product
 from .models import Reclamation
@@ -161,6 +162,24 @@ class ReclamationAdminForm(forms.ModelForm):
             if product.product_type_id != product_name.id:
                 self.add_error(
                     "product", "Выбранное изделие не соответствует выбранному типу"
+                )
+
+        # Проверяем корректность номера изделия
+        product_number = cleaned_data.get("product_number")
+        if product_number:
+            pattern = r'^\d+$'
+            if not re.match(pattern, product_number):
+                self.add_error(
+                    "product_number", "Введите только цифры или оставьте поле пустым при отсутствии данных"
+                )
+
+        # Проверяем корректность ввода даты изготовления (мм.гг)
+        manufacture_date = cleaned_data.get("manufacture_date")
+        if manufacture_date:
+            pattern = r'^((0[1-9]|1[0-2])\.\d{2})$'
+            if not re.match(pattern, manufacture_date):
+                self.add_error(
+                    "manufacture_date", "Введите корректную дату в формате ММ.ГГ или оставьте поле пустым при отсутствии данных"
                 )
 
         # Валидация пробега/наработки

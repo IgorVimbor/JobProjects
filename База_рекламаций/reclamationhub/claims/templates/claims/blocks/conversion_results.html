@@ -7,11 +7,11 @@
         <div class="alert alert-success">
             <strong>
                 {% if conversion_data.all_consumers_mode %}
-                    📊 Анализ конверсии рекламация → претензия по всем потребителям за {{ conversion_data.year }} год
+                    📊 Анализ рекламаций и их конверсия в признанные претензии за {{ conversion_data.year }} год по всем потребителям
                 {% elif conversion_data.consumers|length == 1 %}
-                    📊 Анализ конверсии рекламация → претензия по потребителю "{{ conversion_data.consumers.0 }}" за {{ conversion_data.year }} год
+                    📊 Анализ рекламаций и их конверсия в признанные претензии за {{ conversion_data.year }} год по потребителю "{{ conversion_data.consumers.0 }}"
                 {% else %}
-                    📊 Анализ конверсии рекламация → претензия по {{ conversion_data.consumers|length }} потребителям за {{ conversion_data.year }} год
+                    📊 Анализ рекламаций и их конверсия в признанные претензии за {{ conversion_data.year }} год по {{ conversion_data.consumers|length }} потребителям
                 {% endif %}
             </strong>
             <br>
@@ -24,7 +24,6 @@
 <div class="row mb-3">
     <div class="col-12">
         <h4 class="text-primary">📋 Группа A: Рекламации из базы</h4>
-        <p class="text-muted small">Анализ рекламаций {{ conversion_data.year }} года и их конверсия в признанные претензии</p>
     </div>
 </div>
 
@@ -48,9 +47,9 @@
                 <h6 class="card-subtitle mb-2 text-muted">Переросли в претензии</h6>
                 <h3 class="card-title text-warning">
                     {{ conversion_data.group_a.summary_cards.escalated_reclamations }}
-                    <small>({{ conversion_data.group_a.summary_cards.escalation_rate }}%)</small>
+                    <small class="text-muted">({{ conversion_data.group_a.summary_cards.escalation_rate }}%)</small>
                 </h3>
-                <small class="text-muted">конверсия рекламаций</small>
+                <small class="text-muted">конверсия рекламация → претензия</small>
             </div>
         </div>
     </div>
@@ -60,8 +59,8 @@
         <div class="card border-info">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Средний срок эскалации</h6>
-                <h3 class="card-title text-info">{{ conversion_data.group_a.summary_cards.average_days }} дней</h3>
-                <small class="text-muted">от рекламации до претензии</small>
+                <h3 class="card-title text-info">{{ conversion_data.group_a.summary_cards.average_days }}</h3>
+                <small class="text-muted">дней от рекламации до претензии</small>
             </div>
         </div>
     </div>
@@ -73,7 +72,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h5>📈 Динамика конверсии по месяцам (Группа A)</h5>
+                <h5>📈 Динамика конверсии по месяцам</h5>
             </div>
             <div class="card-body">
                 <canvas id="monthlyConversionChart" height="80"></canvas>
@@ -175,7 +174,7 @@
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Претензий без даты рекламации</h6>
                 <h3 class="card-title text-warning">{{ conversion_data.group_b.summary_cards.claims_without_date }}</h3>
-                <small class="text-muted">невозможно рассчитать срок ⚠️</small>
+                <small class="text-muted">невозможно рассчитать срок эскалации</small>
             </div>
         </div>
     </div>
@@ -254,8 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 tension: 0.3,
                 fill: true,
                 borderWidth: 2.5,
-                pointRadius: 5,
-                pointHoverRadius: 7,
+                // pointRadius: 5,
+                // pointHoverRadius: 7,
                 datalabels: {
                     anchor: 'end',
                     align: 'top',
