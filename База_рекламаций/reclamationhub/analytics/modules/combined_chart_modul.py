@@ -1,3 +1,4 @@
+# analytics\modules\combined_chart_modul.py
 """
 Модуль анализа рекламаций по датам изготовления и уведомления о дефектах
 
@@ -8,7 +9,6 @@
 """
 
 import pandas as pd
-import numpy as np
 import matplotlib
 
 matplotlib.use("Agg")
@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import base64
 from io import BytesIO
-from datetime import date, datetime
+from datetime import date
 from django.db.models import Q
 
 from reclamations.models import Reclamation
@@ -203,7 +203,7 @@ class DefectDateChartGenerator:
         self.filter_text = filter_text
         self.year = year
 
-    def create_chart_by_product(self, df):
+    def create_chart_by_product(self, df, save_to_file=False):
         """График по обозначению изделия"""
 
         if df.empty:
@@ -243,8 +243,11 @@ class DefectDateChartGenerator:
         chart_base64 = self._save_to_base64()
 
         # Сохраняем PNG
-        png_path = get_defect_chart_product_path()
-        plt.savefig(png_path, dpi=300, bbox_inches="tight")
+        png_path = None
+        if save_to_file:
+            png_path = get_defect_chart_product_path()
+            plt.savefig(png_path, dpi=300, bbox_inches="tight")
+
         plt.close()
 
         return {
@@ -253,7 +256,7 @@ class DefectDateChartGenerator:
             "title": "График по обозначению изделия",
         }
 
-    def create_chart_by_manufacture_date(self, df):
+    def create_chart_by_manufacture_date(self, df, save_to_file=False):
         """График по дате изготовления"""
 
         # Фильтруем только записи с валидной датой изготовления
@@ -305,8 +308,11 @@ class DefectDateChartGenerator:
         chart_base64 = self._save_to_base64()
 
         # Сохраняем PNG
-        png_path = get_defect_chart_manufacture_path()
-        plt.savefig(png_path, dpi=300, bbox_inches="tight")
+        png_path = None
+        if save_to_file:
+            png_path = get_defect_chart_manufacture_path()
+            plt.savefig(png_path, dpi=300, bbox_inches="tight")
+
         plt.close()
 
         return {
@@ -315,7 +321,7 @@ class DefectDateChartGenerator:
             "title": "График по дате изготовления",
         }
 
-    def create_chart_by_message_date(self, df):
+    def create_chart_by_message_date(self, df, save_to_file=False):
         """График по дате получения сообщения о дефекте"""
 
         if df.empty:
@@ -357,8 +363,11 @@ class DefectDateChartGenerator:
         chart_base64 = self._save_to_base64()
 
         # Сохраняем PNG
-        png_path = get_defect_chart_message_path()
-        plt.savefig(png_path, dpi=300, bbox_inches="tight")
+        png_path = None
+        if save_to_file:
+            png_path = get_defect_chart_message_path()
+            plt.savefig(png_path, dpi=300, bbox_inches="tight")
+
         plt.close()
 
         return {
@@ -367,7 +376,7 @@ class DefectDateChartGenerator:
             "title": "График по дате получения сообщения",
         }
 
-    def create_combined_chart(self, df):
+    def create_combined_chart(self, df, save_to_file=False):
         """Совмещенный график: дата изготовления + дата сообщения"""
 
         # Фильтруем только записи с валидной датой изготовления
@@ -424,8 +433,8 @@ class DefectDateChartGenerator:
 
         # Добавляем информацию
         plt.text(
-            0.98,
-            0.95,
+            0.19,
+            0.78,
             f"Проанализировано: {len(df_filtered)} шт.",
             transform=plt.gca().transAxes,
             ha="right",
@@ -439,8 +448,11 @@ class DefectDateChartGenerator:
         chart_base64 = self._save_to_base64()
 
         # Сохраняем PNG
-        png_path = get_defect_chart_combined_path()
-        plt.savefig(png_path, dpi=300, bbox_inches="tight")
+        png_path = None
+        if save_to_file:
+            png_path = get_defect_chart_combined_path()
+            plt.savefig(png_path, dpi=300, bbox_inches="tight")
+
         plt.close()
 
         return {
@@ -503,26 +515,34 @@ class DefectDateReportManager:
 
             df = self.data_processor.df
 
-            # Генерируем нужные графики
+            # Генерируем нужные графики БЕЗ сохранения в файл
             charts = {}
 
             if chart_type in ["product", "all"]:
-                chart_data = self.chart_generator.create_chart_by_product(df)
+                chart_data = self.chart_generator.create_chart_by_product(
+                    df, save_to_file=False
+                )
                 if chart_data:
                     charts["product"] = chart_data
 
             if chart_type in ["manufacture", "all"]:
-                chart_data = self.chart_generator.create_chart_by_manufacture_date(df)
+                chart_data = self.chart_generator.create_chart_by_manufacture_date(
+                    df, save_to_file=False
+                )
                 if chart_data:
                     charts["manufacture"] = chart_data
 
             if chart_type in ["message", "all"]:
-                chart_data = self.chart_generator.create_chart_by_message_date(df)
+                chart_data = self.chart_generator.create_chart_by_message_date(
+                    df, save_to_file=False
+                )
                 if chart_data:
                     charts["message"] = chart_data
 
             if chart_type in ["combined", "all"]:
-                chart_data = self.chart_generator.create_combined_chart(df)
+                chart_data = self.chart_generator.create_combined_chart(
+                    df, save_to_file=False
+                )
                 if chart_data:
                     charts["combined"] = chart_data
 
@@ -555,3 +575,71 @@ class DefectDateReportManager:
                 "message": f"Ошибка при анализе: {str(e)}",
                 "message_type": "error",
             }
+
+    def save_to_files(self, analysis_data=None):
+        """Сохранение графиков в файлы"""
+        try:
+            # Используем переданные данные или генерируем заново
+            if analysis_data is None:
+                analysis_data = self.generate_report()
+
+            if not analysis_data["success"]:
+                return {
+                    "success": False,
+                    "error": "Не удалось сгенерировать данные для сохранения",
+                }
+
+            charts = analysis_data.get("charts", {})
+            saved_files = []
+
+            # Получаем данные заново для сохранения (без auto-save)
+            success, message = self.data_processor.get_data_from_db()
+            if not success:
+                return {"success": False, "error": message}
+
+            success, message = self.data_processor.prepare_data()
+            if not success:
+                return {"success": False, "error": message}
+
+            df = self.data_processor.df
+            filter_text = self.data_processor._get_filter_names()
+
+            # Создаем генератор БЕЗ автосохранения
+            chart_generator = DefectDateChartGenerator(
+                filter_text=filter_text, year=self.year
+            )
+
+            # Сохраняем каждый график отдельно
+            if "product" in charts:
+                path = chart_generator.create_chart_by_product(df, save_to_file=True)
+                if path:
+                    saved_files.append(path)
+
+            if "manufacture" in charts:
+                path = chart_generator.create_chart_by_manufacture_date(
+                    df, save_to_file=True
+                )
+                if path:
+                    saved_files.append(path)
+
+            if "message" in charts:
+                path = chart_generator.create_chart_by_message_date(
+                    df, save_to_file=True
+                )
+                if path:
+                    saved_files.append(path)
+
+            if "combined" in charts:
+                path = chart_generator.create_combined_chart(df, save_to_file=True)
+                if path:
+                    saved_files.append(path)
+
+            return {
+                "success": True,
+                "base_dir": BASE_REPORTS_DIR,
+                "saved_files": saved_files,
+                "files_count": len(saved_files),
+            }
+
+        except Exception as e:
+            return {"success": False, "error": str(e)}

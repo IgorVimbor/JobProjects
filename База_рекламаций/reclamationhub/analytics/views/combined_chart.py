@@ -1,3 +1,4 @@
+# analytics/views/combined_chart.py
 """Представления для модуля анализа по датам изготовления изделия и уведомления о дефектах"""
 
 from datetime import datetime
@@ -8,34 +9,14 @@ from analytics.modules.combined_chart_modul import DefectDateReportManager
 from reclamations.models import Reclamation
 
 
-# def combined_chart_page(request):
-#     """Заглушка для модуля 'Совмещенная диаграмма'"""
-#     context = {
-#         "page_title": "Совмещенная диаграмма",
-#         "module_name": "Combined Chart",
-#         "description": "Диаграмма по пробегу (наработке) в эксплуатации по виду изделия и потребителю",
-#         "status": "В разработке...",
-#     }
-#     return render(request, "analytics/combined_chart.html", context)
-
-
 def combined_chart_page(request):
     """Страница модуля 'Диаграммы по дате уведомления, дате изготовления и совмещенная'"""
 
-    if request.method == "POST":
-        return generate_combined_report(request)
-
-    # GET запрос - показываем актуальную информацию
-    download_info = request.session.get("combined_chart_info", None)
-    if download_info:
-        del request.session["combined_chart_info"]
-
-    # Получаем доступные годы для селектора
+    # Получаем доступные годы и другие данные
     available_years = ["all"] + list(
         Reclamation.objects.values_list("year", flat=True).distinct().order_by("-year")
     )
 
-    # Получаем всех потребителей из модели PeriodDefect
     available_consumers_raw = (
         Reclamation.objects.select_related("defect_period")
         .values_list("defect_period__name", flat=True)
@@ -49,7 +30,6 @@ def combined_chart_page(request):
         if consumer
     ]
 
-    # Получаем список изделий из модели ProductType
     available_products_raw = (
         Reclamation.objects.select_related("product_name")
         .values_list("product_name__name", flat=True)
@@ -63,28 +43,92 @@ def combined_chart_page(request):
         if product
     ]
 
-    context = {
+    base_context = {
         "page_title": "Диаграммы по датам",
         "description": "Диаграммы распределения по обозначению изделия, дате уведомления о дефекте, изготовления изделия или совмещенная диаграмма",
-        "download_info": download_info,
         "available_years": available_years,
         "current_year": datetime.now().year,
         "available_consumers": available_consumers,
         "available_products": available_products,
     }
-    return render(request, "analytics/combined_chart.html", context)
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        # Общая валидация параметров
+        (
+            year_value,
+            chart_type,
+            selected_consumers,
+            selected_product,
+            validation_error,
+        ) = validate_combined_chart_parameters(request.POST, available_products)
+
+        if validation_error:
+            messages.warning(request, validation_error)
+            return render(request, "analytics/combined_chart.html", base_context)
+
+        # ДОБАВЛЯЕМ параметры запроса в base_context:
+        base_context.update(
+            {
+                "request_year": year_value,
+                "request_chart_type": chart_type,
+                "request_consumers": selected_consumers,
+                "request_product": selected_product,
+            }
+        )
+
+        # Создаем процессор и ОДИН РАЗ генерируем анализ
+        manager = DefectDateReportManager(
+            year=year_value, consumers=selected_consumers, product=selected_product
+        )
+
+        analysis_result = manager.generate_report(chart_type=chart_type)
+
+        # Обрабатываем результат (base_context содержит параметры запроса)
+        context, error_message, warning_message = handle_combined_chart_result(
+            analysis_result, base_context
+        )
+
+        # Обрабатываем сообщения
+        if error_message:
+            messages.warning(request, error_message)
+            return render(request, "analytics/combined_chart.html", base_context)
+
+        if warning_message:
+            messages.warning(request, warning_message)
+            return render(request, "analytics/combined_chart.html", base_context)
+
+        # Если нужно сохранить файлы
+        if action == "save_files":
+            # Используем УЖЕ сгенерированные данные для сохранения
+            result = manager.save_to_files(analysis_result)
+
+            if result["success"]:
+                messages.success(
+                    request, f"✅ Файлы сохранены в папку {result['base_dir']}"
+                )
+            else:
+                messages.warning(
+                    request, f"❌ Ошибка при сохранении: {result['error']}"
+                )
+        else:
+            # Показываем сообщение об успешной генерации
+            messages.success(request, f"✅ {analysis_result['message']}")
+
+        return render(request, "analytics/combined_chart.html", context)
+
+    # GET запрос - показываем форму
+    return render(request, "analytics/combined_chart.html", base_context)
 
 
-def generate_combined_report(request):
-    """Генерация отчета по датам"""
+def validate_combined_chart_parameters(post_data, available_products):
+    """Валидация параметров для анализа диаграмм по датам"""
 
-    # Получаем данные из POST
-    year = request.POST.get("year")  # Год данных или "all"
-    chart_type = request.POST.get("chart_type", "all")  # Тип графика
-
-    # Получаем выбранных потребителей и изделие
-    selected_consumers = request.POST.getlist("consumers")
-    selected_product = request.POST.get("product")
+    year = post_data.get("year")
+    chart_type = post_data.get("chart_type", "all")
+    selected_consumers = post_data.getlist("consumers")
+    selected_product = post_data.get("product")
 
     # Валидация года
     try:
@@ -93,37 +137,33 @@ def generate_combined_report(request):
         else:
             year_value = int(year) if year else datetime.now().year
     except (ValueError, TypeError):
-        messages.error(request, "Некорректный год")
-        return redirect("analytics:combined_chart")
+        return None, None, None, None, "Некорректный год"
 
     # Проверка года (если не "all")
     if year_value != "all":
         current_year = datetime.now().year
         if year_value > current_year:
-            messages.error(
-                request, f"Нельзя формировать отчет за будущий {year_value} год"
+            return (
+                None,
+                None,
+                None,
+                None,
+                f"Нельзя формировать отчет за будущий {year_value} год",
             )
-            return redirect("analytics:combined_chart")
 
     # Валидация типа графика
     valid_chart_types = ["product", "manufacture", "message", "combined", "all"]
     if chart_type not in valid_chart_types:
-        messages.error(request, "Некорректный тип графика")
-        return redirect("analytics:combined_chart")
+        return None, None, None, None, "Некорректный тип графика"
 
-    # Проверка наличия изделия - обязательно должно быть выбрано
+    # Проверка наличия изделия
     if not selected_product:
-        messages.warning(request, "⚠️ Выберите изделие для анализа")
-        return redirect("analytics:combined_chart")
+        return None, None, None, None, "⚠️ Выберите изделие для анализа"
 
     # Валидация изделия
-    valid_products = list(
-        Reclamation.objects.values_list("product_name__name", flat=True).distinct()
-    )
-
+    valid_products = [product["value"] for product in available_products]
     if selected_product not in valid_products:
-        messages.error(request, "Выбрано некорректное изделие")
-        return redirect("analytics:combined_chart")
+        return None, None, None, None, "Выбрано некорректное изделие"
 
     # Валидация потребителей
     consumers = []
@@ -133,30 +173,37 @@ def generate_combined_report(request):
         )
         consumers = [c for c in selected_consumers if c in valid_consumers]
 
-    # Генерируем анализ
-    manager = DefectDateReportManager(
-        year=year_value, consumers=consumers, product=selected_product
-    )
-    result = manager.generate_report(chart_type=chart_type)
+    return year_value, chart_type, consumers, selected_product, None
 
-    if result["success"]:
-        messages.success(request, f"✅ {result['message']}")
 
-        # Формируем данные для session
-        session_data = {
-            "message": result["full_message"],
-            "charts": result["charts"],  # Словарь с графиками
-            "chart_type": result["chart_type"],
-            "total_records": result["total_records"],
-            "filter_text": result["filter_text"],
-            "year": result["year"],
-        }
+def handle_combined_chart_result(analysis_result, base_context):
+    """Обработка результата анализа диаграмм (вынесена общая логика)
 
-        request.session["combined_chart_info"] = session_data
+    Возвращает:
+        (context, error_message, warning_message)
+    """
 
-    elif result["message_type"] == "info":
-        messages.warning(request, result["message"])
-    else:
-        messages.error(request, result["message"])
+    if not analysis_result["success"]:
+        if analysis_result.get("message_type") == "info":
+            warning_message = analysis_result["message"]
+            return None, None, warning_message
+        else:
+            error_message = analysis_result["message"]
+            return None, error_message, None
 
-    return redirect("analytics:combined_chart")
+    # Формируем контекст с данными для отображения
+    download_info = {
+        # "message": analysis_result["full_message"],
+        "charts": analysis_result["charts"],
+        "chart_type": analysis_result["chart_type"],
+        "total_records": analysis_result["total_records"],
+        "filter_text": analysis_result["filter_text"],
+        "year": analysis_result["year"],
+    }
+
+    context = {
+        **base_context,
+        "download_info": download_info,
+    }
+
+    return context, None, None

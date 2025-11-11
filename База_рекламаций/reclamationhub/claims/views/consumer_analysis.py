@@ -57,14 +57,30 @@ def consumer_analysis_view(request):
             messages.error(request, validation_error)
             return render(request, "claims/consumer_analysis.html", base_context)
 
-        # Создаем процессор
+        # Создаем процессор и ОДИН РАЗ генерируем анализ
         processor = ConsumerAnalysisProcessor(
             year=year, consumers=consumers, exchange_rate=exchange_rate_decimal
         )
 
+        analysis_result = processor.generate_analysis()
+
+        # Обрабатываем результат анализа
+        context, error_message, warning_message = handle_analysis_result(
+            analysis_result, base_context, year
+        )
+
+        # Обрабатываем сообщения
+        if error_message:
+            messages.error(request, error_message)
+            return render(request, "claims/consumer_analysis.html", base_context)
+
+        if warning_message:
+            messages.warning(request, warning_message)
+            return render(request, "claims/consumer_analysis.html", base_context)
+
+        # Если нужно сохранить файлы
         if action == "save_files":
-            # ОБРАБОТКА СОХРАНЕНИЯ ФАЙЛОВ
-            result = processor.save_to_files()
+            result = processor.save_to_files(analysis_result)
 
             if result["success"]:
                 messages.success(
@@ -73,64 +89,38 @@ def consumer_analysis_view(request):
             else:
                 messages.error(request, f"❌ Ошибка при сохранении: {result['error']}")
 
-            # Генерируем данные заново и отображаем их
-            analysis_result = processor.generate_analysis()
-
-            if analysis_result["success"]:
-                if analysis_result["summary_data"]["total_claims"] == 0:
-                    consumer_text = analysis_result.get(
-                        "consumer_display", "выбранным потребителям"
-                    )
-                    messages.warning(
-                        request,
-                        f"⚠️ Нет данных по {consumer_text} за {year} год",
-                    )
-                    return render(
-                        request, "claims/consumer_analysis.html", base_context
-                    )
-
-                context = {
-                    **base_context,
-                    "analysis_data": format_analysis_data(analysis_result),
-                }
-                return render(request, "claims/consumer_analysis.html", context)
-            else:
-                messages.error(
-                    request,
-                    f"❌ Ошибка при генерации анализа: {analysis_result.get('error')}",
-                )
-                return render(request, "claims/consumer_analysis.html", base_context)
-
-        else:
-            # ОБЫЧНАЯ ГЕНЕРАЦИЯ АНАЛИЗА
-            result = processor.generate_analysis()
-
-            if result["success"]:
-                if result["summary_data"]["total_claims"] == 0:
-                    consumer_text = result.get(
-                        "consumer_display", "выбранным потребителям"
-                    )
-                    messages.warning(
-                        request,
-                        f"⚠️ Нет данных по {consumer_text} за {year} год",
-                    )
-                    return render(
-                        request, "claims/consumer_analysis.html", base_context
-                    )
-
-                context = {
-                    **base_context,
-                    "analysis_data": format_analysis_data(result),
-                }
-                return render(request, "claims/consumer_analysis.html", context)
-            else:
-                messages.error(
-                    request, f"❌ {result.get('error', 'Ошибка при генерации анализа')}"
-                )
-                return render(request, "claims/consumer_analysis.html", base_context)
+        return render(request, "claims/consumer_analysis.html", context)
 
     # GET запрос - показываем форму
     return render(request, "claims/consumer_analysis.html", base_context)
+
+
+def handle_analysis_result(analysis_result, base_context, year):
+    """Обработка результата анализа (вынесена общая логика)
+
+    Возвращает:
+        (context, error_message, warning_message)
+    """
+
+    if not analysis_result["success"]:
+        error_message = (
+            f"❌ {analysis_result.get('error', 'Ошибка при генерации анализа')}"
+        )
+        return None, error_message, None
+
+    if analysis_result["summary_data"]["total_claims"] == 0:
+        consumer_text = analysis_result.get(
+            "consumer_display", "выбранным потребителям"
+        )
+        warning_message = f"⚠️ Нет данных по {consumer_text} за {year} год"
+        return None, None, warning_message
+
+    context = {
+        **base_context,
+        "analysis_data": format_analysis_data(analysis_result),
+    }
+
+    return context, None, None
 
 
 def validate_consumer_parameters(

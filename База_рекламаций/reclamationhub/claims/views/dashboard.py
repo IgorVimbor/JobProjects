@@ -44,12 +44,29 @@ def dashboard_view(request):
             messages.warning(request, validation_error)
             return render(request, "claims/dashboard.html", base_context)
 
-        # Создаем процессор
+        # Создаем процессор и ОДИН РАЗ генерируем данные
         processor = DashboardProcessor(year=year, exchange_rate=exchange_rate_decimal)
 
+        dashboard_result = processor.generate_dashboard()
+
+        # Обрабатываем результат
+        context, error_message, warning_message = handle_dashboard_result(
+            dashboard_result, base_context
+        )
+
+        # Обрабатываем сообщения
+        if error_message:
+            messages.warning(request, error_message)
+            return render(request, "claims/dashboard.html", base_context)
+
+        if warning_message:
+            messages.warning(request, warning_message)
+            return render(request, "claims/dashboard.html", base_context)
+
+        # Если нужно сохранить файлы
         if action == "save_files":
-            # ОБРАБОТКА СОХРАНЕНИЯ ФАЙЛОВ
-            result = processor.save_to_files()
+            # Используем УЖЕ сгенерированные данные для сохранения
+            result = processor.save_to_files(dashboard_result)
 
             if result["success"]:
                 messages.success(
@@ -60,41 +77,36 @@ def dashboard_view(request):
                     request, f"❌ Ошибка при сохранении: {result['error']}"
                 )
 
-            # ВАЖНО: Генерируем данные заново и отображаем их
-            dashboard_result = processor.generate_dashboard()
-
-            if dashboard_result["success"]:
-                context = {
-                    **base_context,
-                    "dashboard_data": format_dashboard_data(dashboard_result),
-                }
-                return render(request, "claims/dashboard.html", context)
-            else:
-                messages.warning(
-                    request,
-                    f"❌ Ошибка при генерации Dashboard: {dashboard_result.get('error')}",
-                )
-                return render(request, "claims/dashboard.html", base_context)
-
-        else:
-            # ОБЫЧНАЯ ГЕНЕРАЦИЯ DASHBOARD
-            result = processor.generate_dashboard()
-
-            if result["success"]:
-                context = {
-                    **base_context,
-                    "dashboard_data": format_dashboard_data(result),
-                }
-                return render(request, "claims/dashboard.html", context)
-            else:
-                messages.warning(
-                    request,
-                    f"❌ {result.get('error', 'Ошибка при генерации Dashboard')}",
-                )
-                return render(request, "claims/dashboard.html", base_context)
+        return render(request, "claims/dashboard.html", context)
 
     # GET запрос - показываем форму
     return render(request, "claims/dashboard.html", base_context)
+
+
+def handle_dashboard_result(dashboard_result, base_context):
+    """Обработка результата генерации dashboard (вынесена общая логика)
+
+    Возвращает:
+        (context, error_message, warning_message)
+    """
+
+    if not dashboard_result["success"]:
+        error_message = (
+            f"❌ {dashboard_result.get('error', 'Ошибка при генерации Dashboard')}"
+        )
+        return None, error_message, None
+
+    # Проверка на наличие данных
+    if dashboard_result["summary_cards"]["total_claims"] == 0:
+        warning_message = f"⚠️ Нет данных за выбранный период"
+        return None, None, warning_message
+
+    context = {
+        **base_context,
+        "dashboard_data": format_dashboard_data(dashboard_result),
+    }
+
+    return context, None, None
 
 
 def validate_parameters(year_str, exchange_rate_str):

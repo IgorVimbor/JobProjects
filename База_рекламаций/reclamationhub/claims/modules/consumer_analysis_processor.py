@@ -388,11 +388,13 @@ class ConsumerAnalysisProcessor:
 
         return {"labels": labels, "amounts": amounts, "costs": costs}
 
-    def save_to_files(self):
+    # def save_to_files(self):
+    def save_to_files(self, analysis_data=None):
         """Сохранение графика и таблицы анализа потребителя в файлы"""
         try:
-            # Получаем данные для сохранения
-            analysis_data = self.generate_analysis()
+            # Используем переданные данные или генерируем заново
+            if analysis_data is None:
+                analysis_data = self.generate_analysis()
 
             if not analysis_data["success"]:
                 return {

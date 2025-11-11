@@ -563,11 +563,12 @@ class ReclamationToClaimProcessor:
                 "error": f"Ошибка при генерации анализа: {str(e)}",
             }
 
-    def save_to_files(self):
+    def save_to_files(self, analysis_data=None):
         """Сохранение графиков и таблиц в файлы"""
-        # ... (код без изменений, только цвета графиков обновлены выше)
         try:
-            analysis_data = self.generate_analysis()
+            # Используем переданные данные или генерируем заново
+            if analysis_data is None:
+                analysis_data = self.generate_analysis()
 
             if not analysis_data["success"]:
                 return {"success": False, "error": "Не удалось сгенерировать данные"}

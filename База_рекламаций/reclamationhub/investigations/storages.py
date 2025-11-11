@@ -1,4 +1,4 @@
-# investigations/storages.py (создайте новый файл)
+# investigations/storages.py
 
 # Файл для переопределения стандартного класса Storage.
 # Кастомный класс Storage нужен, чтобы изменить поведение по умолчанию Django,
@@ -10,6 +10,7 @@
 import os
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+
 
 class NoDuplicateFileStorage(FileSystemStorage):
     """Класс Storage который не создает дубликаты файлов"""

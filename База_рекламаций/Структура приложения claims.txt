@@ -9,11 +9,11 @@ claims/
 │
 ├── views/                               # Представления
 │   ├── __init__.py
-│   ├── claim_form.py                    # + Существующая логика (search_related_data)
+│   ├── claim_form.py                    # + заполнение формы (AJAX endpoint для получения данных по рекламации)
 │   ├── claim_main.py                    # + основная страница аналитики претензий
 │   ├── dashboard.py                     # + страница дашборда
 │   ├── consumer_analysis.py             # + страница по потребителю
-│   ├── reclamation_to_claim             # - страница рекламация -> претензия (заглушка)
+│   ├── reclamation_to_claim             # - страница конверсия рекламация -> претензия
 │   └── claim_prognosis                  # - страница прогноза претензий (заглушка)
 │
 ├── templates/                           # Шаблоны аналитики

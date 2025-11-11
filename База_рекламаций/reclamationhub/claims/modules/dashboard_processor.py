@@ -294,9 +294,19 @@ class DashboardProcessor:
                 "error": f"Ошибка при генерации Dashboard: {str(e)}",
             }
 
-    def save_to_files(self):
+    def save_to_files(self, dashboard_data=None):
         """Сохранение графика и таблицы Dashboard в файлы"""
         try:
+            # Используем переданные данные или генерируем заново
+            if dashboard_data is None:
+                dashboard_data = self.generate_dashboard()
+
+            if not dashboard_data["success"]:
+                return {
+                    "success": False,
+                    "error": "Не удалось сгенерировать данные для сохранения",
+                }
+
             # Получаем данные для сохранения
             summary_cards = self.get_summary_cards()
             monthly_dynamics = self.get_monthly_dynamics()

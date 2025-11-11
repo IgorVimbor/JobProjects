@@ -11,17 +11,6 @@ from claims.models import Claim
 from reclamations.models import Reclamation
 
 
-# def reclamation_to_claim_view(request):
-#     """Заглушка для модуля"""
-#     context = {
-#         "page_title": "Графики и таблицы по претензиям",
-#         "module_name": "Claims",
-#         "description": "Графики и таблицы по выставленным и признанным претензиям",
-#         "status": "В разработке...",
-#     }
-#     return render(request, "claims/reclamation_to_claim.html", context)
-
-
 def reclamation_to_claim_view(request):
     """Страница анализа конверсии рекламация → претензия"""
 
@@ -70,14 +59,31 @@ def reclamation_to_claim_view(request):
             messages.error(request, validation_error)
             return render(request, "claims/reclamation_to_claim.html", base_context)
 
-        # Создаем процессор
+        # Создаем процессор и ОДИН РАЗ генерируем анализ
         processor = ReclamationToClaimProcessor(
             year=year, consumers=consumers, exchange_rate=exchange_rate_decimal
         )
 
+        analysis_result = processor.generate_analysis()
+
+        # Обрабатываем результат анализа
+        context, error_message, warning_message = handle_conversion_analysis_result(
+            analysis_result, base_context, year
+        )
+
+        # Обрабатываем сообщения
+        if error_message:
+            messages.error(request, error_message)
+            return render(request, "claims/reclamation_to_claim.html", base_context)
+
+        if warning_message:
+            messages.warning(request, warning_message)
+            return render(request, "claims/reclamation_to_claim.html", base_context)
+
+        # Если нужно сохранить файлы
         if action == "save_files":
-            # ОБРАБОТКА СОХРАНЕНИЯ ФАЙЛОВ
-            result = processor.save_to_files()
+            # Используем УЖЕ сгенерированные данные для сохранения
+            result = processor.save_to_files(analysis_result)
 
             if result["success"]:
                 messages.success(
@@ -86,63 +92,36 @@ def reclamation_to_claim_view(request):
             else:
                 messages.error(request, f"❌ Ошибка при сохранении: {result['error']}")
 
-            # Генерируем данные заново и отображаем их
-            analysis_result = processor.generate_analysis()
-
-            if analysis_result["success"]:
-                # Проверяем наличие данных
-                if (
-                    analysis_result["group_a"]["summary_cards"]["total_reclamations"]
-                    == 0
-                ):
-                    messages.warning(
-                        request,
-                        f"⚠️ Нет рекламаций за {year} год в базе",
-                    )
-                    return render(
-                        request, "claims/reclamation_to_claim.html", base_context
-                    )
-
-                context = {
-                    **base_context,
-                    "conversion_data": format_analysis_data(analysis_result),
-                }
-                return render(request, "claims/reclamation_to_claim.html", context)
-            else:
-                messages.error(
-                    request,
-                    f"❌ Ошибка при генерации анализа: {analysis_result.get('error')}",
-                )
-                return render(request, "claims/reclamation_to_claim.html", base_context)
-
-        else:
-            # ОБЫЧНАЯ ГЕНЕРАЦИЯ АНАЛИЗА
-            result = processor.generate_analysis()
-
-            if result["success"]:
-                # Проверяем наличие данных
-                if result["group_a"]["summary_cards"]["total_reclamations"] == 0:
-                    messages.warning(
-                        request,
-                        f"⚠️ Нет рекламаций за {year} год в базе",
-                    )
-                    return render(
-                        request, "claims/reclamation_to_claim.html", base_context
-                    )
-
-                context = {
-                    **base_context,
-                    "conversion_data": format_analysis_data(result),
-                }
-                return render(request, "claims/reclamation_to_claim.html", context)
-            else:
-                messages.error(
-                    request, f"❌ {result.get('error', 'Ошибка при генерации анализа')}"
-                )
-                return render(request, "claims/reclamation_to_claim.html", base_context)
+        return render(request, "claims/reclamation_to_claim.html", context)
 
     # GET запрос - показываем форму
     return render(request, "claims/reclamation_to_claim.html", base_context)
+
+
+def handle_conversion_analysis_result(analysis_result, base_context, year):
+    """Обработка результата анализа конверсии (вынесена общая логика)
+
+    Возвращает:
+        (context, error_message, warning_message)
+    """
+
+    if not analysis_result["success"]:
+        error_message = (
+            f"❌ {analysis_result.get('error', 'Ошибка при генерации анализа')}"
+        )
+        return None, error_message, None
+
+    # Проверяем наличие данных по рекламациям
+    if analysis_result["group_a"]["summary_cards"]["total_reclamations"] == 0:
+        warning_message = f"⚠️ Нет рекламаций за {year} год в базе"
+        return None, None, warning_message
+
+    context = {
+        **base_context,
+        "conversion_data": format_analysis_data(analysis_result),
+    }
+
+    return context, None, None
 
 
 def validate_reclamation_parameters(
