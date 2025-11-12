@@ -179,6 +179,8 @@ class InvestigationAdmin(admin.ModelAdmin):
         "has_claim",  # претензия
     ]
 
+    exclude = ["act_number_sort"]  # Скрываем поле в админ-панели
+
     # Группировка полей
     fieldsets = [
         (
@@ -276,7 +278,8 @@ class InvestigationAdmin(admin.ModelAdmin):
     )
 
     # Сортировка по умолчанию
-    ordering = ["reclamation"]
+    # ordering = ["reclamation"]
+    ordering = ["-act_number_sort", "-act_date"]
 
     def get_queryset(self, request):
         return (

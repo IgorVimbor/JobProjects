@@ -3,6 +3,7 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 import os
+import re
 
 from .storages import NoDuplicateFileStorage
 from reclamations.models import Reclamation
@@ -17,7 +18,7 @@ def get_default_act_number():
 def investigation_act_upload_path(instance, filename):
     """Функция для определения пути загрузки файлов актов исследования"""
     year = instance.reclamation.year
-    return os.path.join('acts', str(year), filename)
+    return os.path.join("acts", str(year), filename)
 
 
 class Investigation(models.Model):
@@ -61,13 +62,18 @@ class Investigation(models.Model):
     )
     act_date = models.DateField(verbose_name="Дата акта исследования")
 
-    # Добавить поле solution "Решение по рекламации": ACCEPT - "Признать" или DEFLECT - "Отклонить"
+    act_number_sort = models.FloatField(
+        default=0.0,
+        verbose_name="Номер для сортировки",
+        help_text="Автоматически заполняется",
+    )
+
     solution = models.CharField(
         max_length=50,
         choices=Solution.choices,
         verbose_name="Решение по рекламации",
         null=True,  # поле может содержать NULL в базе данных
-        blank=False  # поле не может быть пустым при заполнении формы
+        blank=False,  # поле не может быть пустым при заполнении формы
     )
 
     # Используем класс FaultType в поле модели
@@ -165,8 +171,18 @@ class Investigation(models.Model):
         verbose_name = "Акт исследования"
         verbose_name_plural = "Акты исследования"
         indexes = [
-            models.Index(fields=["act_number", "act_date"]),
+            # Основной индекс для сортировки
+            models.Index(
+                fields=["-act_number_sort"],  # Убывающий порядок
+                name="investigation_sort_desc_idx",
+            ),
+            # Составной индекс для фильтрации + сортировки
+            models.Index(
+                fields=["-act_number_sort", "act_date"],
+                name="investigation_date_sort_idx",
+            ),
         ]
+        ordering = ["-act_number_sort"]
 
     @property
     def has_act_scan(self):
@@ -214,7 +230,27 @@ class Investigation(models.Model):
                 os.remove(self.act_scan.path)
 
     def save(self, *args, **kwargs):
-        """Обновление статуса рекламации и обработка файлов"""
+        """Заполнение поля для сортировки, обработка файлов и обновление статуса рекламации"""
+
+        # Автоматически заполняем поле для сортировки
+        if self.act_number == "не требуется":
+            self.act_number_sort = -1.0  # В конце
+        else:
+            match = re.search(
+                r"(\d{4})\s*(?:№|ММЗ)\s*(\d+)(?:-(\d+))?", self.act_number
+            )
+            if match:
+                year = int(match.group(1))  # 2025 (год)
+                main_number = int(match.group(2))  # 1043
+                suffix = int(match.group(3)) if match.group(3) else 0  # 0, 1 (суффикс)
+
+                # Создаем дробное число: 2025,1043, 2025,104301
+                self.act_number_sort = (
+                    year + (main_number * 0.0001) + (suffix * 0.000001)
+                )
+            else:
+                self.act_number_sort = 0.0
+
         # Обработка файла
         if self.pk:  # если запись уже существует
             try:
@@ -224,46 +260,13 @@ class Investigation(models.Model):
                 if old_instance.act_scan and (
                     not self.act_scan or old_instance.act_scan != self.act_scan
                 ):
-                    old_instance.delete_act_scan() # Удаляем старый файл с диска (из папки media)
+                    old_instance.delete_act_scan()  # Удаляем старый файл с диска (из папки media)
             except Investigation.DoesNotExist:
                 pass
 
         # После сохранения акта исследования проверяем и обновляем статус рекламации
         super().save(*args, **kwargs)
         self.reclamation.update_status_on_investigation()
-
-    # def save(self, *args, **kwargs):
-    #     """Обновление статуса рекламации и обработка файлов"""
-
-    #     # НОВАЯ ЛОГИКА: Проверка дублирующихся файлов перед сохранением
-    #     if self.act_scan and hasattr(self.act_scan, 'file'):
-    #         original_filename = self.act_scan.name
-    #         year = self.reclamation.year
-    #         target_path = os.path.join('acts', str(year), original_filename)
-
-    #         if default_storage.exists(target_path):
-    #             # Файл уже существует - НЕ сохраняем новый, используем существующий
-    #             if settings.DEBUG:
-    #                 print(f"Файл {original_filename} уже существует, используем существующий")
-
-    #             # Заменяем загружаемый файл на ссылку на существующий
-    #             self.act_scan = target_path
-    #         # Если файла нет - Django сохранит новый
-
-    #     # ВАША СУЩЕСТВУЮЩАЯ ЛОГИКА: Обработка файла при обновлении
-    #     if self.pk:  # если запись уже существует
-    #         try:
-    #             old_instance = Investigation.objects.get(pk=self.pk)
-    #             if old_instance.act_scan and (
-    #                 not self.act_scan or old_instance.act_scan != self.act_scan
-    #             ):
-    #                 old_instance.delete_act_scan()
-    #         except Investigation.DoesNotExist:
-    #             pass
-
-    #     # После сохранения акта исследования проверяем и обновляем статус рекламации
-    #     super().save(*args, **kwargs)
-    #     self.reclamation.update_status_on_investigation()
 
     def delete(self, *args, **kwargs):
         """Переопределяем метод удаления"""
