@@ -322,7 +322,7 @@ class ReclamationAdmin(admin.ModelAdmin):
             )
             return
 
-        # # Получаем выбранную запись
+        # Получаем выбранную запись
         reclamation = queryset.first()
 
         # Перенаправляем на форму создания акта
@@ -497,11 +497,8 @@ class ReclamationAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
-    # def add_invoice_into_view(self, request):
-    #     """Метод группового добавления накладной прихода рекламационных изделий"""
-    #     # Здесь используется self, а во views.py параметр admin_instance в функции -
-    #     # через него передаем ссылку на ReclamationAdmin для вызова message_user.
-
     def add_invoice_into_view(self, request):
-        """Метод добавления группового акта исследования - делегируем вызов к функции из views.py"""
+        """Метод группового добавления накладной прихода рекламационных изделий"""
+        # Здесь используется self, а во views.py параметр admin_instance в функции -
+        # через него передаем ссылку на ReclamationAdmin для вызова message_user.
         return add_invoice_into_view(self, request)

@@ -3,10 +3,12 @@ from django.contrib.admin import SimpleListFilter
 from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
+from django.db.models import Count, Prefetch
 from datetime import datetime
 
 from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
+from claims.models import Claim
 from .models import Investigation
 from .forms import InvestigationAdminForm
 from .views.add_group_investigation import add_group_investigation_view
@@ -119,19 +121,18 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     @admin.display(description="Претензия")
     def has_claim(self, obj):
-        """Метод для отображения номера претензии как ссылки"""
-
-        # Проверяем, есть ли связанная рекламация
-        if not obj.reclamation:
+        """Метод для отображения номера претензии как ссылки (оптимизация для ManyToManyField)"""
+        # Проверяем, есть ли связанная рекламация (быстрая проверка через аннотацию)
+        if getattr(obj, "claims_count", 0) == 0:
             return ""
 
-        # Получаем претензии через рекламацию
+        # Используем prefetch_related данные (без дополнительных запросов)
         claims = obj.reclamation.claims.all()
 
-        if not claims.exists():
+        if not claims:
             return ""
 
-        # Формируем список ссылок (вертикально)
+        # Формируем список ссылок
         links = []
         for claim in claims:
             # Базовый URL списка претензий
@@ -281,6 +282,17 @@ class InvestigationAdmin(admin.ModelAdmin):
     # ordering = ["reclamation"]
     ordering = ["-act_number_sort", "-act_date"]
 
+    # def get_queryset(self, request):
+    #     return (
+    #         super()
+    #         .get_queryset(request)
+    #         .select_related(
+    #             "reclamation",  # для доступа к pk рекламации
+    #             "reclamation__product",  # для product в admin_display_by_reclamation
+    #             "reclamation__product_name",  # для product_name в admin_display_by_reclamation
+    #         )
+    #     )
+
     def get_queryset(self, request):
         return (
             super()
@@ -288,8 +300,52 @@ class InvestigationAdmin(admin.ModelAdmin):
             .select_related(
                 "reclamation",  # для доступа к pk рекламации
                 "reclamation__product",  # для product в admin_display_by_reclamation
+                "reclamation__product__product_type",  # наименование изделия для list_filter
                 "reclamation__product_name",  # для product_name в admin_display_by_reclamation
+                "reclamation__defect_period",  # период дефекта для list_filter
             )
+            .defer(
+                # Исключаем ненужные поля reclamation
+                "reclamation__incoming_number",
+                "reclamation__sender",
+                "reclamation__sender_outgoing_number",
+                "reclamation__message_sent_date",
+                "reclamation__manufacture_date",
+                "reclamation__purchaser",
+                "reclamation__country_rejected",
+                "reclamation__end_consumer",
+                "reclamation__engine_brand",
+                "reclamation__engine_number",
+                "reclamation__transport_name",
+                "reclamation__transport_number",
+                "reclamation__defect_detection_date",
+                "reclamation__away_type",
+                "reclamation__mileage_operating_time",
+                "reclamation__claimed_defect",
+                "reclamation__consumer_requirement",
+                "reclamation__products_count",
+                "reclamation__measures_taken",
+                "reclamation__outgoing_document_number",
+                "reclamation__outgoing_document_date",
+                "reclamation__letter_sending_method",
+                "reclamation__consumer_response",
+                "reclamation__consumer_response_number",
+                "reclamation__consumer_response_date",
+                "reclamation__volume_removal_reference",
+                "reclamation__reclamation_documents",
+                "reclamation__product_received_date",
+                "reclamation__product_sender",
+                "reclamation__receipt_invoice_number",
+                "reclamation__receipt_invoice_date",
+                "reclamation__updated_at",
+            )
+            .prefetch_related(
+                Prefetch(
+                    "reclamation__claims",
+                    queryset=Claim.objects.only("registration_number", "id"),
+                )
+            )
+            .annotate(claims_count=Count("reclamation__claims", distinct=True))
         )
 
     # Добавляем URL для групповой формы
@@ -338,17 +394,28 @@ class InvestigationAdmin(admin.ModelAdmin):
         # Здесь используется self, а во views.py параметр admin_instance
         return add_invoice_out_view(self, request)
 
+    # def get_form(self, request, obj=None, **kwargs):
+    #     form = super().get_form(request, obj, **kwargs)
+
+    #     # Делаем поле обязательным
+    #     form.base_fields["reclamation"].required = True
+
+    #     # Устанавливаем начальное значение из GET-параметра
+    #     if not obj and "reclamation" in request.GET:
+    #         form.base_fields["reclamation"].initial = request.GET.get("reclamation")
+
+    #     return form
+
     def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
+        """Передаем request в форму"""
+        form_class = super().get_form(request, obj, **kwargs)
 
-        # Делаем поле обязательным
-        form.base_fields["reclamation"].required = True
+        class FormWithRequest(form_class):
+            def __init__(self, *args, **kwargs):
+                kwargs["request"] = request
+                super().__init__(*args, **kwargs)
 
-        # Устанавливаем начальное значение из GET-параметра
-        if not obj and "reclamation" in request.GET:
-            form.base_fields["reclamation"].initial = request.GET.get("reclamation")
-
-        return form
+        return FormWithRequest
 
     def response_add(self, request, obj, post_url_continue=None):
         """Переопределяем стандартный метод вывода сообщения при добавлении акта"""

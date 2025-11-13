@@ -127,6 +127,13 @@ class ReclamationAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Убираем иконки действий для поля defect_period
+        # (карандаш - редактировать, плюс - добавить, крестик - удалить, глаз - просмотр)
+        self.fields["defect_period"].widget.can_add_related = False
+        self.fields["defect_period"].widget.can_change_related = False
+        self.fields["defect_period"].widget.can_delete_related = False
+        self.fields["defect_period"].widget.can_view_related = False
+
         # Определяем тип изделия
         if self.data and "product_name" in self.data:
             # Если форма отправлена, берем тип из данных формы
@@ -167,19 +174,21 @@ class ReclamationAdminForm(forms.ModelForm):
         # Проверяем корректность номера изделия
         product_number = cleaned_data.get("product_number")
         if product_number:
-            pattern = r'^\d+$'
+            pattern = r"^\d+$"
             if not re.match(pattern, product_number):
                 self.add_error(
-                    "product_number", "Введите только цифры или оставьте поле пустым при отсутствии данных"
+                    "product_number",
+                    "Введите только цифры или оставьте поле пустым при отсутствии данных",
                 )
 
         # Проверяем корректность ввода даты изготовления (мм.гг)
         manufacture_date = cleaned_data.get("manufacture_date")
         if manufacture_date:
-            pattern = r'^((0[1-9]|1[0-2])\.\d{2})$'
+            pattern = r"^((0[1-9]|1[0-2])\.\d{2})$"
             if not re.match(pattern, manufacture_date):
                 self.add_error(
-                    "manufacture_date", "Введите корректную дату в формате ММ.ГГ или оставьте поле пустым при отсутствии данных"
+                    "manufacture_date",
+                    "Введите корректную дату в формате ММ.ГГ или оставьте поле пустым при отсутствии данных",
                 )
 
         # Валидация пробега/наработки

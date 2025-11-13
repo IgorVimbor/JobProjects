@@ -273,12 +273,48 @@ class InvestigationAdminForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        # Извлекаем request из kwargs, если он передан
+        self.request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
 
-        # Фильтрация доступных рекламаций только для новых записей
+        # Убираем иконки действий для поля reclamation
+        # (карандаш - редактировать, плюс - добавить, крестик - удалить, глаз - просмотр)
+        self.fields["reclamation"].widget.can_add_related = False
+        self.fields["reclamation"].widget.can_change_related = False
+        self.fields["reclamation"].widget.can_delete_related = False
+        self.fields["reclamation"].widget.can_view_related = False
+
         if not self.instance.pk:
+            # Проверяем, пришли ли через action из reclamation (есть GET-параметр)
+            # при добавлении акта исследования для рекламации
+            if self.request and "reclamation" in self.request.GET:
+                reclamation_id = self.request.GET.get("reclamation")
+
+                # Ограничиваем queryset
+                self.fields["reclamation"].queryset = Reclamation.objects.filter(
+                    id=reclamation_id
+                )
+
+                # Делаем поле только для чтения
+                self.fields["reclamation"].disabled = True
+                self.fields["reclamation"].help_text = (
+                    "Рекламация выбрана автоматически для внесения данных по акту исследования"
+                )
+            else:
+                # Обычное создание новой записи
+                self.fields["reclamation"].queryset = (
+                    Reclamation.objects.select_related(
+                        "product", "product__product_type", "product_name"
+                    ).filter(investigation__isnull=True)
+                )
+        else:
+            # При редактировании акта исследования
+            self.fields["reclamation"].disabled = True  # Делаем поле только для чтения
+            self.fields["reclamation"].help_text = (
+                "При редактировании акта исследования рекламация не изменяется"
+            )
             self.fields["reclamation"].queryset = Reclamation.objects.filter(
-                investigation__isnull=True
+                id=self.instance.reclamation_id
             )
 
         # Настройка отображения поля для сохранения файла
