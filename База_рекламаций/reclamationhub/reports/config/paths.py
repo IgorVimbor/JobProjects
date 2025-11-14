@@ -36,7 +36,7 @@ def get_enquiry_period_excel_path(sequence_number):
 
 
 # ==================== ACCEPT DEFECT ====================
-ACCEPT_DEFECT_DIR = os.path.join(BASE_REPORTS_DIR, "Кол-во_признанных-непризнанных_txt")
+ACCEPT_DEFECT_DIR = os.path.join(BASE_REPORTS_DIR, "ACCEPT_DEFECT_txt")
 
 # Создаем папку для справок TXT
 os.makedirs(ACCEPT_DEFECT_DIR, exist_ok=True)
