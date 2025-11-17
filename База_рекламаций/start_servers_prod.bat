@@ -23,7 +23,6 @@ cd reclamationhub
 start /min "Django" waitress-serve --host=127.0.0.1 --port=8000 reclamationhub.wsgi:application
 :: start /min "Django" cmd /k "waitress-serve --host=127.0.0.1 --port=8000 reclamationhub.wsgi:application"
 
-
 timeout /t 3 /nobreak > nul
 
 echo.

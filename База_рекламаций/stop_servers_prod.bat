@@ -54,6 +54,9 @@ echo.
 cd /d "E:\MyRepositories\JobProjects\База_рекламаций"
 call r-hub_venv\Scripts\activate
 
+:: Переходим в папку проекта
+cd reclamationhub
+
 :: Запускаем Python-скрипт
 echo        Выполняется Python-скрипт backup_and_commit.py...
 echo        (При возникновении ошибок подробности в логах или в окне)

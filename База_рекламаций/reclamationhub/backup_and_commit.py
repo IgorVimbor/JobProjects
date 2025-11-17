@@ -47,15 +47,15 @@ def run_command(command, description):
 def main():
     logging.info("--- Начало скрипта бэкапа и коммита ---")
 
-    # PROJECT_PATH = r"D:/MyRepositories/JobProjects/База_рекламаций"
-    # VENV_PATH = os.path.join(PROJECT_PATH, "rhub_venv")
-    # PYTHON_PATH = os.path.join(VENV_PATH, "Scripts", "python.exe")
+    PROJECT_PATH = r"E:/MyRepositories/JobProjects/База_рекламаций"
+    VENV_PATH = os.path.join(PROJECT_PATH, "r-hub_venv")
+    PYTHON_PATH = os.path.join(VENV_PATH, "Scripts", "python.exe")
 
     try:
         # 1. Создание фикстуры
         if not run_command(
             [
-                "python",
+                PYTHON_PATH,
                 "-Xutf8",  # флаг для Windows, чтобы было на русском (UTF-8)
                 "manage.py",
                 "dumpdata",
@@ -78,7 +78,7 @@ def main():
 
         # Добавление изменений
         if not run_command(
-            ["git", "add", "reclamationhub/fixtures/db.json"],
+            ["git", "add", "fixtures/db.json"],
             f"Добавление фикстуры БД в Git",
         ):
             return
