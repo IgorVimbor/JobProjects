@@ -6,6 +6,7 @@ from datetime import datetime
 
 
 # ---------------------------- Настройка логирования --------------------------------
+
 # Файл для записи логов
 log_file = f"D:/Reclamationhub_log/rhub_backup_{datetime.now().strftime('%Y%m%d')}.log"
 
