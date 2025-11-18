@@ -32,7 +32,7 @@ def run_command(command, description):
     """Выполняет команду и логирует результат."""
     try:
         logging.info(f"Выполняется: {description} (команда: {' '.join(command)})")
-        # Мы используем -Xutf8, поэтому text=True можно не указывать, но для надежности оставим
+        # Если используем -Xutf8 то text=True можно не указывать (для надежности оставим)
         result = subprocess.run(
             command, capture_output=True, text=True, check=True, encoding="utf-8"
         )
