@@ -220,7 +220,8 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     # Поиск
     search_fields = [
-        "id",  # номер строки (ID записи)
+        "year",  # год
+        "yearly_number",  # номер в году
         "sender_outgoing_number",  # исходящий № отправителя
         "product_number",  # номер изделия
         "engine_number",  # номер двигателя
@@ -412,6 +413,23 @@ class ReclamationAdmin(admin.ModelAdmin):
 
         # Возвращаем список через <br> (вертикально)
         return mark_safe("<br>".join(links))
+
+    def get_search_results(self, request, queryset, search_term):
+        """Переопределяем стандартный метод поиска для поиска по составному номеру рекламации"""
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+
+        # Дополнительный поиск по формату "2025-1356"
+        if search_term and '-' in search_term:
+            try:
+                year, number = search_term.split('-')
+                queryset |= self.model.objects.filter(
+                    year=int(year),
+                    yearly_number=int(number)
+                )
+            except ValueError:
+                pass
+
+        return queryset, use_distinct
 
     def response_add(self, request, obj, post_url_continue=None):
         """Переопределяем стандартный метод вывода сообщения при добавлении рекламации"""

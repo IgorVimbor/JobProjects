@@ -317,7 +317,12 @@ class Reclamation(models.Model):
         ]
         unique_together = [["yearly_number", "year"]]
 
-    # Дополнительные аргументы экземпляра класса Reclamation
+    # Дополнительные свойства экземпляра класса Reclamation
+    @property
+    def full_number(self):
+        """Составной номер рекламации вида 2025-1356"""
+        return f"{self.year}-{self.yearly_number:04d}"
+
     @property
     def registration_month(self):
         """Вычисляемое поле - месяц регистрации из даты"""

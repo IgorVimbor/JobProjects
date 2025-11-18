@@ -285,21 +285,27 @@ class InvestigationAdminForm(forms.ModelForm):
         self.fields["reclamation"].widget.can_view_related = False
 
         if not self.instance.pk:
-            # Проверяем, пришли ли через action из reclamation (есть GET-параметр)
-            # при добавлении акта исследования для рекламации
+            # Проверяем, пришли ли через action из reclamation при добавлении
+            # акта исследования для рекламации (есть GET-параметр)
             if self.request and "reclamation" in self.request.GET:
                 reclamation_id = self.request.GET.get("reclamation")
 
-                # Ограничиваем queryset
-                self.fields["reclamation"].queryset = Reclamation.objects.filter(
-                    id=reclamation_id
-                )
+                try:
+                    selected_reclamation = Reclamation.objects.get(id=reclamation_id)
+                    # Делаем поле только для чтения (используем readonly вместо disabled)
+                    self.fields["reclamation"].initial = selected_reclamation
+                    self.fields["reclamation"].widget.attrs['readonly'] = True
+                    self.fields["reclamation"].widget.attrs['style'] = 'background-color: #f8f9fa;'
+                    self.fields["reclamation"].help_text = (
+                        "Рекламация выбрана автоматически для внесения данных по акту исследования"
+                    )
+                    # Ограничиваем queryset
+                    self.fields["reclamation"].queryset = Reclamation.objects.filter(
+                        id=reclamation_id
+                    )
 
-                # Делаем поле только для чтения
-                self.fields["reclamation"].disabled = True
-                self.fields["reclamation"].help_text = (
-                    "Рекламация выбрана автоматически для внесения данных по акту исследования"
-                )
+                except Reclamation.DoesNotExist:
+                    pass
             else:
                 # Обычное создание новой записи
                 self.fields["reclamation"].queryset = (
@@ -308,11 +314,13 @@ class InvestigationAdminForm(forms.ModelForm):
                     ).filter(investigation__isnull=True)
                 )
         else:
-            # При редактировании акта исследования
-            self.fields["reclamation"].disabled = True  # Делаем поле только для чтения
+            # При редактировании акта исследования делаем поле только для чтения (readonly)
+            self.fields["reclamation"].widget.attrs['readonly'] = True
+            self.fields["reclamation"].widget.attrs['style'] = 'background-color: #f8f9fa;'
             self.fields["reclamation"].help_text = (
                 "При редактировании акта исследования рекламация не изменяется"
             )
+            # Ограничиваем queryset
             self.fields["reclamation"].queryset = Reclamation.objects.filter(
                 id=self.instance.reclamation_id
             )
