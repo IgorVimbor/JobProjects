@@ -56,7 +56,11 @@ class YearListFilter(SimpleListFilter):
 class ReclamationAdmin(admin.ModelAdmin):
     class Media:
         css = {"all": ("admin/css/custom_admin.css",)}
-        js = ("admin/js/custom_admin.js", "admin/js/copy_act_fields.js")
+        js = (
+            "admin/js/custom_admin.js",
+            "admin/js/reclamation_duplicates.js",
+            "admin/js/copy_act_fields.js",
+        )
 
     form = ReclamationAdminForm
 
@@ -416,15 +420,16 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     def get_search_results(self, request, queryset, search_term):
         """Переопределяем стандартный метод поиска для поиска по составному номеру рекламации"""
-        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term
+        )
 
         # Дополнительный поиск по формату "2025-1356"
-        if search_term and '-' in search_term:
+        if search_term and "-" in search_term:
             try:
-                year, number = search_term.split('-')
+                year, number = search_term.split("-")
                 queryset |= self.model.objects.filter(
-                    year=int(year),
-                    yearly_number=int(number)
+                    year=int(year), yearly_number=int(number)
                 )
             except ValueError:
                 pass

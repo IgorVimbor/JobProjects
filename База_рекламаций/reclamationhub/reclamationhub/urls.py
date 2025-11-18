@@ -25,15 +25,23 @@ from django.views.generic import RedirectView
 from reclamationhub.admin import admin_site
 from reclamations.views.product_utils import get_products
 from claims.views.claim_form import search_related_data
+from reclamations.views.reclamation_form import check_duplicate_reclamations_ajax
 
 
 urlpatterns = [
     # path("", RedirectView.as_view(url="admin/", permanent=True)),
     path("", include("core.urls")),  # главная страница
+    # AJAX эндпоинты для админки
     # AJAX endpoint для получения списка изделий в форме рекламации в зависимости от выбранного типа изделий
     path("admin/get_products/", get_products, name="get_products"),
     # AJAX endpoint для подстановки данных по рекламации в форму претензии
     path("admin/search-related-data/", search_related_data, name="search_related_data"),
+    # AJAX endpoint для поиска дубликатов в форме рекламаций
+    path(
+        "admin/ajax/check-reclamation-duplicates/",
+        check_duplicate_reclamations_ajax,
+        name="check_duplicate_reclamations",
+    ),
     # Перенаправления для каждого приложения
     path(
         "admin/reclamations/",
