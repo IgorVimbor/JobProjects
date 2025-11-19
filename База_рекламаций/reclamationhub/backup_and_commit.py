@@ -2,13 +2,13 @@ import os
 import sys
 import subprocess
 import logging
-from datetime import datetime
+from datetime import date
 
 
 # ---------------------------- Настройка логирования --------------------------------
 
 # Файл для записи логов
-log_file = f"D:/Reclamationhub_log/rhub_backup_{datetime.now().strftime('%Y%m%d')}.log"
+log_file = f"D:/Reclamationhub_log/rhub_backup_{date.today().strftime('%Y%m%d')}.log"
 
 # Создаем форматтер для единого формата вывода
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
@@ -85,7 +85,7 @@ def main():
             return
 
         # Создание коммита с датой
-        commit_message = f"Auto: Обновление фикстуры БД от {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+        commit_message = f"Auto: Обновление фикстуры БД от {date.today().strftime('%Y-%m-%d %H:%M')}"
         if not run_command(["git", "commit", "-m", commit_message], "Создание коммита"):
             # Если коммитить нечего, git вернет ошибку.
             # Если команда commit не удалась, возможно, изменений не было.

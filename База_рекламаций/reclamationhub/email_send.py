@@ -5,8 +5,26 @@ from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
+import logging
 from datetime import date
 
+
+# ---------------------------- Настройка логирования --------------------------------
+
+# Файл для записи логов
+log_file = f"D:/Reclamationhub_log/rhub_backup_{date.today().strftime('%Y%m%d')}.log"
+
+# Создаем форматтер для единого формата вывода
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+
+# Настраиваем корневой логгер
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# Хендлер для файла логов
+file_handler = logging.FileHandler(log_file, encoding="utf-8")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 # Загрузка переменных из файла .env.production
 env_prod_file_path = r".env.production"
@@ -14,6 +32,7 @@ load_dotenv(dotenv_path=env_prod_file_path)
 
 
 def send_email_mailru():
+    logging.info("--- Начало скрипта отправки письма ---")
     # -------------- 1. ЗАГРУЗКА И ПРОВЕРКА ПЕРЕМЕННЫХ ----------------
     # Получение данных из переменных окружения
     sender_email = os.getenv("MAIL_USERNAME")
@@ -24,7 +43,8 @@ def send_email_mailru():
 
     # Проверка, что все переменные загружены
     if not all([sender_email, sender_password, receiver_email]):
-        print("❌ Ошибка: не все переменные окружения установлены")
+        print("Ошибка: не все переменные окружения установлены")
+        logging.info("Ошибка: не все переменные окружения установлены")
         return False
 
     # -------------- 2. СОЗДАНИЕ КОНТЕЙНЕРА ПИСЬМА ---------------------
@@ -70,17 +90,23 @@ def send_email_mailru():
 
         # Прикрепляем файл к письму
         message.attach(part)
-        print(f"✅ Файл '{filename}' успешно прикреплен.")
+        print(f"Файл '{filename}' успешно прикреплен.")
+        logging.info(f"Файл '{filename}' успешно прикреплен.")
 
     except FileNotFoundError:
-        print(f"❌ ОШИБКА: Файл для вложения не найден по пути: {filepath}")
+        print(f"ОШИБКА: Файл для вложения не найден по пути: {filepath}")
+        logging.info(f"ОШИБКА: Файл для вложения не найден по пути: {filepath}")
         return  # Прерываем отправку, если файл не найден
 
     # --------------- 5. ОТПРАВКА ПИСЬМА ------------------------------
     try:
-        print(f"Подключаюсь к {smtp_server}:{smtp_port}...")
-        # Подключение к серверу Mail.ru
+        print(f"Подключение к {smtp_server}:{smtp_port}...")
+        logging.info(f"Подключение к {smtp_server}:{smtp_port}...")
+        # Подключение к серверу Mail.ru через SMTP
         server = smtplib.SMTP(smtp_server, smtp_port)
+        # # Используем SMTP_SSL вместо SMTP
+        # server = smtplib.SMTP_SSL(smtp_server, smtp_port)
+
         server.starttls()  # Включение TLS шифрования
         server.login(sender_email, sender_password)
 
@@ -89,10 +115,14 @@ def send_email_mailru():
         server.sendmail(sender_email, receiver_email, text)
         server.quit()
 
-        print("✅ Письмо с вложением успешно отправлено с Mail.ru на Gmail!")
+        print("Письмо с вложением успешно отправлено с Mail.ru на Gmail!")
+        logging.info("Письмо с вложением успешно отправлено с Mail.ru на Gmail!")
 
     except Exception as e:
-        print(f"❌ Ошибка во время отправки: {e}")
+        print(f"ОШИБКА: Во время отправки письма возникла ошибка: {e}")
+        logging.info(f"ОШИБКА: Во время отправки письма возникла ошибка: {e}")
+
+    logging.info("--- Скрипт отправки письма завершен ---")
 
 
 if __name__ == "__main__":

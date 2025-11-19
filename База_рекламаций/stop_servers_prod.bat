@@ -58,7 +58,7 @@ call r-hub_venv\Scripts\activate
 cd reclamationhub
 
 :: Запускаем Python-скрипт
-echo        Выполняется Python-скрипт backup_and_commit.py...
+echo        Выполняется Python-скрипт backup_and_commit.py ...
 echo.
 echo (При возникновении ошибок смотри подробности в логах или в окне)
 python backup_and_commit.py
@@ -67,12 +67,15 @@ echo.
 echo        Бэкап и коммит завершены.
 :: ---------------------------------------------------------------------------------------------
 
-@REM :: 4. Запуск Python-скрипта email_send.py отправки письма с фикстурой БД
-@REM echo.
-@REM echo        Выполняется Python-скрипт email_send.py...
-@REM echo.
-@REM python email_send.py
-@REM :: ---------------------------------------------------------------------------------------------
+:: 4. Запуск Python-скрипта email_send.py отправки письма с фикстурой БД
+echo.
+echo        Выполняется Python-скрипт email_send.py ...
+echo.
+python email_send.py
+
+echo.
+echo        Письмо с вложением отправлено.
+:: ---------------------------------------------------------------------------------------------
 
 timeout /t 2 /nobreak > nul
 echo.
