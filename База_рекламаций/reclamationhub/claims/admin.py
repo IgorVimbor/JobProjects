@@ -122,7 +122,7 @@ class ClaimAdmin(admin.ModelAdmin):
 
     class Media:
         css = {"all": ("admin/css/custom_admin.css",)}
-        js = ("admin/js/custom_admin.js",)
+        js = ("admin/js/custom_admin.js", "admin\js\claim_search.js")
 
     form = ClaimAdminForm
 
@@ -362,6 +362,7 @@ class ClaimAdmin(admin.ModelAdmin):
         if not reclamation and obj.investigation_act_number:
             try:
                 from investigations.models import Investigation
+
                 investigation = Investigation.objects.filter(
                     act_number=obj.investigation_act_number
                 ).first()

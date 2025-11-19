@@ -59,7 +59,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         js = (
             "admin/js/custom_admin.js",
             "admin/js/reclamation_duplicates.js",
-            "admin/js/copy_act_fields.js",
+            "admin/js/reclamation_form.js",
         )
 
     form = ReclamationAdminForm
