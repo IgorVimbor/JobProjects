@@ -23,14 +23,14 @@
 <!-- ========== ГРУППА A: РЕКЛАМАЦИИ ИЗ БАЗЫ ========== -->
 <div class="row mb-3">
     <div class="col-12">
-        <h4 class="text-primary">📋 Группа A: Рекламации из базы</h4>
+        <h4 class="text-primary">📋 Группа A: Претензии по рекламациям из базы</h4>
     </div>
 </div>
 
 <!-- Карточки Группы A -->
 <div class="row mb-4">
     <!-- Всего рекламаций -->
-    <div class="col-lg-4 col-md-6 mb-3">
+    <div class="col-lg-3 col-md-6 mb-3">
         <div class="card border-primary">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Всего рекламаций</h6>
@@ -41,7 +41,7 @@
     </div>
 
     <!-- Переросли в претензии -->
-    <div class="col-lg-4 col-md-6 mb-3">
+    <div class="col-lg-3 col-md-6 mb-3">
         <div class="card border-warning">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Переросли в претензии</h6>
@@ -55,12 +55,23 @@
     </div>
 
     <!-- Средний срок эскалации -->
-    <div class="col-lg-4 col-md-6 mb-3">
+    <div class="col-lg-3 col-md-6 mb-3">
         <div class="card border-info">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Средний срок эскалации</h6>
                 <h3 class="card-title text-info">{{ conversion_data.group_a.summary_cards.average_days }}</h3>
                 <small class="text-muted">дней от рекламации до претензии</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Общая сумма -->
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-success">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Признанная сумма по Группе А</h6>
+                <h3 class="card-title text-success">{{ conversion_data.group_a.summary_cards.claim_amount_byn }}</h3>
+                <small class="text-muted">BYN</small>
             </div>
         </div>
     </div>
@@ -126,6 +137,8 @@
                                 <td><strong>{{ consumer.consumer }}</strong></td>
                                 <td>{{ consumer.total_reclamations }}</td>
                                 <td>{{ consumer.escalated }}</td>
+                                <td>{{ consumer.conversion_rate }} %</td>
+                                <!--
                                 <td>
                                     {% if consumer.conversion_rate >= 40 %}
                                         <span class="badge bg-danger">{{ consumer.conversion_rate }}% ⚠️</span>
@@ -135,6 +148,7 @@
                                         <span class="badge bg-success">{{ consumer.conversion_rate }}% ✅</span>
                                     {% endif %}
                                 </td>
+                                -->
                                 <td>{{ consumer.average_days }}</td>
                             </tr>
                             {% endfor %}
@@ -150,7 +164,7 @@
 <!-- ========== ГРУППА B: ПРЕТЕНЗИИ БЕЗ СВЯЗИ ========== -->
 <div class="row mb-3 mt-5">
     <div class="col-12">
-        <h4 class="text-secondary">📋 Группа B: Претензии без связи</h4>
+        <h4 class="text-secondary">📋 Группа B: Претензии по рекламациям без связи</h4>
         <p class="text-muted small">Признанные претензии {{ conversion_data.year }} года без связи с рекламациями из базы</p>
     </div>
 </div>
@@ -163,7 +177,7 @@
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Претензий без связи</h6>
                 <h3 class="card-title text-secondary">{{ conversion_data.group_b.summary_cards.claims_without_link }}</h3>
-                <small class="text-muted">рекламации отсутствуют в базе</small>
+                <small class="text-muted">рекламации отсутствуют в базе {{ conversion_data.year }} года</small>
             </div>
         </div>
     </div>
@@ -172,7 +186,7 @@
     <div class="col-lg-4 col-md-6 mb-3">
         <div class="card border-warning">
             <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Претензий без даты рекламации</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Рекламаций без даты</h6>
                 <h3 class="card-title text-warning">{{ conversion_data.group_b.summary_cards.claims_without_date }}</h3>
                 <small class="text-muted">невозможно рассчитать срок эскалации</small>
             </div>
@@ -183,7 +197,7 @@
     <div class="col-lg-4 col-md-6 mb-3">
         <div class="card border-success">
             <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Общая сумма признано</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Признанная сумма по Группе В</h6>
                 <h3 class="card-title text-success">{{ conversion_data.group_b.summary_cards.total_amount_byn }}</h3>
                 <small class="text-muted">BYN</small>
             </div>

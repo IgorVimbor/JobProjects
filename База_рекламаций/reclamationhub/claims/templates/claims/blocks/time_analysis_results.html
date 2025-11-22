@@ -28,7 +28,7 @@
                 <h5>📊 Распределение по месяцам: изготовление → рекламация → претензия</h5>
             </div>
             <div class="card-body">
-                <!-- ✅ ИЗМЕНЕНИЕ 1: Увеличили высоту в 2 раза (было 80, стало 160) -->
+                <!-- Устанавливаем высоту графика (160) -->
                 <canvas id="timeAnalysisChart" height="160"></canvas>
 
                 <!-- Легенда и пояснения -->
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new Chart(ctx, {
         type: 'bar',
         data: {
-            // ✅ ИЗМЕНЕНИЕ 2: Используем labels вместо labels_formatted (формат "2020-12")
+            // Используем labels вместо labels_formatted (формат "2020-12")
             labels: {{ time_analysis_data.monthly_data.labels|safe }},
             datasets: [
                 {
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     backgroundColor: 'rgba(76, 175, 80, 0.7)',
                     borderColor: 'rgb(76, 175, 80)',
                     borderWidth: 1,
-                    // ✅ ИЗМЕНЕНИЕ 3 и 4: Подписи НАД столбцами, скрываем нули
+                    // Подписи НАД столбцами, скрываем нули
                     datalabels: {
                         anchor: 'end',      // Конец столбца
                         align: 'top',       // Над столбцом
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 },
-                // ✅ Включаем плагин datalabels
+                // Включаем плагин datalabels
                 datalabels: {
                     display: true
                 }
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     ticks: {
                         autoSkip: false,
-                        maxRotation: 90,  // ✅ Поворот на 90° для экономии места
+                        maxRotation: 90,  // Поворот на 90° для экономии места
                         minRotation: 90
                     }
                 },

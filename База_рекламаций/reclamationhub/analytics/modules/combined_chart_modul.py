@@ -211,8 +211,10 @@ class DefectDateChartGenerator:
 
         plt.figure(figsize=(12, 6))
 
-        # Подсчитываем количество по обозначениям
-        product_counts = df["Обозначение_изделия"].value_counts().sort_index()
+        # Подсчитываем количество по обозначениям и сортируем по убыванию
+        product_counts = (
+            df["Обозначение_изделия"].value_counts().sort_values(ascending=False)
+        )
 
         # Создаем столбчатую диаграмму
         ax = sns.countplot(data=df, x="Обозначение_изделия", order=product_counts.index)

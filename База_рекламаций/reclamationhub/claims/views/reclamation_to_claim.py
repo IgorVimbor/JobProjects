@@ -191,6 +191,9 @@ def format_analysis_data(result):
                     result["group_a"]["summary_cards"]["escalation_rate"]
                 ),
                 "average_days": int(result["group_a"]["summary_cards"]["average_days"]),
+                "claim_amount_byn": float(
+                    result["group_a"]["summary_cards"]["claim_amount_byn"]
+                ),
             },
             "monthly_conversion": {
                 "labels": result["group_a"]["monthly_conversion"]["labels"],

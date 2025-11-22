@@ -38,7 +38,7 @@ class DashboardProcessor:
     def __init__(self, year=None, exchange_rate=None):
         self.today = date.today()
         self.year = year or self.today.year  # год анализа (по умолчанию текущий)
-        self.exchange_rate = exchange_rate or Decimal("0.035")  # курс RUR → BYN
+        self.exchange_rate = exchange_rate or Decimal("0.03")  # курс RUR → BYN
 
     def _convert_to_byn(self, amount, currency):
         """Конвертация суммы в BYN (currency: 'RUR' или 'BYN')"""
