@@ -83,7 +83,8 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h5>📈 Динамика конверсии по месяцам</h5>
+                <!-- <h5>📈 Динамика конверсии по месяцам</h5> -->
+                <h5>📈 Процент рекламаций, переросших в претензии (по месяцам)</h5>
             </div>
             <div class="card-body">
                 <canvas id="monthlyConversionChart" height="80"></canvas>
@@ -284,11 +285,12 @@ document.addEventListener('DOMContentLoaded', function() {
             responsive: true,
             maintainAspectRatio: true,
             plugins: {
-                legend: { display: true, position: 'top' },
-                title: {
+                // размещаем легенду графика сверху и выравниваем по правому краю
+                legend: { display: true, position: 'top', align: 'end' },
+                {% comment %} title: {  // название графика (title) закомментировано
                     display: true,
                     text: 'Процент рекламаций, переросших в претензии (по месяцам)'
-                }
+                } {% endcomment %}
             },
             scales: {
                 y: {

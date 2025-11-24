@@ -49,6 +49,7 @@ class ConsumerAnalysisProcessor:
         self.consumers = consumers or []  # список потребителей
         self.all_consumers_mode = len(self.consumers) == 0  # режим "все"
         self.exchange_rate = exchange_rate or Decimal("0.03")
+        self.df = pd.DataFrame()  # общий DataFrame
 
     def _convert_to_byn(self, amount, currency):
         """Конвертация суммы в BYN"""
@@ -83,6 +84,8 @@ class ConsumerAnalysisProcessor:
             "claim_number",
             "claim_date",
             "claim_amount_all",
+            "claim_amount_act",
+            "costs_act",
             "costs_all",
             "type_money",
             "consumer_name",
@@ -91,20 +94,24 @@ class ConsumerAnalysisProcessor:
         if not claims.exists():
             return pd.DataFrame()
 
-        # Создаем DataFrame
-        df = pd.DataFrame(list(claims))
+        # Создаем общий DataFrame из полученных записей
+        self.df = pd.DataFrame(list(claims))
 
         # Группируем по claim_number и берем первую запись
-        df_unique = df.groupby("claim_number").first().reset_index()
+        # df_unique = df.groupby("claim_number").first().reset_index()
+
+        # Из общего датафрейма убираем дублирование претензий, т.к. суммы дублируются
+        df_unique = self.df.drop_duplicates(subset="claim_number")
 
         return df_unique
 
     def get_summary_data(self):
         """Сводная информация по потребителю/потребителям"""
 
-        df = self._get_unique_claims_df()
+        # Датафрейм по уникальным номерам претензий
+        df_unique = self._get_unique_claims_df()
 
-        if df.empty:
+        if df_unique.empty:
             return {
                 "total_claims": 0,
                 "total_acts": 0,
@@ -114,7 +121,7 @@ class ConsumerAnalysisProcessor:
             }
 
         # Количество УНИКАЛЬНЫХ претензий
-        total_claims = len(df)
+        total_claims = len(df_unique)
 
         # Количество ВСЕГО строк (актов) с учетом фильтрации по потребителям
         queryset_filter = {"claim_date__year": self.year}
@@ -127,20 +134,18 @@ class ConsumerAnalysisProcessor:
 
         total_acts = Claim.objects.filter(**queryset_filter).count()
 
-        # Подсчет сумм
-        total_amount_byn = Decimal("0.00")
-        total_costs_byn = Decimal("0.00")
+        # Подсчет сумм (считаем по актам рекламаций)
+        total_amount_byn = self.df.apply(
+            lambda row: self._convert_to_byn(
+                row["claim_amount_act"], row["type_money"]
+            ),
+            axis=1,
+        ).sum()
 
-        for _, row in df.iterrows():
-            currency = row["type_money"] or "BYN"
-
-            if row["claim_amount_all"]:
-                total_amount_byn += self._convert_to_byn(
-                    row["claim_amount_all"], currency
-                )
-
-            if row["costs_all"]:
-                total_costs_byn += self._convert_to_byn(row["costs_all"], currency)
+        total_costs_byn = self.df.apply(
+            lambda row: self._convert_to_byn(row["costs_act"], row["type_money"]),
+            axis=1,
+        ).sum()
 
         # Процент признания
         acceptance_percent = 0

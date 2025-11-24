@@ -308,3 +308,25 @@ WHERE act_number IN (
 )
 ORDER BY act_number;
 -- ----------------------------------------------------------------------------
+
+UPDATE claim
+SET comment = REPLACE(comment, 'Совместно с ISKRA', 'Вместе с ISKRA')
+WHERE comment LIKE '%Совместно с ISKRA%';
+
+SELECT count(*) total
+FROM claim
+WHERE comment LIKE '%Вместе с ISKRA%';
+
+SELECT id, comment
+FROM claim
+WHERE comment LIKE '%Вместе с ISKRA%';
+
+
+SELECT
+	count(distinct claim_number) claim_count,
+	sum(distinct claim_amount_all) total_amount_byn,
+	sum(distinct costs_all) total_costs_byn,
+	sum(claim_amount_act) amount_act,
+	sum(costs_act) costs_act
+FROM claim
+WHERE consumer_name = 'ММЗ';

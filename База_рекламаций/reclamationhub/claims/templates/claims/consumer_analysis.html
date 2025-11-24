@@ -435,14 +435,12 @@ document.addEventListener('DOMContentLoaded', function() {
             responsive: true,
             maintainAspectRatio: true,
             plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                title: {
+                // размещаем легенду графика сверху и выравниваем по правому краю
+                legend: { display: true, position: 'top', align: 'end' },
+                {% comment %} title: {  // название графика (title) закомментировано
                     display: true,
                     text: 'Динамика претензий по месяцам (BYN)'
-                }
+                } {% endcomment %}
             },
             scales: {
                 y: {

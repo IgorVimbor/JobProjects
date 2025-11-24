@@ -5,6 +5,7 @@ from django.utils.html import format_html
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 from datetime import datetime
+import re
 
 from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
@@ -152,7 +153,7 @@ class ClaimAdmin(admin.ModelAdmin):
         "has_investigation_icon",
         "investigation_act_date",
         "investigation_act_result",
-        "comment",
+        "formatted_comment",
         # Решение по претензии
         "result_colored",
         "costs_act_display",
@@ -372,6 +373,24 @@ class ClaimAdmin(admin.ModelAdmin):
 
         return "-"
 
+    @admin.display(description="Комментарий")
+    def formatted_comment(self, obj):
+        if obj.comment:
+            # Ищем "Вместе с ISKRA" и выделяем жирным темно-оранжевым цветом
+            pattern = r"(Вместе с ISKRA)"
+            highlighted_text = re.sub(
+                pattern,
+                r'<strong style="color: #FF8C00; font-weight: bold;">\1</strong>',
+                obj.comment,
+                flags=re.IGNORECASE,  # регистронезависимый поиск
+            )
+            return format_html(highlighted_text)
+        return obj.comment or "-"
+
+    # Технически вместо format_html() можно использовать mark_safe(). Но format_html() автоматически экранирует
+    # опасные символы в тексте и защищает от XSS-атак, а mark_safe() просто помечает строку как "безопасную"
+    # без дополнительной обработки
+
     @admin.display(description="Решение по претензии")
     def result_colored(self, obj):
         """Цветное отображение результата"""
@@ -382,7 +401,7 @@ class ClaimAdmin(admin.ModelAdmin):
             )
         elif obj.result_claim == Claim.Result.REJECTED:
             return format_html(
-                '<span style="color: red; font-weight: bold;">✗ {}</span>',
+                '<span style="color: red; font-weight: bold;">{}</span>',
                 obj.get_result_claim_display(),
             )
         return "-"
