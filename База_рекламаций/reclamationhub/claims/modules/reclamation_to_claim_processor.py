@@ -1,7 +1,6 @@
 # claims/modules/reclamation_to_claim_processor.py
 """Процессор для анализа конверсии рекламация → претензия"""
 
-import pandas as pd
 from datetime import date
 from decimal import Decimal
 from django.db.models import Prefetch
@@ -47,10 +46,10 @@ class ReclamationToClaimProcessor:
         self.all_consumers_mode = len(self.consumers) == 0
         self.exchange_rate = exchange_rate or Decimal("0.03")
 
-        # Кэш
-        self._reclamations_cache = None
-        self._dataframe_cache = None
+        # Кэш для выборок
+        self._group_a_claims_cache = None
         self._group_b_claims_cache = None
+        self._reclamations_cache = None
 
     def _convert_to_byn(self, amount, currency):
         """Конвертация суммы в BYN"""
@@ -99,110 +98,167 @@ class ReclamationToClaimProcessor:
 
         return False
 
-    def _get_reclamations_with_claims(self):
-        """Получение рекламаций с предзагруженными претензиями"""
+    # def _get_base_claims_data(self):
+    #     """Получение претензий с оптимизированной загрузкой рекламаций"""
+    #     if (
+    #         self._group_a_claims_cache is not None
+    #         and self._group_b_claims_cache is not None
+    #     ):
+    #         return self._group_a_claims_cache, self._group_b_claims_cache
+
+    #     # Оптимизированный prefetch для рекламаций
+    #     reclamations_prefetch = Prefetch(
+    #         "reclamations",
+    #         queryset=Reclamation.objects.only(
+    #             "id", "year", "consumer_act_date", "end_consumer_act_date"
+    #         ),
+    #     )
+
+    #     # Группа А: претензии со связанными рекламациями (без фильтра по году)
+    #     self._group_a_claims_cache = (
+    #         Claim.objects.filter(
+    #             result_claim="ACCEPTED",
+    #             reclamations__isnull=False,
+    #             # claim_date__year=self.year   # без фильтра по году
+    #         )
+    #         .prefetch_related(reclamations_prefetch)
+    #         .distinct()
+    #     )
+
+    #     # Группа Б: претензии без связей за выбранный год
+    #     self._group_b_claims_cache = Claim.objects.filter(
+    #         result_claim="ACCEPTED",
+    #         claim_date__year=self.year,  # Оставляем фильтр по году
+    #         reclamations__isnull=True,
+    #     )
+
+    #     return self._group_a_claims_cache, self._group_b_claims_cache
+
+    # def _get_filtered_group_a_claims(self):
+    #     """Группа А с фильтрацией по потребителям"""
+    #     group_a_claims, _ = self._get_base_claims_data()
+
+    #     filtered_claims = []
+    #     for claim in group_a_claims:
+    #         if self._consumer_matches_filter(claim.consumer_name):
+    #             filtered_claims.append(claim)
+
+    #     return filtered_claims
+
+    # def _get_filtered_group_b_claims(self):
+    #     """Группа Б с фильтрацией по потребителям"""
+    #     _, group_b_claims = self._get_base_claims_data()
+
+    #     filtered_claims = []
+    #     for claim in group_b_claims:
+    #         if self._consumer_matches_filter(claim.consumer_name):
+    #             filtered_claims.append(claim)
+
+    #     return filtered_claims
+
+    def _get_base_claims_data(self):
+        """Фильтрация на SQL уровне"""
+        if (
+            self._group_a_claims_cache is not None
+            and self._group_b_claims_cache is not None
+        ):
+            return self._group_a_claims_cache, self._group_b_claims_cache
+
+        # Формируем SQL фильтр по потребителям
+        consumer_filter = Q()
+        if not self.all_consumers_mode:
+            for consumer in self.consumers:
+                consumer_filter |= Q(consumer_name__istartswith=consumer)
+
+        reclamations_prefetch = Prefetch(
+            "reclamations",
+            queryset=Reclamation.objects.filter(year=self.year).only(  # Фильтр по году!
+                "id",
+                "year",
+                "consumer_act_date",
+                "end_consumer_act_date",
+                "message_received_date",
+            ),
+        )
+
+        # Группа А: претензии со связанными рекламациями + фильтр потребителей
+        group_a_filter = Q(result_claim="ACCEPTED", reclamations__isnull=False)
+        if not self.all_consumers_mode:
+            group_a_filter &= consumer_filter
+
+        self._group_a_claims_cache = (
+            Claim.objects.filter(group_a_filter)
+            .prefetch_related(reclamations_prefetch)
+            .distinct()
+        )
+
+        # Группа Б: претензии без связей за выбранный год + фильтр потребителей
+        group_b_filter = Q(
+            result_claim="ACCEPTED",
+            claim_date__year=self.year,
+            reclamations__isnull=True,
+        )
+        if not self.all_consumers_mode:
+            group_b_filter &= consumer_filter
+
+        self._group_b_claims_cache = Claim.objects.filter(group_b_filter)
+
+        return self._group_a_claims_cache, self._group_b_claims_cache
+
+    # Убираем методы фильтрации Python!
+    def _get_filtered_group_a_claims(self):
+        """Теперь данные уже отфильтрованы на SQL уровне"""
+        group_a_claims, _ = self._get_base_claims_data()
+        return list(group_a_claims)  # Просто возвращаем как есть
+
+    def _get_filtered_group_b_claims(self):
+        """Теперь данные уже отфильтрованы на SQL уровне"""
+        _, group_b_claims = self._get_base_claims_data()
+        return list(group_b_claims)
+
+    def _get_filtered_reclamations(self):
+        """Единый метод получения рекламаций с кэшированием"""
         if self._reclamations_cache is not None:
             return self._reclamations_cache
 
-        # Queryset для признанных претензий
-        recognized_claims = Claim.objects.filter(
-            result_claim="ACCEPTED",
-            # response_number__isnull=False,
-            # response_date__isnull=False,
-            claim_date__lte=self.today,
-        )
-
-        # Предзагружаем только признанные претензии + потребителя
-        self._reclamations_cache = (
-            Reclamation.objects.filter(year=self.year)
-            .select_related("defect_period")  # Для определения потребителя
-            .prefetch_related(
-                Prefetch(
-                    "claims",
-                    queryset=recognized_claims,
-                    to_attr="recognized_claims_cache",
-                )
-            )
-        )
-
-        return self._reclamations_cache
-
-    def _build_dataframe(self):
-        """Строим pandas DataFrame для всех вычислений"""
-
-        if self._dataframe_cache is not None:
-            return self._dataframe_cache
-
-        reclamations = self._get_reclamations_with_claims()
-
-        data = []
-
-        for reclamation in reclamations:
-            reclamation_date = self._get_reclamation_date(
-                reclamation.consumer_act_date, reclamation.end_consumer_act_date
-            )
-
-            reclamation_month = (
-                reclamation.message_received_date.month
-                if reclamation.message_received_date
-                else None
-            )
-
-            for claim in reclamation.recognized_claims_cache:
-                # Фильтр по потребителям (с учетом префиксов)
-                if not self._consumer_matches_filter(claim.consumer_name):
-                    continue
-
-                days = None
-                if reclamation_date and claim.claim_date:
-                    days = (claim.claim_date - reclamation_date).days
-                    if days < 0:
-                        days = None
-
-                data.append(
-                    {
-                        "reclamation_id": reclamation.id,
-                        "reclamation_month": reclamation_month,
-                        "reclamation_date": reclamation_date,
-                        "claim_number": claim.claim_number,
-                        "claim_date": claim.claim_date,
-                        "claim_type_money": claim.type_money,
-                        "claim_costs_act": claim.costs_act,
-                        "claim_costs_all": claim.costs_all,
-                        "consumer": claim.consumer_name,
-                        "consumer_prefix": self._extract_consumer_prefix(
-                            claim.consumer_name
-                        ),
-                        "days": days,
-                    }
-                )
-
-        self._dataframe_cache = pd.DataFrame(data)
-
-        return self._dataframe_cache
-
-    def _count_reclamations_by_consumer(self):
-        """Подсчет рекламаций по потребителям (фильтрация на уровне БД)"""
-        # Фильтруем рекламации на уровне БД
         if not self.all_consumers_mode:
-            # Формируем Q фильтр для выбранных потребителей
             q_filters = Q()
-
             for consumer in self.consumers:
-                consumer_prefix = self._extract_consumer_prefix(consumer)
-                # Ищем по началу строки (LIKE 'ЯМЗ%')
-                q_filters |= Q(defect_period__name__istartswith=consumer_prefix)
+                q_filters |= Q(defect_period__name__istartswith=consumer)
 
-            reclamations_all = (
-                Reclamation.objects.filter(year=self.year)
-                .filter(q_filters)
+            self._reclamations_cache = (
+                Reclamation.objects.filter(q_filters)
+                .filter(year=self.year)
+                .only(
+                    "id",
+                    "year",
+                    "message_received_date",
+                    "consumer_act_date",
+                    "end_consumer_act_date",
+                    "defect_period__name",
+                )
                 .select_related("defect_period")
             )
         else:
-            # Все рекламации
-            reclamations_all = Reclamation.objects.filter(
-                year=self.year
-            ).select_related("defect_period")
+            self._reclamations_cache = (
+                Reclamation.objects.filter(year=self.year)
+                .only(
+                    "id",
+                    "year",
+                    "message_received_date",
+                    "consumer_act_date",
+                    "end_consumer_act_date",
+                    "defect_period__name",
+                )
+                .select_related("defect_period")
+            )
+
+        return self._reclamations_cache
+
+    def _count_reclamations_by_consumer(self):
+        """Подсчет рекламаций по потребителям (фильтрация на уровне БД)"""
+
+        reclamations_all = self._get_filtered_reclamations()  # используем кэш
 
         consumer_reclamation_count = {}
 
@@ -220,7 +276,7 @@ class ReclamationToClaimProcessor:
 
         return consumer_reclamation_count
 
-    # ========== ГРУППА A: Претензии по рекламациям из базы ==========
+        # ========== ГРУППА A: Претензии со связанными рекламациями ==========
 
     def get_group_a_summary(self):
         """Карточки для Группы A (учитывает фильтр по потребителям)"""
@@ -236,37 +292,53 @@ class ReclamationToClaimProcessor:
                 "escalated_reclamations": 0,
                 "escalation_rate": 0,
                 "average_days": 0,
-                "claim_amount_byn": 0,
+                "claim_amount_byn": "0.00",
             }
 
-        df = self._build_dataframe()
+        # Получаем отфильтрованные претензии Группы А
+        filtered_claims = self._get_filtered_group_a_claims()
 
-        if df.empty:
+        if not filtered_claims:
             # Есть рекламации, но нет претензий
             return {
                 "total_reclamations": total_reclamations,
                 "escalated_reclamations": 0,
                 "escalation_rate": 0,
                 "average_days": 0,
-                "claim_amount_byn": 0,
+                "claim_amount_byn": "0.00",
             }
 
-        # Количество уникальных рекламаций с претензиями
-        escalated_count = df["reclamation_id"].nunique()
+        # Считаем уникальные рекламации и прочую статистику
+        unique_reclamations = set()
+        total_claim_amount = Decimal("0.00")
+        days_list = []
 
-        # Общая сумма в рублях по претензиям Группы А
-        claim_amount_byn = df.apply(
-            lambda row: self._convert_to_byn(
-                row["claim_costs_act"], row["claim_type_money"]
-            ),
-            axis=1,
-        ).sum()
+        for claim in filtered_claims:
+            # Собираем уникальные рекламации
+            for reclamation in claim.reclamations.all():
+                unique_reclamations.add(reclamation.id)
 
-        # Средний срок
-        days_series = df["days"].dropna()
-        average_days = round(days_series.mean()) if len(days_series) > 0 else 0
+            # Сумма претензии
+            if claim.costs_act:
+                total_claim_amount += self._convert_to_byn(
+                    claim.costs_act, claim.type_money
+                )
 
-        # Процент эскалации
+            # Срок эскалации (берем первую связанную рекламацию)
+            first_rec = claim.reclamations.first()
+            if first_rec:
+                rec_date = self._get_reclamation_date(
+                    first_rec.consumer_act_date, first_rec.end_consumer_act_date
+                )
+                if rec_date and claim.claim_date:
+                    days = (claim.claim_date - rec_date).days
+                    if days >= 0:
+                        days_list.append(days)
+
+        escalated_count = len(unique_reclamations)
+
+        # Средний срок и конверсия
+        average_days = round(sum(days_list) / len(days_list)) if days_list else 0
         escalation_rate = round((escalated_count / total_reclamations) * 100, 1)
 
         return {
@@ -274,7 +346,7 @@ class ReclamationToClaimProcessor:
             "escalated_reclamations": escalated_count,
             "escalation_rate": escalation_rate,
             "average_days": average_days,
-            "claim_amount_byn": f"{claim_amount_byn:.2f}",
+            "claim_amount_byn": f"{total_claim_amount:.2f}",
         }
 
     def get_group_a_monthly_conversion(self):
@@ -285,30 +357,15 @@ class ReclamationToClaimProcessor:
         if not consumer_reclamation_count:
             return {"labels": [], "conversion_rates": []}
 
-        # Фильтруем рекламации на уровне БД
-        if not self.all_consumers_mode:
-            q_filters = Q()
-            for consumer in self.consumers:
-                consumer_prefix = self._extract_consumer_prefix(consumer)
-                q_filters |= Q(defect_period__name__istartswith=consumer_prefix)
+        # Получаем рекламации для месячного анализа
+        reclamations_all = self._get_filtered_reclamations()  # используем кэш
 
-            reclamations_all = (
-                Reclamation.objects.filter(year=self.year)
-                .filter(q_filters)
-                .select_related("defect_period")
-            )
-        else:
-            reclamations_all = Reclamation.objects.filter(
-                year=self.year
-            ).select_related("defect_period")
-
-        df = self._build_dataframe()
+        # Получаем отфильтрованные претензии Группы А
+        filtered_claims = self._get_filtered_group_a_claims()
 
         # Считаем количество рекламаций по месяцам
         monthly_total = {}
-
         for reclamation in reclamations_all:
-            # Дополнительная проверка не нужна (уже отфильтровано в queryset)
             if reclamation.message_received_date:
                 month = reclamation.message_received_date.month
                 monthly_total[month] = monthly_total.get(month, 0) + 1
@@ -316,13 +373,20 @@ class ReclamationToClaimProcessor:
         if not monthly_total:
             return {"labels": [], "conversion_rates": []}
 
-        # Считаем эскалации по месяцам через DataFrame
-        if df.empty:
-            monthly_escalated = {}
-        else:
-            monthly_escalated = (
-                df.groupby("reclamation_month")["reclamation_id"].nunique().to_dict()
-            )
+        # Считаем эскалации по месяцам
+        monthly_escalated = {}
+        for claim in filtered_claims:
+            for reclamation in claim.reclamations.all():
+                if reclamation.message_received_date:
+                    month = reclamation.message_received_date.month
+                    if month not in monthly_escalated:
+                        monthly_escalated[month] = set()
+                    monthly_escalated[month].add(reclamation.id)
+
+        # Преобразуем sets в counts
+        monthly_escalated_counts = {
+            month: len(rec_set) for month, rec_set in monthly_escalated.items()
+        }
 
         # Формируем данные для графика
         labels = []
@@ -332,7 +396,7 @@ class ReclamationToClaimProcessor:
             labels.append(self.MONTH_NAMES[month])
 
             total = monthly_total[month]
-            escalated = monthly_escalated.get(month, 0)
+            escalated = monthly_escalated_counts.get(month, 0)
 
             conversion = round((escalated / total) * 100, 1) if total > 0 else 0
             conversion_rates.append(conversion)
@@ -341,7 +405,7 @@ class ReclamationToClaimProcessor:
 
     def get_group_a_time_distribution(self):
         """График: Распределение по срокам эскалации"""
-        df = self._build_dataframe()
+        filtered_claims = self._get_filtered_group_a_claims()
 
         intervals_labels = [
             "0-90 дней",
@@ -352,114 +416,116 @@ class ReclamationToClaimProcessor:
         ]
         intervals_counts = [0, 0, 0, 0, 0]
 
-        if df.empty:
-            return {"labels": intervals_labels, "counts": intervals_counts}
+        for claim in filtered_claims:
+            # Берем первую связанную рекламацию
+            first_rec = claim.reclamations.first()
+            if first_rec:
+                rec_date = self._get_reclamation_date(
+                    first_rec.consumer_act_date, first_rec.end_consumer_act_date
+                )
 
-        days_series = df["days"].dropna()
+                if rec_date and claim.claim_date:
+                    days = (claim.claim_date - rec_date).days
 
-        for days in days_series:
-            if days <= 90:
-                intervals_counts[0] += 1
-            elif days <= 180:
-                intervals_counts[1] += 1
-            elif days <= 270:
-                intervals_counts[2] += 1
-            elif days <= 360:
-                intervals_counts[3] += 1
-            else:
-                intervals_counts[4] += 1
+                    if days < 0:
+                        continue
+                    elif days <= 90:
+                        intervals_counts[0] += 1
+                    elif days <= 180:
+                        intervals_counts[1] += 1
+                    elif days <= 270:
+                        intervals_counts[2] += 1
+                    elif days <= 360:
+                        intervals_counts[3] += 1
+                    else:
+                        intervals_counts[4] += 1
 
         return {"labels": intervals_labels, "counts": intervals_counts}
 
     def get_group_a_top_consumers(self):
-        """Таблица TOP потребителей
-        Логика:
-        - total_reclamations: из таблицы Reclamation по defect_period.name
-        - escalated: количество УНИКАЛЬНЫХ рекламаций с признанными претензиями
-        - conversion_rate = (escalated / total_reclamations) * 100
-        """
-        df = self._build_dataframe()
+        """Таблица TOP потребителей"""
+        filtered_claims = self._get_filtered_group_a_claims()
 
-        if df.empty:
+        if not filtered_claims:
             return []
 
-        # Группировка по ПРЕФИКСУ потребителя
-        consumer_stats = (
-            df.groupby("consumer_prefix")
-            .agg(
-                {
-                    "reclamation_id": "nunique",  # Количество УНИКАЛЬНЫХ рекламаций с эскалацией
-                    "days": "mean",  # Средний срок
-                }
-            )
-            .reset_index()
-        )
+        # Сбор статистики по потребителям
+        consumer_stats = {}
 
-        consumer_stats.columns = ["consumer", "escalated", "average_days"]
+        for claim in filtered_claims:
+            consumer = claim.consumer_name
+            consumer_prefix = self._extract_consumer_prefix(consumer)
+
+            if consumer_prefix not in consumer_stats:
+                consumer_stats[consumer_prefix] = {
+                    "escalated_reclamations": set(),
+                    "days_list": [],
+                }
+
+            # Добавляем уникальные рекламации
+            for reclamation in claim.reclamations.all():
+                consumer_stats[consumer_prefix]["escalated_reclamations"].add(
+                    reclamation.id
+                )
+
+            # Добавляем дни (берем первую рекламацию)
+            first_rec = claim.reclamations.first()
+            if first_rec:
+                rec_date = self._get_reclamation_date(
+                    first_rec.consumer_act_date, first_rec.end_consumer_act_date
+                )
+                if rec_date and claim.claim_date:
+                    days = (claim.claim_date - rec_date).days
+                    if days >= 0:
+                        consumer_stats[consumer_prefix]["days_list"].append(days)
 
         # Используем общий метод для подсчета ВСЕХ рекламаций
         consumer_reclamation_count = self._count_reclamations_by_consumer()
 
-        # Добавляем total_reclamations к статистике
-        consumer_stats["total_reclamations"] = (
-            consumer_stats["consumer"]
-            .map(consumer_reclamation_count)
-            .fillna(0)
-            .astype(int)
-        )
+        # Формируем итоговую таблицу
+        result = []
+        for consumer, stats in consumer_stats.items():
+            escalated = len(stats["escalated_reclamations"])
+            total = consumer_reclamation_count.get(consumer, 0)
+            average_days = (
+                round(sum(stats["days_list"]) / len(stats["days_list"]))
+                if stats["days_list"]
+                else 0
+            )
+            conversion_rate = round((escalated / total) * 100, 1) if total > 0 else 0
 
-        # Считаем конверсию
-        consumer_stats["conversion_rate"] = (
-            (consumer_stats["escalated"] / consumer_stats["total_reclamations"]) * 100
-        ).round(1)
-
-        # Округляем средний срок
-        consumer_stats["average_days"] = (
-            consumer_stats["average_days"].fillna(0).round(0).astype(int)
-        )
+            result.append(
+                {
+                    "consumer": consumer,
+                    "total_reclamations": total,
+                    "escalated": escalated,
+                    "conversion_rate": conversion_rate,
+                    "average_days": average_days,
+                }
+            )
 
         # Сортируем по конверсии (убыв.)
-        consumer_stats = consumer_stats.sort_values("conversion_rate", ascending=False)
+        result.sort(key=lambda x: x["conversion_rate"], reverse=True)
 
-        return consumer_stats.to_dict("records")
+        return result
 
-    # ========== ГРУППА B: Претензии по рекламациям без связи ==========
-
-    def _get_group_b_claims_optimized(self):
-        """ЕДИНСТВЕННОЕ добавление - кэш для Group B"""
-        if self._group_b_claims_cache is not None:
-            return self._group_b_claims_cache
-
-        # Один запрос вместо дублирующих
-        claims_qs = Claim.objects.filter(
-            claim_date__year=self.year,
-            result_claim="ACCEPTED",
-            reclamations__isnull=True,  # Без связей
-        )  # .distinct()
-
-        # Прямая фильтрация по потребителю
-        if not self.all_consumers_mode:
-            claims_qs = claims_qs.filter(consumer_name__in=self.consumers)
-
-        self._group_b_claims_cache = list(claims_qs)
-        return self._group_b_claims_cache
+        # ========== ГРУППА B: Претензии без связанных рекламаций ==========
 
     def get_group_b_summary(self):
         """Карточки для Группы B"""
+        filtered_claims = self._get_filtered_group_b_claims()
 
-        claims_without_link = self._get_group_b_claims_optimized()
+        # Общее количество претензий без связи
+        total_claims = len(filtered_claims)
 
-        # Общее количество рекламаций в Группе В
-        total_claims = len(claims_without_link)
-
-        # Количество рекламаций в Группе В без даты рекламации
+        # Количество претензий без даты рекламации
         claims_without_date = sum(
-            1 for claim in claims_without_link if not claim.reclamation_act_date
+            1 for claim in filtered_claims if not claim.reclamation_act_date
         )
 
-        # Общая сумма в рублях по претензиям Группы В
+        # Общая сумма в BYN по претензиям Группы В
         total_amount_byn = Decimal("0.00")
-        for claim in claims_without_link:
+        for claim in filtered_claims:
             if claim.costs_act:
                 total_amount_byn += self._convert_to_byn(
                     claim.costs_act, claim.type_money
@@ -473,8 +539,7 @@ class ReclamationToClaimProcessor:
 
     def get_group_b_time_distribution(self):
         """График: Распределение по срокам (претензии без связи)"""
-
-        claims_without_link = self._get_group_b_claims_optimized()
+        filtered_claims = self._get_filtered_group_b_claims()
 
         intervals_labels = [
             "0-90 дней",
@@ -485,7 +550,7 @@ class ReclamationToClaimProcessor:
         ]
         intervals_counts = [0, 0, 0, 0, 0]
 
-        for claim in claims_without_link:
+        for claim in filtered_claims:
             if claim.reclamation_act_date and claim.claim_date:
                 days = (claim.claim_date - claim.reclamation_act_date).days
 
@@ -504,7 +569,7 @@ class ReclamationToClaimProcessor:
 
         return {"labels": intervals_labels, "counts": intervals_counts}
 
-    # ========== Главный метод ==========
+    # ========== Главный метод генерации анализа ==========
 
     def generate_analysis(self):
         """Главный метод генерации анализа"""
@@ -551,6 +616,8 @@ class ReclamationToClaimProcessor:
                 "success": False,
                 "error": f"Ошибка при генерации анализа: {str(e)}",
             }
+
+    # ============ Метод сохранения файлов  ====================
 
     def save_to_files(self, analysis_data=None):
         """Сохранение графиков и таблиц в файлы"""

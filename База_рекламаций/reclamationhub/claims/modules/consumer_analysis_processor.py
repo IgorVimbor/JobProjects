@@ -49,10 +49,11 @@ class ConsumerAnalysisProcessor:
         self.consumers = consumers or []  # список потребителей
         self.all_consumers_mode = len(self.consumers) == 0  # режим "все"
         self.exchange_rate = exchange_rate or Decimal("0.03")
-        self.df = pd.DataFrame()  # общий DataFrame
+        # self.df = pd.DataFrame()  # общий DataFrame
 
     def _convert_to_byn(self, amount, currency):
         """Конвертация суммы в BYN"""
+
         if not amount:
             return Decimal("0.00")
 
@@ -65,8 +66,9 @@ class ConsumerAnalysisProcessor:
         else:
             return Decimal("0.00")
 
-    def _get_unique_claims_df(self, specific_consumer=None):
-        """Получение DataFrame с уникальными претензиями"""
+    def _get_claims_df(self, specific_consumer=None):
+        """Получение DataFrame с претензиями"""
+
         # Базовый фильтр по году
         queryset_filter = {"claim_date__year": self.year}
 
@@ -95,21 +97,21 @@ class ConsumerAnalysisProcessor:
             return pd.DataFrame()
 
         # Создаем общий DataFrame из полученных записей
-        self.df = pd.DataFrame(list(claims))
+        df = pd.DataFrame(list(claims))
 
-        # Группируем по claim_number и берем первую запись
-        # df_unique = df.groupby("claim_number").first().reset_index()
-
-        # Из общего датафрейма убираем дублирование претензий, т.к. суммы дублируются
-        df_unique = self.df.drop_duplicates(subset="claim_number")
-
-        return df_unique
+        return df
 
     def get_summary_data(self):
         """Сводная информация по потребителю/потребителям"""
 
-        # Датафрейм по уникальным номерам претензий
-        df_unique = self._get_unique_claims_df()
+        df = self._get_claims_df()  # общий датафрейм с претензиями
+
+        # Создаем датафрейм с уникальными номерами претензий
+        # Из общего датафрейма убираем дублирование номеров претензий
+        df_unique = df.drop_duplicates(subset="claim_number")
+
+        # Группируем по claim_number и берем первую запись
+        # df_unique = df.groupby("claim_number").first().reset_index()
 
         if df_unique.empty:
             return {
@@ -123,26 +125,27 @@ class ConsumerAnalysisProcessor:
         # Количество УНИКАЛЬНЫХ претензий
         total_claims = len(df_unique)
 
-        # Количество ВСЕГО строк (актов) с учетом фильтрации по потребителям
+        # Словарь для фильтрации по году и потребителям
         queryset_filter = {"claim_date__year": self.year}
 
-        # Применяем ту же логику фильтрации, что и в _get_unique_claims_df
+        # Добавляем фильтрацию по потребителям
         if not self.all_consumers_mode:
             # Для выбранных потребителей
             queryset_filter["consumer_name__in"] = self.consumers
         # Если all_consumers_mode=True, то фильтр по потребителям не добавляем
 
+        # Количество ВСЕГО строк (актов) с учетом фильтрации по году и потребителям
         total_acts = Claim.objects.filter(**queryset_filter).count()
 
         # Подсчет сумм (считаем по актам рекламаций)
-        total_amount_byn = self.df.apply(
+        total_amount_byn = df.apply(
             lambda row: self._convert_to_byn(
                 row["claim_amount_act"], row["type_money"]
             ),
             axis=1,
         ).sum()
 
-        total_costs_byn = self.df.apply(
+        total_costs_byn = df.apply(
             lambda row: self._convert_to_byn(row["costs_act"], row["type_money"]),
             axis=1,
         ).sum()
@@ -241,8 +244,9 @@ class ConsumerAnalysisProcessor:
 
     def _process_consumer_monthly_data(self, consumer):
         """Обработка данных одного потребителя по месяцам для таблицы"""
+
         # Получаем данные конкретного потребителя
-        df = self._get_unique_claims_df(specific_consumer=consumer)
+        df = self._get_claims_df(specific_consumer=consumer)
 
         # Инициализируем массивы для 12 месяцев
         monthly_count = [0] * 12
@@ -250,7 +254,7 @@ class ConsumerAnalysisProcessor:
         monthly_costs = [Decimal("0.00")] * 12
 
         if not df.empty:
-            # Преобразуем claim_date в datetime
+            # Преобразуем формат claim_date в datetime
             df["claim_date"] = pd.to_datetime(df["claim_date"])
 
             # Обрабатываем каждую претензию
@@ -262,15 +266,15 @@ class ConsumerAnalysisProcessor:
                 monthly_count[month_idx] += 1
 
                 # Выставленная сумма
-                if row["claim_amount_all"]:
+                if row["claim_amount_act"]:
                     monthly_amount[month_idx] += self._convert_to_byn(
-                        row["claim_amount_all"], currency
+                        row["claim_amount_act"], currency
                     )
 
                 # Признанная сумма
-                if row["costs_all"]:
+                if row["costs_act"]:
                     monthly_costs[month_idx] += self._convert_to_byn(
-                        row["costs_all"], currency
+                        row["costs_act"], currency
                     )
 
         return {
@@ -286,7 +290,7 @@ class ConsumerAnalysisProcessor:
         """Главный метод генерации анализа"""
         try:
             summary_data = self.get_summary_data()
-            monthly_table = self.get_consumers_monthly_table()  # НОВОЕ
+            monthly_table = self.get_consumers_monthly_table()
 
             # Определяем какие данные возвращать для графиков
             if self.all_consumers_mode:
@@ -322,6 +326,7 @@ class ConsumerAnalysisProcessor:
 
     def _get_total_monthly_dynamics(self, monthly_table):
         """Формирует данные для графика из итоговых данных таблицы"""
+
         if not monthly_table["has_data"]:
             return {"labels": [], "amounts": [], "costs": []}
 
@@ -345,18 +350,19 @@ class ConsumerAnalysisProcessor:
 
     def get_monthly_dynamics(self):
         """Динамика по месяцам для одного потребителя"""
-        # Адаптируем для работы с новой логикой
+
+        # Получаем датафрейм с фильтрацией по потребителям
         if self.all_consumers_mode:
-            df = self._get_unique_claims_df()
+            df = self._get_claims_df()
         elif len(self.consumers) == 1:
-            df = self._get_unique_claims_df(specific_consumer=self.consumers[0])
+            df = self._get_claims_df(specific_consumer=self.consumers[0])
         else:
-            df = self._get_unique_claims_df()
+            df = self._get_claims_df()
 
         if df.empty:
             return {"labels": [], "amounts": [], "costs": []}
 
-        # Остальная логика метода остается без изменений
+        # Преобразуем формат claim_date в datetime
         df["claim_date"] = pd.to_datetime(df["claim_date"])
 
         monthly_data = {}
@@ -370,15 +376,15 @@ class ConsumerAnalysisProcessor:
                     "amount": Decimal("0.00"),
                     "cost": Decimal("0.00"),
                 }
-
-            if row["claim_amount_all"]:
+            # Выставленная сумма
+            if row["claim_amount_act"]:
                 monthly_data[month]["amount"] += self._convert_to_byn(
-                    row["claim_amount_all"], currency
+                    row["claim_amount_act"], currency
                 )
-
-            if row["costs_all"]:
+            # Признанная сумма
+            if row["costs_act"]:
                 monthly_data[month]["cost"] += self._convert_to_byn(
-                    row["costs_all"], currency
+                    row["costs_act"], currency
                 )
 
         # Формируем данные для графика
@@ -393,7 +399,6 @@ class ConsumerAnalysisProcessor:
 
         return {"labels": labels, "amounts": amounts, "costs": costs}
 
-    # def save_to_files(self):
     def save_to_files(self, analysis_data=None):
         """Сохранение графика и таблицы анализа потребителя в файлы"""
         try:

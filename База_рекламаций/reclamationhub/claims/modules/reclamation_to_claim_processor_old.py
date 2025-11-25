@@ -50,6 +50,7 @@ class ReclamationToClaimProcessor:
         # Кэш
         self._reclamations_cache = None
         self._dataframe_cache = None
+        self._group_b_claims_cache = None
 
     def _convert_to_byn(self, amount, currency):
         """Конвертация суммы в BYN"""
@@ -70,11 +71,7 @@ class ReclamationToClaimProcessor:
         return consumer_act_date or end_consumer_act_date
 
     def _extract_consumer_prefix(self, consumer_name):
-        """Извлекает префикс потребителя
-        "ПАЗ - АСП" → "ПАЗ"
-        "ПАЗ - эксплуатация" → "ПАЗ"
-        "ЯМЗ" → "ЯМЗ"
-        """
+        """Извлечение префикса потребителя ("ПАЗ - АСП" → "ПАЗ")"""
         return Claim.extract_consumer_prefix(consumer_name)
 
     def _consumer_matches_filter(self, consumer_name):
@@ -112,7 +109,7 @@ class ReclamationToClaimProcessor:
             result_claim="ACCEPTED",
             # response_number__isnull=False,
             # response_date__isnull=False,
-            claim_date__lte=self.today,
+            # claim_date__lte=self.today,
         )
 
         # Предзагружаем только признанные претензии + потребителя
@@ -186,16 +183,15 @@ class ReclamationToClaimProcessor:
 
     def _count_reclamations_by_consumer(self):
         """Подсчет рекламаций по потребителям (фильтрация на уровне БД)"""
-
         # Фильтруем рекламации на уровне БД
         if not self.all_consumers_mode:
             # Формируем Q фильтр для выбранных потребителей
             q_filters = Q()
 
             for consumer in self.consumers:
-                consumer_prefix = self._extract_consumer_prefix(consumer)
+                # consumer_prefix = self._extract_consumer_prefix(consumer)
                 # Ищем по началу строки (LIKE 'ЯМЗ%')
-                q_filters |= Q(defect_period__name__istartswith=consumer_prefix)
+                q_filters |= Q(defect_period__name__istartswith=consumer)
 
             reclamations_all = (
                 Reclamation.objects.filter(year=self.year)
@@ -228,7 +224,6 @@ class ReclamationToClaimProcessor:
 
     def get_group_a_summary(self):
         """Карточки для Группы A (учитывает фильтр по потребителям)"""
-
         # Считаем рекламации с учетом фильтра по потребителям
         consumer_reclamation_count = self._count_reclamations_by_consumer()
 
@@ -284,7 +279,6 @@ class ReclamationToClaimProcessor:
 
     def get_group_a_monthly_conversion(self):
         """График динамики конверсии по месяцам (учитывает фильтр по потребителям)"""
-
         # Считаем рекламации с учетом фильтра
         consumer_reclamation_count = self._count_reclamations_by_consumer()
 
@@ -295,8 +289,8 @@ class ReclamationToClaimProcessor:
         if not self.all_consumers_mode:
             q_filters = Q()
             for consumer in self.consumers:
-                consumer_prefix = self._extract_consumer_prefix(consumer)
-                q_filters |= Q(defect_period__name__istartswith=consumer_prefix)
+                # consumer_prefix = self._extract_consumer_prefix(consumer)
+                q_filters |= Q(defect_period__name__istartswith=consumer)
 
             reclamations_all = (
                 Reclamation.objects.filter(year=self.year)
@@ -431,25 +425,29 @@ class ReclamationToClaimProcessor:
 
     # ========== ГРУППА B: Претензии по рекламациям без связи ==========
 
-    def get_group_b_summary(self):
-        """Карточки для Группы B"""
+    def _get_group_b_claims_optimized(self):
+        """ЕДИНСТВЕННОЕ добавление - кэш для Group B"""
+        if self._group_b_claims_cache is not None:
+            return self._group_b_claims_cache
+
+        # Один запрос вместо дублирующих
         claims_qs = Claim.objects.filter(
             claim_date__year=self.year,
             result_claim="ACCEPTED",
-            # response_number__isnull=False,
-        ).prefetch_related("reclamations")
+            reclamations__isnull=True,  # Без связей
+        )  # .distinct()
 
-        claims_without_link = [
-            claim for claim in claims_qs if not claim.reclamations.exists()
-        ]
-
-        # Фильтр по потребителям (с учетом префиксов)
+        # Прямая фильтрация по потребителю
         if not self.all_consumers_mode:
-            claims_without_link = [
-                claim
-                for claim in claims_without_link
-                if self._consumer_matches_filter(claim.consumer_name)
-            ]
+            claims_qs = claims_qs.filter(consumer_name__in=self.consumers)
+
+        self._group_b_claims_cache = list(claims_qs)
+        return self._group_b_claims_cache
+
+    def get_group_b_summary(self):
+        """Карточки для Группы B"""
+
+        claims_without_link = self._get_group_b_claims_optimized()
 
         # Общее количество рекламаций в Группе В
         total_claims = len(claims_without_link)
@@ -462,9 +460,10 @@ class ReclamationToClaimProcessor:
         # Общая сумма в рублях по претензиям Группы В
         total_amount_byn = Decimal("0.00")
         for claim in claims_without_link:
-            currency = claim.type_money or "BYN"
-            if claim.costs_all:
-                total_amount_byn += self._convert_to_byn(claim.costs_act, currency)
+            if claim.costs_act:
+                total_amount_byn += self._convert_to_byn(
+                    claim.costs_act, claim.type_money
+                )
 
         return {
             "claims_without_link": total_claims,
@@ -474,23 +473,8 @@ class ReclamationToClaimProcessor:
 
     def get_group_b_time_distribution(self):
         """График: Распределение по срокам (претензии без связи)"""
-        claims_qs = Claim.objects.filter(
-            claim_date__year=self.year,
-            result_claim="ACCEPTED",
-            # response_number__isnull=False,
-        ).prefetch_related("reclamations")
 
-        claims_without_link = [
-            claim for claim in claims_qs if not claim.reclamations.exists()
-        ]
-
-        # Фильтр по потребителям (с учетом префиксов)
-        if not self.all_consumers_mode:
-            claims_without_link = [
-                claim
-                for claim in claims_without_link
-                if self._consumer_matches_filter(claim.consumer_name)
-            ]
+        claims_without_link = self._get_group_b_claims_optimized()
 
         intervals_labels = [
             "0-90 дней",
