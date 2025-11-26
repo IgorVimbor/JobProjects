@@ -1,7 +1,54 @@
-<!--
+<!-- templates\admin\base_site.html
  Страница админ-панели с кастомными изменениями
- Наследуемся от базового шаблона админ-панели admin/base.html и добавляем свои изменения
+ Наследуемся от базового шаблона админ-панели Django admin/base.html и добавляем свои изменения
  -->
+
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}
+    {% if subtitle %}{{ subtitle }} | {% endif %}
+    {% if opts %}{{ opts.app_config.verbose_name }}{% else %}Панель редактирования{% endif %}
+{% endblock %}
+
+{% block branding %}
+<div id="branding" style="display: flex; align-items: center; height: 100%;">
+    <a href="{% url 'home' %}" style="color: white; font-size: 18px; font-weight: bold; margin-left: 70px;">Главная</a>
+    <a href="{% url 'admin:reclamations_reclamation_changelist' %}" style="color: white; font-size: 16px; margin-left: 20px;">Рекламации</a>
+    <a href="{% url 'admin:investigations_investigation_changelist' %}" style="color: white; font-size: 16px; margin-left: 20px;">Акты исследования</a>
+    <a href="{% url 'admin:claims_claim_changelist' %}" style="color: white; font-size: 16px; margin-left: 20px;">Претензии</a>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+    /* CSS-стиль для скрытия стандартной ссылки "Открыть сайт" на админ-панели */
+    #user-tools a[href="/"]:first-of-type {
+        display: none;
+    }
+
+    /* Увеличиваем высоту поля панели навигации (чтобы стало как на главной странице) */
+    #header {
+    height: 35px;
+    }
+
+    /* Стили для навигационных ссылок (подчеркивание при наведении) */
+    #branding a {
+        text-decoration: none;
+        transition: text-decoration 0.2s ease;
+    }
+
+    #branding a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+
+<!-- ======================== Предыдущий вариант шаблона ============================  -->
+{% comment %}
 
 {% extends "admin/base.html" %}
 
@@ -13,7 +60,7 @@
 {% block branding %}
 <h1 id="site-name">
     <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
-    <!-- После заголовка админ-панели добавляем разделитель "|" потом ссылку "Главная" и еще один разделитель "|" -->
+    <!-- После заголовка админ-панели добавляем разделитель "|" потом ссылку "Главная" и еще разделитель "|" -->
     | <a href="{% url 'home' %}" style="color: #ffc; font-size: 20px;">Главная</a> |
 </h1>
 {% endblock %}
@@ -28,3 +75,5 @@
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
+
+{% endcomment %}

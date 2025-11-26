@@ -1,0 +1,96 @@
+<!-- templates\base_navigation.html
+ Базовый шаблон навигационной панели
+ Создали отдельный файл, т.к. навигационная панель будет включаться в главный шаблон base.html,
+ шаблон админ-панели base_site.html и шаблоны приложений.
+-->
+
+{% load static %}
+
+<!-- <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #417690;"> -->
+<!-- sticky-top Закрепляем навигационную панель -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: #417690;">
+    <div id="branding" class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">Главная</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <!-- <a class="nav-link fw-bold text-white" href="{% url 'admin:reclamations_reclamation_changelist' %}"> жирный шрифт -->
+                    <a class="nav-link text-white" href="{% url 'admin:reclamations_reclamation_changelist' %}">
+                        Рекламации
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'admin:investigations_investigation_changelist' %}">
+                        Акты исследования
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <!-- <a class="nav-link text-white" href="#" onclick="alert('Раздел находится в разработке'); return false;"> -->
+                    <a class="nav-link text-white" href="{% url 'admin:claims_claim_changelist' %}">
+                        Претензии
+                    </a>
+                </li>
+                <!-- Выпадающее меню для "Справки и отчеты" -->
+                <li class="nav-item dropdown position-relative">
+                    <a class="nav-link dropdown-toggle text-white" href="{% url 'reports:references' %}">
+                        Справки и отчеты
+                    </a>
+                    <ul class="dropdown-menu position-absolute hover-dropdown">
+                        <li><a class="dropdown-item" href="{% url 'reports:enquiry_period' %}">Справка по количеству сообщений</a></li>
+                        <li><a class="dropdown-item" href="{% url 'reports:length_study' %}">Длительность исследования рекламаций</a></li>
+                        <li><a class="dropdown-item" href="{% url 'reports:accept_defect' %}">Количество признанных рекламаций</a></li>
+                        <li><a class="dropdown-item" href="{% url 'reports:culprits_defect' %}">Справка по виновникам дефектов</a></li>
+                        <li><a class="dropdown-item" href="{% url 'reports:db_search' %}">Поиск по базе рекламаций</a></li>
+                        <li><a class="dropdown-item" href="{% url 'reports:date_pretence' %}">Даты уведомления по рекламациям</a></li>
+                    </ul>
+                </li>
+                <!-- Выпадающее меню для "Аналитика" -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="{% url 'analytics:analytic' %}">
+                        Аналитика
+                    </a>
+                    <ul class="dropdown-menu position-absolute hover-dropdown">
+                        <!-- Аналитика рекламаций -->
+                        <li><h6 class="dropdown-header">Рекламации:</h6></li>
+                        <li><a class="dropdown-item" href="{% url 'analytics:mileage_chart' %}">Диаграмма по пробегу</a></li>
+                        <li><a class="dropdown-item" href="{% url 'analytics:combined_chart' %}">Диаграммы по датам</a></li>
+                        <li><a class="dropdown-item" href="{% url 'analytics:product_defect' %}">Анализ дефектности по изделию</a></li>
+                        <li><a class="dropdown-item" href="{% url 'analytics:consumer_defect' %}">Анализ дефектности по потребителю</a></li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <!-- Аналитика претензий -->
+                        <li><h6 class="dropdown-header">Претензии:</h6></li>
+                        <li><a class="dropdown-item" href="{% url 'claims:claim_main' %}">Dashboard претензий</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link fw-bold text-white" href="{% url 'admin:index' %}">Панель редактирования</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold text-white" href="{% url 'utils:excel_exporter' %}">
+                        <i class="fas fa-file-excel"></i> Экспорт Excel
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Стили для навигационных ссылок */
+    #branding a {
+        text-decoration: none;
+        transition: text-decoration 0.2s ease;
+    }
+
+    #branding a:hover {
+        text-decoration: underline;
+    }
+</style>
