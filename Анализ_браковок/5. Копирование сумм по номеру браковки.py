@@ -32,7 +32,7 @@ year_now = now.year  # сохраняем текущий год
 # months_pred = months_ru[now.month - 2]
 
 # месяц по которому копируем данные
-months_to_copy = "июль"
+months_to_copy = "октябрь"
 
 # путь до файла бухгалтерии с которого будут копироваться данные
 file_bush = f"//Server/otk/2 ИННА/Списание БРАКА по ЦЕХАМ/Исходные данные бухгалтерии/Брак {months_to_copy} {year_now}.xlsx"
