@@ -49,6 +49,10 @@ class Investigation(models.Model):
         ACCEPT = "ACCEPT", "Признать"
         DEFLECT = "DEFLECT", "Отклонить"
 
+    # По умолчанию для всех полей:
+    # null=False  #  поле НЕ может быть NULL в БД
+    # blank=False  # поле обязательно для заполнения в формах
+
     reclamation = models.OneToOneField(
         Reclamation,
         on_delete=models.PROTECT,  # защищаем от удаления рекламации
@@ -170,14 +174,13 @@ class Investigation(models.Model):
         db_table = "investigation"
         verbose_name = "Акт исследования"
         verbose_name_plural = "Акты исследования"
+        # Дополнительные индексы для производительности поиска и сортировки
         indexes = [
-            # Основной индекс для сортировки
-            models.Index(
+            models.Index(  # Основной индекс для сортировки
                 fields=["-act_number_sort"],  # Убывающий порядок
                 name="investigation_sort_desc_idx",
             ),
-            # Составной индекс для фильтрации + сортировки
-            models.Index(
+            models.Index(  # Составной индекс для фильтрации + сортировки
                 fields=["-act_number_sort", "act_date"],
                 name="investigation_date_sort_idx",
             ),

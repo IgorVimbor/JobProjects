@@ -2,52 +2,58 @@ from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
 from django.db.models import Q
 from django.utils.html import format_html
-from django.urls import path, reverse
+from django.urls import reverse
 from django.utils.safestring import mark_safe
-from datetime import datetime
+from django.utils import timezone
 import re
 
 from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
-from sourcebook.models import PeriodDefect
 from .models import Claim
 from .forms import ClaimAdminForm
 
 
 class ClaimYearListFilter(SimpleListFilter):
-    """Фильтр по году рекламации для использования в ClaimAdmin"""
+    """Фильтр по году претензии с выбором текущего года по умолчанию"""
 
     title = "Год претензии"
-    parameter_name = "reclamations__year"
+    parameter_name = "year"
 
     def lookups(self, request, model_admin):
-        # Получаем все годы из рекламаций и сортируем по убыванию
+        # Получаем годы из модели Claim
         years = (
-            Reclamation.objects.values_list("year", flat=True)
+            Claim.objects.values_list("year", flat=True)
             .distinct()
             .order_by("-year")
         )
+        # Возвращаем отсортированный список вариантов для фильтра
         return [(year, str(year)) for year in years]
+        # В Django фильтрах метод lookups должен возвращать список кортежей, где:
+        # Первый элемент - значение для фильтрации (то, что попадет в self.value())
+        # Второй элемент - текст, который видит пользователь в интерфейсе
 
     def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(reclamations__year=self.value())
-        return queryset
+        # Если ничего не выбрано, показываем претензии текущего года по умолчанию
+        year_filter = self.value() or timezone.now().year
+        return queryset.filter(year=year_filter)
 
     def choices(self, changelist):
         # Подсвечиваем текущий год как выбранный по умолчанию
-        current_year = datetime.now().year
-
+        current_year = timezone.now().year
         # Если не выбрано значение, считаем что выбран текущий год
         selected_value = self.value() or str(current_year)
 
+        # # Добавляем опцию "Все"
+        # yield {
+        #     "selected": self.value() is None,
+        #     "query_string": changelist.get_query_string(remove=[self.parameter_name]),
+        #     "display": "Все",
+        # }
         # Возвращаем варианты выбора
         for lookup, title in self.lookup_choices:
             yield {
                 "selected": str(selected_value) == str(lookup),
-                "query_string": changelist.get_query_string(
-                    {self.parameter_name: lookup}
-                ),
+                "query_string": changelist.get_query_string({self.parameter_name: lookup}),
                 "display": title,
             }
 
@@ -68,54 +74,14 @@ class ConsumerListFilter(SimpleListFilter):
             .distinct()
             .order_by("consumer_name")
         )
-        # Возвращаем отсортированный список вариантов для фильтра
+        # Возвращаем отсортированный список кортежей (вариант для фильтра и текст для пользователя)
         return [(consumer, consumer) for consumer in consumers if consumer]
-        # В Django фильтрах метод lookups должен возвращать список кортежей, где:
-        # Первый элемент - значение для фильтрации (то, что попадет в self.value())
-        # Второй элемент - текст, который видит пользователь в интерфейсе
 
     def queryset(self, request, queryset):
         # Фильтруем queryset на основе выбранного значения
         if self.value():
             return queryset.filter(consumer_name=self.value())
         return queryset
-
-
-# class ConsumerListFilter(SimpleListFilter):
-#     """Фильтр по потребителям. В фильтре будут показываться только "ММЗ", "ЯМЗ" и другие потребители
-#     без суффиксов "-АСП" или "-эксплуатация". При выборе например "ММЗ" будут показаны все претензии,
-#     где период выявления дефекта начинается с "ММЗ -".
-#     """
-
-#     title = "Потребитель"  # Название фильтра в админке
-#     parameter_name = "consumer"  # Параметр в URL
-
-#     def lookups(self, request, model_admin):
-#         # Получаем все уникальные префиксы потребителей из PeriodDefect
-#         consumers = set()
-
-#         # Получаем все периоды дефектов
-#         all_periods = PeriodDefect.objects.values_list("name", flat=True)
-
-#         for period_name in all_periods:
-#             if period_name and " - " in period_name:
-#                 # Извлекаем часть до " - " (например, "ММЗ" из "ММЗ - АСП")
-#                 consumer = period_name.split(" - ")[0].strip()
-#                 consumers.add(consumer)
-
-#         # Возвращаем отсортированный список вариантов для фильтра
-#         return [(consumer, consumer) for consumer in sorted(consumers)]
-#         # В Django фильтрах метод lookups должен возвращать список кортежей, где:
-#         # Первый элемент - значение для фильтрации (то, что попадет в self.value())
-#         # Второй элемент - текст, который видит пользователь в интерфейсе
-
-#     def queryset(self, request, queryset):
-#         # Фильтруем queryset на основе выбранного значения
-#         if self.value():
-#             return queryset.filter(
-#                 reclamations__defect_period__name__startswith=f"{self.value()} - "
-#             )
-#         return queryset
 
 
 @admin.register(Claim, site=admin_site)
@@ -133,8 +99,8 @@ class ClaimAdmin(admin.ModelAdmin):
     # Отображение полей в таблице на админ-панели
     list_display = [
         # Регистрация
+        # "year",
         "registration_number",
-        # "registration_date",
         # Претензия
         "consumer_name",
         "claim_number",
@@ -413,7 +379,7 @@ class ClaimAdmin(admin.ModelAdmin):
             # Простое форматирование: 12450.15 -> "12 450.15"
             amount_str = f"{obj.claim_amount_all:,.2f}"
             return amount_str.replace(",", " ")
-        return "-"
+        return "0.00"
 
     @admin.display(description="Сумма по акту рекламации")
     def claim_amount_act_display(self, obj):
@@ -421,7 +387,7 @@ class ClaimAdmin(admin.ModelAdmin):
         if obj.claim_amount_act:
             amount_str = f"{obj.claim_amount_act:,.2f}"
             return amount_str.replace(",", " ")
-        return "-"
+        return "0.00"
 
     @admin.display(description="Признано по претензии")
     def costs_all_display(self, obj):
@@ -429,7 +395,7 @@ class ClaimAdmin(admin.ModelAdmin):
         if obj.costs_all:
             amount_str = f"{obj.costs_all:,.2f}"
             return amount_str.replace(",", " ")
-        return "-"
+        return "0.00"
 
     @admin.display(description="Признано по акту")
     def costs_act_display(self, obj):
@@ -437,7 +403,7 @@ class ClaimAdmin(admin.ModelAdmin):
         if obj.costs_act:
             amount_str = f"{obj.costs_act:,.2f}"
             return amount_str.replace(",", " ")
-        return "-"
+        return "0.00"
 
     # @admin.display(description="Ответ")
     # def has_response_icon(self, obj):

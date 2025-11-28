@@ -65,6 +65,10 @@ class Reclamation(models.Model):
 
     # -------------------------------------------------------------------------------
 
+    # По умолчанию для всех полей:
+    # null=False  #  поле НЕ может быть NULL в БД
+    # blank=False  # поле обязательно для заполнения в формах
+
     # Два поля для составного индекса номера рекламации с учетом года (например, 2025-0001):
     year = models.IntegerField(verbose_name="Год рекламации")
     yearly_number = models.IntegerField(verbose_name="Номер в году")
@@ -303,6 +307,9 @@ class Reclamation(models.Model):
         verbose_name = "Рекламация"
         verbose_name_plural = "Рекламации"
         ordering = ["-id"]
+        # Гарантируем уникальность номера в году
+        unique_together = [["yearly_number", "year"]]
+        # Дополнительные индексы для производительности поиска и сортировки
         indexes = [
             models.Index(fields=["status"]),
             models.Index(fields=["defect_period"]),
@@ -315,7 +322,6 @@ class Reclamation(models.Model):
                 fields=["-year", "-yearly_number"], name="reclamation_order_idx"
             ),
         ]
-        unique_together = [["yearly_number", "year"]]
 
     # Дополнительные свойства экземпляра класса Reclamation
     @property
