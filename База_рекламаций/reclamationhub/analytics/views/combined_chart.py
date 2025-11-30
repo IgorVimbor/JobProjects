@@ -60,7 +60,8 @@ def combined_chart_page(request):
             year_value,
             chart_type,
             selected_consumers,
-            selected_product,
+            # selected_product,
+            selected_products,
             validation_error,
         ) = validate_combined_chart_parameters(request.POST, available_products)
 
@@ -74,14 +75,18 @@ def combined_chart_page(request):
                 "request_year": year_value,
                 "request_chart_type": chart_type,
                 "request_consumers": selected_consumers,
-                "request_product": selected_product,
+                # "request_product": selected_product,
+                "request_products": selected_products,
             }
         )
 
         # Создаем процессор и ОДИН РАЗ генерируем анализ
         manager = DefectDateReportManager(
-            year=year_value, consumers=selected_consumers, product=selected_product
+            year=year_value, consumers=selected_consumers, products=selected_products
         )
+        # manager = DefectDateReportManager(
+        #     year=year_value, consumers=selected_consumers, product=selected_product
+        # )
 
         analysis_result = manager.generate_report(chart_type=chart_type)
 
@@ -128,7 +133,8 @@ def validate_combined_chart_parameters(post_data, available_products):
     year = post_data.get("year")
     chart_type = post_data.get("chart_type", "all")
     selected_consumers = post_data.getlist("consumers")
-    selected_product = post_data.get("product")
+    # selected_product = post_data.get("product")
+    selected_products = post_data.getlist("products")
 
     # Валидация года
     try:
@@ -156,14 +162,22 @@ def validate_combined_chart_parameters(post_data, available_products):
     if chart_type not in valid_chart_types:
         return None, None, None, None, "Некорректный тип графика"
 
-    # Проверка наличия изделия
-    if not selected_product:
-        return None, None, None, None, "⚠️ Выберите изделие для анализа"
+    # # Проверка наличия изделия
+    # if not selected_product:
+    #     return None, None, None, None, "⚠️ Выберите изделие для анализа"
+
+    # # Валидация изделия
+    # valid_products = [product["value"] for product in available_products]
+    # if selected_product not in valid_products:
+    #     return None, None, None, None, "Выбрано некорректное изделие"
 
     # Валидация изделия
-    valid_products = [product["value"] for product in available_products]
-    if selected_product not in valid_products:
-        return None, None, None, None, "Выбрано некорректное изделие"
+    products = []
+    if selected_products:
+        valid_products = list(
+            Reclamation.objects.values_list("product_name__name", flat=True).distinct()
+        )
+        products = [c for c in selected_products if c in valid_products]
 
     # Валидация потребителей
     consumers = []
@@ -173,7 +187,8 @@ def validate_combined_chart_parameters(post_data, available_products):
         )
         consumers = [c for c in selected_consumers if c in valid_consumers]
 
-    return year_value, chart_type, consumers, selected_product, None
+    # return year_value, chart_type, consumers, selected_product, None
+    return year_value, chart_type, consumers, products, None
 
 
 def handle_combined_chart_result(analysis_result, base_context):

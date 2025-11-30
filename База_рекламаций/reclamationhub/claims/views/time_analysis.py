@@ -1,5 +1,5 @@
 # claims/views/time_analysis.py
-"""Представление для временного анализа: изготовление → рекламация → претензия"""
+"""Представление для временного анализа: рекламация → претензия"""
 
 from datetime import date
 from django.shortcuts import redirect, render
@@ -52,7 +52,7 @@ def time_analysis_view(request):
         )
 
         if validation_error:
-            messages.error(request, validation_error)
+            messages.warning(request, validation_error)
             return render(request, "claims/reclamation_to_claim.html", base_context)
 
         # Создаем процессор
@@ -67,7 +67,9 @@ def time_analysis_view(request):
                     request, f"✅ График сохранен в папку {result['base_dir']}"
                 )
             else:
-                messages.error(request, f"❌ Ошибка при сохранении: {result['error']}")
+                messages.warning(
+                    request, f"❌ Ошибка при сохранении: {result['error']}"
+                )
 
             # Генерируем данные заново и отображаем
             analysis_result = processor.generate_analysis()
@@ -79,7 +81,7 @@ def time_analysis_view(request):
                 }
                 return render(request, "claims/reclamation_to_claim.html", context)
             else:
-                messages.error(
+                messages.warning(
                     request,
                     f"❌ Ошибка при генерации: {analysis_result.get('error')}",
                 )
@@ -145,8 +147,8 @@ def format_analysis_data(result):
         "monthly_data": {
             "labels": result["monthly_data"]["labels"],
             "labels_formatted": result["monthly_data"]["labels_formatted"],
-            "manufacture": result["monthly_data"]["manufacture"],
             "reclamations": result["monthly_data"]["reclamations"],
-            "claims": result["monthly_data"]["claims"],
+            "claims_counts": result["monthly_data"]["claims_counts"],
+            "claims_costs": result["monthly_data"]["claims_costs"],
         },
     }

@@ -32,11 +32,13 @@ from reports.config.paths import (
 class DefectDateDataProcessor:
     """Получение и подготовка данных из БД"""
 
-    def __init__(self, year, consumers, product):
+    # def __init__(self, year, consumers, product):
+    def __init__(self, year, consumers, products):
         self.today = date.today()
         self.year = year  # "all", 2024, 2023, ...
         self.consumers = consumers or []  # Список потребителей
-        self.product = product  # ОДНО изделие (обязательно)
+        # self.product = product  # ОДНО изделие (обязательно)
+        self.products = products or []  # Список изделий
         self.df = pd.DataFrame()
 
     def parse_manufacture_date(self, date_str):
@@ -89,14 +91,20 @@ class DefectDateDataProcessor:
         """Возвращает названия фильтров для отчета"""
         filter_parts = []
 
-        if self.consumers:
-            if len(self.consumers) == 1:
-                filter_parts.append(self.consumers[0])
-            else:
-                filter_parts.append(f"{len(self.consumers)} потребителей")
+        # if self.consumers:
+        #     if len(self.consumers) == 1:
+        #         filter_parts.append(self.consumers[0])
+        #     else:
+        #         filter_parts.append(f"{len(self.consumers)} потребителей")
 
-        if self.product:
-            filter_parts.append(self.product)
+        if self.consumers:
+            filter_parts += self.consumers
+
+        # if self.product:
+        #     filter_parts.append(self.product)
+
+        if self.products:
+            filter_parts += self.products
 
         if not filter_parts:
             return "всех данных"
@@ -106,14 +114,24 @@ class DefectDateDataProcessor:
     def get_data_from_db(self):
         """Получение и обработка данных из Django ORM"""
 
-        # Проверяем, что изделие выбрано
-        if not self.product:
-            return None, "Не выбрано изделие для анализа"
+        # # Проверяем, что изделие выбрано
+        # if not self.product:
+        #     return None, "Не выбрано изделие для анализа"
+
+        # # Формируем фильтр
+        # queryset_filter = Q(
+        #     product_name__name=self.product,  # Фильтр по одному изделию
+        # )
 
         # Формируем фильтр
-        queryset_filter = Q(
-            product_name__name=self.product,  # Фильтр по одному изделию
-        )
+        queryset_filter = Q()
+
+        # Добавляем фильтры по изделиям
+        if self.products:
+            product_q = Q()
+            for product in self.products:
+                queryset_filter |= Q(product_name__name=product)  # Фильтр по изделию
+            queryset_filter &= product_q
 
         # Применяем фильтр по году если выбран
         if self.year and str(self.year) != "all":
@@ -476,13 +494,15 @@ class DefectDateChartGenerator:
 class DefectDateReportManager:
     """Главный класс-координатор"""
 
-    def __init__(self, year=None, consumers=None, product=None):
+    # def __init__(self, year=None, consumers=None, product=None):
+    def __init__(self, year=None, consumers=None, products=None):
         self.year = year or date.today().year
         self.consumers = consumers or []
-        self.product = product
+        # self.product = product
+        self.products = products or []
 
         self.data_processor = DefectDateDataProcessor(
-            year=self.year, consumers=self.consumers, product=self.product
+            year=self.year, consumers=self.consumers, products=self.products
         )
         self.chart_generator = None  # Создадим после получения filter_text
 
