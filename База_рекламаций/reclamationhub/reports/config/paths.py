@@ -5,6 +5,8 @@
 
 import os
 from datetime import date
+from dateutil.relativedelta import relativedelta
+
 
 # ==================== БАЗОВЫЕ НАСТРОЙКИ ====================
 # Каталог для сохранения справок, отчетов, таблиц и др.
@@ -12,8 +14,9 @@ BASE_REPORTS_DIR = r"\\Server\otk\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК
 # BASE_REPORTS_DIR = r"D:\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
 
 # Текущая дата и год для имен файлов
-date_today = date.today().strftime("%d-%m-%Y")
-year_now = date.today().year
+today = date.today()
+date_today = today.strftime("%d-%m-%Y")
+year_now = today.year
 
 # ==================== ENQUIRY PERIOD ====================
 ENQUIRY_PERIOD_TXT_DIR = os.path.join(BASE_REPORTS_DIR, "ENQUIRY_PERIOD_txt")
@@ -75,8 +78,39 @@ def get_length_study_png_path():
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 
-# # ======================= NOT ACTS ========================
-# NOT_ACTS_DIR = os.path.join(BASE_REPORTS_DIR, "not_acts")
+# ======================= CULPRITS DEFECT ========================
+# Названия месяцев
+MONTH_NAMES = {
+    1: "январь",
+    2: "февраль",
+    3: "март",
+    4: "апрель",
+    5: "май",
+    6: "июнь",
+    7: "июль",
+    8: "август",
+    9: "сентябрь",
+    10: "октябрь",
+    11: "ноябрь",
+    12: "декабрь",
+}
+# Определяем отчетный (предыдущий) месяц и год по этому месяцу
+prev_month = today - relativedelta(months=1)
+analysis_year = prev_month.year
+month_name = MONTH_NAMES[prev_month.month]
+
+# Папка для сохранения справок по виновникам дефектов
+CULPRITS_DEFECT_DIR = os.path.join(BASE_REPORTS_DIR, "СПРАВКИ_по_виновникам")
+# Создаем папку для справок
+os.makedirs(CULPRITS_DEFECT_DIR, exist_ok=True)
+
+
+def get_culprits_defect_excel_path():
+    """Excel файл для сохранения справок по виновникам дефектнов"""
+    return os.path.join(
+        CULPRITS_DEFECT_DIR,
+        f"Справка по виновникам за {month_name} {analysis_year}.xlsx",
+    )
 
 
 # ====================== MILEAGE CHART ======================

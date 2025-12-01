@@ -217,12 +217,20 @@
     <div class="row mt-3 mb-4">
         <div class="col-12">
             <div class="d-flex gap-2">
-                <a href="{% url 'reports:culprits_defect' %}" class="btn btn-primary">
+                <!-- <a href="{% url 'reports:culprits_defect' %}" class="btn btn-primary"> -->
+                <a href="{% url 'reports:culprits_defect' %}?clear=1" class="btn btn-primary">
                     🔄 Новый анализ
                 </a>
                 <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                     ⬆️ Вверх
                 </button>
+                <!-- Кнопка сохранения в файл -->
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
+                        💾 Сохранить в файл
+                    </button>
+                </form>
             </div>
         </div>
     </div>
