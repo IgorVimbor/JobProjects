@@ -96,8 +96,9 @@ class ReclamationAdmin(admin.ModelAdmin):
         "volume_removal_reference",  # справка снятия с объёмов
         "receipt_invoice_number",  # номер накладной поступления изделия
         "receipt_invoice_date",  # дата накладной поступления изделия
-        "has_investigation_icon",  # акт исследования
         "reclamation_documents",  # дополнительные сведения по рекламации
+        "has_investigation_icon",  # акт исследования
+        "has_investigation_solution",  # решение по рекламации
         "has_claim",  # претензия
     ]
 
@@ -359,13 +360,6 @@ class ReclamationAdmin(admin.ModelAdmin):
             obj.get_status_display(),
         )
 
-    # @admin.display(description="Исследование")
-    # def has_investigation_icon(self, obj):
-    #     """Метод для отображения номера акта исследования"""
-    #     if obj.has_investigation:
-    #         return obj.investigation.act_number
-    #     return ""
-
     @admin.display(description="Исследование")
     def has_investigation_icon(self, obj):
         """Метод для отображения номера акта исследования как ссылки"""
@@ -387,6 +381,19 @@ class ReclamationAdmin(admin.ModelAdmin):
                 f"{obj.investigation.act_number}</a>"
             )
         return ""
+
+    @admin.display(description="Решение по рекламации")
+    def has_investigation_solution(self, obj):
+        """Метод для отображения решения в акте исследования по рекламации"""
+        if obj.has_investigation:
+            # Используем get_solution_display() для получения русского названия
+            # Django автоматически создает метод get_ПОЛЕ_display() для полей с choices
+            display = obj.investigation.get_solution_display()
+            if obj.investigation.solution == "ACCEPT":
+                return format_html('<span style="color: green;">✓ {}</span>', display)
+            elif obj.investigation.solution == "DEFLECT":
+                return format_html('<span style="color: red;">{}</span>', display)
+            return ""
 
     @admin.display(description="Претензия")
     def has_claim(self, obj):

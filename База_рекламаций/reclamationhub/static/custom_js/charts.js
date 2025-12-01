@@ -143,7 +143,7 @@ function initMonthlyChart(monthlyData) {
                     ticks: {
                         rotation: 0,  // горизонтальные подписи
                         font: {
-                            size: 11  // размер шрифта подписей оси Х
+                            size: 10  // размер шрифта подписей оси Х
                         },
                     }
                 }
