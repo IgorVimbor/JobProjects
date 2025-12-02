@@ -11,20 +11,30 @@ from reports.modules.culprits_defect_module import CulpritsDefectProcessor
 def culprits_defect_page(request):
     """Страница модуля 'Дефекты по виновникам'"""
 
+    def clear_session_data():
+        """Вспомогательная функция для очистки данных"""
+        if "culprits_defect_report_data" in request.session:
+            del request.session["culprits_defect_report_data"]
+
     if request.method == "POST":
         return generate_analysis(request)
 
-    # if report_data:
-    #     del request.session["culprits_defect_report_data"]
-
-    # Проверяем параметр clear для очистки сессии
+    # Проверяем параметр clear
     if request.GET.get("clear") == "1":
-        if "culprits_defect_report_data" in request.session:
-            del request.session["culprits_defect_report_data"]
+        clear_session_data()  # очищаем сессию (старые данные)
         # Перенаправляем без параметра clear
         return redirect("reports:culprits_defect")
 
-    # GET запрос - показываем актуальную информацию
+    # Проверяем, откуда пришел пользователь
+    referer = request.META.get("HTTP_REFERER", "")
+    current_url = request.build_absolute_uri()
+
+    # Если пользователь пришел НЕ с этой же страницы - очищаем данные
+    if referer and not referer.startswith(current_url.split("?")[0]):
+        # Пришел с другой страницы - очищаем старые данные
+        clear_session_data()
+
+    # GET запрос - показываем данные БЕЗ удаления
     report_data = request.session.get("culprits_defect_report_data", None)
 
     # Текущая дата для отображения
