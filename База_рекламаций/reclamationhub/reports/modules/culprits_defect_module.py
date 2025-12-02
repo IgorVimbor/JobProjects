@@ -1,11 +1,16 @@
 # reports/modules/culprits_defect_module.py
 # Модуль приложения "Дефекты по виновникам" с основной логикой
 
+import os
 import pandas as pd
 from datetime import date
 from dateutil.relativedelta import relativedelta
+import errno
+from openpyxl import load_workbook
+from openpyxl.styles import Alignment, Font, Border, Side
 
 from investigations.models import Investigation
+from reports.config.paths import get_culprits_defect_excel_path, BASE_REPORTS_DIR
 
 
 class CulpritsDefectProcessor:
@@ -49,6 +54,7 @@ class CulpritsDefectProcessor:
                 "reclamation__defect_period", "reclamation__product_name"
             ).values(
                 "act_number",
+                "act_date",
                 "reclamation__defect_period__name",
                 "reclamation__product_name__name",
                 "reclamation__product_number",
@@ -71,6 +77,7 @@ class CulpritsDefectProcessor:
             df.rename(
                 columns={
                     "act_number": "Номер акта исследования",
+                    "act_date": "Дата акта исследования",
                     "reclamation__defect_period__name": "Период выявления дефекта",
                     "reclamation__product_name__name": "Обозначение изделия",
                     "reclamation__product_number": "Заводской номер изделия",
@@ -107,6 +114,20 @@ class CulpritsDefectProcessor:
                     False,
                     "Нет записей с номерами актов исследования (после исключения специальных значений)",
                 )
+
+            # 4.2 Ограничиваем месяц акта исследования отчетным месяцем
+            df_accepted["Дата акта исследования"] = pd.to_datetime(
+                df_accepted["Дата акта исследования"]
+            )
+
+            # Преобразуем date в pandas Timestamp
+            prev_month_ts = pd.Timestamp(self.prev_month)
+
+            # Преобразуем даты в периоды год-месяц и сравниваем
+            df_accepted = df_accepted[
+                df_accepted["Дата акта исследования"].dt.to_period("M")
+                == prev_month_ts.to_period("M")
+            ]
 
             # 5. Извлекаем год и номер акта исследования
             # Формат: "2025 № 1067" → год=2025, номер=1067
@@ -270,3 +291,204 @@ class CulpritsDefectProcessor:
                 "message": f"Ошибка при выполнении анализа: {str(e)}",
                 "message_type": "warning",
             }
+
+    def save_to_excel_from_data(self, bza_data, not_bza_data, start_act_number):
+        """Сохранение готовых данных в Excel"""
+        try:
+            if not bza_data and not not_bza_data:
+                return {
+                    "success": False,
+                    "message": "Нет данных для сохранения в файл",
+                    "message_type": "warning",
+                }
+
+            # Устанавливаем параметры для сохранения
+            self.user_number = start_act_number - 1
+
+            # Формируем путь к файлу
+            excel_path = get_culprits_defect_excel_path()
+
+            # Создаем Excel файл из готовых данных
+            self._create_excel_from_data(
+                excel_path, bza_data, not_bza_data, start_act_number
+            )
+
+            return {
+                "success": True,
+                "message": f"✅ Справка сохранена в файл Excel",
+                "full_message": f"Справка по виновникам дефектов сохранена в папку {BASE_REPORTS_DIR}",
+                "excel_path": excel_path,
+                "filename": os.path.basename(excel_path),
+                "message_type": "success",
+            }
+
+        except OSError as e:
+            if e.errno == errno.EACCES or "Permission denied" in str(e):
+                return {
+                    "success": False,
+                    "message": "🔒 Возможно у вас открыт файл Excel со справкой. Закройте файл Excel и попробуйте снова.",
+                    "message_type": "warning",
+                }
+            else:
+                return {
+                    "success": False,
+                    "message": f"Ошибка файловой системы: {str(e)}",
+                    "message_type": "error",
+                }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "message": f"Неожиданная ошибка при сохранении файла: {str(e)}",
+                "message_type": "error",
+            }
+
+    def _create_excel_from_data(
+        self, excel_path, bza_data, not_bza_data, start_act_number
+    ):
+        """Создание Excel файла из готовых данных"""
+
+        # Создаем DataFrame для первой таблицы (Дефекты по виновникам)
+        if not_bza_data:
+            not_bza_df = pd.DataFrame(not_bza_data)
+            # Переименовываем столбцы для Excel
+            not_bza_df.rename(
+                columns={
+                    "Виновник": "Виновное подразделение",
+                    "Потребитель": "Период выявления дефекта",
+                    "Изделие": "Обозначение изделия",
+                    "Заводской_номер": "Заводской номер изделия",
+                    "Дата_изготовления": "Дата изготовления изделия",
+                    "Количество": "Количество предъявленных изделий",
+                    "Номера_актов": "Номера актов исследования",
+                    "Причины": "Причины дефектов",
+                    "Пояснения": "Пояснения к причинам дефектов",
+                },
+                inplace=True,
+            )
+        else:
+            not_bza_df = pd.DataFrame()
+
+        # Создаем DataFrame для второй таблицы (БЗА)
+        if bza_data:
+            bza_df = pd.DataFrame(bza_data)
+            # Переименовываем столбцы для Excel
+            bza_df.rename(
+                columns={
+                    "Потребитель": "Период выявления дефекта",
+                    "Изделие": "Обозначение изделия",
+                    "Заводской_номер": "Заводской номер изделия",
+                    "Дата_изготовления": "Дата изготовления изделия",
+                    "Количество": "Количество предъявленных изделий",
+                    "Номера_актов": "Номера актов исследования",
+                    "Причины": "Причины дефектов",
+                    "Пояснения": "Пояснения к причинам дефектов",
+                },
+                inplace=True,
+            )
+        else:
+            bza_df = pd.DataFrame()
+
+        # Записываем в Excel
+        with pd.ExcelWriter(excel_path, engine="openpyxl") as writer:
+            if not not_bza_df.empty:
+                not_bza_df.to_excel(
+                    writer, sheet_name="Дефекты по виновникам", index=False
+                )
+            if not bza_df.empty:
+                bza_df.to_excel(writer, sheet_name="БЗА", index=False)
+
+        # Применяем форматирование
+        self._apply_excel_formatting(excel_path, not_bza_df, bza_df)
+
+    def _apply_excel_formatting(self, excel_path, not_bza_df, bza_df):
+        """Применение форматирования к Excel файлу"""
+
+        wb = load_workbook(excel_path)
+
+        # Форматируем лист "Дефекты по виновникам"
+        if not not_bza_df.empty and "Дефекты по виновникам" in wb.sheetnames:
+            sheet1 = wb["Дефекты по виновникам"]
+            self._format_sheet(sheet1, not_bza_df, "Дефекты по виновникам")
+
+        # Форматируем лист "БЗА"
+        if not bza_df.empty and "БЗА" in wb.sheetnames:
+            sheet2 = wb["БЗА"]
+            self._format_sheet(
+                sheet2,
+                bza_df,
+                "Дефекты без центра ответственности - Не определено (БЗА)",
+            )
+
+        wb.save(excel_path)
+
+    def _format_sheet(self, sheet, df, title):
+        """Форматирование отдельного листа"""
+
+        if df.empty:
+            return
+
+        # Вставляем столбец для лучшей визуализации
+        sheet.insert_cols(1)
+
+        # Определяем количество строк и столбцов
+        num_rows = len(df) + 1  # +1 для заголовков
+        num_cols = len(df.columns)
+
+        # Настройка ширины столбцов (увеличенная ширина для длинных текстов)
+        column_widths = [25, 30, 25, 20, 20, 12, 20, 40, 40]
+
+        for i, width in enumerate(column_widths[:num_cols], start=2):
+            # start=2 из-за вставленного столбца
+            col_letter = chr(65 + i - 1)  # B, C, D, E, F, etc.
+            sheet.column_dimensions[col_letter].width = width
+
+        # Форматирование ячеек
+        for row in range(1, num_rows + 1):
+            for col in range(2, num_cols + 2):
+                # +2 из-за вставленного столбца
+                col_letter = chr(65 + col - 1)
+                cell = sheet[f"{col_letter}{row}"]
+
+                # Границы
+                thin_border = Side(border_style="thin", color="000000")
+                cell.border = Border(
+                    top=thin_border,
+                    bottom=thin_border,
+                    left=thin_border,
+                    right=thin_border,
+                )
+
+                # Шрифт
+                cell.font = Font(name="Times New Roman", size=10, bold=False)
+
+                if row == 1:
+                    # Заголовки - выравнивание по центру с переносом
+                    cell.alignment = Alignment(
+                        wrap_text=True, horizontal="center", vertical="center"
+                    )
+                    cell.font = Font(name="Times New Roman", size=10)
+                    sheet.row_dimensions[row].height = 20
+                else:
+                    # Данные - выравнивание по левому краю с переносом
+                    if col_letter == chr(
+                        65 + num_cols
+                    ):  # Последний столбец (количество)
+                        cell.alignment = Alignment(
+                            horizontal="center", vertical="center"
+                        )
+                    else:
+                        cell.alignment = Alignment(
+                            wrap_text=True, horizontal="left", vertical="top"
+                        )
+
+        # Добавляем заголовок справки
+        title_row = num_rows + 3
+        sheet.merge_cells(f"B{title_row}:{chr(65 + num_cols)}{title_row}")
+        title_cell = sheet[f"B{title_row}"]
+        title_cell.value = f"{title}\nза {self.month_name} {self.analysis_year} года (начиная с акта исследования № {self.user_number + 1})"
+        title_cell.alignment = Alignment(
+            wrap_text=True, horizontal="left", vertical="center"
+        )
+        title_cell.font = Font(name="Times New Roman", size=10)
+        sheet.row_dimensions[title_row].height = 40

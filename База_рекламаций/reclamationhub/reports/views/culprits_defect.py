@@ -8,48 +8,38 @@ from django.contrib import messages
 from reports.modules.culprits_defect_module import CulpritsDefectProcessor
 
 
-# Названия месяцев
-MONTH_NAMES = {
-    1: "январь",
-    2: "февраль",
-    3: "март",
-    4: "апрель",
-    5: "май",
-    6: "июнь",
-    7: "июль",
-    8: "август",
-    9: "сентябрь",
-    10: "октябрь",
-    11: "ноябрь",
-    12: "декабрь",
-}
-
 def culprits_defect_page(request):
     """Страница модуля 'Дефекты по виновникам'"""
 
     if request.method == "POST":
         return generate_analysis(request)
 
+    # if report_data:
+    #     del request.session["culprits_defect_report_data"]
+
+    # Проверяем параметр clear для очистки сессии
+    if request.GET.get("clear") == "1":
+        if "culprits_defect_report_data" in request.session:
+            del request.session["culprits_defect_report_data"]
+        # Перенаправляем без параметра clear
+        return redirect("reports:culprits_defect")
+
     # GET запрос - показываем актуальную информацию
     report_data = request.session.get("culprits_defect_report_data", None)
-    if report_data:
-        del request.session["culprits_defect_report_data"]
 
     # Текущая дата для отображения
     today = date.today()
-    # Отчетные месяц и год для отображения
-    report_month = date.today().month - 1  # текущий месяц минус 1, т.е. предыдущий
-    today_year = date.today().year
-    # Если текущий месяц не январь, то год текущий. Иначе (текущий месяц январь), то
-    # год предыдущий,т.к. делаем справку за декабрь.
-    report_year = today_year if report_month != 1 else today_year - 1
+    # Определяем отчетные месяц и год для отображения из класса CulpritsDefectProcessor
+    obj = CulpritsDefectProcessor()
+    report_month = obj.month_name  # Отчетный месяц (предыдущий)
+    report_year = obj.analysis_year  # Отчетный год
 
     context = {
         "page_title": "Дефекты по виновникам",
         "description": "Справка по виновникам дефектов с разделением по подразделениям",
         "report_data": report_data,
         "current_date": today.strftime("%d.%m.%Y"),
-        "report_month": MONTH_NAMES[report_month],
+        "report_month": report_month,
         "report_year": report_year,
     }
     return render(request, "reports/culprits_defect.html", context)
@@ -57,6 +47,41 @@ def culprits_defect_page(request):
 
 def generate_analysis(request):
     """Генерация анализа по виновникам"""
+
+    action = request.POST.get("action")
+
+    # СОХРАНЕНИЕ В ФАЙЛ (из готовых данных в сессии)
+    if action == "save_files":
+        # Получаем готовые данные из сессии
+        report_data = request.session.get("culprits_defect_report_data", {})
+
+        if not report_data:
+            messages.warning(
+                request, "Нет данных для сохранения. Сначала сгенерируйте анализ."
+            )
+            return redirect("reports:culprits_defect")
+
+        # Создаем процессор для сохранения
+        processor = CulpritsDefectProcessor()
+
+        # Сохраняем готовые данные в Excel
+        save_result = processor.save_to_excel_from_data(
+            bza_data=report_data["bza_data"],
+            not_bza_data=report_data["not_bza_data"],
+            start_act_number=report_data["start_act_number"],
+        )
+
+        if save_result["success"]:
+            messages.success(request, save_result["full_message"])
+        else:
+            if save_result["message_type"] == "warning":
+                messages.warning(request, save_result["message"])
+            else:
+                messages.error(request, save_result["message"])
+
+        return redirect("reports:culprits_defect")
+
+    # ------------- ОБЫЧНАЯ ГЕНЕРАЦИЯ АНАЛИЗА ---------------
 
     # Получаем номер акта исследования
     user_number = request.POST.get("user_number")
