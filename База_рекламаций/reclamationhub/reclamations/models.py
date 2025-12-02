@@ -5,9 +5,13 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
 from datetime import datetime
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 import re
 
 from sourcebook.models import PeriodDefect, ProductType, Product
+# from investigations.models import Investigation
 
 
 def get_default_product_type():
@@ -542,3 +546,26 @@ class Reclamation(models.Model):
             else:
                 self.status = self.Status.IN_PROGRESS
             self.save()
+
+
+@receiver(post_save, sender=Reclamation)
+def auto_create_investigation_on_reject(sender, instance, **kwargs):
+    """
+    Сигнал для автоматическего создания акта исследования при изменении
+    статуса рекламации на "Закрыта" (при условии, что акта исследования нет)
+    """
+    from investigations.models import Investigation
+
+    # Проверяем: статус CLOSED, вхождение "90 дней" + нет Investigation
+    if (instance.status == Reclamation.Status.CLOSED
+        and "90 дней" in instance.measures_taken
+        and not hasattr(instance, 'investigation')):
+
+        Investigation.objects.create(
+            reclamation=instance,
+            act_number="без исследования",
+            act_date=timezone.now().date(),
+            solution=Investigation.Solution.DEFLECT,
+            fault_type=Investigation.FaultType.CONSUMER,
+            guilty_department="Не определено",
+        )

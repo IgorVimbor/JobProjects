@@ -74,6 +74,7 @@ class ReclamationAdmin(admin.ModelAdmin):
         # "id",
         "display_number",  # номер рекламации с учетом года
         "status_colored",  # статус рекламации (Новая, В работе, Закрыта)
+        "has_investigation_solution",  # решение по рекламации
         "incoming_number",  # входящий № по ОТК
         "message_received_date",  #  дата поступления ссобщения
         "defect_period",  # период выявления дефекта
@@ -98,7 +99,6 @@ class ReclamationAdmin(admin.ModelAdmin):
         "receipt_invoice_date",  # дата накладной поступления изделия
         "reclamation_documents",  # дополнительные сведения по рекламации
         "has_investigation_icon",  # акт исследования
-        "has_investigation_solution",  # решение по рекламации
         "has_claim",  # претензия
     ]
 
