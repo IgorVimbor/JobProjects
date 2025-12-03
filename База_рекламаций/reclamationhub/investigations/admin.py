@@ -266,6 +266,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         "reclamation__product__nomenclature",  # обозначение изделия
         "reclamation__product_number",  # номер изделия
         "reclamation__engine_number",  # номер двигателя
+        "shipment_invoice_number",  # накладная отгрузки (расхода)
     ]
 
     search_help_text = mark_safe(
@@ -273,7 +274,7 @@ class InvestigationAdmin(admin.ModelAdmin):
     <p>ПОИСК ПО ПОЛЯМ:</p>
     <ul>
         <li>НОМЕР АКТА ИССЛЕДОВАНИЯ ••• ОБОЗНАЧЕНИЕ ИЗДЕЛИЯ</li>
-        <li>НОМЕР ИЗДЕЛИЯ ••• НОМЕР ДВИГАТЕЛЯ</li>
+        <li>НОМЕР ИЗДЕЛИЯ ••• НОМЕР ДВИГАТЕЛЯ ••• НАКЛАДНАЯ РАСХОДА</li>
     </ul>
     """
     )

@@ -557,9 +557,13 @@ def auto_create_investigation_on_reject(sender, instance, **kwargs):
     from investigations.models import Investigation
 
     # Проверяем: статус CLOSED, вхождение "90 дней" + нет Investigation
-    if (instance.status == Reclamation.Status.CLOSED
-        and "90 дней" in instance.measures_taken
-        and not hasattr(instance, 'investigation')):
+    # if (instance.status == Reclamation.Status.CLOSED
+    #     and "90 дней" in instance.measures_taken
+    #     and not hasattr(instance, 'investigation')):
+    if (not hasattr(instance, 'investigation')  # Проверяем отсутствие Investigation
+        and instance.status == Reclamation.Status.CLOSED  # Проверяем статус (Закрыто)
+        and instance.measures_taken  # Проверяем на None поле
+        and "90 дней" in instance.measures_taken):  # Поиск в строке
 
         Investigation.objects.create(
             reclamation=instance,
@@ -569,3 +573,18 @@ def auto_create_investigation_on_reject(sender, instance, **kwargs):
             fault_type=Investigation.FaultType.CONSUMER,
             guilty_department="Не определено",
         )
+"""
+Полезные сигналы Django:
+
+# Срабатывает ДО сохранения (можно изменить данные)
+@receiver(pre_save, sender=Model)
+
+# Срабатывает ПОСЛЕ сохранения (создание + обновление)
+@receiver(post_save, sender=Model)
+
+# Срабатывает ТОЛЬКО при удалении
+@receiver(post_delete, sender=Model)
+
+# Срабатывает при изменении M2M связей
+@receiver(m2m_changed, sender=Model.many_to_many_field.through)
+"""

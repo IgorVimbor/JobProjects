@@ -1,3 +1,4 @@
+# investigations\views\add_group_investigation.py
 # Представление для формы добавления группового акта исследования
 
 from django.contrib import messages
@@ -131,8 +132,9 @@ def add_group_investigation_view(admin_instance, request):
                     reclamations = analysis_result["reclamations_queryset"]
                     uploaded_file = analysis_result["uploaded_file"]
 
-                    # Создаем акты для найденных рекламаций
-                    created_count = 0
+                    # ---------- Создаем акты для найденных рекламаций -----------
+                    created_count = 0  # счетчик созданных актов исследования
+                    updated_count = 0  # счетчик обновленных актов исследования
                     for reclamation in reclamations:
                         try:
                             investigation_fields = [
@@ -151,17 +153,35 @@ def add_group_investigation_view(admin_instance, request):
                                 for field in investigation_fields
                             }
 
-                            investigation = Investigation(
-                                reclamation=reclamation, **investigation_data
-                            )
-                            # Прикрепляем файл копии ко всем актам исследования
-                            investigation.act_scan = uploaded_file
-                            investigation.save()
+                            # ✅ Проверяем существование Investigation
+                            if hasattr(reclamation, 'investigation'):
+                                # Investigation уже существует
+                                existing_investigation = reclamation.investigation
 
+                                # Проверяем, это "автоматический" акт или реальный
+                                if existing_investigation.act_number == "без исследования":
+                                    # ОБНОВЛЯЕМ существующий автоматический акт
+                                    for field, value in investigation_data.items():
+                                        setattr(existing_investigation, field, value)
+                                    # Прикрепляем файл копии ко всем актам исследования
+                                    existing_investigation.act_scan = uploaded_file
+                                    # Сохраняем изменения и увеличиваем счетчик обновленных актов исследования
+                                    existing_investigation.save()
+                                    updated_count += 1
+                            else:
+                                # СОЗДАЕМ новый Investigation
+                                investigation = Investigation(
+                                    reclamation=reclamation, **investigation_data
+                                )
+                                # Прикрепляем файл копии ко всем актам исследования
+                                investigation.act_scan = uploaded_file
+                                # Сохраняем изменения и увеличиваем счетчик обновленных актов исследования
+                                investigation.save()
+                                created_count += 1
+
+                            # Обновляем статус рекламации
                             reclamation.status = reclamation.Status.CLOSED
                             reclamation.save()
-
-                            created_count += 1
 
                         except Exception as e:
                             return render(
@@ -187,11 +207,15 @@ def add_group_investigation_view(admin_instance, request):
                     }
 
                     for msg_data in messages_data:
-                        # Обновляем сообщение об успехе с фактическим количеством созданных записей
+                        # Обновляем сообщение об успехе с фактическим количеством созданных и обновленных записей
                         if msg_data["level"] == "success":
-                            msg_data["message"] = (
-                                f"Создано актов исследования: {created_count}"
-                            )
+                            success_parts = []
+                            if created_count > 0:
+                                success_parts.append(f"создано: {created_count}")
+                            if updated_count > 0:
+                                success_parts.append(f"обновлено: {updated_count}")
+
+                            msg_data["message"] = f"Актов исследования {', '.join(success_parts)}"
 
                         admin_instance.message_user(
                             request,
