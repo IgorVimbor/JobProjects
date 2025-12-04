@@ -1,6 +1,5 @@
 """
-Общие пути для всех аналитических модулей
-Аналог paths_home.py из десктопного приложения
+Общие пути до каталогов и файлов для всех аналитических модулей
 """
 
 import os
@@ -101,14 +100,15 @@ month_name = MONTH_NAMES[prev_month.month]
 
 # Папка для сохранения справок по виновникам дефектов и базы данных json
 CULPRITS_DEFECT_DIR = os.path.join(BASE_REPORTS_DIR, "СПРАВКИ_по_виновникам")
-# Создаем папку для справок
+# Создаем папку для справок если не существует
 os.makedirs(CULPRITS_DEFECT_DIR, exist_ok=True)
 
-# файл базы данных справок по виновникам - номер месяца, номер предыдущего и последнего акта исследования
+# файл базы данных справок по виновникам - номер месяца и последнего акта исследования
 culprits_defect_json_db = f"{CULPRITS_DEFECT_DIR}/CULPRITS_DEFECT_база_данных.txt"
 
+
 def get_culprits_defect_excel_path():
-    """Excel файл для сохранения справок по виновникам дефектнов"""
+    """Excel файл для сохранения справок по виновникам дефектов"""
     return os.path.join(
         CULPRITS_DEFECT_DIR,
         f"Справка по виновникам за {month_name} {analysis_year}.xlsx",

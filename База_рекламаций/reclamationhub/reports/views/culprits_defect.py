@@ -39,10 +39,13 @@ def culprits_defect_page(request):
 
     # Текущая дата для отображения
     today = date.today()
-    # Определяем отчетные месяц и год для отображения из класса CulpritsDefectProcessor
-    obj = CulpritsDefectProcessor()
-    report_month = obj.month_name  # Отчетный месяц (предыдущий)
-    report_year = obj.analysis_year  # Отчетный год
+
+    # Из класса CulpritsDefectProcessor определяем отчетные месяц и год для отображения
+    # А также получаем номер акта по умолчанию из JSON
+    processor = CulpritsDefectProcessor()
+    report_month = processor.month_name  # Отчетный месяц (предыдущий)
+    report_year = processor.analysis_year  # Отчетный год
+    default_act_number = processor.get_default_act_number()  # Номер акта из JSON
 
     context = {
         "page_title": "Дефекты по виновникам",
@@ -51,6 +54,7 @@ def culprits_defect_page(request):
         "current_date": today.strftime("%d.%m.%Y"),
         "report_month": report_month,
         "report_year": report_year,
+        "default_act_number": default_act_number,  # Передаём номер акта по умолчанию
     }
     return render(request, "reports/culprits_defect.html", context)
 
@@ -79,6 +83,7 @@ def generate_analysis(request):
             bza_data=report_data["bza_data"],
             not_bza_data=report_data["not_bza_data"],
             start_act_number=report_data["start_act_number"],
+            max_act_number=report_data.get("max_act_number"),
         )
 
         if save_result["success"]:
@@ -93,12 +98,13 @@ def generate_analysis(request):
 
     # ------------- ОБЫЧНАЯ ГЕНЕРАЦИЯ АНАЛИЗА ---------------
 
-    # Получаем номер акта исследования
-    user_number = request.POST.get("user_number")
+    # Получаем номер акта исследования из формы
+    user_number_str = request.POST.get("act_number")
 
     # Валидация номера акта
     try:
-        user_number = int(user_number) if user_number else None
+        user_number = int(user_number_str) if user_number_str else None
+
         if user_number is None:
             messages.warning(request, "Необходимо указать номер акта исследования")
             return redirect("reports:culprits_defect")
@@ -111,8 +117,8 @@ def generate_analysis(request):
         messages.warning(request, "Некорректный номер акта исследования")
         return redirect("reports:culprits_defect")
 
-    # Запускаем анализ
-    processor = CulpritsDefectProcessor(user_number=user_number)
+    # Запускаем анализ С ПОЛЬЗОВАТЕЛЬСКИМ НОМЕРОМ АКТА
+    processor = CulpritsDefectProcessor(user_number=user_number)  # Передаём номер
     result = processor.generate_analysis()
 
     if result["success"]:
@@ -123,7 +129,8 @@ def generate_analysis(request):
             "bza_count": result["bza_count"],
             "not_bza_count": result["not_bza_count"],
             "max_act_number": result.get("max_act_number"),
-            "start_act_number": user_number + 1,
+            "start_act_number": result.get("start_act_number"),  # С какого акта начали
+            "user_input_number": user_number,  # Что ввёл пользователь
         }
     else:
         if result["message_type"] == "info":
