@@ -99,11 +99,13 @@ prev_month = today - relativedelta(months=1)
 analysis_year = prev_month.year
 month_name = MONTH_NAMES[prev_month.month]
 
-# Папка для сохранения справок по виновникам дефектов
+# Папка для сохранения справок по виновникам дефектов и базы данных json
 CULPRITS_DEFECT_DIR = os.path.join(BASE_REPORTS_DIR, "СПРАВКИ_по_виновникам")
 # Создаем папку для справок
 os.makedirs(CULPRITS_DEFECT_DIR, exist_ok=True)
 
+# файл базы данных справок по виновникам - номер месяца, номер предыдущего и последнего акта исследования
+culprits_defect_json_db = f"{CULPRITS_DEFECT_DIR}/CULPRITS_DEFECT_база_данных.txt"
 
 def get_culprits_defect_excel_path():
     """Excel файл для сохранения справок по виновникам дефектнов"""

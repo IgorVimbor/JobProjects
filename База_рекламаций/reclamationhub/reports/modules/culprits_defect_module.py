@@ -2,6 +2,7 @@
 # Модуль приложения "Дефекты по виновникам" с основной логикой
 
 import os
+import json
 import pandas as pd
 from datetime import date
 from dateutil.relativedelta import relativedelta
@@ -10,7 +11,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import PatternFill, Font, Border, Side, Alignment
 
 from investigations.models import Investigation
-from reports.config.paths import get_culprits_defect_excel_path, BASE_REPORTS_DIR
+from reports.config.paths import BASE_REPORTS_DIR, culprits_defect_json_db, get_culprits_defect_excel_path
 
 
 class CulpritsDefectProcessor:
@@ -32,9 +33,10 @@ class CulpritsDefectProcessor:
         12: "декабрь",
     }
 
-    def __init__(self, user_number=None):
+    # def __init__(self, user_number=None):
+    def __init__(self):
         self.today = date.today()
-        self.user_number = user_number
+        # self.user_number = user_number
         self.bza_df = pd.DataFrame()
         self.not_bza_df = pd.DataFrame()
         self.max_act_number = None
@@ -44,6 +46,18 @@ class CulpritsDefectProcessor:
         self.prev_month = self.today - relativedelta(months=1)
         self.analysis_year = self.prev_month.year
         self.month_name = self.MONTH_NAMES[self.prev_month.month]
+
+        try:
+        # открываем файл txt базы данных, считываем файл и сохраняем словарь в переменную
+            with open(culprits_defect_json_db, encoding="utf-8-sig") as file:
+                self.dct_act_numbers: dict = json.load(file)
+            # определяем номер последнего акта исследования, который записан в предпоследнем месяце (два месяца назад)
+            prev_prev_month = self.today - relativedelta(months=2)
+            self.prev_max_act_number = self.dct_act_numbers[prev_prev_month.month]
+        except:  # если базы данных нет - создаем
+            self.dct_act_numbers = {1: 0}
+            with open(culprits_defect_json_db, "w", encoding="utf-8-sig") as file:
+                json.dump(self.dct_act_numbers, file, ensure_ascii=False, indent=4)
 
     def process_data(self):
         """Основная логика обработки данных с pandas"""
@@ -162,15 +176,26 @@ class CulpritsDefectProcessor:
                 "Номер акта (короткий)"
             ].apply(get_numeric_part)
 
-            # 8. Фильтрация по номеру акта (оставляем акты с номером > user_number)
+            # # 8. Фильтрация по номеру акта (оставляем акты с номером > user_number)
+            # df_filtered = df_year_filtered[
+            #     df_year_filtered["act_number"] > self.user_number
+            # ].copy()
+
+            # 8. Фильтрация по номеру акта (оставляем акты с номером > self.prev_max_act_number)
             df_filtered = df_year_filtered[
-                df_year_filtered["act_number"] > self.user_number
+                df_year_filtered["act_number"] > self.prev_max_act_number
             ].copy()
+
+            # if df_filtered.empty:
+            #     return (
+            #         False,
+            #         f"Нет данных за {self.analysis_year} год начиная с акта № {self.user_number + 1}",
+            #     )
 
             if df_filtered.empty:
                 return (
                     False,
-                    f"Нет данных за {self.analysis_year} год начиная с акта № {self.user_number + 1}",
+                    f"Нет данных за {self.analysis_year} год начиная с акта № {self.prev_max_act_number + 1}",
                 )
 
             # 9. Изменяем тип данных с float на int
@@ -189,6 +214,13 @@ class CulpritsDefectProcessor:
                     ),
                 )[-1]
                 self.max_act_number = max_act_number
+
+            # Добавляем (перезаписываем) в словарь отчетный месяц (ключ) и номер акта для следующего анализа (значение)
+            self.dct_act_numbers[self.prev_month.month] = self.max_act_number
+
+            # Записываем в файл txt базы данных максимальный номер акта для следующего анализа
+            with open(culprits_defect_json_db, "w", encoding="utf-8-sig") as file:
+                json.dump(self.dct_act_numbers, file, ensure_ascii=False, indent=4)
 
             # 11. Убираем служебные столбцы
             df_filtered = df_filtered.drop(columns=["Год акта", "act_number"])
@@ -275,7 +307,8 @@ class CulpritsDefectProcessor:
 
             return {
                 "success": True,
-                "message": f"Справка по виновникам дефектов за {self.month_name} {self.analysis_year} года составлена начиная с акта исследования № {self.user_number + 1}",
+                # "message": f"Справка по виновникам дефектов за {self.month_name} {self.analysis_year} года составлена начиная с акта исследования № {self.user_number + 1}",
+                "message": f"Справка по виновникам дефектов за {self.month_name} {self.analysis_year} года составлена начиная с акта исследования № {self.prev_max_act_number + 1}",
                 "bza_data": bza_data,
                 "not_bza_data": not_bza_data,
                 "bza_count": len(bza_data),
@@ -302,8 +335,8 @@ class CulpritsDefectProcessor:
                     "message_type": "warning",
                 }
 
-            # Устанавливаем параметры для сохранения
-            self.user_number = start_act_number - 1
+            # # Устанавливаем параметры для сохранения
+            # self.user_number = start_act_number - 1
 
             # Формируем путь к файлу
             excel_path = get_culprits_defect_excel_path()
