@@ -25,8 +25,8 @@ def dashboard_view(request):
         available_years = [current_year]
 
     base_context = {
-        "page_title": "Dashboard претензий",
-        "description": "Общая сводка по претензиям с финансовыми показателями",
+        "page_title": "Общая сводка",
+        "description": "Сводная информация по претензиям с финансовыми показателями",
         "available_years": available_years,
         "current_year": current_year,
         "current_date": date.today().strftime("%d.%m.%Y"),

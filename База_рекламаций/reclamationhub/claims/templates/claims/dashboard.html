@@ -36,7 +36,7 @@
                         <!-- Поле выбора года -->
                         <div class="mb-3">
                             <label for="year" class="form-label fw-bold">Год анализа:</label>
-                            <select class="form-select" id="year" name="year" required>
+                            <select class="form-select w-25" id="year" name="year" required>
                                 {% for year in available_years %}
                                     <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
                                 {% endfor %}
@@ -46,9 +46,9 @@
                         <!-- Поле ввода курса -->
                         <div class="mb-3">
                             <label for="exchange_rate" class="form-label fw-bold">
-                                Курс НБ РБ на {{ current_date }}:
+                                Курс конвертации RUR → BYN на {{ current_date }}:
                             </label>
-                            <div class="input-group">
+                            <div class="input-group w-50">
                                 <span class="input-group-text">1 RUR =</span>
                                 <input type="text"
                                        class="form-control"
@@ -61,7 +61,7 @@
                                 <span class="input-group-text">BYN</span>
                             </div>
                             <small class="form-text text-muted">
-                                Введите текущий курс. Все суммы будут конвертированы в BYN по этому курсу.
+                                ✅ Введите курс валют или оставьте значение по умолчанию. Все суммы будут конвертированы в BYN по этому курсу.
                             </small>
                         </div>
 
@@ -248,9 +248,12 @@
                 <a href="{% url 'claims:dashboard' %}" class="btn btn-primary">
                     🔄 Новый анализ
                 </a>
-                <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <a href="{% url 'claims:consumer_analysis' %}" class="btn btn-outline-primary">
+                    ⬆️ Детальный анализ
+                </a>
+                {% comment %} <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                     ⬆️ Вверх
-                </button>
+                </button> {% endcomment %}
                 <!-- Кнопка сохранения в файлы (обернули кнопку в форму) -->
                 <form method="post" style="display: inline;">
                     {% csrf_token %}
@@ -359,7 +362,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 {% endblock %}
 
-<!-- Параметры datalabels (справка):
+<!-- ====== Справка ======
+Доступные утилиты ширины Bootstrap:
+w-25 - 25% ширины
+w-50 - 50% ширины
+w-75 - 75% ширины
+w-100 - 100% ширины (по умолчанию)
+w-auto - автоматическая ширина
+
+Параметры datalabels:
 datalabels: {
     display: true,            // Показывать подписи
     anchor: 'end',            // Позиция якоря: start, center, end

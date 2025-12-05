@@ -29,8 +29,8 @@ def claim_page(request):
         available_years = [current_year]
 
     context = {
-        "page_title": "Аналитика претензий",
-        "description": "Общая сводка по претензиям с финансовыми показателями",
+        "page_title": "Анализ претензий",
+        "description": "Выбор вида анализа претензий",
         "available_years": available_years,
         "current_year": current_year,
         "current_date": date.today().strftime("%d.%m.%Y"),
