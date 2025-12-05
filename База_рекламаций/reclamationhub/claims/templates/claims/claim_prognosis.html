@@ -1,3 +1,5 @@
+<!-- claims/templates/claims/claim_prognosis.html -->
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -14,24 +16,176 @@
                 </ol>
             </nav>
 
-            <!-- <h1>{{ page_title }}</h1>  -->
             <h3 class="text-muted">{{ description }}</h3>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
+    <!-- Показываем форму ТОЛЬКО если нет результатов -->
+    {% if not prognosis_data %}
+    <div class="row mb-4">
+        <div class="col-md-8">
             <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-info">🚧 {{ status }}</h3>
-                    <p>Модуль "{{ module_name }}" находится в стадии разработки</p>
+                <div class="card-header">
+                    <h5>🔮 Параметры прогнозирования</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="prognosisForm">
+                        {% csrf_token %}
 
-                    <a href="{% url 'analytics:analytic' %}" class="btn btn-secondary">
-                        ← Вернуться к аналитике
-                    </a>
+                        <!-- Поле выбора года -->
+                        <div class="mb-3">
+                            <label for="year" class="form-label fw-bold">Год анализа исторических данных:</label>
+                            <select class="form-select w-25" id="year" name="year" required>
+                                {% for year in available_years %}
+                                    <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-text text-muted">
+                                Исторические данные за выбранный год будут использованы для построения прогноза
+                            </small>
+                        </div>
+
+                        <!-- Поле выбора периода прогноза -->
+                        <div class="mb-3">
+                            <label for="forecast_months" class="form-label fw-bold">Период прогноза:</label>
+                            <select class="form-select w-25" id="forecast_months" name="forecast_months" required>
+                                {% for months in forecast_options %}
+                                    <option value="{{ months }}" {% if months == 6 %}selected{% endif %}>
+                                        {{ months }} {% if months == 3 %}месяца{% else %}месяцев{% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-text text-muted">
+                                На сколько месяцев вперед строить прогноз
+                            </small>
+                        </div>
+
+                        <!-- Поле выбора потребителей -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold mb-2">Потребители:</label>
+                            <div class="row">
+                                {% for consumer in available_consumers %}
+                                <div class="col-md-2 mb-2 flex-fill">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            name="consumers"
+                                            value="{{ consumer }}"
+                                            id="consumer{{ forloop.counter }}">
+                                        <label class="form-check-label" for="consumer{{ forloop.counter }}">
+                                            {{ consumer }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Выберите потребителя для детального прогноза или оставьте пустыми для сводного прогноза по всем
+                            </small>
+                        </div>
+
+                        <!-- Поле ввода курса -->
+                        <div class="mb-3">
+                            <label for="exchange_rate" class="form-label fw-bold">
+                                Курс конвертации RUR → BYN на {{ current_date }}:
+                            </label>
+                            <div class="input-group w-50">
+                                <span class="input-group-text">1 RUR =</span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="exchange_rate"
+                                       name="exchange_rate"
+                                       placeholder="0.03"
+                                       value="0.03"
+                                       step="0.0001"
+                                       required>
+                                <span class="input-group-text">BYN</span>
+                            </div>
+                            <small class="form-text text-muted">
+                                ✅ Введите курс валют или оставьте значение по умолчанию
+                            </small>
+                        </div>
+
+                        <!-- Информационная панель -->
+                        <div class="alert alert-info">
+                            <strong>ℹ️ Методология прогнозирования:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li><strong>Шаг 1:</strong> Прогноз рекламаций (скользящее среднее + тренд)</li>
+                                <li><strong>Шаг 2:</strong> Расчет параметров конверсии (% и время эскалации)</li>
+                                <li><strong>Шаг 3:</strong> Прогноз претензий с учетом времени эскалации</li>
+                            </ul>
+                        </div>
+
+                        <!-- Кнопки действий -->
+                        <div class="d-flex gap-2">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg flex-fill">
+                                📊 Построить прогноз
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Справка -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>ℹ️ Справка</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Что прогнозируем:</h6>
+                    <ul class="small">
+                        <li>Количество рекламаций на будущий период</li>
+                        <li>Количество претензий (с учетом конверсии)</li>
+                        <li>Временной лаг (среднее время эскалации)</li>
+                    </ul>
+
+                    <h6>Методы:</h6>
+                    <ul class="small">
+                        <li>Скользящее среднее (Moving Average)</li>
+                        <li>Линейный тренд (Linear Regression)</li>
+                        <li>Модель конверсии (% + время эскалации)</li>
+                    </ul>
+
+                    <h6>Результаты:</h6>
+                    <ul class="small">
+                        <li>График (факт + прогноз)</li>
+                        <li>Карточки с метриками</li>
+                        <li>Таблица прогноза по месяцам</li>
+                    </ul>
+
+                    <h6>Параметры:</h6>
+                    <ul class="small">
+                        <li>Год для анализа истории</li>
+                        <li>Период прогноза (3/6/12 мес.)</li>
+                        <li>Потребители (опционально)</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
+
+    <!-- Сообщения -->
+    {% if messages %}
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Блок результатов ПРОГНОЗА -->
+    {% if prognosis_data %}
+        {% include 'claims/blocks/prognosis_results.html' %}
+    {% endif %}
+
 </div>
 {% endblock %}

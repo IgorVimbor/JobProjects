@@ -1,11 +1,16 @@
 """
-Общие пути до каталогов и файлов для всех аналитических модулей
+Общие пути к каталогам и файлам для всех аналитических модулей
 """
 
 import os
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
+
+# # ==================== СОЗДАНИЕ ПАПОК ====================
+# # Создаем все необходимые папки
+# for directory in [ENQUIRY_PERIOD_DIR, ACCEPT_DEFECT_DIR, LENGTH_STUDY_DIR, DB_SEARCH_DIR]:
+#     os.makedirs(directory, exist_ok=True)
 
 # ==================== БАЗОВЫЕ НАСТРОЙКИ ====================
 # Каталог для сохранения справок, отчетов, таблиц и др.
@@ -212,14 +217,7 @@ def get_time_analysis_chart_path(year, consumer_name):
     return os.path.join(BASE_REPORTS_DIR, filename)
 
 
-# # ==================== СОЗДАНИЕ ПАПОК ====================
-# # Создаем все необходимые папки
-# for directory in [
-#     ENQUIRY_PERIOD_DIR,
-#     ACCEPT_DEFECT_DIR,
-#     LENGTH_STUDY_DIR,
-#     NOT_ACTS_DIR,
-#     PRETENCE_DIR,
-#     DB_SEARCH_DIR,
-# ]:
-#     os.makedirs(directory, exist_ok=True)
+def get_claim_prognosis_chart_path(year, consumer_name):
+    """Путь к графику прогноза рекламаций и претензий"""
+    filename = f"Прогноз претензий {consumer_name} {year}_{date_today}.png"
+    return os.path.join(BASE_REPORTS_DIR, filename)

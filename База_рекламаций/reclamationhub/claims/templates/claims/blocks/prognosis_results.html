@@ -1,0 +1,275 @@
+<!-- claims/templates/claims/blocks/prognosis_results.html -->
+
+{% load static %}
+
+<!-- Панель управления -->
+<div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">
+                📊 Прогноз для {{ prognosis_data.consumer_display }}
+            </h4>
+            <small class="text-muted">
+                База: {{ prognosis_data.year }} год |
+                Прогноз: {{ prognosis_data.forecast_months }} мес.
+            </small>
+        </div>
+        <div class="d-flex gap-2">
+            <!-- Форма для сохранения файлов -->
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="year" value="{{ prognosis_data.year }}">
+                <input type="hidden" name="forecast_months" value="{{ prognosis_data.forecast_months }}">
+                <input type="hidden" name="exchange_rate" value="{{ prognosis_data.exchange_rate }}">
+                {% for consumer in prognosis_data.consumers %}
+                    <input type="hidden" name="consumers" value="{{ consumer }}">
+                {% endfor %}
+                <button type="submit" name="action" value="save_files" class="btn btn-success">
+                    💾 Сохранить в файлы
+                </button>
+            </form>
+
+            <!-- Кнопка нового анализа -->
+            <a href="{% url 'claims:claim_prognosis' %}" class="btn btn-secondary">
+                🔄 Новый прогноз
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Карточки с метриками -->
+<div class="row mb-4">
+    <!-- Карточка 1: Процент конверсии -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">📊 Процент конверсии</h6>
+                <h2 class="card-title text-primary">
+                    {{ prognosis_data.conversion_params.conversion_rate|floatformat:1 }}%
+                </h2>
+                <p class="card-text small">
+                    {{ prognosis_data.conversion_params.escalated_reclamations }} из
+                    {{ prognosis_data.conversion_params.total_reclamations }} рекламаций
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка 2: Среднее время эскалации -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">⏱️ Время эскалации</h6>
+                <h2 class="card-title text-warning">
+                    {{ prognosis_data.conversion_params.escalation_days }}
+                </h2>
+                <p class="card-text small">
+                    дней ({{ prognosis_data.conversion_params.escalation_days|floatformat:0|add:"0"|divisibleby:30|yesno:"~4,~3,~5" }} месяца)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка 3: Прогноз рекламаций -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">🔮 Прогноз рекламаций</h6>
+                <h2 class="card-title text-info">
+                    {{ prognosis_data.total_reclamations_forecast }}
+                </h2>
+                <p class="card-text small">
+                    на {{ prognosis_data.forecast_months }} мес.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка 4: Прогноз претензий -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">🎯 Прогноз претензий</h6>
+                <h2 class="card-title text-danger">
+                    {{ prognosis_data.total_claims_forecast }}
+                </h2>
+                <p class="card-text small">
+                    ожидается (с учетом лага)
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- График -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>📈 График прогноза (факт + прогноз)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="prognosisChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Таблица прогноза -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>📋 Прогноз по месяцам</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Период</th>
+                                <th class="text-center">Рекламации (факт)</th>
+                                <th class="text-center">Рекламации (прогноз)</th>
+                                <th class="text-center">Претензии (факт)</th>
+                                <th class="text-center">Претензии (прогноз)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in prognosis_data.combined_data.table_data %}
+                            <tr>
+                                <td>
+                                    <strong>{{ row.label_formatted }}</strong>
+                                </td>
+                                <td class="text-center">
+                                    {% if row.reclamation_fact > 0 %}
+                                        <span class="badge bg-warning">{{ row.reclamation_fact }}</span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if row.reclamation_forecast > 0 %}
+                                        <span class="badge bg-info">{{ row.reclamation_forecast }}</span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if row.claim_fact > 0 %}
+                                        <span class="badge bg-danger">{{ row.claim_fact }}</span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if row.claim_forecast > 0 %}
+                                        <span class="badge bg-secondary">{{ row.claim_forecast }}</span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript для графика -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('prognosisChart').getContext('2d');
+
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ prognosis_data.combined_data.labels_formatted|safe }},
+            datasets: [
+                {
+                    label: 'Рекламации (факт)',
+                    data: {{ prognosis_data.combined_data.reclamations_fact|safe }},
+                    backgroundColor: 'rgba(255, 152, 0, 0.8)',
+                    borderColor: 'rgba(255, 152, 0, 1)',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Рекламации (прогноз)',
+                    data: {{ prognosis_data.combined_data.reclamations_forecast|safe }},
+                    backgroundColor: 'rgba(255, 224, 178, 0.6)',
+                    borderColor: 'rgba(255, 152, 0, 1)',
+                    borderWidth: 1,
+                    borderDash: [5, 5],
+                },
+                {
+                    label: 'Претензии (факт)',
+                    data: {{ prognosis_data.combined_data.claims_fact|safe }},
+                    backgroundColor: 'rgba(244, 67, 54, 0.8)',
+                    borderColor: 'rgba(244, 67, 54, 1)',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Претензии (прогноз)',
+                    data: {{ prognosis_data.combined_data.claims_forecast|safe }},
+                    backgroundColor: 'rgba(255, 205, 210, 0.6)',
+                    borderColor: 'rgba(244, 67, 54, 1)',
+                    borderWidth: 1,
+                    borderDash: [5, 5],
+                },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Прогноз претензий: {{ prognosis_data.consumer_display }} ({{ prognosis_data.year }} + {{ prognosis_data.forecast_months }} мес.)',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                },
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += context.parsed.y + ' шт.';
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    stacked: false,
+                    title: {
+                        display: true,
+                        text: 'Период'
+                    }
+                },
+                y: {
+                    stacked: false,
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Количество (шт.)'
+                    },
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
