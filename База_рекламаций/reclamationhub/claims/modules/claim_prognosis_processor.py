@@ -1,16 +1,17 @@
-# claims\modules\claim_prognosis_processor.py
-"""Процессор для прогнозирования претензий на основе анализа рекламаций"""
+# claims/modules/claim_prognosis_processor.py
+
+"""Процессор для прогнозирования претензий с разными методами"""
 
 from datetime import date
-from decimal import Decimal
 from dateutil.relativedelta import relativedelta
+import numpy as np
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import numpy as np
 
+from claims.modules.forecast import StatisticalForecast, MachineLearningForecast
 from reports.config.paths import (
     get_claim_prognosis_chart_path,
     BASE_REPORTS_DIR,
@@ -18,7 +19,15 @@ from reports.config.paths import (
 
 
 class ClaimPrognosisProcessor:
-    """Прогнозирование претензий на основе конверсии рекламаций"""
+    """
+    Процессор прогнозирования претензий (оркестратор)
+
+    Поддерживает 6 методов:
+    1-3. Статистические (консервативный, сбалансированный, агрессивный)
+    4-6. Машинное обучение (linear, ridge, polynomial)
+    """
+
+    # ========== КОНСТАНТЫ ==========
 
     MONTH_NAMES = {
         1: "Янв",
@@ -35,24 +44,45 @@ class ClaimPrognosisProcessor:
         12: "Дек",
     }
 
+    # ========== ИНИЦИАЛИЗАЦИЯ ==========
+
     def __init__(
-        self, year=None, consumers=None, forecast_months=6, exchange_rate=None
+        self,
+        year=None,
+        consumers=None,
+        forecast_months=6,
+        exchange_rate=None,
+        forecast_method="statistical",
+        statistical_mode="balanced",
+        ml_model="linear",
     ):
         """
-        Инициализация процессора прогнозирования
-
         Args:
             year: год анализа исторических данных
             consumers: список потребителей (пустой = все)
-            forecast_months: количество месяцев прогноза (3, 6, 12)
+            forecast_months: период прогноза (3, 6 или 12 месяцев)
             exchange_rate: курс конвертации валюты
+            forecast_method: 'statistical' или 'ml'
+            statistical_mode: 'conservative', 'balanced', 'aggressive'
+            ml_model: 'linear', 'ridge', 'polynomial'
         """
         self.today = date.today()
         self.year = year or self.today.year
         self.consumers = consumers or []
         self.all_consumers_mode = len(self.consumers) == 0
         self.forecast_months = forecast_months or 6
-        self.exchange_rate = exchange_rate or Decimal("0.03")
+        self.exchange_rate = exchange_rate or 0.03
+
+        # Параметры методов
+        self.forecast_method = forecast_method
+        self.statistical_mode = statistical_mode
+        self.ml_model = ml_model
+
+        # Создаем экземпляр forecaster'а
+        if forecast_method == "statistical":
+            self.forecaster = StatisticalForecast(mode=statistical_mode)
+        else:  # ml
+            self.forecaster = MachineLearningForecast(model=ml_model)
 
     # ========== ИСТОРИЧЕСКИЕ ДАННЫЕ ==========
 
@@ -61,14 +91,14 @@ class ClaimPrognosisProcessor:
         Получение исторических данных через TimeAnalysisProcessor
 
         Returns:
-            dict: данные по месяцам (рекламации, претензии)
+            dict: данные по месяцам (рекламации, претензии количество, претензии суммы)
         """
         from claims.modules.time_analysis_processor import TimeAnalysisProcessor
 
         time_processor = TimeAnalysisProcessor(
             year=self.year,
             consumers=self.consumers,
-            exchange_rate=self.exchange_rate,
+            exchange_rate=float(self.exchange_rate),
         )
 
         monthly_data = time_processor.get_monthly_distribution()
@@ -81,88 +111,53 @@ class ClaimPrognosisProcessor:
             "claims_costs": monthly_data["claims_costs"],
         }
 
-    # ========== ПРОГНОЗ РЕКЛАМАЦИЙ ==========
-
-    def _calculate_moving_average(self, data, window=3):
-        """
-        Расчет скользящего среднего
-
-        Args:
-            data: список значений
-            window: окно усреднения (количество последних периодов)
-
-        Returns:
-            float: среднее значение
-        """
-        if not data:
-            return 0
-
-        if len(data) < window:
-            return sum(data) / len(data)
-
-        return sum(data[-window:]) / window
-
-    def _calculate_trend(self, data):
-        """
-        Расчет линейного тренда (наклона)
-
-        Args:
-            data: список значений
-
-        Returns:
-            float: коэффициент тренда (наклон линейной регрессии)
-        """
-        if len(data) < 2:
-            return 0
-
-        x = np.arange(len(data))
-        y = np.array(data)
-
-        # Линейная регрессия: y = ax + b
-        coefficients = np.polyfit(x, y, 1)
-        slope = coefficients[0]  # тренд (наклон)
-
-        return slope
+    # ========== ПРОГНОЗЫ ПОКАЗАТЕЛЕЙ ==========
 
     def _forecast_reclamations(self, historical_reclamations):
         """
-        Прогноз рекламаций на N месяцев вперед
+        Прогноз количества рекламаций
 
-        Метод: скользящее среднее + линейный тренд
-
-        Args:
-            historical_reclamations: список исторических значений
+        historical_reclamations: список исторических значений
 
         Returns:
-            list: прогнозные значения по месяцам
+            list: прогноз на forecast_months периодов
         """
-        if not historical_reclamations:
-            return [0] * self.forecast_months
+        return self.forecaster.forecast(
+            historical_reclamations, self.forecast_months, round_decimals=0
+        )
 
-        # Скользящее среднее (базовое значение)
-        base_value = self._calculate_moving_average(historical_reclamations, window=3)
+    def _forecast_claims_count(self, historical_claims):
+        """
+        Прогноз количества претензий (НЕЗАВИСИМЫЙ)
 
-        # Тренд (направление изменения)
-        trend = self._calculate_trend(historical_reclamations)
+        historical_claims: список исторических значений
 
-        # Генерация прогноза
-        forecast = []
-        for i in range(self.forecast_months):
-            # Базовое значение + тренд * шаг вперед
-            predicted_value = base_value + trend * (i + 1)
+        Returns:
+            list: прогноз на forecast_months периодов
+        """
+        return self.forecaster.forecast(
+            historical_claims, self.forecast_months, round_decimals=0
+        )
 
-            # Не даем уйти в отрицательные значения
-            predicted_value = max(0, predicted_value)
+    def _forecast_claim_costs(self, historical_costs):
+        """
+        Прогноз сумм претензий (НЕЗАВИСИМЫЙ)
 
-            forecast.append(round(predicted_value))
+        historical_costs: список исторических сумм
 
-        return forecast
+        Returns:
+            list: прогноз на forecast_months периодов
+        """
+        return self.forecaster.forecast(
+            historical_costs, self.forecast_months, round_decimals=2
+        )
 
-    # ========== ПАРАМЕТРЫ КОНВЕРСИИ ==========
+    # ========== ПАРАМЕТРЫ КОНВЕРСИИ (ИНФОРМАЦИОННЫЕ) ==========
 
     def _get_conversion_params(self):
         """
         Получение параметров конверсии через ReclamationToClaimProcessor
+        (Только для отображения в карточках. Не используется для расчета прогноза.)
 
         Returns:
             dict: параметры конверсии (процент, среднее время эскалации)
@@ -179,68 +174,30 @@ class ClaimPrognosisProcessor:
 
         summary = conversion_processor.get_group_a_summary()
 
-        # Если нет данных, возвращаем дефолтные значения
         if summary["total_reclamations"] == 0:
             return {
                 "conversion_rate": 0,
-                "escalation_days": 120,  # среднее значение по умолчанию
+                "escalation_days": 120,
                 "total_reclamations": 0,
                 "escalated_reclamations": 0,
             }
 
         return {
-            "conversion_rate": summary["escalation_rate"],  # в процентах
+            "conversion_rate": summary["escalation_rate"],
             "escalation_days": summary["average_days"],
             "total_reclamations": summary["total_reclamations"],
             "escalated_reclamations": summary["escalated_reclamations"],
         }
 
-    # ========== ПРОГНОЗ ПРЕТЕНЗИЙ ==========
-
-    def _forecast_claims(self, reclamations_forecast, conversion_params):
-        """
-        Прогноз претензий на основе модели конверсии
-
-        МОДЕЛЬ ПОЛЬЗОВАТЕЛЯ:
-        претензии[месяц + лаг] = рекламации[месяц] * конверсия
-
-        Args:
-            reclamations_forecast: список прогнозных рекламаций по месяцам
-            conversion_params: параметры конверсии (% и время эскалации)
-
-        Returns:
-            list: прогнозные претензии со сдвигом на время эскалации
-        """
-        conversion_rate = conversion_params["conversion_rate"] / 100  # % → 0.XX
-        escalation_days = conversion_params["escalation_days"]
-
-        # Переводим дни в месяцы (примерно)
-        lag_months = round(escalation_days / 30)
-
-        # Прогноз претензий со сдвигом
-        forecast_length = len(reclamations_forecast) + lag_months
-        claims_forecast = [0] * forecast_length
-
-        for i, recl_count in enumerate(reclamations_forecast):
-            # Индекс с учетом лага
-            target_index = i + lag_months
-
-            if target_index < forecast_length:
-                claims_count = recl_count * conversion_rate
-                claims_forecast[target_index] = round(claims_count)
-
-        return claims_forecast
-
-    # ========== ОБЪЕДИНЕНИЕ ДАННЫХ ==========
+    # ========== ГЕНЕРАЦИЯ МЕТОК ==========
 
     def _generate_forecast_labels(self, start_year, start_month, months_count):
         """
         Генерация меток для прогнозных месяцев
 
-        Args:
-            start_year: стартовый год
-            start_month: стартовый месяц
-            months_count: количество месяцев
+        start_year: стартовый год
+        start_month: стартовый месяц
+        months_count: количество месяцев
 
         Returns:
             tuple: (labels, labels_formatted)
@@ -260,15 +217,16 @@ class ClaimPrognosisProcessor:
 
         return labels, labels_formatted
 
+    # ========== ОБЪЕДИНЕНИЕ ДАННЫХ ==========
+
     def get_combined_data(self):
         """
         Объединение исторических и прогнозных данных
 
-        Возвращает данные для графика с 4 сериями и таблицы:
-        - reclamations_fact (столбцы)
-        - reclamations_forecast (столбцы)
-        - claims_fact (столбцы)
-        - claims_forecast (столбцы со сдвигом на время эскалации)
+        ЛОГИКА:
+        1. Определяем ТЕКУЩИЙ месяц через date.today()
+        2. Рекламации: факт до ПРОШЛОГО месяца, прогноз с ТЕКУЩЕГО
+        3. Претензии: факт до позапрошлого месяца, прогноз с ПРОШЛОГО
 
         Returns:
             dict: объединенные данные для визуализации
@@ -276,69 +234,148 @@ class ClaimPrognosisProcessor:
         # 1. Получаем исторические данные
         historical = self._get_historical_data()
 
-        # 2. Прогнозируем рекламации
-        reclamations_forecast = self._forecast_reclamations(historical["reclamations"])
+        if not historical["labels"]:
+            return {
+                "labels": [],
+                "labels_formatted": [],
+                "reclamations_fact": [],
+                "reclamations_forecast": [],
+                "claims_fact": [],
+                "claims_forecast": [],
+                "claims_costs_fact": [],
+                "claims_costs_forecast": [],
+                "table_data": [],
+            }
 
-        # 3. Получаем параметры конверсии
-        conversion_params = self._get_conversion_params()
+        # 2. Определяем ТЕКУЩИЙ месяц динамически
+        today = date.today()
+        current_month_label = today.strftime("%Y-%m")
 
-        # 4. Прогнозируем претензии
-        claims_forecast = self._forecast_claims(
-            reclamations_forecast, conversion_params
+        # Ищем индекс текущего месяца в истории
+        try:
+            current_index = historical["labels"].index(current_month_label)
+        except ValueError:
+            # Если текущего месяца нет в истории, считаем что история до конца
+            current_index = len(historical["labels"])
+
+        # 3. Определяем границы факт/прогноз
+        # Рекламации: факт до текущего месяца (не включая)
+        recl_fact_end = current_index
+
+        # Претензии: факт до прошлого месяца (не включая)
+        claim_fact_end = max(0, current_index - 1)
+
+        # 4. Прогнозируем на основе ФАКТИЧЕСКИХ данных (до границы)
+        recl_historical = (
+            historical["reclamations"][:recl_fact_end] if recl_fact_end > 0 else []
         )
+        reclamations_forecast = self._forecast_reclamations(recl_historical)
 
-        # 5. Генерируем метки для прогнозных месяцев
-        if historical["labels"]:
-            last_label = historical["labels"][-1]
-            last_year, last_month = map(int, last_label.split("-"))
+        claim_historical = (
+            historical["claims"][:claim_fact_end] if claim_fact_end > 0 else []
+        )
+        claims_count_forecast = self._forecast_claims_count(claim_historical)
 
-            # Начинаем со следующего месяца
-            next_month_date = date(last_year, last_month, 1) + relativedelta(months=1)
+        cost_historical = (
+            historical["claims_costs"][:claim_fact_end] if claim_fact_end > 0 else []
+        )
+        claims_costs_forecast = self._forecast_claim_costs(cost_historical)
 
-            forecast_labels, forecast_labels_formatted = self._generate_forecast_labels(
+        # 5. Генерируем метки для НОВЫХ месяцев (после последнего исторического)
+        last_label = historical["labels"][-1]
+        last_year, last_month = map(int, last_label.split("-"))
+        next_month_date = date(last_year, last_month, 1) + relativedelta(months=1)
+
+        # Сколько прогнозных месяцев уже "влезает" в историю?
+        months_in_history = len(historical["labels"]) - current_index
+        new_months_needed = max(0, self.forecast_months - months_in_history)
+
+        if new_months_needed > 0:
+            new_labels, new_labels_formatted = self._generate_forecast_labels(
                 next_month_date.year,
                 next_month_date.month,
-                len(claims_forecast),  # используем длину прогноза претензий (с лагом)
+                new_months_needed,
             )
         else:
-            forecast_labels = []
-            forecast_labels_formatted = []
+            new_labels = []
+            new_labels_formatted = []
 
         # 6. Объединяем метки
-        all_labels = historical["labels"] + forecast_labels
-        all_labels_formatted = (
-            historical["labels_formatted"] + forecast_labels_formatted
-        )
-
-        # 7. Объединяем данные (заполняем нулями для выравнивания)
+        all_labels = historical["labels"] + new_labels
+        all_labels_formatted = historical["labels_formatted"] + new_labels_formatted
         total_length = len(all_labels)
-        historical_length = len(historical["labels"])
 
-        # Рекламации
-        reclamations_fact = historical["reclamations"] + [0] * (
-            total_length - historical_length
-        )
-        reclamations_forecast_padded = (
-            [0] * historical_length
-            + reclamations_forecast
-            + [0] * (total_length - historical_length - len(reclamations_forecast))
-        )
+        # 7. Формируем массивы БЕЗОПАСНО с правильными границами
+        # РЕКЛАМАЦИИ
+        reclamations_fact = []
+        reclamations_forecast_padded = []
 
-        # Претензии
-        claims_fact = historical["claims"] + [0] * (total_length - historical_length)
-        claims_forecast_padded = (
-            [0] * historical_length
-            + claims_forecast
-            + [0] * (total_length - historical_length - len(claims_forecast))
-        )
+        for i in range(total_length):
+            if i < recl_fact_end:
+                # Факт
+                reclamations_fact.append(
+                    historical["reclamations"][i]
+                    if i < len(historical["reclamations"])
+                    else 0
+                )
+                reclamations_forecast_padded.append(0)
+            else:
+                # Прогноз
+                reclamations_fact.append(0)
+                forecast_index = i - recl_fact_end
+                reclamations_forecast_padded.append(
+                    reclamations_forecast[forecast_index]
+                    if forecast_index < len(reclamations_forecast)
+                    else 0
+                )
 
-        # Обрезаем до нужной длины
-        reclamations_forecast_padded = reclamations_forecast_padded[:total_length]
-        claims_forecast_padded = claims_forecast_padded[:total_length]
+        # ПРЕТЕНЗИИ (количество)
+        claims_fact = []
+        claims_forecast_padded = []
 
-        # Формируем данные для ТАБЛИЦЫ (список словарей)
+        for i in range(total_length):
+            if i < claim_fact_end:
+                # Факт
+                claims_fact.append(
+                    historical["claims"][i] if i < len(historical["claims"]) else 0
+                )
+                claims_forecast_padded.append(0)
+            else:
+                # Прогноз
+                claims_fact.append(0)
+                forecast_index = i - claim_fact_end
+                claims_forecast_padded.append(
+                    claims_count_forecast[forecast_index]
+                    if forecast_index < len(claims_count_forecast)
+                    else 0
+                )
+
+        # ПРЕТЕНЗИИ (суммы)
+        claims_costs_fact = []
+        claims_costs_forecast_padded = []
+
+        for i in range(total_length):
+            if i < claim_fact_end:
+                # Факт
+                claims_costs_fact.append(
+                    historical["claims_costs"][i]
+                    if i < len(historical["claims_costs"])
+                    else 0.0
+                )
+                claims_costs_forecast_padded.append(0.0)
+            else:
+                # Прогноз
+                claims_costs_fact.append(0.0)
+                forecast_index = i - claim_fact_end
+                claims_costs_forecast_padded.append(
+                    claims_costs_forecast[forecast_index]
+                    if forecast_index < len(claims_costs_forecast)
+                    else 0.0
+                )
+
+        # 8. Формируем данные для ТАБЛИЦЫ
         table_data = []
-        for i in range(len(all_labels)):
+        for i in range(total_length):
             table_data.append(
                 {
                     "label": all_labels[i],
@@ -347,6 +384,8 @@ class ClaimPrognosisProcessor:
                     "reclamation_forecast": reclamations_forecast_padded[i],
                     "claim_fact": claims_fact[i],
                     "claim_forecast": claims_forecast_padded[i],
+                    "claim_cost_fact": claims_costs_fact[i],
+                    "claim_cost_forecast": claims_costs_forecast_padded[i],
                 }
             )
 
@@ -357,6 +396,8 @@ class ClaimPrognosisProcessor:
             "reclamations_forecast": reclamations_forecast_padded,
             "claims_fact": claims_fact,
             "claims_forecast": claims_forecast_padded,
+            "claims_costs_fact": claims_costs_fact,
+            "claims_costs_forecast": claims_costs_forecast_padded,
             "table_data": table_data,
         }
 
@@ -402,6 +443,13 @@ class ClaimPrognosisProcessor:
                 "all_consumers_mode": self.all_consumers_mode,
                 "forecast_months": self.forecast_months,
                 "exchange_rate": str(self.exchange_rate),
+                "forecast_method": self.forecast_method,
+                "statistical_mode": (
+                    self.statistical_mode
+                    if self.forecast_method == "statistical"
+                    else None
+                ),
+                "ml_model": self.ml_model if self.forecast_method == "ml" else None,
                 "historical": historical,
                 "conversion_params": conversion_params,
                 "combined_data": combined_data,
