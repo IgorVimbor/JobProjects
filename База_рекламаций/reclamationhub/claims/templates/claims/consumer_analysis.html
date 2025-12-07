@@ -114,9 +114,12 @@
                         </div>
 
                         <!-- Кнопки -->
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button type="submit" class="btn btn-primary">
                                 📊 Сформировать анализ
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearForm()">
+                                ❌ Очистить
                             </button>
                         </div>
                     </form>
@@ -363,13 +366,10 @@
     <!-- Кнопки действий -->
     <div class="row mt-3 mb-4">
         <div class="col-12">
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 justify-content-end">
                 <a href="{% url 'claims:consumer_analysis' %}" class="btn btn-primary">
                     🔄 Новый анализ
                 </a>
-                <button class="btn btn-outline-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                    ⬆️ Вверх
-                </button>
                 <!-- Кнопка сохранения в файлы -->
                 <form method="post" style="display: inline;">
                     {% csrf_token %}
@@ -383,12 +383,23 @@
                         💾 Сохранить в файлы
                     </button>
                 </form>
+                <button class="btn btn-outline-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    ⬆️ Вверх
+                </button>
             </div>
         </div>
     </div>
 
     {% endif %}
 </div>
+
+<script>
+function clearForm() {
+    // Функция очистки формы по кнопке "Очистить" - без подтверждения
+    // Использует существующую логику через GET параметр clear=1
+    window.location.href = '{% url "claims:consumer_analysis" %}?clear=1';
+}
+</script>
 
 <!-- JavaScript для графика -->
 {% if analysis_data and analysis_data.monthly_dynamics.labels %}

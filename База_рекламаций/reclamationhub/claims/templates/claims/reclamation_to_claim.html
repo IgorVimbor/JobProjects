@@ -107,18 +107,18 @@
                             </ul>
                         </div>
 
-                        <!-- ✅ ДВЕ КНОПКИ SUBMIT с formaction -->
+                        <!-- ДВЕ КНОПКИ SUBMIT с formaction -->
                         <div class="d-flex gap-2">
                             <button type="submit"
                                     formaction="{% url 'claims:reclamation_to_claim' %}"
-                                    class="btn btn-primary btn-lg flex-fill"
+                                    class="btn btn-primary flex-fill"
                                     onclick="showExchangeRate()">
                                 📊 Анализ конверсии
                             </button>
 
                             <button type="submit"
                                     formaction="{% url 'claims:time_analysis' %}"
-                                    class="btn btn-info btn-lg flex-fill"
+                                    class="btn btn-info flex-fill"
                                     onclick="hideExchangeRate()">
                                 ⏱️ Временной анализ
                             </button>

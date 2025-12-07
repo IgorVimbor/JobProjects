@@ -109,7 +109,7 @@
                         <!-- Кнопки выбора типа графика -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Тип графика:</label>
-                            <div class="d-flex flex-wrap gap-2">
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
                                 <button type="submit" name="chart_type" value="product" class="btn btn-outline-primary">
                                     По обозначению изделия
                                 </button>
@@ -207,13 +207,10 @@
                     {% endif %}
 
                     <!-- Кнопки действий -->
-                    <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                    <div class="d-flex gap-2 justify-content-end">
                         <a href="{% url 'analytics:combined_chart' %}" class="btn btn-primary">
                             🔄 Новый анализ
                         </a>
-                        <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                            ⬆️ Вверх
-                        </button>
 
                         <!-- Кнопка сохранения в файлы -->
                         {% if download_info %}
@@ -223,19 +220,21 @@
                             <input type="hidden" name="year" value="{{ request_year }}">
                             <input type="hidden" name="product" value="{{ request_product }}">
                             <input type="hidden" name="chart_type" value="{{ request_chart_type }}">
-
                             <!-- Передаем всех выбранных потребителей -->
                             {% if request_consumers %}
                                 {% for consumer in request_consumers %}
                                 <input type="hidden" name="consumers" value="{{ consumer }}">
                                 {% endfor %}
                             {% endif %}
-
                             <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
                                 💾 Сохранить в файлы
                             </button>
                         </form>
                         {% endif %}
+
+                        {% comment %} <button class="btn btn-outline-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                            ⬆️ Вверх
+                        </button> {% endcomment %}
                     </div>
                 </div>
             </div>

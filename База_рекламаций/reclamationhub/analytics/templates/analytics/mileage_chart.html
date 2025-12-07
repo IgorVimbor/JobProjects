@@ -154,9 +154,15 @@
                         <!-- Горизонтальная линия -->
                         <hr class="my-3">
 
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            📊 Сделать анализ
-                        </button>
+                        <!-- Кнопки -->
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button type="submit" class="btn btn-primary">
+                                📊 Сделать анализ
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearForm()">
+                                ❌ Очистить
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -227,13 +233,16 @@
                     {% endif %}
 
                     <!-- Кнопки действий -->
-                    <div class="d-flex gap-2 mt-3">
+                    <div class="d-flex gap-2 justify-content-end">
                         <a href="{% url 'analytics:mileage_chart' %}" class="btn btn-primary">
                             🔄 Новый анализ
                         </a>
-                        <button class="btn btn-secondary" onclick="this.closest('.card').style.display='none'">
-                            ❌ Закрыть
+                        <button class="btn btn-outline-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                            ⬆️ Вверх
                         </button>
+                        {% comment %} <button class="btn btn-outline-primary" onclick="this.closest('.card').style.display='none'">
+                            ❌ Закрыть
+                        </button> {% endcomment %}
                     </div>
                 </div>
             </div>
@@ -241,4 +250,12 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+function clearForm() {
+    // Функция очистки формы по кнопке "Очистить" - без подтверждения
+    // Использует существующую логику через GET параметр clear=1
+    window.location.href = '{% url "analytics:mileage_chart" %}?clear=1';
+}
+</script>
 {% endblock %}

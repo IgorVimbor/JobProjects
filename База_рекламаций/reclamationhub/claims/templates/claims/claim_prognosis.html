@@ -265,10 +265,13 @@
                         </div>
 
                         <!-- Кнопки действий -->
-                        <div class="d-flex gap-2">
-                            <button type="submit"
-                                    class="btn btn-primary btn-lg flex-fill">
+                        <div class="d-flex gap-2 justify-content-end">
+                            {% comment %} <button type="submit" class="btn btn-primary btn-lg flex-fill"> {% endcomment %}
+                            <button type="submit" class="btn btn-primary">
                                 📊 Построить прогноз
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearForm()">
+                                ❌ Очистить
                             </button>
                         </div>
                     </form>
@@ -338,6 +341,12 @@
 </div>
 
 <script>
+function clearForm() {
+    // Функция очистки формы по кнопке "Очистить" - без подтверждения
+    // Использует существующую логику через GET параметр clear=1
+    window.location.href = '{% url "claims:claim_prognosis" %}?clear=1';
+}
+
 function toggleMethodOptions() {
     const statistical = document.getElementById('method_statistical').checked;
     const ml = document.getElementById('method_ml').checked;

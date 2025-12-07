@@ -45,13 +45,10 @@
 <!-- Кнопки действий -->
 <div class="row mt-3 mb-4">
     <div class="col-12">
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 justify-content-end">
             <a href="{% url 'claims:time_analysis' %}" class="btn btn-primary">
                 🔄 Новый анализ
             </a>
-            <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                ⬆️ Вверх
-            </button>
             <!-- Кнопка сохранения в файлы -->
             <form method="post" style="display: inline;">
                 {% csrf_token %}
@@ -63,6 +60,9 @@
                     💾 Сохранить график
                 </button>
             </form>
+            <button class="btn btn-outline-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                ⬆️ Вверх
+            </button>
         </div>
     </div>
 </div>

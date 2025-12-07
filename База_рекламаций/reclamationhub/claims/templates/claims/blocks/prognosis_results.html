@@ -119,11 +119,11 @@
                             </tr>
                             <tr>
                                 <th class="text-center">Факт</th>
-                                <th class="text-center">Прогноз</th>
+                                <th class="text-center text-success">Прогноз</th>
                                 <th class="text-center">Факт</th>
-                                <th class="text-center">Прогноз</th>
+                                <th class="text-center text-success">Прогноз</th>
                                 <th class="text-center">Факт</th>
-                                <th class="text-center">Прогноз</th>
+                                <th class="text-center text-success">Прогноз</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -141,9 +141,9 @@
                                 </td>
 
                                 <!-- Рекламации прогноз -->
-                                <td class="text-center">
+                                <td class="text-center text-success">
                                     {% if row.reclamation_forecast > 0 %}
-                                        <span>{{ row.reclamation_forecast }}</span>
+                                        <span><strong>{{ row.reclamation_forecast }}</strong></span>
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
@@ -159,9 +159,9 @@
                                 </td>
 
                                 <!-- Претензии прогноз -->
-                                <td class="text-center">
+                                <td class="text-center text-success">
                                     {% if row.claim_forecast > 0 %}
-                                        <span>{{ row.claim_forecast }}</span>
+                                        <span><strong>{{ row.claim_forecast }}</strong></span>
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
@@ -177,9 +177,9 @@
                                 </td>
 
                                 <!-- Суммы прогноз -->
-                                <td class="text-center">
+                                <td class="text-center text-success">
                                     {% if row.claim_cost_forecast > 0 %}
-                                        <span>{{ row.claim_cost_forecast|floatformat:2 }}</span>
+                                        <span><strong>{{ row.claim_cost_forecast|floatformat:2 }}</strong></span>
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
@@ -197,13 +197,10 @@
 <!-- Кнопки действий -->
 <div class="row mt-3 mb-4">
     <div class="col-12">
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 justify-content-end">
             <a href="{% url 'claims:claim_prognosis' %}" class="btn btn-primary">
                 🔄 Новый прогноз
             </a>
-            <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                ⬆️ Вверх
-            </button>
             <!-- Кнопка сохранения в файлы -->
             <form method="post" style="display: inline;">
                 {% csrf_token %}
@@ -217,6 +214,9 @@
                     💾 Сохранить в файл
                 </button>
             </form>
+            <button class="btn btn-outline-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                ⬆️ Вверх
+            </button>
         </div>
     </div>
 </div>

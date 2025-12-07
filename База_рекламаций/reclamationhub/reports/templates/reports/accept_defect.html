@@ -78,8 +78,11 @@
                         <!-- Горизонтальная линия -->
                         <hr class="my-3">
 
-                        <!-- Кнопки управления
-                        <div class="d-flex gap-2 mb-3">
+                        <!-- Кнопки управления -->
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button type="submit" class="btn btn-primary btn">
+                                📊 Сформировать отчет
+                            </button>
                             <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectAllMonths()">
                                 ✅ Выбрать все
                             </button>
@@ -87,11 +90,6 @@
                                 ❌ Очистить все
                             </button>
                         </div>
-                         -->
-
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            📈 Сформировать отчет
-                        </button>
                     </form>
                 </div>
             </div>
@@ -192,7 +190,7 @@
     {% endif %}
 </div>
 
-<!--
+
 <script>
 // JavaScript для управления чекбоксами месяцев
 function selectAllMonths() {
@@ -209,5 +207,4 @@ function clearAllMonths() {
     });
 }
 </script>
- -->
 {% endblock %}
