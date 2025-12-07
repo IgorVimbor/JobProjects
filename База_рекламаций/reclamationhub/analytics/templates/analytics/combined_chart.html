@@ -24,10 +24,13 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
-                    <h5>Параметры анализа</h5>
+                    <h5>Анализ распределения рекламаций по датам с построением диаграмм</h5>
                 </div>
                 <div class="card-body">
-                    <p>Анализ распределения рекламаций по датам с построением диаграмм</p>
+                    {% comment %} <h5>Параметры анализа</h5> {% endcomment %}
+
+                    <!-- Горизонтальная линия -->
+                    {% comment %} <hr class="my-2"> {% endcomment %}
 
                     <form method="post" id="chartForm">
                         {% csrf_token %}
@@ -44,6 +47,9 @@
                                 {% endfor %}
                             </select>
                         </div>
+
+                        <!-- Горизонтальная линия -->
+                        <hr class="my-3">
 
                         <!-- Блок выбора потребителей -->
                         <div class="mb-3">
@@ -68,6 +74,9 @@
                                 ✅ Выберите нужных потребителей или оставьте пустыми для анализа всех потребителей
                             </small>
                         </div>
+
+                        <!-- Горизонтальная линия -->
+                        <hr class="my-3">
 
                         <!-- Блок выбора изделий (ОДНО изделие - radio buttons) -->
                         <div class="mb-3">
@@ -94,9 +103,12 @@
                             </small>
                         </div>
 
+                        <!-- Горизонтальная линия -->
+                        <hr class="my-3">
+
                         <!-- Кнопки выбора типа графика -->
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Выберите тип графика:</label>
+                            <label class="form-label fw-bold">Тип графика:</label>
                             <div class="d-flex flex-wrap gap-2">
                                 <button type="submit" name="chart_type" value="product" class="btn btn-outline-primary">
                                     По обозначению изделия

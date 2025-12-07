@@ -23,7 +23,7 @@ class DbSearchForm(forms.Form):
             }
         ),
         required=False,
-        help_text="Если в номере двигателя есть буквы, вводите полностью - с английскими буквами",
+        help_text="✅ Если в номере двигателя есть буквы, вводите полностью - с английскими буквами",
     )
 
     act_numbers = forms.CharField(
