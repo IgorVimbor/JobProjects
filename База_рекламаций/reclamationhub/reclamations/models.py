@@ -251,7 +251,7 @@ class Reclamation(models.Model):
         max_length=200,
         null=True,
         blank=True,
-        verbose_name="Ответ потребителя на сообщение",
+        verbose_name="Ответ потребителя",
     )
     consumer_response_number = models.CharField(
         max_length=100,

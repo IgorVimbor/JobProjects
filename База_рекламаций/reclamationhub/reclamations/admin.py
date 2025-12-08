@@ -93,6 +93,8 @@ class ReclamationAdmin(admin.ModelAdmin):
         "products_count",  # количество изделий
         "measures_taken",  # принятые меры
         "outgoing_document_number",  # номер исходящего документа
+        "consumer_response",  # ответ потребителя
+        "consumer_response_number",  # номер ответа потребителя
         "pkd_number",  # номер 8D или ПКД
         "volume_removal_reference",  # справка снятия с объёмов
         "receipt_invoice_number",  # номер накладной поступления изделия

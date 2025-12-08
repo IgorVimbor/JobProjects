@@ -377,32 +377,38 @@ class ClaimAdmin(admin.ModelAdmin):
         """Отображение суммы претензии с форматированием"""
         if obj.claim_amount_all:
             # Простое форматирование: 12450.15 -> "12 450.15"
-            amount_str = f"{obj.claim_amount_all:,.2f}"
-            return amount_str.replace(",", " ")
+            amount_str = f"{obj.claim_amount_all:,.2f}".replace(",", " ")
+            return format_html(  # синий - color: #007bff, темно-синий - color: #004085
+                '<span style="color: #007bff; style="font-weight: bold;">{}</span>',
+                amount_str
+            )
         return "0.00"
 
     @admin.display(description="Сумма по акту рекламации")
     def claim_amount_act_display(self, obj):
         """Отображение суммы по акту с форматированием"""
         if obj.claim_amount_act:
-            amount_str = f"{obj.claim_amount_act:,.2f}"
-            return amount_str.replace(",", " ")
+            amount_str = f"{obj.claim_amount_act:,.2f}".replace(",", " ")
+            return format_html('<span style="font-weight: bold;">{}</span>', amount_str)
         return "0.00"
 
     @admin.display(description="Признано по претензии")
     def costs_all_display(self, obj):
         """Отображение признанной суммы претензии с форматированием"""
         if obj.costs_all:
-            amount_str = f"{obj.costs_all:,.2f}"
-            return amount_str.replace(",", " ")
+            amount_str = f"{obj.costs_all:,.2f}".replace(",", " ")
+            return format_html(  # синий - color: #007bff, темно-синий - color: #004085
+                '<span style="color: #007bff; style="font-weight: bold;">{}</span>',
+                amount_str
+            )
         return "0.00"
 
     @admin.display(description="Признано по акту")
     def costs_act_display(self, obj):
         """Отображение признанной суммы по акту с форматированием"""
         if obj.costs_act:
-            amount_str = f"{obj.costs_act:,.2f}"
-            return amount_str.replace(",", " ")
+            amount_str = f"{obj.costs_act:,.2f}".replace(",", " ")
+            return format_html('<span style="font-weight: bold;">{}</span>', amount_str)
         return "0.00"
 
     # @admin.display(description="Ответ")
