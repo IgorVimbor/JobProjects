@@ -36,14 +36,20 @@
                     <hr class="my-3">
 
                     <!-- Показываем номер акта из JSON файла -->
-                    <p>
-                        <strong>Номер последнего акта</strong>, включённого в предыдущую справку:
-                        {% if default_act_number %}
-                            <span><strong>{{ default_act_number }}</strong></span>
+                    {% comment %} <p>
+                        <strong>Номер последнего акта</strong>, включённого в справку:
+                        {% if max_act_number %}
+                            <span><strong>{{ max_act_number }}</strong></span>
                         {% else %}
                             <span>не определён</span>
                         {% endif %}
-                    </p>
+                    </p> {% endcomment %}
+
+                    <!-- Информационная панель -->
+                    <div class="alert alert-info mb-4">
+                        Последняя справка составлялась за <strong>{{ month_name }}</strong> {{ report_year }} года по актам исследования
+                        с <strong>{{ start_act_number }}</strong> по <strong>{{ max_act_number }}</strong>
+                    </div>
 
                     <form method="post">
                         {% csrf_token %}
@@ -55,11 +61,11 @@
                                    id="act_number"
                                    name="act_number"
                                    placeholder="Например: 547"
-                                   value="{{ default_act_number|default:'' }}"
+                                   value="{{ max_act_number|default:'' }}"
                                    min="0"
                                    required>
                             <small class="form-text text-muted">
-                                ✅ Номер акта автоматически загружен из базы. Вы можете изменить его при необходимости.
+                                ✅ Номер акта загружен автоматически. Вы можете изменить его при необходимости.
                                 <br>
                                 Анализ будет проведён начиная со <strong>следующего</strong> номера акта.
                             </small>
@@ -241,13 +247,10 @@
     <!-- Кнопки действий -->
     <div class="row mt-3 mb-4">
         <div class="col-12">
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 justify-content-end">
                 <a href="{% url 'reports:culprits_defect' %}?clear=1" class="btn btn-primary">
                     🔄 Новый анализ
                 </a>
-                <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                    ⬆️ Вверх
-                </button>
                 <!-- Кнопка сохранения в файл -->
                 <form method="post" style="display: inline;">
                     {% csrf_token %}
@@ -255,6 +258,9 @@
                         💾 Сохранить в файл
                     </button>
                 </form>
+                <button class="btn btn-outline-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    ⬆️ Вверх
+                </button>
             </div>
         </div>
     </div>
@@ -269,7 +275,7 @@ function clearForm() {
 
 // Сброс к значению из базы данных
 function resetToDefault() {
-    const defaultValue = '{{ default_act_number|default:"" }}';
+    const defaultValue = '{{ max_act_number|default:"" }}';
     document.getElementById('act_number').value = defaultValue;
 }
 </script>

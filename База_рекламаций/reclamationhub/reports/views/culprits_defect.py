@@ -40,12 +40,12 @@ def culprits_defect_page(request):
     # Текущая дата для отображения
     today = date.today()
 
-    # Из класса CulpritsDefectProcessor определяем отчетные месяц и год для отображения
-    # А также получаем номер акта по умолчанию из JSON
+    # Из класса CulpritsDefectProcessor получаем отчетные месяц и год для отображения
     processor = CulpritsDefectProcessor()
     report_month = processor.month_name  # Отчетный месяц (предыдущий)
     report_year = processor.analysis_year  # Отчетный год
-    default_act_number = processor.get_default_act_number()  # Номер акта из JSON
+    # Получаем из JSON месяц последней справки и номера актов по умолчанию
+    month_name, start_act_number, max_act_number = processor.get_default_act_number()
 
     context = {
         "page_title": "Дефекты по виновникам",
@@ -54,7 +54,9 @@ def culprits_defect_page(request):
         "current_date": today.strftime("%d.%m.%Y"),
         "report_month": report_month,
         "report_year": report_year,
-        "default_act_number": default_act_number,  # Передаём номер акта по умолчанию
+        "month_name": month_name,
+        "start_act_number": start_act_number,
+        "max_act_number": max_act_number,
     }
     return render(request, "reports/culprits_defect.html", context)
 

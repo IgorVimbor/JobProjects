@@ -41,14 +41,16 @@ class CulpritsDefectProcessor:
         """
         Инициализация процессора.
 
-        Args:
-            user_number: Номер акта, введённый пользователем.
-                        Если None - используется автоматическое значение из JSON.
+        user_number: Номер акта, введённый пользователем.
+        Если None - используется автоматическое значение из JSON.
         """
         self.today = date.today()
         self.bza_df = pd.DataFrame()
         self.not_bza_df = pd.DataFrame()
+
+        self.dct_act_numbers = {}
         self.max_act_number = None
+        self.start_act_number = None
 
         # Определяем год анализа по прошлому месяцу
         self.prev_month = self.today - relativedelta(months=1)
@@ -61,54 +63,75 @@ class CulpritsDefectProcessor:
         # Определяем начальный номер акта для фильтрации
         if user_number is not None:
             # Пользователь указал свой номер - используем его
-            self.start_act_number = user_number
-        else:
-            # Автоматически берём номер из позапрошлого месяца
-            self.start_act_number = self.prev_max_act_number
+            self.start_act_number = user_number + 1
 
     def _load_act_numbers_from_json(self):
         """Загрузка номеров актов из JSON файла"""
         try:
             with open(culprits_defect_json_db, encoding="utf-8-sig") as file:
-                self.dct_act_numbers = json.load(file)
+                raw_data = json.load(file)
 
-            # Преобразуем ключи и значения в int (JSON хранит данные как строки)
-            self.dct_act_numbers = {
-                int(k): int(v) for k, v in self.dct_act_numbers.items()
-            }
+            # Преобразуем ключи в int (JSON хранит ключи как строки)
+            self.dct_act_numbers = {int(k): v for k, v in raw_data.items()}
 
-            # Определяем номер последнего акта из позапрошлого месяца
-            prev_prev_month = self.today - relativedelta(months=2)
-            self.prev_max_act_number = self.dct_act_numbers.get(
-                prev_prev_month.month, 0
-            )
+            # По последнему (максимальному) ключу находим стартовый и максимальный акты
+            max_key = max(self.dct_act_numbers)
+            self.start_act_number, self.max_act_number = self.dct_act_numbers[max_key]
 
         except (FileNotFoundError, json.JSONDecodeError):
             # Если файла нет или он повреждён - создаём новый
-            self.dct_act_numbers = {}
-            self.prev_max_act_number = "0"
-            self._save_act_numbers_to_json()
+            self.dct_act_numbers = {1: [1, 1]}
+            self.start_act_number = 1
+            self.max_act_number = 1
+            self._save_act_numbers_to_json(self.dct_act_numbers)
 
-    def _save_act_numbers_to_json(self):
+    def _save_act_numbers_to_json(self, dct):
         """Сохранение номеров актов в JSON файл"""
         try:
+            # Создаём директорию, если не существует
+            os.makedirs(os.path.dirname(culprits_defect_json_db), exist_ok=True)
+
             with open(culprits_defect_json_db, "w", encoding="utf-8-sig") as file:
-                json.dump(self.dct_act_numbers, file, ensure_ascii=False, indent=4)
+                json.dump(dct, file, ensure_ascii=False, indent=2)
         except Exception as e:
             print(f"Ошибка сохранения JSON: {e}")
 
     def get_default_act_number(self):
         """
-        Получение номера акта по умолчанию для отображения в форме.
-        Возвращает номер из позапрошлого месяца.
+        Получение месяца справки и номеров актов по умолчанию для отображения в форме.
+        Возвращает название месяца последней справки, номер стартового и максимального акта из этой справки
         """
-        return self.prev_max_act_number
+        # Находим максимальный (последний) ключ в словаре
+        max_key = max(self.dct_act_numbers)
+
+        # Убеждаемся, что ключ — число (защита на случай если ключ строка)
+        if isinstance(max_key, str):
+            max_key = int(max_key)
+
+        # Определяем название месяца последней справки
+        json_month_name = self.MONTH_NAMES[max_key]
+
+        return json_month_name, self.start_act_number, self.max_act_number
 
     def process_data(self):
         """Основная логика обработки данных с pandas"""
 
+        # =========== Вспомогательные функции ===========
+
+        def get_numeric_part(act_str):
+            """Извлекает числовую часть акта для сравнения: '1067-1' -> 1067"""
+            try:
+                return int(str(act_str).split("-")[0])
+            except (ValueError, IndexError, AttributeError):
+                return 0
+
+        def join_unique(series, separator=", "):
+            """Объединяет уникальные значения в строку"""
+            return separator.join(str(i) for i in series.dropna().unique())
+
         try:
-            # 1. Получаем все данные из Investigation с связанными моделями
+            # =========== Получение данных из модели Investigation ============
+
             investigations_queryset = Investigation.objects.select_related(
                 "reclamation__defect_period", "reclamation__product_name"
             ).values(
@@ -129,10 +152,10 @@ class CulpritsDefectProcessor:
             if not investigations_queryset.exists():
                 return False, "Нет данных в таблице исследований"
 
-            # 2. Создаем DataFrame
+            # =========== Создание датафрейма ============
+
             df = pd.DataFrame(list(investigations_queryset))
 
-            # Переименовываем столбцы для удобства
             df.rename(
                 columns={
                     "act_number": "Номер акта исследования",
@@ -151,118 +174,96 @@ class CulpritsDefectProcessor:
                 inplace=True,
             )
 
-            # 3. Первая фильтрация - только признанные рекламации (solution = "ACCEPT")
-            df_accepted = df[df["Решение"] == "ACCEPT"].copy()
+            # =========== Обработка отсутствующих значений ============
 
-            if df_accepted.empty:
-                return False, "Нет признанных рекламаций в данных"
+            # Удаляем строки с отсутствующим номером акта исследования
+            df.dropna(subset=["Номер акта исследования"], inplace=True)
 
-            # 4. Удаляем строки с отсутствующим номером акта исследования
-            df_accepted.dropna(subset=["Номер акта исследования"], inplace=True)
-
-            if df_accepted.empty:
+            if df.empty:
                 return False, "Нет записей с номерами актов исследования"
 
-            # 4.1 Удаляем акты со значением "без исследования"
-            df_accepted = df_accepted[
-                df_accepted["Номер акта исследования"] != "без исследования"
-            ].copy()
+            # Удаляем акты со значением "без исследования"
+            df = df[df["Номер акта исследования"] != "без исследования"]
 
-            if df_accepted.empty:
-                return (
-                    False,
-                    "Нет записей с номерами актов исследования (после исключения специальных значений)",
-                )
+            if df.empty:
+                return False, "Нет записей после исключения актов 'без исследования'"
 
-            # 4.2 Ограничиваем месяц акта исследования отчетным месяцем
-            df_accepted["Дата акта исследования"] = pd.to_datetime(
-                df_accepted["Дата акта исследования"]
-            )
+            # =========== Фильтрация датафрейма ============
 
-            # Преобразуем date в pandas Timestamp
+            # 1. Фильтруем по отчетному месяцу
+            df["Дата акта исследования"] = pd.to_datetime(df["Дата акта исследования"])
             prev_month_ts = pd.Timestamp(self.prev_month)
 
-            # Преобразуем даты в периоды год-месяц и сравниваем
-            df_accepted = df_accepted[
-                df_accepted["Дата акта исследования"].dt.to_period("M")
+            # Преобразуем даты в формат год-месяц и оставляем только отчетный месяц
+            df_filtered = df[  # Создаем новый датафрейм
+                df["Дата акта исследования"].dt.to_period("M")
                 == prev_month_ts.to_period("M")
-            ]
+            ].copy()  # Добавляем .copy() для избежания SettingWithCopyWarning
 
-            if df_accepted.empty:
+            if df_filtered.empty:
                 return (
                     False,
                     f"Нет данных за {self.month_name} {self.analysis_year} года",
                 )
 
-            # 5. Извлекаем год и номер акта исследования
-            # Формат: "2025 № 1067" → год=2025, номер=1067
-            df_accepted["Год акта"] = (
-                df_accepted["Номер акта исследования"]
+            # 2. Фильтруем по году анализа
+            # Извлекаем год и номер акта исследования ("2025 № 1067" → год=2025, номер=1067)
+            df_filtered["Год акта"] = (
+                df_filtered["Номер акта исследования"]
                 .str.split(" № ")
                 .str[0]
                 .astype(int)
             )
-            df_accepted["Номер акта (короткий)"] = (
-                df_accepted["Номер акта исследования"].str.split(" № ").str[1]
-            )
 
-            # 6. Фильтрация по году анализа
-            df_year_filtered = df_accepted[
-                df_accepted["Год акта"] == self.analysis_year
-            ].copy()
+            df_filtered = df_filtered[df_filtered["Год акта"] == self.analysis_year]
 
-            if df_year_filtered.empty:
+            if df_filtered.empty:
                 return False, f"Нет данных за {self.analysis_year} год"
 
-            # 7. Функция для безопасного извлечения числовой части для сравнения
-            def get_numeric_part(act_str):
-                """Извлекает числовую часть для сравнения: '1067-1' -> 1067"""
-                try:
-                    return int(str(act_str).split("-")[0])
-                except (ValueError, IndexError, AttributeError):
-                    return 0
+            # 3. Фильтруем по номеру акта
+            # Оставляем как строку для корректной работы с "1067-1"
+            df_filtered["Номер акта (короткий)"] = (
+                df_filtered["Номер акта исследования"].str.split(" № ").str[1]
+            )
 
-            # Создаем столбец для сравнения
-            df_year_filtered["act_number"] = df_year_filtered[
-                "Номер акта (короткий)"
-            ].apply(get_numeric_part)
+            # Создаем числовой столбец для сравнения
+            df_filtered["act_number_int"] = df_filtered["Номер акта (короткий)"].apply(
+                get_numeric_part
+            )
 
-            # 8. Фильтрация по номеру акта (оставляем акты с номером > start_act_number)
-            df_filtered = df_year_filtered[
-                df_year_filtered["act_number"] > self.start_act_number
-            ].copy()
+            # Оставляем акты с номером >= start_act_number
+            df_filtered = df_filtered[
+                df_filtered["act_number_int"] >= self.start_act_number
+            ]
 
             if df_filtered.empty:
                 return (
                     False,
-                    f"Нет данных за {self.analysis_year} год начиная с акта № {self.start_act_number + 1}",
+                    f"Нет данных за {self.analysis_year} год начиная с акта № {self.start_act_number}",
                 )
 
-            # 9. Изменяем тип данных с float на int
-            df_filtered["Количество предъявленных изделий"] = df_filtered[
-                "Количество предъявленных изделий"
-            ].astype("int32")
+            # Находим минимальный и максимальный номера актов (числовые)
+            self.start_act_number = int(df_filtered["act_number_int"].min())
+            self.max_act_number = int(df_filtered["act_number_int"].max())
 
-            # 10. Находим максимальный номер акта для следующего анализа
-            act_numbers = df_filtered["Номер акта (короткий)"].unique()
-            if len(act_numbers) > 0:
-                max_act_number = sorted(
-                    act_numbers,
-                    key=lambda x: (
-                        int(str(x).split("-")[0]) if "-" in str(x) else int(x),
-                        int(str(x).split("-")[1]) if "-" in str(x) else 0,
-                    ),
-                )[-1]
-                self.max_act_number = max_act_number
+            # Сохраняем с числовым ключом в JSON
+            self.dct_act_numbers[self.prev_month.month] = [
+                self.start_act_number,
+                self.max_act_number,
+            ]
+            self._save_act_numbers_to_json(self.dct_act_numbers)
 
-                # Сохраняем максимальный номер в JSON для следующего анализа
-                self.dct_act_numbers[self.prev_month.month] = self.max_act_number
-                self._save_act_numbers_to_json()
+            # 4. Фильтруем по признано/отклонено
+            df_filtered = df_filtered[df_filtered["Решение"] == "ACCEPT"]
 
-            # 11. Убираем служебные столбцы
-            df_filtered = df_filtered.drop(columns=["Год акта", "act_number"])
+            if df_filtered.empty:
+                return False, "Нет признанных рекламаций в данных"
 
-            # 12. Группировка и агрегация
+            # Убираем служебные столбцы
+            df_filtered = df_filtered.drop(columns=["Год акта", "act_number_int"])
+
+            # =========== Группировка и агрегация ============
+
             df_grouped = df_filtered.groupby(
                 [
                     "Виновное подразделение",
@@ -271,22 +272,16 @@ class CulpritsDefectProcessor:
                 ]
             ).agg(
                 {
-                    "Заводской номер изделия": lambda x: ", ".join(
-                        x.dropna().astype(str).unique()
-                    ),
-                    "Дата изготовления изделия": lambda x: ", ".join(
-                        x.dropna().astype(str).unique()
-                    ),
+                    "Заводской номер изделия": join_unique,
+                    "Дата изготовления изделия": join_unique,
                     "Количество предъявленных изделий": "sum",
-                    "Номер акта (короткий)": lambda x: ", ".join(x.dropna().unique()),
-                    "Причины дефектов": lambda x: ", ".join(x.dropna().unique()),
-                    "Пояснения к причинам дефектов": lambda x: ", ".join(
-                        x.dropna().unique()
-                    ),
+                    "Номер акта (короткий)": join_unique,
+                    "Причины дефектов": join_unique,
+                    "Пояснения к причинам дефектов": join_unique,
                 }
             )
 
-            # 13. Разделение на БЗА ("Не определено") и не БЗА (виновник определен)
+            # Разделение на БЗА ("Не определено") и не-БЗА (виновник определен)
             self.bza_df = df_grouped.loc[
                 df_grouped.index.get_level_values("Виновное подразделение")
                 == "Не определено"
@@ -319,7 +314,7 @@ class CulpritsDefectProcessor:
                 "Пояснения": row["Пояснения к причинам дефектов"],
             }
 
-            # Для таблицы "не БЗА" - добавляем виновника
+            # Для таблицы "не-БЗА" - добавляем виновника
             if include_culprit:
                 data["Виновник"] = index[0]  # Виновное подразделение
 
@@ -349,8 +344,8 @@ class CulpritsDefectProcessor:
                 "not_bza_data": not_bza_data,
                 "bza_count": len(bza_data),
                 "not_bza_count": len(not_bza_data),
-                "start_act_number": self.start_act_number + 1,  # С какого акта начали
-                "max_act_number": self.max_act_number,  # Максимальный найденный акт
+                "start_act_number": self.start_act_number,
+                "max_act_number": self.max_act_number,
                 "analysis_year": self.analysis_year,
                 "message_type": "success",
             }
@@ -424,9 +419,9 @@ class CulpritsDefectProcessor:
 
         current_row = 1
 
-        # ✅ 1. Первая строка - информация о номерах актов исследования (старт-стоп)
+        # 1. Первая строка - информация о номерах актов исследования (старт-стоп)
         ws[f"A{current_row}"] = (
-            f"Справка составлена по актам исследования с {self.start_act_number + 1} по {max_act_number}"
+            f"Справка составлена по актам исследования с {self.start_act_number} по {max_act_number}"
         )
 
         current_row += 2  # +2 для пустой строки
@@ -440,7 +435,7 @@ class CulpritsDefectProcessor:
         second_table_header_row = None
         second_table_data_rows = 0
 
-        # ✅ 2. Первая таблица "Дефекты по виновникам" - начинаем с колонки A
+        # 2. Первая таблица "Дефекты по виновникам" - начинаем с колонки A
         if not_bza_data:
             # Заголовок таблицы
             ws[f"A{current_row}"] = "Дефекты по виновникам"
@@ -483,7 +478,7 @@ class CulpritsDefectProcessor:
 
             current_row += 1  # Пустая строка после первой таблицы
 
-        # ✅ 3. Вторая таблица "БЗА" - начинаем с колонки B
+        # 3. Вторая таблица "БЗА" - начинаем с колонки B
         if bza_data:
             # Заголовок таблицы
             ws[f"A{current_row}"] = "Дефекты без центра ответственности"
@@ -514,7 +509,7 @@ class CulpritsDefectProcessor:
                 current_row += 1
                 second_table_data_rows += 1
 
-        # ✅ 4. Применяем форматирование сразу
+        # 4. Применяем форматирование сразу
         self._apply_formatting_to_worksheet(
             ws,
             first_table_start,
@@ -560,7 +555,7 @@ class CulpritsDefectProcessor:
         # info_cell = ws["A1"]
         # info_cell.font = font_info
 
-        # ✅ 2. Форматируем первую таблицу
+        # 2. Форматируем первую таблицу
         if first_table_start:
             # Заголовок таблицы
             title_cell = ws[f"A{first_table_start}"]
@@ -609,7 +604,7 @@ class CulpritsDefectProcessor:
                                 wrap_text=True, horizontal="left", vertical="top"
                             )
 
-        # ✅ 3. Форматируем вторую таблицу
+        # 3. Форматируем вторую таблицу
         if second_table_start:
             # Заголовок таблицы
             title_cell = ws[f"A{second_table_start}"]
