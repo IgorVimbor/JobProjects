@@ -6,5 +6,8 @@
     },
     "emmet.includeLanguages": {
         "django-html": "html"
-    }
+    },
+    "python.analysis.extraPaths": [ // настройка для песочницы temp_1.py и др.
+        "E:/MyRepositories/JobProjects/База_рекламаций/reclamationhub"
+    ]
 }

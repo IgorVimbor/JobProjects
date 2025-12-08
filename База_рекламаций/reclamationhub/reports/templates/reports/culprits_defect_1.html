@@ -1,0 +1,283 @@
+<!-- reports/templates/reports/culprits_defect.html -->
+<!-- Шаблон страницы приложения "Дефекты по виновникам" -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'reports:references' %}">Отчеты</a></li>
+                    <li class="breadcrumb-item active">{{ page_title }}</li>
+                </ol>
+            </nav>
+
+            <h3 class="text-muted">{{ description }}</h3>
+        </div>
+    </div>
+
+    <!-- Показываем карточку генерации отчета ТОЛЬКО если нет отчета -->
+    {% if not report_data %}
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>🔍 Параметры анализа</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Отчетный месяц:</strong> {{ report_month }} {{ report_year }} года</p>
+
+                    <!-- Горизонтальная линия -->
+                    <hr class="my-3">
+
+                    <!-- Показываем номер акта из JSON файла -->
+                    <p>
+                        <strong>Номер последнего акта</strong>, включённого в справку:
+                        {% if max_act_number %}
+                            <span><strong>{{ max_act_number }}</strong></span>
+                        {% else %}
+                            <span>не определён</span>
+                        {% endif %}
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Поле ввода номера акта исследования -->
+                        <div class="mb-3">
+                            <input type="number"
+                                   class="form-control"
+                                   id="act_number"
+                                   name="act_number"
+                                   placeholder="Например: 547"
+                                   value="{{ max_act_number|default:'' }}"
+                                   min="0"
+                                   required>
+                            <small class="form-text text-muted">
+                                ✅ Номер акта автоматически загружен из базы. Вы можете изменить его при необходимости.
+                                <br>
+                                Анализ будет проведён начиная со <strong>следующего</strong> номера акта.
+                            </small>
+                        </div>
+
+                        <!-- Информационная панель -->
+                        <div class="alert alert-info mb-4">
+                            Последняя справка составлялась за <strong>{{ report_month }}</strong> {{ report_year }} года по актам исследования
+                            с <strong>{{ start_act_number }}</strong> по <strong>{{ max_act_number }}</strong>
+                        </div>
+
+                        <!-- Горизонтальная линия -->
+                        <hr class="my-3">
+
+                        <!-- Информационная панель -->
+                        <br>
+                        <div class="card border-secondary mb-4">
+                            <div class="card-header">
+                                <h5>ℹ️ Что анализируется</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="mb-0">
+                                    <li>Только рекламации <strong>признанные</strong> по актам исследования.</li>
+                                    <li>Разделение по виновникам: <strong>Подразделения завода</strong> и <strong>Не определено (БЗА)</strong>.</li>
+                                    <li>Группировка по потребителям и изделиям.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Информационная панель -->
+                        <div class="alert alert-info mb-4">
+                            <strong>Дата формирования справки:</strong> {{ current_date }}
+                        </div>
+
+                        <!-- Горизонтальная линия -->
+                        <hr class="my-3">
+
+                        <!-- Кнопки -->
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button type="submit" class="btn btn-primary">
+                                📊 Сделать справку
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="resetToDefault()">
+                                🔄 Сбросить к значению из базы
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearForm()">
+                                ❌ Очистить
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Сообщения -->
+    {% if messages %}
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Блок для отображения результатов -->
+    {% if report_data %}
+
+    <!-- Информация о следующем анализе -->
+    {% if report_data.max_act_number %}
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="alert alert-success">
+                ✅ Справка составлена по актам исследования с <strong>{{ report_data.start_act_number }}</strong> по <strong>{{ report_data.max_act_number }}</strong>
+                <br>
+                <small class="text-muted">Номер последнего акта, включённого в данную справку, автоматически сохранён в базу данных.</small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ТАБЛИЦА 1: Дефекты по подразделениям (виновник определен) -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-header text-dark">
+                    <h5>1. Дефекты по виновникам</h5>
+                    <small>Количество записей: {{ report_data.not_bza_count }}</small>
+                </div>
+                <div class="card-body">
+                    {% if report_data.not_bza_data %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-info">
+                                <tr>
+                                    <th>Виновник</th>
+                                    <th>Потребитель</th>
+                                    <th>Изделие</th>
+                                    <th>Заводской номер</th>
+                                    <th>Дата изготовления</th>
+                                    <th>Кол-во</th>
+                                    <th>Номера актов</th>
+                                    <th>Причины дефектов</th>
+                                    <th>Пояснения</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size: 0.85rem;">
+                                {% for row in report_data.not_bza_data %}
+                                <tr>
+                                    <td><strong>{{ row.Виновник }}</strong></td>
+                                    <td>{{ row.Потребитель }}</td>
+                                    <td>{{ row.Изделие }}</td>
+                                    <td>{{ row.Заводской_номер }}</td>
+                                    <td>{{ row.Дата_изготовления }}</td>
+                                    <td><strong>{{ row.Количество }}</strong></td>
+                                    <td>{{ row.Номера_актов }}</td>
+                                    <td>{{ row.Причины }}</td>
+                                    <td>{{ row.Пояснения }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Нет данных по подразделениям</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ТАБЛИЦА 2: Дефекты БЗА (виновник не определен)-->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-warning">
+                <div class="card-header text-dark">
+                    <h5>2. Дефекты без центра ответственности - Не определено (БЗА)</h5>
+                    <small>Количество записей: {{ report_data.bza_count }}</small>
+                </div>
+                <div class="card-body">
+                    {% if report_data.bza_data %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-warning">
+                                <tr>
+                                    <th>Потребитель</th>
+                                    <th>Изделие</th>
+                                    <th>Заводской номер</th>
+                                    <th>Дата изготовления</th>
+                                    <th>Кол-во</th>
+                                    <th>Номера актов</th>
+                                    <th>Причины дефектов</th>
+                                    <th>Пояснения</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size: 0.85rem;">
+                                {% for row in report_data.bza_data %}
+                                <tr>
+                                    <td>{{ row.Потребитель }}</td>
+                                    <td>{{ row.Изделие }}</td>
+                                    <td>{{ row.Заводской_номер }}</td>
+                                    <td>{{ row.Дата_изготовления }}</td>
+                                    <td><strong>{{ row.Количество }}</strong></td>
+                                    <td>{{ row.Номера_актов }}</td>
+                                    <td>{{ row.Причины }}</td>
+                                    <td>{{ row.Пояснения }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Нет данных по дефектам без центра ответственности</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопки действий -->
+    <div class="row mt-3 mb-4">
+        <div class="col-12">
+            <div class="d-flex gap-2">
+                <a href="{% url 'reports:culprits_defect' %}?clear=1" class="btn btn-primary">
+                    🔄 Новый анализ
+                </a>
+                <button class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    ⬆️ Вверх
+                </button>
+                <!-- Кнопка сохранения в файл -->
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
+                        💾 Сохранить в файл
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Очистка поля ввода
+function clearForm() {
+    document.getElementById('act_number').value = '';
+}
+
+// Сброс к значению из базы данных
+function resetToDefault() {
+    const defaultValue = '{{ max_act_number|default:"" }}';
+    document.getElementById('act_number').value = defaultValue;
+}
+</script>
+
+{% endblock %}
