@@ -458,6 +458,13 @@ class Reclamation(models.Model):
         if errors:
             raise ValidationError(errors)
 
+        if (self.status == Reclamation.Status.CLOSED
+            and not hasattr(self, "investigation")
+            and not self.measures_taken):
+            raise ValidationError(
+                'При закрытии рекламации без исследования напишите комментарий в поле "Принятые меры по сообщению"'
+            )
+
     # def save(self, *args, **kwargs):
     #     self.full_clean()  # обязательно нужен для запуска валидации
     #     super().save(*args, **kwargs)
@@ -560,10 +567,11 @@ def auto_create_investigation_on_reject(sender, instance, **kwargs):
     # if (instance.status == Reclamation.Status.CLOSED
     #     and "90 дней" in instance.measures_taken
     #     and not hasattr(instance, 'investigation')):
-    if (not hasattr(instance, 'investigation')  # Проверяем отсутствие Investigation
-        and instance.status == Reclamation.Status.CLOSED  # Проверяем статус (Закрыто)
-        and instance.measures_taken  # Проверяем на None поле
-        and "90 дней" in instance.measures_taken):  # Поиск в строке
+    # Проверяем условия
+    if (not hasattr(instance, 'investigation')  # Отсутствие Investigation
+        and instance.status == Reclamation.Status.CLOSED  # Статус (Закрыто)
+        and instance.measures_taken):  # Поле "Принятые меры по сообщению" заполнено
+        # and "90 дней" in instance.measures_taken):  # Поиск в строке
 
         Investigation.objects.create(
             reclamation=instance,
