@@ -218,14 +218,22 @@
                             {% csrf_token %}
                             <!-- Используем параметры из base_context -->
                             <input type="hidden" name="year" value="{{ request_year }}">
-                            <input type="hidden" name="product" value="{{ request_product }}">
                             <input type="hidden" name="chart_type" value="{{ request_chart_type }}">
+
                             <!-- Передаем всех выбранных потребителей -->
                             {% if request_consumers %}
                                 {% for consumer in request_consumers %}
                                 <input type="hidden" name="consumers" value="{{ consumer }}">
                                 {% endfor %}
                             {% endif %}
+
+                            <!-- Множественный выбор изделий -->
+                            {% if request_products %}
+                                {% for product in request_products %}
+                                <input type="hidden" name="products" value="{{ product }}">
+                                {% endfor %}
+                            {% endif %}
+
                             <button type="submit" class="btn btn-outline-primary" name="action" value="save_files">
                                 💾 Сохранить в файлы
                             </button>

@@ -41,11 +41,19 @@ python manage.py showmigrations
 
 python manage.py sqlmigrate investigations 0013
 
--- Обновление статических файлов после их изменения
+---------------- Обновление статических файлов после их изменения -------------------
 
 python manage.py collectstatic
 python manage.py collectstatic --settings=reclamationhub.settings.development
 python manage.py collectstatic --settings=reclamationhub.settings.production
+
+------------- Создание файла PROJECT_STRUCTURE.md документации по проекту --------------
+
+# Базовый запуск
+python manage.py generate_structure
+
+# С параметрами
+python manage.py generate_structure --output DOCS.md --name "Система аналитики"
 
 -----------------------------------------------------------------------------------
 

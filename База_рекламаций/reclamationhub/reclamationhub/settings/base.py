@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "analytics.apps.AnalyticsConfig",
     "core.apps.CoreConfig",
     "utils.apps.UtilsConfig",
+    "project_docs",
 ]
 
 # Добавляем порядок отображения приложений
