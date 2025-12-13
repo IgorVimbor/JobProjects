@@ -14,8 +14,8 @@ from dateutil.relativedelta import relativedelta
 
 # ==================== БАЗОВЫЕ НАСТРОЙКИ ====================
 # Каталог для сохранения справок, отчетов, таблиц и др.
-BASE_REPORTS_DIR = r"\\Server\otk\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
-# BASE_REPORTS_DIR = r"D:\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
+# BASE_REPORTS_DIR = r"\\Server\otk\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
+BASE_REPORTS_DIR = r"D:\АНАЛИТИЧЕСКАЯ_СИСТЕМА_УК"
 
 # Текущая дата и год для имен файлов
 today = date.today()

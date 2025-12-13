@@ -1,6 +1,10 @@
 # claims/modules/forecast/statistical.py
+"""
+Модуль методов статистическего анализа.
 
-"""Статистические методы прогнозирования"""
+Включает класс:
+- `StatisticalForecast` - Статистические методы прогнозирования
+"""
 
 import numpy as np
 from .base import BaseForecast

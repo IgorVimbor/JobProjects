@@ -1,11 +1,11 @@
 # analytics\modules\combined_chart_modul.py
 """
-Модуль анализа рекламаций по датам изготовления и уведомления о дефектах
+Модуль анализа рекламаций по виду изделия, датам изготовления и уведомления.
 
-Включает 3 класса:
-- DefectDateDataProcessor: получение и подготовка данных
-- DefectDateChartGenerator: генерация графиков
-- DefectDateReportManager: координация всего процесса
+Включает классы:
+- `DefectDateDataProcessor` - Получение и подготовка данных из БД
+- `DefectDateChartGenerator` - Генерация графиков (работает с готовым DataFrame)
+- `DefectDateReportManager` - Главный класс-координатор
 """
 
 import pandas as pd

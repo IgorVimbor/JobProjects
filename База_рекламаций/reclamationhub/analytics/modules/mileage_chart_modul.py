@@ -1,3 +1,11 @@
+# analytics\modules\mileage_chart_modul.py
+"""
+Модуль анализа распределения рекламаций по пробегу.
+
+Включает класс:
+- `MileageChartProcessor` - Анализ распределения рекламаций по пробегу
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib

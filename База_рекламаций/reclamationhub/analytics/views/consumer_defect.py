@@ -1,3 +1,6 @@
+# analytics\views\consumer_defect.py
+"""Представление для страницы анализа дефектности по потребителю."""
+
 from django.shortcuts import render
 
 

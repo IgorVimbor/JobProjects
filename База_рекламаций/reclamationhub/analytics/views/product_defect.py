@@ -1,3 +1,6 @@
+# analytics\views\product_defect.py
+"""Представление для страницы анализа дефектности по изделию."""
+
 from django.shortcuts import render
 
 

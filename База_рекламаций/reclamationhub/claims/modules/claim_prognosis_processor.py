@@ -1,6 +1,10 @@
 # claims/modules/claim_prognosis_processor.py
+"""
+Процессор для прогнозирования претензий с методами статистического анализа и машинного обучения.
 
-"""Процессор для прогнозирования претензий с разными методами"""
+Включает класс:
+- `ClaimPrognosisProcessor` - Процессор прогнозирования претензий (оркестратор) с 6-ю методами
+"""
 
 from datetime import date
 from dateutil.relativedelta import relativedelta

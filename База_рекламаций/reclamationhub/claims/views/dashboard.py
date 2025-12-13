@@ -1,5 +1,5 @@
 # claims/views/dashboard.py
-"""Представления для аналитики претензий"""
+"""Представления для страницы Dashboard претензий."""
 
 from datetime import date
 from decimal import Decimal, InvalidOperation

@@ -48,9 +48,9 @@ class MarkdownFormatter:
 
         # Заголовок
         # lines.append(f"# 📚 Структура проекта: {project_name}")
-        lines.append(f"# СТРУКТУРА ПРОЕКТА: {project_name}")
+        lines.append(f"# СТРУКТУРА ПРОЕКТА {project_name}")
         lines.append("")
-        lines.append(f"*Сгенерировано: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*")
+        lines.append(f"*Создано: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*")
         lines.append("")
         lines.append("---")
         lines.append("")
@@ -84,9 +84,9 @@ class MarkdownFormatter:
             lines.append(f"### `{app.name}`")
             lines.append("")
 
-            if app.description:
-                lines.append(f"> {app.description}")
-                lines.append("")
+            # if app.description:
+            #     lines.append(f"> {app.description}")
+            #     lines.append("")
 
             # Модели
             if app.models:
@@ -102,11 +102,42 @@ class MarkdownFormatter:
             if modules_path.exists():
                 modules = self.analyzer.analyze_modules_dir(modules_path)
                 if modules:
-                    lines.append("**Модули (processors):**")
+                    lines.append("**Модули (modules):**")
                     lines.append("")
                     for mod in modules:
                         doc = mod["docstring"] or "—"
-                        lines.append(f"- `{mod['file']}` → `{mod['class']}` — {doc}")
+                        lines.append(f"- `{mod['file']}` — ")
+                        for line in doc.split("\n"):
+                            # line = line.strip()
+                            if line:
+                                lines.append(f"  {line}  ")  # два пробела в конце
+                                # В Markdown одиночный перенос строки игнорируется. Нужно:
+                                # - Два пробела в конце строки, или
+                                # - Пустая строка между строками
+                    lines.append("")
+
+            # Представления (views/)
+            views_path = app.path / "views"
+            if views_path.exists():
+                views = self.analyzer.analyze_modules_dir(views_path)
+                if views:
+                    lines.append("**Представления (views):**")
+                    lines.append("")
+                    for view in views:
+                        doc = view["docstring"] or "—"
+                        lines.append(f"- `{view['file']}` — {doc}")
+                    lines.append("")
+
+            # Шаблоны (templates/)
+            templates_path = app.path / "templates"
+            if templates_path.exists():
+                templates = self.analyzer.analyze_templates_dir(templates_path)
+                if templates:
+                    lines.append("**Шаблоны (templates):**")
+                    lines.append("")
+                    for tpl in templates:
+                        doc = tpl["docstring"] or "—"
+                        lines.append(f"- `{tpl['file']}` — {doc}")
                     lines.append("")
 
             lines.append("---")

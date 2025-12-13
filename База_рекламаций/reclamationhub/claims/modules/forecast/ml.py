@@ -1,6 +1,10 @@
 # claims/modules/forecast/ml.py
+"""
+Модуль методов машинного обучения.
 
-"""Методы машинного обучения для прогнозирования"""
+Включает класс:
+- `MachineLearningForecast` - Методы машинного обучения для прогнозирования
+"""
 
 import numpy as np
 from sklearn.linear_model import LinearRegression, Ridge

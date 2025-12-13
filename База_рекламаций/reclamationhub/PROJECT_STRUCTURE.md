@@ -1,6 +1,6 @@
-# СТРУКТУРА ПРОЕКТА: reclamationhub
+# СТРУКТУРА ПРОЕКТА reclamationhub
 
-*Сгенерировано: 2025-12-11 21:40:39*
+*Создано: 2025-12-13 15:08:45*
 
 ---
 
@@ -8,90 +8,180 @@
 
 ### `analytics`
 
-> Конфигурация приложения
+**Модули (modules):**
 
-**Модули (processors):**
+- `combined_chart_modul.py` — 
+  Модуль анализа рекламаций по виду изделия, датам изготовления и уведомления.  
+  Включает классы:  
+  - `DefectDateDataProcessor` - Получение и подготовка данных из БД  
+  - `DefectDateChartGenerator` - Генерация графиков (работает с готовым DataFrame)  
+  - `DefectDateReportManager` - Главный класс-координатор  
+- `mileage_chart_modul.py` — 
+  Модуль анализа распределения рекламаций по пробегу.  
+  Включает класс:  
+  - `MileageChartProcessor` - Анализ распределения рекламаций по пробегу  
 
-- `combined_chart_modul.py` → `DefectDateDataProcessor` — Получение и подготовка данных из БД
-- `combined_chart_modul.py` → `DefectDateChartGenerator` — Генерация графиков (работает с готовым DataFrame)
-- `combined_chart_modul.py` → `DefectDateReportManager` — Главный класс-координатор
-- `mileage_chart_modul.py` → `MileageChartProcessor` — Анализ распределения рекламаций по пробегу
+**Представления (views):**
+
+- `analytic.py` — Представление для основной страницы аналитики
+- `combined_chart.py` — Представления для страницы анализа по датам изготовления и уведомления.
+- `consumer_defect.py` — Представление для страницы анализа дефектности по потребителю.
+- `mileage_chart.py` — Представление для страницы анализа рекламаций по пробегу.
+- `product_defect.py` — Представление для страницы анализа дефектности по изделию.
+
+**Шаблоны (templates):**
+
+- `analytics\analytic.html` — Шаблон основной страницы с аналитикой
+- `analytics\combined_chart.html` — Шаблон страницы анализа рекламаций по виду изделия, датам изготовления и уведомления
+- `analytics\consumer_defect.html` — Шаблон страницы анализа дефектности по потребителям
+- `analytics\mileage_chart.html` — Шаблон страницы анализа по пробегу
+- `analytics\product_defect.html` — Шаблон страницы анализа дефектности по конкретному изделию
 
 ---
 
 ### `claims`
 
-> Конфигурация приложения
-
 **Модели:**
 
 - `Claim` — Модель претензии по рекламации. Связана с рекламацией (многие ко многим)
 
-**Модули (processors):**
+**Модули (modules):**
 
-- `claim_prognosis_processor.py` → `ClaimPrognosisProcessor` — Процессор прогнозирования претензий (оркестратор)
-- `consumer_analysis_processor.py` → `ConsumerAnalysisProcessor` — Анализ претензий по выбранному потребителю
-- `dashboard_processor.py` → `DashboardProcessor` — Обработка данных для Dashboard претензий
-- `reclamation_to_claim_processor.py` → `ReclamationToClaimProcessor` — Анализ связи рекламация → претензия
-- `time_analysis_processor.py` → `TimeAnalysisProcessor` — Временной анализ конверсии: количество рекламаций → сумма претензий
+- `claim_prognosis_processor.py` — 
+  Процессор для прогнозирования претензий с методами статистического анализа и машинного обучения.  
+  Включает класс:  
+  - `ClaimPrognosisProcessor` - Процессор прогнозирования претензий (оркестратор) с 6-ю методами  
+- `consumer_analysis_processor.py` — 
+  Процессор для анализа претензий по потребителям  
+  Включает класс:  
+  - `ConsumerAnalysisProcessor` - Анализ претензий по выбранному потребителю  
+- `dashboard_processor.py` — 
+  Процессор для Dashboard (сводной информации) по претензиям.  
+  Включает класс:  
+  - `DashboardProcessor` - Обработка данных для Dashboard претензий  
+- `reclamation_to_claim_processor.py` — 
+  Процессор для анализа конверсии рекламация → претензия  
+  Включает класс:  
+  - `ReclamationToClaimProcessor` - Анализ связи рекламация → претензия  
+- `time_analysis_processor.py` — 
+  Процессор для временного анализа: количество рекламаций → сумма претензий  
+  Включает класс:  
+  - `TimeAnalysisProcessor` - Анализ конверсии количество рекламаций → сумма претензий  
+- `forecast\base.py` — 
+  Базовый модуль для всех методов прогнозирования  
+  Включает класс:  
+  - `BaseForecast` - Абстрактный базовый класс для методов прогнозирования  
+- `forecast\ml.py` — 
+  Модуль методов машинного обучения.  
+  Включает класс:  
+  - `MachineLearningForecast` - Методы машинного обучения для прогнозирования  
+- `forecast\statistical.py` — 
+  Модуль методов статистическего анализа.  
+  Включает класс:  
+  - `StatisticalForecast` - Статистические методы прогнозирования  
+
+**Представления (views):**
+
+- `claim_form.py` — AJAX endpoint для получения данных по рекламации в зависимости от результатов поиска.
+- `claim_main.py` — Представление для основной страницы аналитики претензий.
+- `claim_prognosis.py` — Представление для страницы прогнозирования претензий.
+- `consumer_analysis.py` — Представление для страницы анализа претензий по потребителю.
+- `dashboard.py` — Представления для страницы Dashboard претензий.
+- `reclamation_to_claim.py` — Представления для страницы анализа конверсии рекламация → претензия.
+- `time_analysis.py` — Представление для страницы временного анализа рекламация → претензия.
+
+**Шаблоны (templates):**
+
+- `claims\claim_main.html` — Шаблон основной страницы аналитики претензий
+- `claims\claim_prognosis.html` — Шаблон страницы с формой прогнозирования претензий
+- `claims\consumer_analysis.html` — Шаблон страницы с формой анализа претензий по потребителям
+- `claims\dashboard.html` — Шаблон с формой Dashboard претензий
+- `claims\reclamation_to_claim.html` — Шаблон с формой анализа конверсии рекламация → претензия
+- `claims\blocks\conversion_results.html` — Блок результатов анализа конверсии рекламация → претензия
+- `claims\blocks\prognosis_results.html` — Блок результатов прогноза рекламаций и претензий
+- `claims\blocks\time_analysis_results.html` — Блок результатов временного анализа рекламация → претензия
 
 ---
 
 ### `core`
 
-> Конфигурация приложения
-
 ---
 
 ### `investigations`
-
-> Конфигурация приложения
 
 **Модели:**
 
 - `Investigation` — Модель акта исследования рекламационного изделия.
 
+**Представления (views):**
+
+- `add_group_investigation.py` — —
+- `add_invoice_out.py` — —
+
 ---
 
 ### `project_docs`
-
-> Конфигурация приложения
 
 ---
 
 ### `reclamations`
 
-> Конфигурация приложения
-
 **Модели:**
 
 - `Reclamation` — Модель рекламации на изделие.
+
+**Представления (views):**
+
+- `disposal_act.py` — —
+- `invoice_intake.py` — —
+- `product_utils.py` — —
+- `reclamation_form.py` — AJAX endpoint для проверки дубликатов рекламаций.
+Проверяет каждое поле отдельно и возвращает предупреждение если найден дубликат.
 
 ---
 
 ### `reports`
 
-> Конфигурация приложения
-
 **Модели:**
 
 - `EnquiryPeriod` — Метаданные для справок о поступивших сообщениях за период.
 
-**Модули (processors):**
+**Модули (modules):**
 
-- `accept_defect_module.py` → `AcceptDefectProcessor` — Обработка данных для отчета по признанным рекламациям
-- `culprits_defect_module.py` → `CulpritsDefectProcessor` — Обработка данных для анализа дефектов по виновникам
-- `db_search_module.py` → `DbSearchProcessor` — Класс для поиска по базе рекламаций с точным сопоставлением номеров
-- `enquiry_period_module.py` → `MetadataLoader` — Аналог TextDatabaseLoader - работа с Django моделью вместо JSON
-- `enquiry_period_module.py` → `DataProcessor` — Аналог MakeResultDataframe - получение данных из Django ORM вместо Excel
-- `enquiry_period_module.py` → `ExcelWriter` — Аналог WriteResult - создание Excel файла
-- `length_study_module.py` → `LengthStudyProcessor` — Анализ длительности исследований
+- `accept_defect_module.py` — 
+  —  
+- `culprits_defect_module.py` — 
+  —  
+- `db_search_module.py` — 
+  —  
+- `enquiry_period_module.py` — 
+  —  
+- `length_study_module.py` — 
+  —  
+
+**Представления (views):**
+
+- `accept_defect.py` — —
+- `culprits_defect.py` — —
+- `date_pretence.py` — —
+- `db_search.py` — —
+- `enquiry_period.py` — —
+- `length_study.py` — —
+- `references.py` — —
+
+**Шаблоны (templates):**
+
+- `reports\accept_defect.html` — reports/templates/reports/accept_defect.html
+- `reports\culprits_defect.html` — reports/templates/reports/culprits_defect.html
+- `reports\date_pretence.html` — reports/templates/reports/db_search.html
+- `reports\db_search.html` — reports/templates/reports/db_search.html
+- `reports\enquiry_period.html` — reports/templates/reports/enquiry_period.html
+- `reports\length_study.html` — reports/templates/reports/length_study.html
+- `reports\references.html` — Шаблон основной страницы со справками и отчетами
 
 ---
 
 ### `sourcebook`
-
-> Конфигурация приложения
 
 **Модели:**
 
@@ -103,7 +193,9 @@
 
 ### `utils`
 
-> Конфигурация приложения
+**Шаблоны (templates):**
+
+- `utils\excel_exporter.html` — utils/templates/utils/excel_exporter.html
 
 ---
 
@@ -113,22 +205,22 @@
 reclamationhub/
 ├── analytics/  # Django App
 │   ├── modules/  # Процессоры
-│   │   ├──  combined_chart_modul.py  # Модуль анализа рекламаций по датам изготовления и уведомления о дефектах
-│   │   └──  mileage_chart_modul.py
+│   │   ├──  combined_chart_modul.py  # Модуль анализа рекламаций по виду изделия, датам изготовления и уведомления.
+│   │   └──  mileage_chart_modul.py  # Модуль анализа распределения рекламаций по пробегу.
 │   ├── templates/  # Шаблоны
 │   │   └── analytics/
 │   │       ├──  analytic.html  # Шаблон основной страницы с аналитикой
-│   │       ├──  combined_chart.html  # Показываем карточку генерации отчета ТОЛЬКО если нет отчета
-│   │       ├──  consumer_defect.html  # <h1>{{ page_title }}</h1>
-│   │       ├──  mileage_chart.html  # Показываем карточку генерации отчета ТОЛЬКО если нет отчета
-│   │       └──  product_defect.html  # <h1>{{ page_title }}</h1>
+│   │       ├──  combined_chart.html  # Шаблон страницы анализа рекламаций по виду изделия, датам изготовления и уведомления
+│   │       ├──  consumer_defect.html  # Шаблон страницы анализа дефектности по потребителям
+│   │       ├──  mileage_chart.html  # Шаблон страницы анализа по пробегу
+│   │       └──  product_defect.html  # Шаблон страницы анализа дефектности по конкретному изделию
 │   ├── views/  # Представления
 │   │   ├──  __init__.py
-│   │   ├──  analytic.py
-│   │   ├──  combined_chart.py
-│   │   ├──  consumer_defect.py
-│   │   ├──  mileage_chart.py
-│   │   └──  product_defect.py
+│   │   ├──  analytic.py  # Представление для основной страницы аналитики
+│   │   ├──  combined_chart.py  # Представления для страницы анализа по датам изготовления и уведомления.
+│   │   ├──  consumer_defect.py  # Представление для страницы анализа дефектности по потребителю.
+│   │   ├──  mileage_chart.py  # Представление для страницы анализа рекламаций по пробегу.
+│   │   └──  product_defect.py  # Представление для страницы анализа дефектности по изделию.
 │   ├──  __init__.py
 │   ├──  admin.py  # Настройка админ-панели
 │   ├──  apps.py  # Конфигурация приложения
@@ -139,36 +231,36 @@ reclamationhub/
 │   ├── modules/  # Процессоры
 │   │   ├── forecast/
 │   │   │   ├──  __init__.py  # Модуль методов прогнозирования
-│   │   │   ├──  base.py
-│   │   │   ├──  ml.py  # Методы машинного обучения для прогнозирования
-│   │   │   ├──  statistical.py
+│   │   │   ├──  base.py  # Базовый модуль для всех методов прогнозирования
+│   │   │   ├──  ml.py  # Модуль методов машинного обучения.
+│   │   │   ├──  statistical.py  # Модуль методов статистическего анализа.
 │   │   │   └──  statistical_comment.txt
 │   │   ├──  __init__.py
-│   │   ├──  claim_prognosis_processor.py  # Процессор для прогнозирования претензий с разными методами
-│   │   ├──  consumer_analysis_processor.py
-│   │   ├──  dashboard_processor.py
-│   │   ├──  reclamation_to_claim_processor.py
-│   │   └──  time_analysis_processor.py
+│   │   ├──  claim_prognosis_processor.py  # Процессор для прогнозирования претензий с методами статистического анализа и машинного обучения.
+│   │   ├──  consumer_analysis_processor.py  # Процессор для анализа претензий по потребителям
+│   │   ├──  dashboard_processor.py  # Процессор для Dashboard (сводной информации) по претензиям.
+│   │   ├──  reclamation_to_claim_processor.py  # Процессор для анализа конверсии рекламация → претензия
+│   │   └──  time_analysis_processor.py  # Процессор для временного анализа: количество рекламаций → сумма претензий
 │   ├── templates/  # Шаблоны
 │   │   └── claims/
 │   │       ├── blocks/
-│   │       │   ├──  conversion_results.html  # claims/templates/claims/blocks/conversion_results.html
-│   │       │   ├──  prognosis_results.html  # claims/templates/claims/blocks/prognosis_results.html
-│   │       │   └──  time_analysis_results.html  # claims/templates/claims/blocks/time_analysis_results.html
-│   │       ├──  claim_main.html  # claims/templates/claims/claim_main.html
-│   │       ├──  claim_prognosis.html  # claims/templates/claims/claim_prognosis.html
-│   │       ├──  consumer_analysis.html  # claims/templates/claims/consumer_analysis.html
-│   │       ├──  dashboard.html  # claims/templates/claims/dashboard.html
-│   │       └──  reclamation_to_claim.html  # claims/templates/claims/reclamation_to_claim.html
+│   │       │   ├──  conversion_results.html  # Блок результатов анализа конверсии рекламация → претензия
+│   │       │   ├──  prognosis_results.html  # Блок результатов прогноза рекламаций и претензий
+│   │       │   └──  time_analysis_results.html  # Блок результатов временного анализа рекламация → претензия
+│   │       ├──  claim_main.html  # Шаблон основной страницы аналитики претензий
+│   │       ├──  claim_prognosis.html  # Шаблон страницы с формой прогнозирования претензий
+│   │       ├──  consumer_analysis.html  # Шаблон страницы с формой анализа претензий по потребителям
+│   │       ├──  dashboard.html  # Шаблон с формой Dashboard претензий
+│   │       └──  reclamation_to_claim.html  # Шаблон с формой анализа конверсии рекламация → претензия
 │   ├── views/  # Представления
 │   │   ├──  __init__.py
-│   │   ├──  claim_form.py
-│   │   ├──  claim_main.py
-│   │   ├──  claim_prognosis.py
-│   │   ├──  consumer_analysis.py
-│   │   ├──  dashboard.py
-│   │   ├──  reclamation_to_claim.py
-│   │   └──  time_analysis.py
+│   │   ├──  claim_form.py  # AJAX endpoint для получения данных по рекламации в зависимости от результатов поиска.
+│   │   ├──  claim_main.py  # Представление для основной страницы аналитики претензий.
+│   │   ├──  claim_prognosis.py  # Представление для страницы прогнозирования претензий.
+│   │   ├──  consumer_analysis.py  # Представление для страницы анализа претензий по потребителю.
+│   │   ├──  dashboard.py  # Представления для страницы Dashboard претензий.
+│   │   ├──  reclamation_to_claim.py  # Представления для страницы анализа конверсии рекламация → претензия.
+│   │   └──  time_analysis.py  # Представление для страницы временного анализа рекламация → претензия.
 │   ├──  __init__.py
 │   ├──  admin.py  # Настройка админ-панели
 │   ├──  apps.py  # Конфигурация приложения
@@ -200,13 +292,13 @@ reclamationhub/
 ├── project_docs/  # Django App
 │   ├── generators/
 │   │   ├──  __init__.py  # Генераторы документации проекта.
-│   │   ├──  analyzers.py
-│   │   ├──  formatters.py
-│   │   └──  parsers.py
+│   │   ├──  analyzers.py  # Анализаторы структуры Django-проекта.
+│   │   ├──  formatters.py  # Форматировщик вывода в Markdown.
+│   │   └──  parsers.py  # Парсеры для извлечения описаний из файлов разных типов.
 │   ├── management/  # Команды
 │   │   ├── commands/  # Команды
 │   │   │   ├──  __init__.py
-│   │   │   └──  generate_structure.py
+│   │   │   └──  generate_structure.py  # Management command для генерации документации проекта.
 │   │   └──  __init__.py
 │   ├──  __init__.py  # Приложение для генерации документации структуры Django-проекта.
 │   └──  apps.py  # Конфигурация приложения
@@ -238,7 +330,7 @@ reclamationhub/
 │
 ├── reports/  # Django App
 │   ├── config/
-│   │   └──  paths.py
+│   │   └──  paths.py  # Общие пути к каталогам и файлам для всех аналитических модулей
 │   ├── modules/  # Процессоры
 │   │   ├──  accept_defect_module.py
 │   │   ├──  culprits_defect_module.py

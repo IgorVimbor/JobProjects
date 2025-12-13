@@ -49,14 +49,19 @@ class FileParser:
             if standard:
                 return standard
 
-        # Читаем начало файла
-        content = self._read_file_start(filepath)
+        # Выбираем парсер по расширению
+        suffix = filepath.suffix.lower()
+
+        # Для Python читаем весь файл (иначе ast.parse ломается)
+        if suffix == ".py":
+            content = self._read_file_full(filepath)
+        else:  # Для остальных — только начало
+            content = self._read_file_start(filepath)
+
         if not content:
             return ""
 
         # Выбираем парсер по расширению
-        suffix = filepath.suffix.lower()
-
         parsers = {
             ".py": self._parse_python,
             ".html": self._parse_html,
@@ -74,34 +79,6 @@ class FileParser:
             return parser(content)
 
         return ""
-
-    def get_classes(self, filepath: Path) -> list:
-        """
-        Извлекает классы и их docstrings из Python-файла.
-
-        Returns:
-            Список словарей {'name': str, 'docstring': str}
-        """
-        if filepath.suffix != ".py":
-            return []
-
-        content = self._read_file_full(filepath)
-        if not content:
-            return []
-
-        classes = []
-        try:
-            tree = ast.parse(content)
-            for node in ast.walk(tree):
-                if isinstance(node, ast.ClassDef):
-                    docstring = ast.get_docstring(node) or ""
-                    if docstring:
-                        docstring = docstring.split("\n")[0].strip()
-                    classes.append({"name": node.name, "docstring": docstring})
-        except SyntaxError:
-            pass
-
-        return classes
 
     def _read_file_start(self, filepath: Path, size: int = 1024) -> str:
         """Читает начало файла."""
@@ -129,6 +106,25 @@ class FileParser:
         except SyntaxError:
             pass
         return ""
+
+    def get_full_description(self, filepath: Path) -> str:
+        """
+        Извлекает полный docstring из Python-файла.
+        Для не-Python файлов возвращает обычное описание.
+        """
+        if filepath.suffix.lower() != ".py":
+            return self.get_description(filepath)
+
+        content = self._read_file_full(filepath)
+        if not content:
+            return ""
+
+        try:
+            tree = ast.parse(content)
+            docstring = ast.get_docstring(tree)
+            return docstring.strip() if docstring else ""
+        except SyntaxError:
+            return ""
 
     def _parse_html(self, content: str) -> str:
         """

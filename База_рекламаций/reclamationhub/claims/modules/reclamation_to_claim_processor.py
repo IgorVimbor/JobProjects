@@ -1,5 +1,10 @@
 # claims/modules/reclamation_to_claim_processor.py
-"""Процессор для анализа конверсии рекламация → претензия"""
+"""
+Процессор для анализа конверсии рекламация → претензия
+
+Включает класс:
+- `ReclamationToClaimProcessor` - Анализ связи рекламация → претензия
+"""
 
 from datetime import date
 from decimal import Decimal
@@ -97,64 +102,6 @@ class ReclamationToClaimProcessor:
                 return True
 
         return False
-
-    # def _get_base_claims_data(self):
-    #     """Получение претензий с оптимизированной загрузкой рекламаций"""
-    #     if (
-    #         self._group_a_claims_cache is not None
-    #         and self._group_b_claims_cache is not None
-    #     ):
-    #         return self._group_a_claims_cache, self._group_b_claims_cache
-
-    #     # Оптимизированный prefetch для рекламаций
-    #     reclamations_prefetch = Prefetch(
-    #         "reclamations",
-    #         queryset=Reclamation.objects.only(
-    #             "id", "year", "consumer_act_date", "end_consumer_act_date"
-    #         ),
-    #     )
-
-    #     # Группа А: претензии со связанными рекламациями (без фильтра по году)
-    #     self._group_a_claims_cache = (
-    #         Claim.objects.filter(
-    #             result_claim="ACCEPTED",
-    #             reclamations__isnull=False,
-    #             # claim_date__year=self.year   # без фильтра по году
-    #         )
-    #         .prefetch_related(reclamations_prefetch)
-    #         .distinct()
-    #     )
-
-    #     # Группа Б: претензии без связей за выбранный год
-    #     self._group_b_claims_cache = Claim.objects.filter(
-    #         result_claim="ACCEPTED",
-    #         claim_date__year=self.year,  # Оставляем фильтр по году
-    #         reclamations__isnull=True,
-    #     )
-
-    #     return self._group_a_claims_cache, self._group_b_claims_cache
-
-    # def _get_filtered_group_a_claims(self):
-    #     """Группа А с фильтрацией по потребителям"""
-    #     group_a_claims, _ = self._get_base_claims_data()
-
-    #     filtered_claims = []
-    #     for claim in group_a_claims:
-    #         if self._consumer_matches_filter(claim.consumer_name):
-    #             filtered_claims.append(claim)
-
-    #     return filtered_claims
-
-    # def _get_filtered_group_b_claims(self):
-    #     """Группа Б с фильтрацией по потребителям"""
-    #     _, group_b_claims = self._get_base_claims_data()
-
-    #     filtered_claims = []
-    #     for claim in group_b_claims:
-    #         if self._consumer_matches_filter(claim.consumer_name):
-    #             filtered_claims.append(claim)
-
-    #     return filtered_claims
 
     def _get_base_claims_data(self):
         """Фильтрация на SQL уровне"""

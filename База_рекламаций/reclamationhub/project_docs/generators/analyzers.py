@@ -1,7 +1,5 @@
 # project_docs/generators/analyzers.py
-"""
-Анализаторы структуры Django-проекта.
-"""
+"""Анализаторы структуры Django-проекта."""
 
 from pathlib import Path
 from typing import List, Dict, Any, Optional
@@ -185,28 +183,123 @@ class ProjectAnalyzer:
 
     def analyze_modules_dir(self, modules_path: Path) -> List[Dict[str, str]]:
         """
-        Анализирует директорию modules/ — извлекает классы.
+        Анализирует директорию modules/ и views/ — извлекает docstring модулей.
+        Рекурсивно обходит вложенные папки.
 
         Returns:
-            Список {'file': str, 'class': str, 'docstring': str}
+            Список {'file': str, 'docstring': str}
         """
         results = []
 
         if not modules_path.exists():
             return results
 
-        for py_file in modules_path.glob("*.py"):
+        # for py_file in modules_path.glob("*.py"):
+        #     if py_file.name == "__init__.py":
+        #         continue
+
+        #     # description = self.parser.get_description(py_file)
+        #     description = self.parser.get_full_description(py_file)
+        #     results.append({"file": py_file.name, "docstring": description})
+
+        # rglob — рекурсивный поиск
+        for py_file in modules_path.rglob("*.py"):
             if py_file.name == "__init__.py":
                 continue
 
-            classes = self.parser.get_classes(py_file)
-            for cls in classes:
-                results.append(
-                    {
-                        "file": py_file.name,
-                        "class": cls["name"],
-                        "docstring": cls["docstring"],
-                    }
-                )
+            # Относительный путь от modules/
+            try:
+                relative_path = py_file.relative_to(modules_path)
+            except ValueError:
+                relative_path = py_file.name
 
+            description = self.parser.get_full_description(py_file)
+            results.append({"file": str(relative_path), "docstring": description})
+
+        # return sorted(results, key=lambda x: x["file"])
         return results
+
+    def analyze_templates_dir(self, templates_path: Path) -> List[Dict[str, str]]:
+        """
+        Анализирует директорию templates/ — извлекает описания из HTML.
+
+        Returns:
+            Список {'file': str, 'docstring': str}
+        """
+        results = []
+
+        if not templates_path.exists():
+            return results
+
+        # Ищем HTML-файлы рекурсивно (учитываем вложенные папки)
+        for html_file in templates_path.rglob("*.html"):
+            description = self.parser.get_description(html_file)
+
+            # Получаем относительный путь от templates/
+            try:
+                relative_path = html_file.relative_to(templates_path)
+            except ValueError:
+                relative_path = html_file.name
+
+            results.append({"file": str(relative_path), "docstring": description})
+
+        # return sorted(results, key=lambda x: x["file"])
+        return results
+
+    # def analyze_views_dir(self, views_path: Path) -> List[Dict[str, str]]:
+    #     """
+    #     Анализирует директорию views/ — извлекает docstring модулей.
+
+    #     Returns:
+    #         Список {'file': str, 'docstring': str}
+    #     """
+    #     results = []
+
+    #     if not views_path.exists():
+    #         return results
+
+    #     for py_file in views_path.glob("*.py"):
+    #         if py_file.name == "__init__.py":
+    #             continue
+
+    #         description = self.parser.get_description(py_file)
+    #         results.append({"file": py_file.name, "docstring": description})
+
+    #     return sorted(results, key=lambda x: x["file"])
+
+    # def analyze_views_dir(self, views_path: Path) -> List[Dict[str, str]]:
+    #     """
+    #     Анализирует директорию views/ — извлекает классы и функции.
+
+    #     Returns:
+    #         Список {'file': str, 'class': str, 'docstring': str}
+    #     """
+    #     results = []
+
+    #     if not views_path.exists():
+    #         return results
+
+    #     for py_file in views_path.glob("*.py"):
+    #         if py_file.name == "__init__.py":
+    #             continue
+
+    #         # Сначала пробуем получить классы
+    #         classes = self.parser.get_classes(py_file)
+
+    #         if classes:
+    #             for cls in classes:
+    #                 results.append(
+    #                     {
+    #                         "file": py_file.name,
+    #                         "class": cls["name"],
+    #                         "docstring": cls["docstring"],
+    #                     }
+    #                 )
+    #         else:
+    #             # Если классов нет, берём docstring модуля
+    #             description = self.parser.get_description(py_file)
+    #             results.append(
+    #                 {"file": py_file.name, "class": "", "docstring": description}
+    #             )
+
+    #     return sorted(results, key=lambda x: x["file"])

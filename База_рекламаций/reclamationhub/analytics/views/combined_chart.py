@@ -1,5 +1,5 @@
 # analytics/views/combined_chart.py
-"""Представления для модуля анализа по датам изготовления изделия и уведомления о дефектах"""
+"""Представления для страницы анализа по датам изготовления и уведомления."""
 
 from datetime import datetime
 from django.shortcuts import redirect, render

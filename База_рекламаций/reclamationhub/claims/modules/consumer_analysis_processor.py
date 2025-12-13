@@ -1,5 +1,10 @@
 # claims/modules/consumer_analysis_processor.py
-"""Процессор для анализа претензий по потребителям"""
+"""
+Процессор для анализа претензий по потребителям
+
+Включает класс:
+- `ConsumerAnalysisProcessor` - Анализ претензий по выбранному потребителю
+"""
 
 import pandas as pd
 from datetime import date

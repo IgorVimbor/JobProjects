@@ -1,4 +1,5 @@
-# Представление для основной страницы аналитики
+# analytics\views\analytic.py
+"""Представление для основной страницы аналитики"""
 
 from datetime import date
 from django.shortcuts import render

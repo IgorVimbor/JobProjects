@@ -1,4 +1,10 @@
 # claims/modules/dashboard_processor.py
+"""
+Процессор для Dashboard (сводной информации) по претензиям.
+
+Включает класс:
+- `DashboardProcessor` - Обработка данных для Dashboard претензий
+"""
 
 from reports.config.paths import (
     get_claims_dashboard_chart_path,
