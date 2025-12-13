@@ -1,4 +1,5 @@
-# Представление для группового добавления накладной отгрузки изделий
+# investigations\views\add_invoice_out.py
+"""Представление для группового добавления накладной отгрузки изделий."""
 
 from django.contrib import messages
 from django.http import HttpResponseRedirect

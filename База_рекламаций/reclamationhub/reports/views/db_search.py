@@ -1,3 +1,6 @@
+# reports\views\db_search.py
+"""Представление для страницы поиска в базе рекламаций по номеру двигателя или акта"""
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import FileResponse, Http404, HttpResponse
@@ -7,17 +10,6 @@ import os
 from reports.config.paths import get_db_search_txt_path
 from reports.forms import DbSearchForm
 from reports.modules.db_search_module import perform_search
-
-
-# def db_search_page(request):
-#     """Заглушка для модуля 'Поиск по базе рекламаций'"""
-#     context = {
-#         "page_title": "Поиск по базе рекламаций",
-#         "module_name": "Database search",
-#         "description": "Краткая информация из базы рекламаций",
-#         "status": "В разработке...",
-#     }
-#     return render(request, "reports/db_search.html", context)
 
 
 def db_search_page(request):

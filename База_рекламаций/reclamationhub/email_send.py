@@ -1,3 +1,5 @@
+"""Python-скрипт для автоматического логирования и отправки письма с Mail.ru"""
+
 import smtplib
 import os
 from email import encoders

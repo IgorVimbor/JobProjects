@@ -1,5 +1,5 @@
 # claims\views\claim_main.py
-"""Представление для основной страницы аналитики претензий."""
+"""Представление для основной страницы аналитики претензий"""
 
 from datetime import date
 from django.shortcuts import render

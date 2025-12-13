@@ -2,6 +2,8 @@ from django.db import models
 
 
 class PeriodDefect(models.Model):
+    """Модель для периода выявления дефекта"""
+
     name = models.CharField(
         max_length=70, unique=True, verbose_name="Период выявления дефекта"
     )
@@ -17,6 +19,8 @@ class PeriodDefect(models.Model):
 
 
 class ProductType(models.Model):
+    """Модель для наименования изделия"""
+
     name = models.CharField(
         max_length=100, unique=True, verbose_name="Наименование изделия"
     )
@@ -33,8 +37,7 @@ class ProductType(models.Model):
 
 class Product(models.Model):
     """
-    Модель изделия.
-    Связана с нименованием изделия (ProductType).
+    Модель для обозначения изделия. Связана с наименованием изделия (ProductType).
     Используется в рекламациях для указания изделия, по которому поступила рекламация.
     """
 

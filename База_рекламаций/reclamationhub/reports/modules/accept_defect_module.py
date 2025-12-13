@@ -1,5 +1,10 @@
 # reports/modules/accept_defect_module.py
-# Модуль приложения "Количество признанных/непризнанных" с основной логикой
+"""
+Модуль приложения "Количество признанных/непризнанных" с основной логикой.
+
+Включает класс:
+- `AcceptDefectProcessor` - Обработка данных для отчета по признанным рекламациям
+"""
 
 import pandas as pd
 from datetime import date
@@ -13,13 +18,16 @@ from reports.config.paths import (
     ACCEPT_DEFECT_DIR,  # BASE_REPORTS_DIR,
 )
 
+
 class AcceptDefectProcessor:
     """Обработка данных для отчета по признанным рекламациям"""
 
     def __init__(self, year=None, months=None):
         self.today = date.today()
         self.year = year or self.today.year  # Если год не передан, используем текущий
-        self.months = months or []  # Список выбранных месяцев [1, 2, 3] или [] для всех месяцев
+        self.months = (
+            months or []
+        )  # Список выбранных месяцев [1, 2, 3] или [] для всех месяцев
         self.result_df = pd.DataFrame()
         # Используем готовую функцию из конфига
         self.txt_file_path = get_accept_defect_txt_path(0)
@@ -30,9 +38,18 @@ class AcceptDefectProcessor:
             return "все месяцы"
 
         month_names = {
-            1: "январь", 2: "февраль", 3: "март", 4: "апрель",
-            5: "май", 6: "июнь", 7: "июль", 8: "август",
-            9: "сентябрь", 10: "октябрь", 11: "ноябрь", 12: "декабрь"
+            1: "январь",
+            2: "февраль",
+            3: "март",
+            4: "апрель",
+            5: "май",
+            6: "июнь",
+            7: "июль",
+            8: "август",
+            9: "сентябрь",
+            10: "октябрь",
+            11: "ноябрь",
+            12: "декабрь",
         }
 
         selected_names = [month_names[month] for month in sorted(self.months)]
@@ -92,11 +109,12 @@ class AcceptDefectProcessor:
 
         # 2. Формируем фильтр для исследований
         investigations_filter = Q(
-            reclamation__isnull=False,
-            reclamation__year=self.year
+            reclamation__isnull=False, reclamation__year=self.year
         )
         if self.months:  # Если выбраны конкретные месяцы
-            investigations_filter &= Q(reclamation__message_received_date__month__in=self.months)
+            investigations_filter &= Q(
+                reclamation__message_received_date__month__in=self.months
+            )
 
         # Получаем данные по виновникам из Investigation
         investigations = (

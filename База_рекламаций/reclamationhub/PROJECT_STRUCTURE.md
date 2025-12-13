@@ -1,6 +1,6 @@
 # СТРУКТУРА ПРОЕКТА reclamationhub
 
-*Создано: 2025-12-13 15:08:45*
+*Создано: 2025-12-13 18:01:19*
 
 ---
 
@@ -82,13 +82,13 @@
 
 **Представления (views):**
 
-- `claim_form.py` — AJAX endpoint для получения данных по рекламации в зависимости от результатов поиска.
-- `claim_main.py` — Представление для основной страницы аналитики претензий.
-- `claim_prognosis.py` — Представление для страницы прогнозирования претензий.
-- `consumer_analysis.py` — Представление для страницы анализа претензий по потребителю.
-- `dashboard.py` — Представления для страницы Dashboard претензий.
-- `reclamation_to_claim.py` — Представления для страницы анализа конверсии рекламация → претензия.
-- `time_analysis.py` — Представление для страницы временного анализа рекламация → претензия.
+- `claim_form.py` — AJAX endpoint для получения данных по рекламации в зависимости от результатов поиска
+- `claim_main.py` — Представление для основной страницы аналитики претензий
+- `claim_prognosis.py` — Представление для страницы прогнозирования претензий
+- `consumer_analysis.py` — Представление для страницы анализа претензий по потребителю
+- `dashboard.py` — Представления для страницы Dashboard претензий
+- `reclamation_to_claim.py` — Представления для страницы анализа конверсии рекламация → претензия
+- `time_analysis.py` — Представление для страницы временного анализа рекламация → претензия
 
 **Шаблоны (templates):**
 
@@ -115,8 +115,8 @@
 
 **Представления (views):**
 
-- `add_group_investigation.py` — —
-- `add_invoice_out.py` — —
+- `add_group_investigation.py` — Представление для формы добавления группового акта исследования.
+- `add_invoice_out.py` — Представление для группового добавления накладной отгрузки изделий.
 
 ---
 
@@ -132,9 +132,9 @@
 
 **Представления (views):**
 
-- `disposal_act.py` — —
-- `invoice_intake.py` — —
-- `product_utils.py` — —
+- `disposal_act.py` — Представление для формы группового добавления акта утилизации.
+- `invoice_intake.py` — Представление для формы группового добавления накладной прихода изделий.
+- `product_utils.py` — AJAX endpoint для получения списка изделий в зависимости от выбранного типа изделий.
 - `reclamation_form.py` — AJAX endpoint для проверки дубликатов рекламаций.
 Проверяет каждое поле отдельно и возвращает предупреждение если найден дубликат.
 
@@ -144,39 +144,51 @@
 
 **Модели:**
 
-- `EnquiryPeriod` — Метаданные для справок о поступивших сообщениях за период.
+- `EnquiryPeriod` — Модель для метаданных справок о поступивших сообщениях за период.
 
 **Модули (modules):**
 
 - `accept_defect_module.py` — 
-  —  
+  Модуль приложения "Количество признанных/непризнанных" с основной логикой.  
+  Включает класс:  
+  - `AcceptDefectProcessor` - Обработка данных для отчета по признанным рекламациям  
 - `culprits_defect_module.py` — 
-  —  
+  Модуль приложения "Дефекты по виновникам" с основной логикой.  
+  Включает класс:  
+  - `CulpritsDefectProcessor` - Обработка данных для анализа дефектов по виновникам  
 - `db_search_module.py` — 
-  —  
+  Модуль приложения "Поиск по базе рекламаций" с основной логикой поиска.  
+  Включает класс:  
+  - `DbSearchProcessor` - Поиск по базе рекламаций с точным сопоставлением номеров  
 - `enquiry_period_module.py` — 
-  —  
+  Модуль приложения "Справка за период" с основной логикой формирования справки.  
+  Включает классы:  
+  - `MetadataLoader` - Получение записей метаданных из Django модели или создание новой записи  
+  - `DataProcessor` - Получение данных из Django ORM  
+  - `ExcelWriter` - Создание и запись в Excel файл  
 - `length_study_module.py` — 
-  —  
+  Модуль приложения "Длительность исследования" с расчетом статистики и построением графиков.  
+  Включает класс:  
+  - `LengthStudyProcessor` - Процессор анализа длительности исследований  
 
 **Представления (views):**
 
-- `accept_defect.py` — —
-- `culprits_defect.py` — —
-- `date_pretence.py` — —
-- `db_search.py` — —
-- `enquiry_period.py` — —
-- `length_study.py` — —
-- `references.py` — —
+- `accept_defect.py` — Представление для страницы приложения 'Количество признанных/непризнанных'
+- `culprits_defect.py` — Представление для страницы приложения 'Дефекты по виновникам'
+- `date_pretence.py` — Представление страницы получения информации из базы данных по номеру претензии
+- `db_search.py` — Представление для страницы поиска в базе рекламаций по номеру двигателя или акта
+- `enquiry_period.py` — Представление для страницы приложения 'Справка за период'
+- `length_study.py` — Представление для страницы приложения 'Длительность исследований'
+- `references.py` — Представление для основной страницы справок и отчетов
 
 **Шаблоны (templates):**
 
-- `reports\accept_defect.html` — reports/templates/reports/accept_defect.html
-- `reports\culprits_defect.html` — reports/templates/reports/culprits_defect.html
-- `reports\date_pretence.html` — reports/templates/reports/db_search.html
-- `reports\db_search.html` — reports/templates/reports/db_search.html
-- `reports\enquiry_period.html` — reports/templates/reports/enquiry_period.html
-- `reports\length_study.html` — reports/templates/reports/length_study.html
+- `reports\accept_defect.html` — Шаблон страницы приложения "Количество признанных/непризнанных"
+- `reports\culprits_defect.html` — Шаблон страницы приложения "Дефекты по виновникам"
+- `reports\date_pretence.html` — Шаблон страницы приложения "Даты уведомления по номеру претензии"
+- `reports\db_search.html` — Шаблон страницы приложения "Поиск по базе рекламаций"
+- `reports\enquiry_period.html` — Шаблон страницы приложения "Справка за период"
+- `reports\length_study.html` — Шаблон страницы приложения "Длительность исследований"
 - `reports\references.html` — Шаблон основной страницы со справками и отчетами
 
 ---
@@ -185,17 +197,24 @@
 
 **Модели:**
 
-- `PeriodDefect` — PeriodDefect(id, name)
-- `ProductType` — ProductType(id, name)
-- `Product` — Модель изделия.
+- `PeriodDefect` — Модель для периода выявления дефекта
+- `ProductType` — Модель для наименования изделия
+- `Product` — Модель для обозначения изделия. Связана с наименованием изделия (ProductType).
 
 ---
 
 ### `utils`
 
+**Модули (modules):**
+
+- `excel_exporter.py` — 
+  Процессор экспортера в Excel данных из базы данных с возможностью выбора полей.  
+  Включает класс:  
+  - `UniversalExcelExporter` - Универсальный экспортер в Excel с возможностью выбора полей  
+
 **Шаблоны (templates):**
 
-- `utils\excel_exporter.html` — utils/templates/utils/excel_exporter.html
+- `utils\excel_exporter.html` — Шаблон страницы экспортера в Excel данных из базы данных
 
 ---
 
@@ -254,13 +273,13 @@ reclamationhub/
 │   │       └──  reclamation_to_claim.html  # Шаблон с формой анализа конверсии рекламация → претензия
 │   ├── views/  # Представления
 │   │   ├──  __init__.py
-│   │   ├──  claim_form.py  # AJAX endpoint для получения данных по рекламации в зависимости от результатов поиска.
-│   │   ├──  claim_main.py  # Представление для основной страницы аналитики претензий.
-│   │   ├──  claim_prognosis.py  # Представление для страницы прогнозирования претензий.
-│   │   ├──  consumer_analysis.py  # Представление для страницы анализа претензий по потребителю.
-│   │   ├──  dashboard.py  # Представления для страницы Dashboard претензий.
-│   │   ├──  reclamation_to_claim.py  # Представления для страницы анализа конверсии рекламация → претензия.
-│   │   └──  time_analysis.py  # Представление для страницы временного анализа рекламация → претензия.
+│   │   ├──  claim_form.py  # AJAX endpoint для получения данных по рекламации в зависимости от результатов поиска
+│   │   ├──  claim_main.py  # Представление для основной страницы аналитики претензий
+│   │   ├──  claim_prognosis.py  # Представление для страницы прогнозирования претензий
+│   │   ├──  consumer_analysis.py  # Представление для страницы анализа претензий по потребителю
+│   │   ├──  dashboard.py  # Представления для страницы Dashboard претензий
+│   │   ├──  reclamation_to_claim.py  # Представления для страницы анализа конверсии рекламация → претензия
+│   │   └──  time_analysis.py  # Представление для страницы временного анализа рекламация → претензия
 │   ├──  __init__.py
 │   ├──  admin.py  # Настройка админ-панели
 │   ├──  apps.py  # Конфигурация приложения
@@ -280,8 +299,8 @@ reclamationhub/
 ├── investigations/  # Django App
 │   ├── views/  # Представления
 │   │   ├──  __init__.py
-│   │   ├──  add_group_investigation.py
-│   │   └──  add_invoice_out.py
+│   │   ├──  add_group_investigation.py  # Представление для формы добавления группового акта исследования.
+│   │   └──  add_invoice_out.py  # Представление для группового добавления накладной отгрузки изделий.
 │   ├──  __init__.py
 │   ├──  admin.py  # Настройка админ-панели
 │   ├──  apps.py  # Конфигурация приложения
@@ -318,9 +337,9 @@ reclamationhub/
 ├── reclamations/  # Django App
 │   ├── views/  # Представления
 │   │   ├──  __init__.py
-│   │   ├──  disposal_act.py
-│   │   ├──  invoice_intake.py
-│   │   ├──  product_utils.py
+│   │   ├──  disposal_act.py  # Представление для формы группового добавления акта утилизации.
+│   │   ├──  invoice_intake.py  # Представление для формы группового добавления накладной прихода изделий.
+│   │   ├──  product_utils.py  # AJAX endpoint для получения списка изделий в зависимости от выбранного типа изделий.
 │   │   └──  reclamation_form.py  # AJAX endpoint для проверки дубликатов рекламаций.
 │   ├──  __init__.py
 │   ├──  admin.py  # Настройка админ-панели
@@ -332,29 +351,29 @@ reclamationhub/
 │   ├── config/
 │   │   └──  paths.py  # Общие пути к каталогам и файлам для всех аналитических модулей
 │   ├── modules/  # Процессоры
-│   │   ├──  accept_defect_module.py
-│   │   ├──  culprits_defect_module.py
-│   │   ├──  db_search_module.py
-│   │   ├──  enquiry_period_module.py
-│   │   └──  length_study_module.py
+│   │   ├──  accept_defect_module.py  # Модуль приложения "Количество признанных/непризнанных" с основной логикой.
+│   │   ├──  culprits_defect_module.py  # Модуль приложения "Дефекты по виновникам" с основной логикой.
+│   │   ├──  db_search_module.py  # Модуль приложения "Поиск по базе рекламаций" с основной логикой поиска.
+│   │   ├──  enquiry_period_module.py  # Модуль приложения "Справка за период" с основной логикой формирования справки.
+│   │   └──  length_study_module.py  # Модуль приложения "Длительность исследования" с расчетом статистики и построением графиков.
 │   ├── templates/  # Шаблоны
 │   │   └── reports/
-│   │       ├──  accept_defect.html  # reports/templates/reports/accept_defect.html
-│   │       ├──  culprits_defect.html  # reports/templates/reports/culprits_defect.html
-│   │       ├──  date_pretence.html  # reports/templates/reports/db_search.html
-│   │       ├──  db_search.html  # reports/templates/reports/db_search.html
-│   │       ├──  enquiry_period.html  # reports/templates/reports/enquiry_period.html
-│   │       ├──  length_study.html  # reports/templates/reports/length_study.html
+│   │       ├──  accept_defect.html  # Шаблон страницы приложения "Количество признанных/непризнанных"
+│   │       ├──  culprits_defect.html  # Шаблон страницы приложения "Дефекты по виновникам"
+│   │       ├──  date_pretence.html  # Шаблон страницы приложения "Даты уведомления по номеру претензии"
+│   │       ├──  db_search.html  # Шаблон страницы приложения "Поиск по базе рекламаций"
+│   │       ├──  enquiry_period.html  # Шаблон страницы приложения "Справка за период"
+│   │       ├──  length_study.html  # Шаблон страницы приложения "Длительность исследований"
 │   │       └──  references.html  # Шаблон основной страницы со справками и отчетами
 │   ├── views/  # Представления
 │   │   ├──  __init__.py
-│   │   ├──  accept_defect.py
-│   │   ├──  culprits_defect.py
-│   │   ├──  date_pretence.py
-│   │   ├──  db_search.py
-│   │   ├──  enquiry_period.py
-│   │   ├──  length_study.py
-│   │   └──  references.py
+│   │   ├──  accept_defect.py  # Представление для страницы приложения 'Количество признанных/непризнанных'
+│   │   ├──  culprits_defect.py  # Представление для страницы приложения 'Дефекты по виновникам'
+│   │   ├──  date_pretence.py  # Представление страницы получения информации из базы данных по номеру претензии
+│   │   ├──  db_search.py  # Представление для страницы поиска в базе рекламаций по номеру двигателя или акта
+│   │   ├──  enquiry_period.py  # Представление для страницы приложения 'Справка за период'
+│   │   ├──  length_study.py  # Представление для страницы приложения 'Длительность исследований'
+│   │   └──  references.py  # Представление для основной страницы справок и отчетов
 │   ├──  __init__.py
 │   ├──  admin.py  # Настройка админ-панели
 │   ├──  apps.py  # Конфигурация приложения
@@ -372,17 +391,17 @@ reclamationhub/
 ├── static/  # Статика
 │   ├── admin/
 │   │   ├── css/
-│   │   │   └──  custom_admin.css  # ---------------------- Стили для таблиц в админ-панели ---------------------
+│   │   │   └──  custom_admin.css  # Стили для таблиц в админ-панели
 │   │   └── js/
-│   │       ├──  claim_search.js  # static\admin\js\claim_search.js
-│   │       ├──  custom_admin.js  # static\admin\js\custom_admin.js
-│   │       ├──  reclamation_duplicates.js  # Скрипт для проверки дубликатов рекламаций в режиме реального времени.
-│   │       └──  reclamation_form.js  # static\admin\js\reclamation_form.js
+│   │       ├──  claim_search.js  # Скрипт для проверки дубликатов при заполнении формы претензий и измения названия валюты
+│   │       ├──  custom_admin.js  # Общие JavaScript функции для всех моделей
+│   │       ├──  reclamation_duplicates.js  # Проверяет каждое поле отдельно при потере фокуса
+│   │       └──  reclamation_form.js  # JavaScript функции для формы добавления/редактирования рекламаций
 │   ├── css/
-│   │   ├──  bootstrap.min.css  # !
+│   │   ├──  bootstrap.min.css  # Bootstrap  v5.3.8
 │   │   └──  bootstrap.min.css.map
 │   ├── custom_js/
-│   │   ├──  charts.js  # JavaScript для построения графиков на главной странице с учетом выбора года и сохранения их в файл
+│   │   ├──  charts.js  # JavaScript для построения графиков на главной странице с выбором года и сохранением в файл
 │   │   └──  year_selector.js  # JavaScript для переключения годов на главной странице
 │   ├── js/
 │   │   ├──  bootstrap.bundle.min.js
@@ -393,30 +412,30 @@ reclamationhub/
 │
 ├── templates/  # Шаблоны
 │   ├── admin/
-│   │   ├──  add_disposal_act.html  # Шаблон для добавления акта утилизации для рекламаций
+│   │   ├──  add_disposal_act.html  # Шаблон страницы с формой добавления акта утилизации для рекламаций
 │   │   ├──  add_group_investigation.html  # Если нужны дополнительные стили специфичные для формы актов исследования
 │   │   ├──  add_group_invoice_into.html  # Если нужны дополнительные стили специфичные для формы накладных
 │   │   ├──  add_group_invoice_out.html  # Если нужны дополнительные стили специфичные для формы накладных
-│   │   ├──  base_site.html  # templates\admin\base_site.html
-│   │   ├──  change_form.html  # Базовый шаблон для форм добавления/изменения актов рекламаций и исследования.
-│   │   ├──  change_list.html  # Базовый шаблон страницы списка рекламаций или актов исследования.
+│   │   ├──  base_site.html  # Базовый шаблон страницы админ-панели с кастомными изменениями
+│   │   ├──  change_form.html  # Базовый шаблон для форм добавления/изменения актов рекламаций и исследования
+│   │   ├──  change_list.html  # Базовый шаблон страницы списка рекламаций или актов исследования
 │   │   ├──  claim_changelist.html  # Дочерний шаблон страницы списка претензий
 │   │   ├──  group_form_base.html  # Базовый шаблон для форм группового добавления данных (накладной, актов исследования и др.)
-│   │   ├──  investigation_changelist.html  # Дочерний шаблон страницы списка актов исследования.
+│   │   ├──  investigation_changelist.html  # Дочерний шаблон страницы списка актов исследования
 │   │   ├──  nav_sidebar.html  # Шаблон для изменения надписей в стандартной панели фильтров (в левой части страницы)
-│   │   └──  reclamation_changelist.html  # Дочерний шаблон страницы списка рекламаций.
-│   ├──  base.html  # templates\base.html
-│   ├──  base_navigation.html  # templates\base_navigation.html
-│   ├──  base_statistic_cards.html  # templates/base_statistic_cards.html
+│   │   └──  reclamation_changelist.html  # Дочерний шаблон страницы списка рекламаций
+│   ├──  base.html  # Базовый шаблон главной страницы сайта
+│   ├──  base_navigation.html  # Базовый шаблон навигационной панели
+│   ├──  base_statistic_cards.html  # Шаблон с карточками с общей статистикой по рекламациям
 │   └──  home.html  # Главная страница сайта
 │
 ├── utils/  # Django App
-│   ├── excel/
+│   ├── modules/  # Процессоры
 │   │   ├──  __init__.py
-│   │   └──  excel_exporter.py
+│   │   └──  excel_exporter.py  # Процессор экспортера в Excel данных из базы данных с возможностью выбора полей.
 │   ├── templates/  # Шаблоны
 │   │   └── utils/
-│   │       └──  excel_exporter.html  # utils/templates/utils/excel_exporter.html
+│   │       └──  excel_exporter.html  # Шаблон страницы экспортера в Excel данных из базы данных
 │   ├──  __init__.py
 │   ├──  apps.py  # Конфигурация приложения
 │   ├──  urls.py  # Маршрутизация URL
@@ -424,8 +443,8 @@ reclamationhub/
 │
 ├──  .env.local
 ├──  .env.production
-├──  backup_and_commit.py
-├──  email_send.py
+├──  backup_and_commit.py  # Python-скрипт для автоматического логирования, создания бэкапа БД и отправки изменений на Git
+├──  email_send.py  # Python-скрипт для автоматического логирования и отправки письма с Mail.ru
 ├──  manage.py  # CLI Django
 └──  PROJECT_STRUCTURE.md
 ```

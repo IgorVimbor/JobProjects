@@ -1,4 +1,5 @@
-# Представление для формы группового добавления накладной прихода изделий
+# reclamations\views\invoice_intake.py
+"""Представление для формы группового добавления накладной прихода изделий."""
 
 from django.contrib import messages
 from django.http import HttpResponseRedirect

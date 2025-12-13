@@ -1,19 +1,11 @@
+# reports\views\date_pretence.py
+"""Представление страницы получения информации из базы данных по номеру претензии"""
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime
 
 from claims.models import Claim
-
-
-# def date_pretence_page(request):
-#     """Заглушка для модуля 'Дата уведомления по номеру акта рекламации'"""
-#     context = {
-#         "page_title": "Дата уведомления о рекламации",
-#         "module_name": "Date Pretence",
-#         "description": "Справка по дате уведомления о рекламации (выходе из строя изделия)",
-#         "status": "В разработке...",
-#     }
-#     return render(request, "reports/date_pretence.html", context)
 
 
 def date_pretence_page(request):
@@ -163,7 +155,9 @@ def generate_claims_table(claims, claim_number):
     content.append("-" * 95)
     content.append(f"Всего записей: {claims.count()}")
     content.append("")  # пустая строка
-    content.append("Если в столбце 'Приход на БЗА' указан номер ТТН - изделие поступало на БЗА")
+    content.append(
+        "Если в столбце 'Приход на БЗА' указан номер ТТН - изделие поступало на БЗА"
+    )
     content.append("Если в столбце указано 'фото' - изделие НЕ поступало")
 
     return "\n".join(content)

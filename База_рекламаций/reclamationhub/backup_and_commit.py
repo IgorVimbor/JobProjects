@@ -1,3 +1,5 @@
+"""Python-скрипт для автоматического логирования, создания бэкапа БД и отправки изменений на Git"""
+
 import os
 import sys
 import subprocess
@@ -85,7 +87,9 @@ def main():
             return
 
         # Создание коммита с датой
-        commit_message = f"Auto: Обновление фикстуры БД от {date.today().strftime('%Y-%m-%d %H:%M')}"
+        commit_message = (
+            f"Auto: Обновление фикстуры БД от {date.today().strftime('%Y-%m-%d %H:%M')}"
+        )
         if not run_command(["git", "commit", "-m", commit_message], "Создание коммита"):
             # Если коммитить нечего, git вернет ошибку.
             # Если команда commit не удалась, возможно, изменений не было.

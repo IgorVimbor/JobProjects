@@ -1,4 +1,5 @@
 # reclamationhub\core\views.py
+"""Представление для главной страницы сайта с данными текущего года."""
 
 from django.shortcuts import render
 from django.db.models import Count, Q

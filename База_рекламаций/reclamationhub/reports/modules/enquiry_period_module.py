@@ -1,5 +1,12 @@
 # reports/modules/enquiry_period_module.py
-# Модуль приложения "Справка за период" с основной логикой формирования справки
+"""Модуль приложения "Справка за период" с основной логикой формирования справки.
+
+Включает классы:
+- `MetadataLoader` - Получение записей метаданных из Django модели или создание новой записи
+- `DataProcessor` - Получение данных из Django ORM
+- `ExcelWriter` - Создание и запись в Excel файл
+
+"""
 
 import pandas as pd
 from datetime import date
@@ -18,7 +25,7 @@ from reports.config.paths import (
 
 
 class MetadataLoader:
-    """Аналог TextDatabaseLoader - работа с Django моделью вместо JSON"""
+    """Получение записей метаданных (аналог TextDatabaseLoader) - работа с Django моделью вместо JSON"""
 
     def __init__(self):
         # Получаем последнюю запись метаданных или создаем начальную

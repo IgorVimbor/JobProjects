@@ -1,5 +1,5 @@
 # claims\views\claim_prognosis.py
-"""Представление для страницы прогнозирования претензий."""
+"""Представление для страницы прогнозирования претензий"""
 
 from datetime import date
 from decimal import Decimal, InvalidOperation

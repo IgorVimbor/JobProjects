@@ -1,5 +1,5 @@
 # reports/views/culprits_defect.py
-# Представление для приложения "Дефекты по виновникам"
+"""Представление для страницы приложения 'Дефекты по виновникам'"""
 
 from datetime import date
 from django.shortcuts import redirect, render

@@ -1,5 +1,5 @@
 # claims/views/reclamation_to_claim.py
-"""Представления для страницы анализа конверсии рекламация → претензия."""
+"""Представления для страницы анализа конверсии рекламация → претензия"""
 
 from datetime import date
 from decimal import Decimal, InvalidOperation

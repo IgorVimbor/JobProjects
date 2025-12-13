@@ -1,4 +1,5 @@
-# Представление для основной страницы справок и отчетов
+# reports\views\references.py
+"""Представление для основной страницы справок и отчетов"""
 
 from datetime import date
 from django.shortcuts import render

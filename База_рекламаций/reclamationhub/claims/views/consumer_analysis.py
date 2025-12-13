@@ -1,5 +1,5 @@
 # claims/views/consumer_analysis.py
-"""Представление для страницы анализа претензий по потребителю."""
+"""Представление для страницы анализа претензий по потребителю"""
 
 from datetime import date
 from decimal import Decimal, InvalidOperation

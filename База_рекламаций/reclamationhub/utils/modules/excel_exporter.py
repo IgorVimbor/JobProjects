@@ -1,3 +1,11 @@
+# utils\modules\excel_exporter.py
+"""
+Процессор экспортера в Excel данных из базы данных с возможностью выбора полей.
+
+Включает класс:
+- `UniversalExcelExporter` - Универсальный экспортер в Excel с возможностью выбора полей
+"""
+
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
@@ -45,7 +53,10 @@ class UniversalExcelExporter:
                 "Дата поступления сообщения",
                 "direct",
             ),
-            "reclamation.sender_outgoing_number": ("Исх. № отправителя (Номер ПСА)", "direct",),
+            "reclamation.sender_outgoing_number": (
+                "Исх. № отправителя (Номер ПСА)",
+                "direct",
+            ),
             "reclamation.defect_period": ("Период выявления дефекта", "related_str"),
             "reclamation.product_name": ("Наименование изделия", "related_str"),
             "reclamation.product": ("Обозначение изделия", "related_str"),

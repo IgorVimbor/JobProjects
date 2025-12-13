@@ -1,5 +1,5 @@
 # claims/views/time_analysis.py
-"""Представление для страницы временного анализа рекламация → претензия."""
+"""Представление для страницы временного анализа рекламация → претензия"""
 
 from datetime import date
 from django.shortcuts import redirect, render

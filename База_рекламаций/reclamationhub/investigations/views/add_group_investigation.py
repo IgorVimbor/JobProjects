@@ -1,5 +1,5 @@
 # investigations\views\add_group_investigation.py
-# Представление для формы добавления группового акта исследования
+"""Представление для формы добавления группового акта исследования."""
 
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -154,12 +154,15 @@ def add_group_investigation_view(admin_instance, request):
                             }
 
                             # ✅ Проверяем существование Investigation
-                            if hasattr(reclamation, 'investigation'):
+                            if hasattr(reclamation, "investigation"):
                                 # Investigation уже существует
                                 existing_investigation = reclamation.investigation
 
                                 # Проверяем, это "автоматический" акт или реальный
-                                if existing_investigation.act_number == "без исследования":
+                                if (
+                                    existing_investigation.act_number
+                                    == "без исследования"
+                                ):
                                     # ОБНОВЛЯЕМ существующий автоматический акт
                                     for field, value in investigation_data.items():
                                         setattr(existing_investigation, field, value)
@@ -215,7 +218,9 @@ def add_group_investigation_view(admin_instance, request):
                             if updated_count > 0:
                                 success_parts.append(f"обновлено: {updated_count}")
 
-                            msg_data["message"] = f"Актов исследования {', '.join(success_parts)}"
+                            msg_data["message"] = (
+                                f"Актов исследования {', '.join(success_parts)}"
+                            )
 
                         admin_instance.message_user(
                             request,

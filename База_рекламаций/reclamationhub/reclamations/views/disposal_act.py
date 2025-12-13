@@ -1,4 +1,5 @@
-# Представление для формы группового добавления акта утилизации
+# reclamations\views\disposal_act.py
+"""Представление для формы группового добавления акта утилизации."""
 
 from django.contrib import admin  # Импорт для admin.helpers
 from django.http import HttpResponseRedirect
