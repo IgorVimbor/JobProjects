@@ -101,13 +101,15 @@ class UniversalExcelExporter:
                 "investigation",
             ),
             # Поля претензий (ForeignKey множественные)
+            "claims.registration_number": ("Номер регистрации", "claims"),
             "claims.claim_number": ("Номер претензии", "claims"),
             "claims.claim_date": ("Дата претензии", "claims"),
             "claims.type_money": ("Денежная единица", "claims"),
             "claims.claim_amount_all": ("Сумма претензии", "claims"),
-            "claims.claim_amount_act": ("Сумма по акту рекламации", "claims"),
             "claims.costs_all": ("Признано по претензии", "claims"),
+            "claims.claim_amount_act": ("Сумма по акту рекламации", "claims"),
             "claims.costs_act": ("Признано по акту", "claims"),
+            "claims.comment": ("Комментарий", "claims"),
             "claims.response_number": ("Ответ на претензию", "claims"),
             "claims.response_date": ("Дата ответа на претензию", "claims"),
         }
