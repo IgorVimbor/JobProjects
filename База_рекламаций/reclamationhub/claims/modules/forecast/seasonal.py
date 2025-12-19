@@ -38,19 +38,48 @@ class SeasonalForecast(BaseForecast):
         self.seasonal_period = seasonal_period
         self.seasonal_type = seasonal_type
 
+    # def _calculate_seasonal_indices(self, data: List[float]) -> Dict[int, float]:
+    #     """
+    #     Расчёт сезонных индексов.
+
+    #     Индекс = среднее значение месяца / общее среднее
+
+    #     Args:
+    #         data: Исторические данные (минимум 12 значений)
+
+    #     Returns:
+    #         Dict[month_index, seasonal_factor]
+    #     """
+    #     if len(data) < self.seasonal_period:
+    #         return {i: 1.0 for i in range(self.seasonal_period)}
+
+    #     overall_mean = np.mean(data)
+    #     if overall_mean == 0:
+    #         return {i: 1.0 for i in range(self.seasonal_period)}
+
+    #     indices = {}
+    #     for month_idx in range(self.seasonal_period):
+    #         # Собираем все значения для этого месяца
+    #         month_values = [
+    #             data[i] for i in range(month_idx, len(data), self.seasonal_period)
+    #         ]
+    #         if month_values:
+    #             month_mean = np.mean(month_values)
+    #             indices[month_idx] = month_mean / overall_mean
+    #         else:
+    #             indices[month_idx] = 1.0
+
+    #     return indices
+
     def _calculate_seasonal_indices(self, data: List[float]) -> Dict[int, float]:
         """
         Расчёт сезонных индексов.
 
-        Индекс = среднее значение месяца / общее среднее
-
-        Args:
-            data: Исторические данные (минимум 12 значений)
-
-        Returns:
-            Dict[month_index, seasonal_factor]
+        Работает даже при неполном годе данных.
         """
-        if len(data) < self.seasonal_period:
+        n = len(data)
+
+        if n == 0:
             return {i: 1.0 for i in range(self.seasonal_period)}
 
         overall_mean = np.mean(data)
@@ -58,18 +87,70 @@ class SeasonalForecast(BaseForecast):
             return {i: 1.0 for i in range(self.seasonal_period)}
 
         indices = {}
+
+        # Рассчитываем индексы для имеющихся месяцев
         for month_idx in range(self.seasonal_period):
             # Собираем все значения для этого месяца
-            month_values = [
-                data[i] for i in range(month_idx, len(data), self.seasonal_period)
-            ]
+            month_values = [data[i] for i in range(month_idx, n, self.seasonal_period)]
             if month_values:
                 month_mean = np.mean(month_values)
                 indices[month_idx] = month_mean / overall_mean
             else:
+                # Для месяцев без данных — используем 1.0
                 indices[month_idx] = 1.0
 
         return indices
+
+    # def _forecast_seasonal_naive(
+    #     self, historical_data: List[float], forecast_months: int, round_decimals: int
+    # ) -> List[float]:
+    #     """
+    #     Сезонный наивный прогноз.
+
+    #     Берёт значение того же месяца из прошлого + линейный тренд.
+    #     Работает при минимуме данных (от 12 месяцев).
+    #     """
+    #     data = np.array(historical_data)
+    #     n = len(data)
+
+    #     # Рассчитываем тренд
+    #     if n >= 12:
+    #         # Тренд на основе линейной регрессии
+    #         x = np.arange(n)
+    #         coeffs = np.polyfit(x, data, 1)
+    #         monthly_trend = coeffs[0]  # Месячный тренд
+    #     else:
+    #         monthly_trend = 0
+
+    #     # Сезонные индексы
+    #     seasonal_indices = self._calculate_seasonal_indices(historical_data)
+
+    #     # Базовое значение (среднее за последний год или все данные)
+    #     base_value = (
+    #         np.mean(data[-self.seasonal_period :])
+    #         if n >= self.seasonal_period
+    #         else np.mean(data)
+    #     )
+
+    #     forecast = []
+    #     for i in range(forecast_months):
+    #         # Индекс месяца в сезоне
+    #         month_idx = (n + i) % self.seasonal_period
+    #         seasonal_factor = seasonal_indices.get(month_idx, 1.0)
+
+    #         # Прогноз = база × сезонность + тренд
+    #         months_ahead = i + 1
+    #         trend_adjustment = monthly_trend * months_ahead
+
+    #         predicted = base_value * seasonal_factor + trend_adjustment
+    #         predicted = max(0, predicted)
+
+    #         if round_decimals == 0:
+    #             forecast.append(int(round(predicted)))
+    #         else:
+    #             forecast.append(round(predicted, round_decimals))
+
+    #     return forecast
 
     def _forecast_seasonal_naive(
         self, historical_data: List[float], forecast_months: int, round_decimals: int
@@ -77,30 +158,30 @@ class SeasonalForecast(BaseForecast):
         """
         Сезонный наивный прогноз.
 
-        Берёт значение того же месяца из прошлого + линейный тренд.
-        Работает при минимуме данных (от 12 месяцев).
+        Работает даже при неполном годе данных.
         """
         data = np.array(historical_data)
         n = len(data)
 
-        # Рассчитываем тренд
-        if n >= 12:
-            # Тренд на основе линейной регрессии
+        # Рассчитываем тренд (даже при малом количестве данных)
+        if n >= 3:
             x = np.arange(n)
             coeffs = np.polyfit(x, data, 1)
-            monthly_trend = coeffs[0]  # Месячный тренд
+            monthly_trend = coeffs[0]
         else:
             monthly_trend = 0
 
-        # Сезонные индексы
+        # Сезонные индексы (теперь работают при любом n)
         seasonal_indices = self._calculate_seasonal_indices(historical_data)
 
-        # Базовое значение (среднее за последний год или все данные)
-        base_value = (
-            np.mean(data[-self.seasonal_period :])
-            if n >= self.seasonal_period
-            else np.mean(data)
-        )
+        # Базовое значение
+        if n >= self.seasonal_period:
+            base_value = np.mean(data[-self.seasonal_period :])
+        else:
+            base_value = np.mean(data)
+
+        # Коэффициент затухания тренда (чтобы не улетал в бесконечность)
+        damping = 0.9
 
         forecast = []
         for i in range(forecast_months):
@@ -108,9 +189,9 @@ class SeasonalForecast(BaseForecast):
             month_idx = (n + i) % self.seasonal_period
             seasonal_factor = seasonal_indices.get(month_idx, 1.0)
 
-            # Прогноз = база × сезонность + тренд
+            # Прогноз = база × сезонность + затухающий тренд
             months_ahead = i + 1
-            trend_adjustment = monthly_trend * months_ahead
+            trend_adjustment = monthly_trend * months_ahead * (damping**i)
 
             predicted = base_value * seasonal_factor + trend_adjustment
             predicted = max(0, predicted)

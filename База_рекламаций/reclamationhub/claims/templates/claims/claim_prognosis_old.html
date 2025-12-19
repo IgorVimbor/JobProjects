@@ -1,4 +1,5 @@
 <!-- Шаблон страницы с формой прогнозирования претензий -->
+
 <!-- claims/templates/claims/claim_prognosis.html -->
 
 {% extends 'base.html' %}
@@ -46,6 +47,7 @@
                             </small>
                         </div>
 
+                        <!-- Горизонтальная линия -->
                         <hr class="my-3">
 
                         <!-- Поле выбора периода прогноза -->
@@ -63,6 +65,7 @@
                             </small>
                         </div>
 
+                        <!-- Горизонтальная линия -->
                         <hr class="my-3">
 
                         <!-- Поле ввода курса -->
@@ -87,6 +90,7 @@
                             </small>
                         </div>
 
+                        <!-- Горизонтальная линия -->
                         <hr class="my-3">
 
                         <!-- Поле выбора потребителей -->
@@ -113,67 +117,91 @@
                             </small>
                         </div>
 
+                        <!-- Горизонтальная линия -->
                         <hr class="my-3">
 
-                        <!-- ========== ВЫБОР МЕТОДА ПРОГНОЗИРОВАНИЯ ========== -->
+                        <!-- Выбор метода прогнозирования -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">Метод прогнозирования:</label>
                             <small class="form-text text-muted">
                                 <br>✅ Выберите метод и режим (модель) прогнозирования или оставьте выбор по умолчанию
                             </small>
 
-                            <div class="card mb-3 mt-3">
+                            <!-- Блок 1: Скользящее среднее + Тренд -->
+                            <div class="card mb-3">
                                 <div class="card-body">
-
-                                    <!-- ===== МЕТОД 1: Статистический ===== -->
                                     <div class="form-check">
                                         <input class="form-check-input"
                                             type="radio"
                                             name="forecast_method"
                                             value="statistical"
                                             id="method_statistical"
-                                            checked
+                                            {% comment %} checked {% endcomment %}
                                             onchange="toggleMethodOptions()">
                                         <label class="form-check-label fw-bold" for="method_statistical">
-                                            📈 Статистический (скользящее среднее + тренд)
+                                            Статистический (скользящее среднее + тренд)
                                         </label>
-                                        <small class="d-block text-muted ms-4">
-                                            Классический метод, хорошо работает на стабильных данных
-                                        </small>
                                     </div>
 
                                     <!-- Подрежимы для статистического метода -->
-                                    <div id="statistical_modes" class="ms-4 mt-2 ps-3 border-start" style="display: none;">
+                                    <div id="statistical_modes" class="ms-4" style="display: none;">
+                                        <label class="form-label">
+                                            <small class="text-muted">Режим прогноза:</small>
+                                        </label>
+
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="statistical_mode"
-                                                value="conservative" id="mode_conservative">
+                                            <input class="form-check-input"
+                                                type="radio"
+                                                name="statistical_mode"
+                                                value="conservative"
+                                                id="mode_conservative">
                                             <label class="form-check-label" for="mode_conservative">
-                                                Консервативный
-                                                <small class="text-muted">— плавный прогноз, сглаживание выбросов</small>
+                                                <h6>Консервативный (сглаживание)</h6>
+                                                <small class="d-block text-muted">
+                                                    Для нестабильных данных, плавный прогноз
+                                                </small>
                                             </label>
                                         </div>
+
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="statistical_mode"
-                                                value="balanced" id="mode_balanced" checked>
+                                            <input class="form-check-input"
+                                                type="radio"
+                                                name="statistical_mode"
+                                                value="balanced"
+                                                id="mode_balanced"
+                                                checked>
                                             <label class="form-check-label" for="mode_balanced">
-                                                Сбалансированный
-                                                <small class="text-muted">— рекомендуется по умолчанию</small>
+                                                <h6>Сбалансированный (универсальный)</h6>
+                                                <small class="d-block text-muted">
+                                                    Рекомендуется для большинства случаев
+                                                </small>
                                             </label>
                                         </div>
+
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="statistical_mode"
-                                                value="aggressive" id="mode_aggressive">
+                                            <input class="form-check-input"
+                                                type="radio"
+                                                name="statistical_mode"
+                                                value="aggressive"
+                                                id="mode_aggressive">
                                             <label class="form-check-label" for="mode_aggressive">
-                                                Агрессивный
-                                                <small class="text-muted">— быстрая реакция на тренд</small>
+                                                <h6>Агрессивный (следование тренду)</h6>
+                                                <small class="d-block text-muted">
+                                                    Для данных с четким трендом
+                                                </small>
                                             </label>
                                         </div>
                                     </div>
 
-                                    <hr class="my-3">
+                                    <small class="form-text text-muted mt-3">
+                                        ⚠️ Начните со "Сбалансированного" режима. Затем попробуйте другие режимы или машинное обучение.
+                                    </small>
 
-                                    <!-- ===== МЕТОД 2: Машинное обучение ===== -->
-                                    <div class="form-check">
+                                    <!-- Горизонтальная линия -->
+                                    <hr class="my-3">  <!-- my-3 = margin по вертикали (top + bottom) -->
+
+                                    <!-- Блок 2: Машинное обучение -->
+                                    <div class="form-check mt-2">  <!-- Добавляем отступ сверху: mt-2 = margin-top -->
                                         <input class="form-check-input"
                                             type="radio"
                                             name="forecast_method"
@@ -181,125 +209,66 @@
                                             id="method_ml"
                                             onchange="toggleMethodOptions()">
                                         <label class="form-check-label fw-bold" for="method_ml">
-                                            🤖 Машинное обучение (scikit-learn)
+                                            Машинное обучение (scikit-learn)
                                         </label>
-                                        <small class="d-block text-muted ms-4">
-                                            Регрессионные модели для экстраполяции тренда
-                                        </small>
                                     </div>
 
                                     <!-- Подрежимы для ML -->
-                                    <div id="ml_models" class="ms-4 mt-2 ps-3 border-start" style="display: none;">
+                                    <div id="ml_models" class="ms-4" style="display: none;">
+                                        <label class="form-label">
+                                            <small class="text-muted">Модель:</small>
+                                        </label>
+
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="ml_model"
-                                                value="linear" id="ml_linear" checked>
+                                            <input class="form-check-input"
+                                                type="radio"
+                                                name="ml_model"
+                                                value="linear"
+                                                id="ml_linear"
+                                                checked>
                                             <label class="form-check-label" for="ml_linear">
-                                                Линейная регрессия
-                                                <small class="text-muted">— простая и понятная</small>
+                                                <h6>Линейная регрессия (LinearRegression)</h6>
+                                                <small class="d-block text-muted">
+                                                    Простая линейная модель, быстрая и понятная
+                                                </small>
                                             </label>
                                         </div>
+
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="ml_model"
-                                                value="ridge" id="ml_ridge">
+                                            <input class="form-check-input"
+                                                type="radio"
+                                                name="ml_model"
+                                                value="ridge"
+                                                id="ml_ridge">
                                             <label class="form-check-label" for="ml_ridge">
-                                                Ridge регрессия
-                                                <small class="text-muted">— устойчива к выбросам</small>
+                                                <h6>Регуляризованная регрессия (Ridge / Lasso)</h6>
+                                                <small class="d-block text-muted">
+                                                    Устойчива к выбросам, предотвращает переобучение
+                                                </small>
                                             </label>
                                         </div>
+
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="ml_model"
-                                                value="polynomial" id="ml_polynomial">
+                                            <input class="form-check-input"
+                                                type="radio"
+                                                name="ml_model"
+                                                value="polynomial"
+                                                id="ml_polynomial">
                                             <label class="form-check-label" for="ml_polynomial">
-                                                Полиномиальная
-                                                <small class="text-muted">— для нелинейных трендов</small>
+                                                <h6>Полиномиальный тренд (PolynomialFeatures)</h6>
+                                                <small class="d-block text-muted">
+                                                    Для нелинейных трендов и сложных паттернов (но возможно переобучение)
+                                                </small>
                                             </label>
                                         </div>
                                     </div>
-
-                                    <hr class="my-3">
-
-                                    <!-- ===== МЕТОД 3: Сезонный ===== -->
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                            type="radio"
-                                            name="forecast_method"
-                                            value="seasonal"
-                                            id="method_seasonal"
-                                            onchange="toggleMethodOptions()">
-                                        <label class="form-check-label fw-bold" for="method_seasonal">
-                                            🌊 Сезонный (с учётом колебаний)
-                                        </label>
-                                        <small class="d-block text-muted ms-4">
-                                            Учитывает сезонные пики и спады, сохраняет форму кривой
-                                        </small>
-                                    </div>
-
-                                    <!-- Подрежимы для сезонного -->
-                                    <div id="seasonal_types" class="ms-4 mt-2 ps-3 border-start" style="display: none;">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="seasonal_type"
-                                                value="mul" id="seasonal_mul" checked>
-                                            <label class="form-check-label" for="seasonal_mul">
-                                                Мультипликативный
-                                                <small class="text-muted">— амплитуда колебаний растёт с уровнем</small>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="seasonal_type"
-                                                value="add" id="seasonal_add">
-                                            <label class="form-check-label" for="seasonal_add">
-                                                Аддитивный
-                                                <small class="text-muted">— амплитуда колебаний постоянная</small>
-                                            </label>
-                                        </div>
-                                        <div class="alert alert-info mt-2 py-2 small">
-                                            <i class="fas fa-info-circle me-1"></i>
-                                            Сезонный метод использует индексы по месяцам для сохранения паттерна колебаний
-                                        </div>
-                                    </div>
-
-                                    <hr class="my-3">
-
-                                    <!-- ===== МЕТОД 4: Связанный ===== -->
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                            type="radio"
-                                            name="forecast_method"
-                                            value="linked"
-                                            id="method_linked"
-                                            onchange="toggleMethodOptions()">
-                                        <label class="form-check-label fw-bold" for="method_linked">
-                                            🔗 Связанный (рекламации → претензии)
-                                        </label>
-                                        <small class="d-block text-muted ms-4">
-                                            Прогноз претензий на основе рекламаций с учётом временного лага
-                                        </small>
-                                    </div>
-
-                                    <!-- Информация для связанного метода -->
-                                    <div id="linked_info" class="ms-4 mt-2 ps-3 border-start" style="display: none;">
-                                        <div class="alert alert-success py-2 mb-2">
-                                            <strong>Что делает этот метод:</strong>
-                                            <ul class="mb-0 mt-1 small">
-                                                <li>Анализирует корреляцию между рекламациями и претензиями</li>
-                                                <li>Автоматически определяет временной лаг (обычно 2-4 месяца)</li>
-                                                <li>Прогнозирует претензии на основе рекламаций</li>
-                                                <li>Рассчитывает доверительные интервалы</li>
-                                            </ul>
-                                        </div>
-                                        <div class="alert alert-warning py-2 small">
-                                            <i class="fas fa-lightbulb me-1"></i>
-                                            <strong>Рекомендация:</strong> используйте этот метод, если на графике
-                                            кривая претензий повторяет кривую рекламаций со сдвигом во времени
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
 
                         <!-- Кнопки действий -->
                         <div class="d-flex gap-2 justify-content-end">
+                            {% comment %} <button type="submit" class="btn btn-primary btn-lg flex-fill"> {% endcomment %}
                             <button type="submit" class="btn btn-primary">
                                 📊 Построить прогноз
                             </button>
@@ -321,25 +290,16 @@
                 <div class="card-body">
                     <h6>Что прогнозируем:</h6>
                     <ul class="small">
-                        <li>Количество рекламаций</li>
-                        <li>Количество претензий</li>
-                        <li>Суммы претензий</li>
+                        <li>Количество рекламаций на будущий период</li>
+                        <li>Количество претензий (с учетом конверсии)</li>
+                        <li>Временной лаг (среднее время эскалации)</li>
                     </ul>
 
-                    <h6>Методы прогнозирования:</h6>
+                    <h6>Методы:</h6>
                     <ul class="small">
-                        <li><strong>Статистический</strong> — скользящее среднее + тренд</li>
-                        <li><strong>ML</strong> — регрессионные модели sklearn</li>
-                        <li><strong>Сезонный</strong> — учитывает пики и спады по месяцам</li>
-                        <li><strong>Связанный</strong> — претензии на основе рекламаций + лаг</li>
-                    </ul>
-
-                    <h6>Какой метод выбрать:</h6>
-                    <ul class="small">
-                        <li>📈 <strong>Статистический</strong> — для начала, универсальный</li>
-                        <li>🌊 <strong>Сезонный</strong> — если есть явные пики/спады</li>
-                        <li>🔗 <strong>Связанный</strong> — если претензии следуют за рекламациями</li>
-                        <li>🤖 <strong>ML</strong> — для экспериментов с трендами</li>
+                        <li>Скользящее среднее (Moving Average)</li>
+                        <li>Линейный тренд (Linear Regression)</li>
+                        <li>Модель конверсии (% + время эскалации)</li>
                     </ul>
 
                     <h6>Результаты:</h6>
@@ -347,7 +307,13 @@
                         <li>График (факт + прогноз)</li>
                         <li>Карточки с метриками</li>
                         <li>Таблица прогноза по месяцам</li>
-                        <li>Для связанного: корреляция, лаг, R²</li>
+                    </ul>
+
+                    <h6>Параметры:</h6>
+                    <ul class="small">
+                        <li>Год для анализа истории</li>
+                        <li>Период прогноза (3/6/12 мес.)</li>
+                        <li>Потребители (опционально)</li>
                     </ul>
                 </div>
             </div>
@@ -378,21 +344,18 @@
 
 <script>
 function clearForm() {
+    // Функция очистки формы по кнопке "Очистить" - без подтверждения
+    // Использует существующую логику через GET параметр clear=1
     window.location.href = '{% url "claims:claim_prognosis" %}?clear=1';
 }
 
 function toggleMethodOptions() {
-    // Получаем состояние всех методов
     const statistical = document.getElementById('method_statistical').checked;
     const ml = document.getElementById('method_ml').checked;
-    const seasonal = document.getElementById('method_seasonal').checked;
-    const linked = document.getElementById('method_linked').checked;
 
-    // Показываем/скрываем соответствующие блоки
+    // Показываем/скрываем блоки в зависимости от выбора
     document.getElementById('statistical_modes').style.display = statistical ? 'block' : 'none';
     document.getElementById('ml_models').style.display = ml ? 'block' : 'none';
-    document.getElementById('seasonal_types').style.display = seasonal ? 'block' : 'none';
-    document.getElementById('linked_info').style.display = linked ? 'block' : 'none';
 }
 
 // Инициализация при загрузке страницы

@@ -104,51 +104,116 @@ class TimeSeriesCorrelation:
 
             return float(corr), float(p_value)
 
+    # def calculate_correlation_at_lag(self, lag: int) -> LagCorrelationResult:
+    #     """
+    #     Расчёт корреляции при заданном лаге.
+
+    #     lag > 0: series_x опережает series_y на lag периодов
+    #     (рекламации в момент t влияют на претензии в момент t+lag)
+
+    #     Args:
+    #         lag: Временной сдвиг в периодах (месяцах)
+
+    #     Returns:
+    #         LagCorrelationResult
+    #     """
+    #     if lag == 0:
+    #         x, y = self.series_x, self.series_y
+    #     elif lag > 0:
+    #         # X опережает Y: X[:-lag] соответствует Y[lag:]
+    #         x = self.series_x[:-lag] if lag < len(self.series_x) else np.array([])
+    #         y = self.series_y[lag:] if lag < len(self.series_y) else np.array([])
+    #     else:
+    #         # Y опережает X (редкий случай)
+    #         abs_lag = abs(lag)
+    #         x = (
+    #             self.series_x[abs_lag:]
+    #             if abs_lag < len(self.series_x)
+    #             else np.array([])
+    #         )
+    #         y = (
+    #             self.series_y[:-abs_lag]
+    #             if abs_lag < len(self.series_y)
+    #             else np.array([])
+    #         )
+
+    #     if len(x) < 3 or len(y) < 3:
+    #         return LagCorrelationResult(
+    #             lag=lag,
+    #             correlation=0.0,
+    #             p_value=1.0,
+    #             is_significant=False,
+    #             sample_size=min(len(x), len(y)),
+    #         )
+
+    #     # Убеждаемся, что длины равны
+    #     min_len = min(len(x), len(y))
+    #     x, y = x[:min_len], y[:min_len]
+
+    #     corr, p_value = self._pearson_correlation(x, y)
+
+    #     return LagCorrelationResult(
+    #         lag=lag,
+    #         correlation=corr,
+    #         p_value=p_value,
+    #         is_significant=p_value < self.significance_level,
+    #         sample_size=min_len,
+    #     )
+
     def calculate_correlation_at_lag(self, lag: int) -> LagCorrelationResult:
         """
         Расчёт корреляции при заданном лаге.
 
         lag > 0: series_x опережает series_y на lag периодов
         (рекламации в момент t влияют на претензии в момент t+lag)
-
-        Args:
-            lag: Временной сдвиг в периодах (месяцах)
-
-        Returns:
-            LagCorrelationResult
         """
+        n_x = len(self.series_x)
+        n_y = len(self.series_y)
+
         if lag == 0:
-            x, y = self.series_x, self.series_y
+            # Без сдвига — берём минимальную длину
+            min_len = min(n_x, n_y)
+            x = self.series_x[:min_len]
+            y = self.series_y[:min_len]
         elif lag > 0:
             # X опережает Y: X[:-lag] соответствует Y[lag:]
-            x = self.series_x[:-lag] if lag < len(self.series_x) else np.array([])
-            y = self.series_y[lag:] if lag < len(self.series_y) else np.array([])
+            if lag >= n_x or lag >= n_y:
+                return LagCorrelationResult(
+                    lag=lag,
+                    correlation=0.0,
+                    p_value=1.0,
+                    is_significant=False,
+                    sample_size=0,
+                )
+            x = self.series_x[:-lag]
+            y = self.series_y[lag:]
         else:
             # Y опережает X (редкий случай)
             abs_lag = abs(lag)
-            x = (
-                self.series_x[abs_lag:]
-                if abs_lag < len(self.series_x)
-                else np.array([])
-            )
-            y = (
-                self.series_y[:-abs_lag]
-                if abs_lag < len(self.series_y)
-                else np.array([])
-            )
+            if abs_lag >= n_x or abs_lag >= n_y:
+                return LagCorrelationResult(
+                    lag=lag,
+                    correlation=0.0,
+                    p_value=1.0,
+                    is_significant=False,
+                    sample_size=0,
+                )
+            x = self.series_x[abs_lag:]
+            y = self.series_y[:-abs_lag]
 
-        if len(x) < 3 or len(y) < 3:
+        # Синхронизируем длины (защита от рассинхрона)
+        min_len = min(len(x), len(y))
+        if min_len < 3:
             return LagCorrelationResult(
                 lag=lag,
                 correlation=0.0,
                 p_value=1.0,
                 is_significant=False,
-                sample_size=min(len(x), len(y)),
+                sample_size=min_len,
             )
 
-        # Убеждаемся, что длины равны
-        min_len = min(len(x), len(y))
-        x, y = x[:min_len], y[:min_len]
+        x = x[:min_len]
+        y = y[:min_len]
 
         corr, p_value = self._pearson_correlation(x, y)
 

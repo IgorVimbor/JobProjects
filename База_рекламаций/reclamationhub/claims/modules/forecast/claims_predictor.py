@@ -135,21 +135,48 @@ class ClaimsPredictor(BaseForecast):
 
         return self
 
+    # def _calculate_conversion_rate(self) -> Tuple[float, float]:
+    #     """
+    #     Расчёт коэффициента конверсии рекламаций в претензии.
+
+    #     Returns:
+    #         Tuple[mean_rate, std_rate]
+    #     """
+    #     lag = self.lag_months or 0
+
+    #     if lag > 0 and lag < len(self.reclamations):
+    #         lagged_recl = self.reclamations[:-lag]
+    #         lagged_claims = self.claims_count[lag:]
+    #     else:
+    #         lagged_recl = self.reclamations
+    #         lagged_claims = self.claims_count
+
+    #     # Избегаем деления на ноль
+    #     safe_recl = np.maximum(lagged_recl, 1)
+    #     conversion_rates = lagged_claims / safe_recl
+
+    #     return float(np.mean(conversion_rates)), float(np.std(conversion_rates))
+
     def _calculate_conversion_rate(self) -> Tuple[float, float]:
         """
         Расчёт коэффициента конверсии рекламаций в претензии.
-
-        Returns:
-            Tuple[mean_rate, std_rate]
         """
         lag = self.lag_months or 0
 
-        if lag > 0 and lag < len(self.reclamations):
+        if lag > 0 and lag < len(self.reclamations) and lag < len(self.claims_count):
             lagged_recl = self.reclamations[:-lag]
             lagged_claims = self.claims_count[lag:]
         else:
             lagged_recl = self.reclamations
             lagged_claims = self.claims_count
+
+        # Синхронизируем длины
+        min_len = min(len(lagged_recl), len(lagged_claims))
+        if min_len == 0:
+            return 0.0, 0.0
+
+        lagged_recl = lagged_recl[:min_len]
+        lagged_claims = lagged_claims[:min_len]
 
         # Избегаем деления на ноль
         safe_recl = np.maximum(lagged_recl, 1)
@@ -180,30 +207,73 @@ class ClaimsPredictor(BaseForecast):
 
         return float(mean_amt), float(std_amt)
 
+    # def _fit_regression(self) -> Tuple[float, float, float, float]:
+    #     """
+    #     Обучение линейной регрессии: рекламации → сумма претензий.
+
+    #     Returns:
+    #         Tuple[slope, intercept, r_squared, residual_std]
+    #     """
+    #     lag = self.lag_months or 0
+
+    #     if lag > 0 and lag < len(self.reclamations):
+    #         X = self.reclamations[:-lag]
+    #         y = self.claims_sum[lag:]
+    #     else:
+    #         X = self.reclamations
+    #         y = self.claims_sum
+
+    #     if len(X) < 2:
+    #         return 0.0, float(np.mean(y)) if len(y) > 0 else 0.0, 0.0, 0.0
+
+    #     # Линейная регрессия через numpy
+    #     X_with_bias = np.vstack([X, np.ones(len(X))]).T
+    #     coeffs, residuals, rank, s = np.linalg.lstsq(X_with_bias, y, rcond=None)
+
+    #     slope, intercept = coeffs[0], coeffs[1]
+
+    #     # R² (коэффициент детерминации)
+    #     y_pred = slope * X + intercept
+    #     ss_res = np.sum((y - y_pred) ** 2)
+    #     ss_tot = np.sum((y - np.mean(y)) ** 2)
+    #     r_squared = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
+
+    #     # Стандартное отклонение остатков
+    #     residual_std = np.std(y - y_pred)
+
+    #     return float(slope), float(intercept), float(r_squared), float(residual_std)
+
     def _fit_regression(self) -> Tuple[float, float, float, float]:
         """
         Обучение линейной регрессии: рекламации → сумма претензий.
-
-        Returns:
-            Tuple[slope, intercept, r_squared, residual_std]
         """
         lag = self.lag_months or 0
 
-        if lag > 0 and lag < len(self.reclamations):
+        if lag > 0 and lag < len(self.reclamations) and lag < len(self.claims_sum):
             X = self.reclamations[:-lag]
             y = self.claims_sum[lag:]
         else:
             X = self.reclamations
             y = self.claims_sum
 
-        if len(X) < 2:
+        # Синхронизируем длины
+        min_len = min(len(X), len(y))
+        if min_len < 2:
             return 0.0, float(np.mean(y)) if len(y) > 0 else 0.0, 0.0, 0.0
+
+        X = X[:min_len]
+        y = y[:min_len]
 
         # Линейная регрессия через numpy
         X_with_bias = np.vstack([X, np.ones(len(X))]).T
-        coeffs, residuals, rank, s = np.linalg.lstsq(X_with_bias, y, rcond=None)
 
-        slope, intercept = coeffs[0], coeffs[1]
+        try:
+            coeffs, residuals, rank, s = np.linalg.lstsq(X_with_bias, y, rcond=None)
+            slope, intercept = coeffs[0], coeffs[1]
+        except Exception:
+            # Fallback при ошибке
+            slope = 0.0
+            intercept = float(np.mean(y))
 
         # R² (коэффициент детерминации)
         y_pred = slope * X + intercept
@@ -212,9 +282,9 @@ class ClaimsPredictor(BaseForecast):
         r_squared = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
 
         # Стандартное отклонение остатков
-        residual_std = np.std(y - y_pred)
+        residual_std = float(np.std(y - y_pred))
 
-        return float(slope), float(intercept), float(r_squared), float(residual_std)
+        return float(slope), float(intercept), float(r_squared), residual_std
 
     def predict(self, future_reclamations: List[int]) -> List[ClaimPrediction]:
         """

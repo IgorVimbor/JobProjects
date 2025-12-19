@@ -253,6 +253,41 @@ class ClaimPrognosisProcessor:
         claims_count = historical_data["claims"]
         claims_costs = historical_data["claims_costs"]
 
+        # Проверка минимального количества данных
+        min_data_points = 6  # Минимум 6 месяцев для linked
+        if len(reclamations) < min_data_points or len(claims_costs) < min_data_points:
+            # Fallback на сезонный прогноз
+            seasonal_forecaster = SeasonalForecast(
+                method="auto", seasonal_period=12, seasonal_type=self.seasonal_type
+            )
+
+            reclamations_forecast = seasonal_forecaster.forecast(
+                reclamations, self.forecast_months, round_decimals=0
+            )
+            claims_count_forecast = seasonal_forecaster.forecast(
+                claims_count, self.forecast_months, round_decimals=0
+            )
+            claims_costs_forecast = seasonal_forecaster.forecast(
+                claims_costs, self.forecast_months, round_decimals=2
+            )
+
+            # Пустые CI — данных недостаточно
+            self._correlation_analysis = {
+                "optimal_lag": 0,
+                "correlation": 0.0,
+                "is_significant": False,
+                "error": f"Недостаточно данных (нужно минимум {min_data_points} месяцев)",
+            }
+            self._linked_model_info = None
+
+            return {
+                "reclamations": reclamations_forecast,
+                "claims_count": claims_count_forecast,
+                "claims_costs": claims_costs_forecast,
+                "claims_costs_ci_lower": [],
+                "claims_costs_ci_upper": [],
+            }
+
         # 1. Анализ корреляции
         self._correlation_analysis = self._analyze_correlation(
             reclamations, claims_costs
