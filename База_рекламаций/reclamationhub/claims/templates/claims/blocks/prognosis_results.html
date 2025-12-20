@@ -7,53 +7,51 @@
 <div class="row mb-3">
     <div class="col-12">
         <div class="alert alert-success">
-            <strong>Прогноз для {{ prognosis_data.consumer_display }}</strong>
+            Прогноз на <strong>{{ prognosis_data.forecast_months }} мес.</strong> для <strong>{{ prognosis_data.consumer_display }}</strong>
             <br>
             <small>
                 База: <strong>{{ prognosis_data.year }}</strong> год.
-                Прогноз по рекламациям на <strong>{{ prognosis_data.forecast_months }} мес</strong>,
-                по претензиям - с учетом <strong>временного смещения</strong>.
-                <br>
+                {% comment %} <br> {% endcomment %}
                 Метод: <strong>{{ prognosis_data.forecast_display }}</strong>
             </small>
         </div>
     </div>
 </div>
 
-<!-- ===== НОВЫЙ БЛОК: Анализ связи для linked метода ===== -->
+<!-- Анализ связи для linked метода -->
 {% if prognosis_data.forecast_method == 'linked' and prognosis_data.correlation_analysis %}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-info">
-            <div class="card-header bg-info text-white">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    🔗 Анализ связи: Рекламации → Претензии
+                    📈 Анализ связи Рекламации → Претензии для linked метода
                 </h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <!-- Оптимальный лаг -->
-                    <div class="col-md-3 mb-3">
-                        <div class="border rounded p-3 text-center h-100">
-                            <div class="text-muted small">Оптимальный лаг</div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card border-primary rounded p-3 text-center h-100">
+                            <h6 class="card-subtitle mb-2 text-muted">Оптимальный временной лаг</h6>
                             <div class="display-6 text-primary mb-1">
                                 {{ prognosis_data.correlation_analysis.optimal_lag }} мес.
                             </div>
                             <div class="text-muted small">
-                                Рекламации влияют на претензии через {{ prognosis_data.correlation_analysis.optimal_lag }} мес.
+                                рекламации + лаг → претензии <!-- через {{ prognosis_data.correlation_analysis.optimal_lag }} мес. -->
                             </div>
                         </div>
                     </div>
 
                     <!-- Корреляция -->
-                    <div class="col-md-3 mb-3">
-                        <div class="border rounded p-3 text-center h-100">
-                            <div class="text-muted small">Корреляция</div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card border-warning rounded p-3 text-center h-100">
+                            <h6 class="card-subtitle mb-2 text-muted">Корреляция</h6>
                             <div class="display-6 mb-1
                                 {% if prognosis_data.correlation_analysis.optimal_correlation >= 0.7 %}text-success
                                 {% elif prognosis_data.correlation_analysis.optimal_correlation >= 0.5 %}text-warning
                                 {% else %}text-danger{% endif %}">
-                                {{ prognosis_data.correlation_analysis.optimal_correlation }}
+                                {{ prognosis_data.correlation_analysis.optimal_correlation|floatformat:4 }}
                             </div>
                             <div class="text-muted small">
                                 {{ prognosis_data.correlation_analysis.interpretation|default:"" }}
@@ -62,7 +60,7 @@
                     </div>
 
                     <!-- Конверсия -->
-                    <div class="col-md-3 mb-3">
+                    {% comment %} <div class="col-md-3 mb-3">
                         <div class="border rounded p-3 text-center h-100">
                             <div class="text-muted small">Конверсия в претензии</div>
                             <div class="display-6 text-warning mb-1">
@@ -72,54 +70,47 @@
                                 рекламаций становятся претензиями
                             </div>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
 
                     <!-- Качество модели -->
-                    <div class="col-md-3 mb-3">
-                        <div class="border rounded p-3 text-center h-100">
-                            <div class="text-muted small">Качество модели (R²)</div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card border-info rounded p-3 text-center h-100">
+                            <h6 class="card-subtitle mb-2 text-muted">Качество модели (R²)</h6>
                             <div class="display-6 mb-1
                                 {% if prognosis_data.linked_model.model_quality.r_squared >= 0.7 %}text-success
                                 {% elif prognosis_data.linked_model.model_quality.r_squared >= 0.5 %}text-warning
                                 {% else %}text-danger{% endif %}">
-                                {{ prognosis_data.linked_model.model_quality.r_squared }}
+                                {{ prognosis_data.linked_model.model_quality.r_squared|floatformat:3 }}
                             </div>
                             <div class="text-muted small">
                                 {{ prognosis_data.linked_model.model_quality.quality_interpretation }}
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Формула прогноза -->
-                {% if prognosis_data.linked_model.regression.formula %}
-                <div class="mt-3 p-3 bg-light rounded">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <strong>📐 Формула прогноза:</strong>
-                            <code class="ms-2 fs-6">{{ prognosis_data.linked_model.regression.formula }}</code>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <small class="text-muted">
-                                Средняя сумма претензии: <strong>{{ prognosis_data.linked_model.claim_amount.average|floatformat:2 }} BYN</strong>
-                            </small>
+                    <!-- Средняя сумма претензии -->
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card border-success rounded p-3 text-center h-100">
+                            <h6 class="card-subtitle mb-2 text-muted">Средняя сумма претензии</h6>
+                            <div class="display-6 text-success mb-1">
+                                {{ prognosis_data.linked_model.claim_amount.average|floatformat:2 }} BYN
+                            </div>
                         </div>
                     </div>
                 </div>
-                {% endif %}
 
                 <!-- Таблица корреляций по лагам (свёрнутая) -->
                 <div class="mt-3">
-                    <button class="btn btn-sm btn-outline-secondary" type="button"
+                    <button class="btn btn-outline-primary flex-fill" type="button"
                             data-bs-toggle="collapse" data-bs-target="#lagDetails">
-                        📊 Показать корреляцию по всем лагам
+                        Показать корреляцию по всем лагам
                     </button>
                     <div class="collapse mt-2" id="lagDetails">
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Временной лаг (мес.)</th>
+                                        <th>Временной лаг (кол-во месяцев)</th>
                                         {% for lag_data in prognosis_data.correlation_analysis.all_lags %}
                                         <th class="text-center
                                             {% if lag_data.lag == prognosis_data.correlation_analysis.optimal_lag %}table-primary{% endif %}">
@@ -161,14 +152,14 @@
 </div>
 {% endif %}
 
-<!-- ===== НОВЫЙ БЛОК: Сезонные индексы для seasonal/linked ===== -->
+<!-- Сезонные индексы для seasonal/linked -->
 {% if prognosis_data.seasonality_pattern %}
-<div class="row mb-4">
+<div class="row mb-3">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">
-                    🌊 Сезонность рекламаций
+                    📈 Сезонность рекламаций - индекс месяца
                     <small class="text-muted ms-2">
                         (индекс > 1 = выше среднего, < 1 = ниже среднего)
                     </small>
@@ -190,10 +181,10 @@
                     {% endfor %}
                 </div>
                 <div class="mt-2 small text-muted">
-                    <span class="badge bg-danger bg-opacity-50 me-1">≥1.2</span> Высокий сезон
+                    <span class="badge bg-danger bg-opacity-50 me-1">≥1.2</span> Высокий уровень
                     <span class="badge bg-warning bg-opacity-50 mx-1">1.0-1.2</span> Выше среднего
                     <span class="badge bg-success bg-opacity-50 mx-1">0.8-1.0</span> Ниже среднего
-                    <span class="badge bg-info bg-opacity-50 mx-1">&lt;0.8</span> Низкий сезон
+                    <span class="badge bg-info bg-opacity-50 mx-1">&lt;0.8</span> Низкий уровень
                 </div>
             </div>
         </div>
@@ -201,14 +192,26 @@
 </div>
 {% endif %}
 
+<!-- Формула прогноза -->
+{% if prognosis_data.linked_model.regression.formula %}
+<div class="mt-3 mb-2 p-3 bg-light rounded">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <strong>📊 Формула прогноза сумм претензий:</strong>
+            <code class="ms-2 fs-6">{{ prognosis_data.linked_model.regression.formula }}</code>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <!-- Карточки с метриками -->
-<div class="row mb-4">
+<div class="row mb-3">
     <!-- Карточка 1: Процент конверсии -->
     <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card border-primary h-100">
+        <div class="card border-primary text-center h-100">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Конверсия в претензии</h6>
-                <h2 class="card-title text-primary">
+                <h2 class="display-6 text-primary mb-1">
                     {{ prognosis_data.conversion_params.conversion_rate|floatformat:1 }}%
                 </h2>
                 <p class="card-text small">
@@ -220,7 +223,7 @@
     </div>
 
     <!-- Карточка 2: Среднее время эскалации -->
-    <div class="col-lg-3 col-md-6 mb-3">
+    {% comment %} <div class="col-lg-3 col-md-6 mb-3">
         <div class="card border-warning h-100">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Среднее время эскалации</h6>
@@ -232,14 +235,14 @@
                 </p>
             </div>
         </div>
-    </div>
+    </div> {% endcomment %}
 
-    <!-- Карточка 3: Прогноз рекламаций -->
+    <!-- Карточка 2: Прогноз рекламаций -->
     <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card border-success h-100">
+        <div class="card border-warning text-center h-100">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Прогноз рекламаций</h6>
-                <h2 class="card-title text-success">
+                <h2 class="display-6 text-warning mb-1">
                     {{ prognosis_data.total_reclamations_forecast }}
                 </h2>
                 <p class="card-text small">
@@ -249,12 +252,12 @@
         </div>
     </div>
 
-    <!-- Карточка 4: Прогноз претензий -->
+    <!-- Карточка 3: Прогноз претензий -->
     <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card border-info h-100">
+        <div class="card border-info text-center h-100">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Прогноз претензий</h6>
-                <h2 class="card-title text-info">
+                <h2 class="display-6 text-info mb-1">
                     {{ prognosis_data.total_claims_forecast }}
                 </h2>
                 <p class="card-text small">
@@ -263,34 +266,18 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Карточка 5: Прогноз сумм (НОВОЕ - отдельно для наглядности) -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card border-success">
+    <!-- Карточка 4: Прогноз сумм претензий -->
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-success text-center h-100">
             <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h6 class="card-subtitle mb-2 text-muted">💰 Прогноз сумм претензий</h6>
-                        <h2 class="card-title text-success mb-0">
-                            {{ prognosis_data.total_claims_costs_forecast|floatformat:2 }} BYN
-                        </h2>
-                        <p class="card-text small text-muted mb-0">
-                            ожидаемая сумма за {{ prognosis_data.forecast_months }} мес.
-                        </p>
-                    </div>
-                    {% if prognosis_data.forecast_method == 'linked' and prognosis_data.total_claims_costs_ci_lower %}
-                    <div class="col-md-6 text-md-end">
-                        <small class="text-muted">Доверительный интервал (95%):</small>
-                        <div class="text-success">
-                            <strong>{{ prognosis_data.total_claims_costs_ci_lower|floatformat:2 }}</strong>
-                            —
-                            <strong>{{ prognosis_data.total_claims_costs_ci_upper|floatformat:2 }}</strong> BYN
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
+                <h6 class="card-subtitle mb-2 text-muted">Прогноз сумм претензий</h6>
+                <h2 class="display-6 text-success mb-1">
+                    {{ prognosis_data.total_claims_costs_forecast|floatformat:2 }} BYN
+                </h2>
+                <p class="card-text small">
+                    ожидаемая сумма за {{ prognosis_data.forecast_months }} мес.
+                </p>
             </div>
         </div>
     </div>
@@ -309,11 +296,21 @@
                 </div>
                 {% if prognosis_data.forecast_method == 'linked' %}
                 <div>
-                    <span class="badge bg-info">
-                        Лаг: {{ prognosis_data.correlation_analysis.optimal_lag }} мес.
+                    <span>
+                        <small class="text-muted">Качество модели R² =</small>
+                        {% with r2=prognosis_data.linked_model.model_quality.r_squared %}
+                            <span class="{% if r2 >= 0.7 %}text-success{% elif r2 >= 0.5 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ r2|floatformat:3 }}
+                            </span>
+                        {% endwith %}
                     </span>
-                    <span class="badge bg-success">
-                        R²: {{ prognosis_data.linked_model.model_quality.r_squared }}
+                    <br>
+                    <span>
+                        <small class="text-muted">Доверительный интервал (95%) =</small>
+                        <span class="text-success">{{ prognosis_data.total_claims_costs_ci_lower|floatformat:2 }}</span>
+                        ÷
+                        <span class="text-success">{{ prognosis_data.total_claims_costs_ci_upper|floatformat:2 }}</span>
+                        <span class="text-success">BYN</span>
                     </span>
                 </div>
                 {% endif %}
@@ -431,6 +428,7 @@
                             </tr>
                             {% endfor %}
                         </tbody>
+
                         <!-- Итоговая строка -->
                         <tfoot class="table-secondary">
                             <tr>
