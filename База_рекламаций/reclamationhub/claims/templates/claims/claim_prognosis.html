@@ -135,10 +135,10 @@
                                             checked
                                             onchange="toggleMethodOptions()">
                                         <label class="form-check-label fw-bold" for="method_statistical">
-                                            📈 Статистический (скользящее среднее + тренд)
+                                            Статистический (скользящее среднее + тренд)
                                         </label>
                                         <small class="d-block text-muted ms-4">
-                                            Классический метод, хорошо работает на стабильных данных
+                                            Классический метод на основе статистического анализа. Хорошо работает на стабильных данных.
                                         </small>
                                     </div>
 
@@ -149,7 +149,7 @@
                                                 value="conservative" id="mode_conservative">
                                             <label class="form-check-label" for="mode_conservative">
                                                 Консервативный
-                                                <small class="text-muted">— плавный прогноз, сглаживание выбросов</small>
+                                                <small class="text-muted">— плавный прогноз, сглаживание выбросов (скользящее окно - 6 мес., тренд за 9 мес.)</small>
                                             </label>
                                         </div>
                                         <div class="form-check">
@@ -157,7 +157,7 @@
                                                 value="balanced" id="mode_balanced" checked>
                                             <label class="form-check-label" for="mode_balanced">
                                                 Сбалансированный
-                                                <small class="text-muted">— рекомендуется по умолчанию</small>
+                                                <small class="text-muted">— рекомендуется по умолчанию (скользящее окно - 3 мес., тренд за 6 мес.)</small>
                                             </label>
                                         </div>
                                         <div class="form-check">
@@ -165,7 +165,7 @@
                                                 value="aggressive" id="mode_aggressive">
                                             <label class="form-check-label" for="mode_aggressive">
                                                 Агрессивный
-                                                <small class="text-muted">— быстрая реакция на тренд</small>
+                                                <small class="text-muted">— быстрая реакция на тренд (скользящее окно - 2 мес., тренд за 4 мес.)</small>
                                             </label>
                                         </div>
                                     </div>
@@ -181,7 +181,7 @@
                                             id="method_ml"
                                             onchange="toggleMethodOptions()">
                                         <label class="form-check-label fw-bold" for="method_ml">
-                                            🤖 Машинное обучение (scikit-learn)
+                                            Машинное обучение (scikit-learn)
                                         </label>
                                         <small class="d-block text-muted ms-4">
                                             Регрессионные модели для экстраполяции тренда
@@ -194,24 +194,24 @@
                                             <input class="form-check-input" type="radio" name="ml_model"
                                                 value="linear" id="ml_linear" checked>
                                             <label class="form-check-label" for="ml_linear">
-                                                Линейная регрессия
-                                                <small class="text-muted">— простая и понятная</small>
+                                                Линейная регрессия (LinearRegression)
+                                                <small class="text-muted">— простая и понятная модель</small>
                                             </label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="ml_model"
                                                 value="ridge" id="ml_ridge">
                                             <label class="form-check-label" for="ml_ridge">
-                                                Ridge регрессия
-                                                <small class="text-muted">— устойчива к выбросам</small>
+                                                Регуляризованная регрессия (Ridge / Lasso)
+                                                <small class="text-muted">— устойчива к выбросам, предотвращает переобучение</small>
                                             </label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="ml_model"
                                                 value="polynomial" id="ml_polynomial">
                                             <label class="form-check-label" for="ml_polynomial">
-                                                Полиномиальная
-                                                <small class="text-muted">— для нелинейных трендов</small>
+                                                Полиномиальная (PolynomialFeatures)
+                                                <small class="text-muted">— для нелинейных трендов (возможно переобучение)</small>
                                             </label>
                                         </div>
                                     </div>
@@ -227,7 +227,7 @@
                                             id="method_seasonal"
                                             onchange="toggleMethodOptions()">
                                         <label class="form-check-label fw-bold" for="method_seasonal">
-                                            🌊 Сезонный (с учётом колебаний)
+                                            Сезонный (с учётом колебаний)
                                         </label>
                                         <small class="d-block text-muted ms-4">
                                             Учитывает сезонные пики и спады, сохраняет форму кривой
@@ -269,7 +269,7 @@
                                             id="method_linked"
                                             onchange="toggleMethodOptions()">
                                         <label class="form-check-label fw-bold" for="method_linked">
-                                            🔗 Связанный (рекламации → претензии)
+                                            Связанный (рекламации → претензии)
                                         </label>
                                         <small class="d-block text-muted ms-4">
                                             Прогноз претензий на основе рекламаций с учётом временного лага

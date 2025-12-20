@@ -12,8 +12,11 @@ echo        Запуск Django prod-сервера...
 cd /d "D:\MyRepositories\JobProjects\База_рекламаций"
 call rhub_venv\Scripts\activate
 
-:: 1. Явно указываем использовать настройки из файла reclamationhub\settings\production.py
-set "DJANGO_SETTINGS_MODULE=reclamationhub.settings.production"
+@REM :: 1. Явно указываем использовать настройки из файла reclamationhub\settings\production.py
+@REM set "DJANGO_SETTINGS_MODULE=reclamationhub.settings.production"
+
+:: 1. Явно указываем использовать настройки из файла reclamationhub\settings\development.py
+set "DJANGO_SETTINGS_MODULE=reclamationhub.settings.development"
 
 :: Переходим в папку проекта
 cd reclamationhub
@@ -26,19 +29,24 @@ start /min "Django" waitress-serve --host=127.0.0.1 --port=8000 reclamationhub.w
 timeout /t 3 /nobreak > nul
 
 echo.
-:: Запускаем прокси-сервер Nginx
+:: 3. Запускаем прокси-сервер Nginx
 echo        Запуск Nginx...
 cd /d "C:\nginx-1.28.0"
 start "" ".\nginx.exe"
 
+:: 4. Запуск Python-скрипта email_send_start.py отправки письма
 echo.
+echo        Выполняется Python-скрипт email_send_start.py ...
+echo.
+python email_send_start.py
+
 :: Выводим информационное сообщение о запуске серверов
 timeout /t 2 /nobreak > nul
 echo        ===============================================================
 echo        Серверы Nginx + Django (Waitress) запущены в режиме Production!
 echo        ===============================================================
 echo.
-echo        Это окно закроется автоматически...
-timeout /t 3 /nobreak > nul
+echo        ... Это окно закроется автоматически... ХОРОШЕГО ДНЯ!!!
+timeout /t 4 /nobreak > nul
 :: Закрываем окно
 exit

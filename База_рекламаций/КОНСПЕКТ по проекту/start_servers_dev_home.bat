@@ -24,12 +24,18 @@ start /min "Django" python manage.py runserver 127.0.0.1:8000
 
 timeout /t 3 /nobreak > nul
 
+:: 3. Запуск Python-скрипта email_send_start.py отправки письма
+echo.
+echo        Выполняется Python-скрипт email_send_start.py ...
+echo.
+python email_send_start.py
+
 echo.
 echo        ============================================================
-echo        Django dev-сервер запущен в отдельном минимизированном окне.
+echo                Django-сервер запущен в режиме Development!
 echo        ============================================================
 echo.
-echo        Это окно закроется автоматически...
+echo        ... Это окно закроется автоматически... ХОРОШЕГО ДНЯ!!!
 timeout /t 4 /nobreak > nul
 :: Закрываем окно
 exit
