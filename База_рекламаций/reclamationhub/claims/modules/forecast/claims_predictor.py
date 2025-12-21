@@ -2,9 +2,17 @@
 """
 Модуль прогнозирования сумм претензий на основе рекламаций.
 
-Включает класс:
+Включает классы:
+- `ClaimPrediction` - Датакласс результатов прогноза для одного периода
+- `ModelCoefficients` - Датакласс коэффициентов модели прогноза
 - `ClaimsPredictor` - Связанный прогноз: рекламации → претензии
 """
+# СВЯЗАННЫЙ МЕТОД (linked):
+# 1. Прогноз РЕКЛАМАЦИЙ → делается сезонным методом (независимо)
+# 2. Прогноз КОЛИЧЕСТВА ПРЕТЕНЗИЙ → рекламации × коэффициент конверсии
+# 3. Прогноз СУММ ПРЕТЕНЗИЙ → через регрессию от рекламаций
+#    Формула: Сумма = slope × Рекламации + intercept
+# 4. Доверительный интервал → только для СУММ (п.3)
 
 import numpy as np
 from typing import List, Dict, Optional, Tuple
@@ -90,34 +98,60 @@ class ClaimsPredictor(BaseForecast):
     def fit(self) -> "ClaimsPredictor":
         """
         Обучение модели: расчёт всех коэффициентов.
+        Это процесс анализа исторических данных для нахождения закономерностей,
+        которые потом используются для прогноза.
+
+        ЭТАПЫ ОБУЧЕНИЯ:
+        1. НАЙТИ ЛАГ
+            Через сколько месяцев после рекламации приходит претензия?
+        2. РАССЧИТАТЬ КОНВЕРСИЮ
+            Какой % рекламаций становится претензиями?
+        3. РАССЧИТАТЬ СРЕДНЮЮ СУММУ
+            Сколько в среднем стоит одна претензия?
+        4. ОБУЧИТЬ РЕГРЕССИЮ
+            Найти формулу: Сумма = slope × Рекламации + intercept
 
         Returns:
-            self (для цепочки вызовов)
+            self — для возможности цепочки вызовов: predictor.fit().predict(data)
         """
-        # 1. Определяем оптимальный лаг (если не задан)
+        # ============ ЭТАП 1: ОПРЕДЕЛЕНИЕ ОПТИМАЛЬНОГО ЛАГА ============
         if self.lag_months is None:
+            # Создаём анализатор корреляции
             correlation_analyzer = TimeSeriesCorrelation(
-                self.reclamations.tolist(), self.claims_sum.tolist()
+                self.reclamations.tolist(),  # Причина (X)
+                self.claims_sum.tolist(),  # Следствие (Y)
             )
+            # Ищем лаг с максимальной корреляцией (от 0 до 6 месяцев)
             optimal = correlation_analyzer.find_optimal_lag(max_lag=6)
             self.lag_months = optimal.optimal_lag
             correlation = optimal.correlation
         else:
+            # Лаг задан вручную — просто считаем корреляцию для него
             correlation_analyzer = TimeSeriesCorrelation(
                 self.reclamations.tolist(), self.claims_sum.tolist()
             )
             result = correlation_analyzer.calculate_correlation_at_lag(self.lag_months)
             correlation = result.correlation
 
-        # 2. Рассчитываем коэффициент конверсии
+        # ============ ЭТАП 2: РАСЧЁТ КОЭФФИЦИЕНТА КОНВЕРСИИ ============
         conversion_rate, conversion_std = self._calculate_conversion_rate()
 
-        # 3. Рассчитываем среднюю сумму претензии
+        # ============ ЭТАП 3: РАСЧЁТ СРЕДНЕЙ СУММЫ ПРЕТЕНЗИИ ============
+        # Средняя сумма —> сколько в среднем "стоит" одна претензия.
+        # Средняя_сумма = Общая_сумма_претензий / Количество_претензий
         avg_amount, avg_std = self._calculate_average_amount()
 
-        # 4. Обучаем регрессию
+        # ============ ЭТАП 4: ОБУЧЕНИЕ ЛИНЕЙНОЙ РЕГРЕССИИ ============
+        # Находим формулу прямой линии:
+        # Сумма_претензий = slope × Рекламации + intercept
+
+        # slope — наклон (сколько BYN на 1 рекламацию)
+        # intercept — базовый уровень (сумма при 0 рекламаций)
+        # r_squared — качество модели (0-1, чем больше тем лучше)
+        # residual_std — средняя ошибка (для доверительного интервала)
         slope, intercept, r_squared, residual_std = self._fit_regression()
 
+        # ============ СОХРАНЕНИЕ КОЭФФИЦИЕНТОВ ============
         self._coefficients = ModelCoefficients(
             lag_months=self.lag_months,
             correlation=correlation,
@@ -130,36 +164,19 @@ class ClaimsPredictor(BaseForecast):
             r_squared=r_squared,
         )
 
+        # Сохраняем ошибку для расчёта доверительного интервала
         self._residual_std = residual_std
-        self._is_fitted = True
+
+        self._is_fitted = True  # Отмечаем, что модель обучена
 
         return self
-
-    # def _calculate_conversion_rate(self) -> Tuple[float, float]:
-    #     """
-    #     Расчёт коэффициента конверсии рекламаций в претензии.
-
-    #     Returns:
-    #         Tuple[mean_rate, std_rate]
-    #     """
-    #     lag = self.lag_months or 0
-
-    #     if lag > 0 and lag < len(self.reclamations):
-    #         lagged_recl = self.reclamations[:-lag]
-    #         lagged_claims = self.claims_count[lag:]
-    #     else:
-    #         lagged_recl = self.reclamations
-    #         lagged_claims = self.claims_count
-
-    #     # Избегаем деления на ноль
-    #     safe_recl = np.maximum(lagged_recl, 1)
-    #     conversion_rates = lagged_claims / safe_recl
-
-    #     return float(np.mean(conversion_rates)), float(np.std(conversion_rates))
 
     def _calculate_conversion_rate(self) -> Tuple[float, float]:
         """
         Расчёт коэффициента конверсии рекламаций в претензии.
+
+        Returns:
+            Tuple[mean_rate, std_rate]
         """
         lag = self.lag_months or 0
 
@@ -188,18 +205,38 @@ class ClaimsPredictor(BaseForecast):
         """
         Расчёт средней суммы претензии.
 
+        -------- АЛГОРИТМ --------
+        1. Для каждого месяца считаем: сумма_претензий / количество_претензий
+        2. Находим среднее этих значений
+        3. Отфильтровываем выбросы (значения вне 3 сигм)
+
         Returns:
-            Tuple[mean_amount, std_amount]
+            Tuple[средняя_сумма, стандартное_отклонение]
         """
-        # Избегаем деления на ноль
-        safe_claims = np.maximum(self.claims_count, 1)
+
+        # ============= СЧИТАЕМ СРЕДНЮЮ СУММУ для каждого месяца ===============
+        # safe_claims — защита от деления на 0
+        # Если в месяце 0 претензий, считаем как 1 (чтобы не было inf)
+        # ──────────────────────────────────────────────────────────────────────
+        safe_claims = np.maximum(self.claims_count, 1)  # Избегаем деления на ноль
         avg_amounts = self.claims_sum / safe_claims
 
-        # Фильтруем выбросы (значения вне 3 сигм)
+        # ======== Фильтрация выбросов по правилу "3 сигм" (исключаем выбросы вне 3 сигм) =========
+        # Выброс — это аномально большое или малое значение.
+
+        # Правило 3 сигм:
+        # 99.7% нормальных данных лежат в пределах: среднее ± 3 × стандартное_отклонение
+
+        # Пример:
+        # Средняя сумма = 10 000, std = 2 000
+        # Границы: 10000 - 6000 = 4000 ... 10000 + 6000 = 16000
+        # Значение 50 000 — выброс (исключаем)
+        # ────────────────────────────────────────────────────────────
         mean_amt = np.mean(avg_amounts)
         std_amt = np.std(avg_amounts)
 
         if std_amt > 0:
+            # Маска: True для значений в пределах 3 сигм
             mask = np.abs(avg_amounts - mean_amt) <= 3 * std_amt
             filtered = avg_amounts[mask]
             if len(filtered) > 0:
@@ -207,56 +244,29 @@ class ClaimsPredictor(BaseForecast):
 
         return float(mean_amt), float(std_amt)
 
-    # def _fit_regression(self) -> Tuple[float, float, float, float]:
-    #     """
-    #     Обучение линейной регрессии: рекламации → сумма претензий.
-
-    #     Returns:
-    #         Tuple[slope, intercept, r_squared, residual_std]
-    #     """
-    #     lag = self.lag_months or 0
-
-    #     if lag > 0 and lag < len(self.reclamations):
-    #         X = self.reclamations[:-lag]
-    #         y = self.claims_sum[lag:]
-    #     else:
-    #         X = self.reclamations
-    #         y = self.claims_sum
-
-    #     if len(X) < 2:
-    #         return 0.0, float(np.mean(y)) if len(y) > 0 else 0.0, 0.0, 0.0
-
-    #     # Линейная регрессия через numpy
-    #     X_with_bias = np.vstack([X, np.ones(len(X))]).T
-    #     coeffs, residuals, rank, s = np.linalg.lstsq(X_with_bias, y, rcond=None)
-
-    #     slope, intercept = coeffs[0], coeffs[1]
-
-    #     # R² (коэффициент детерминации)
-    #     y_pred = slope * X + intercept
-    #     ss_res = np.sum((y - y_pred) ** 2)
-    #     ss_tot = np.sum((y - np.mean(y)) ** 2)
-    #     r_squared = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
-
-    #     # Стандартное отклонение остатков
-    #     residual_std = np.std(y - y_pred)
-
-    #     return float(slope), float(intercept), float(r_squared), float(residual_std)
-
     def _fit_regression(self) -> Tuple[float, float, float, float]:
         """
         Обучение линейной регрессии: рекламации → сумма претензий.
+
+        Находит оптимальные slope и intercept для формулы:
+        Сумма претензий = slope × Рекламации + intercept
         """
         lag = self.lag_months or 0
 
+        # =========== ПОДГОТОВКА ДАННЫХ С УЧЁТОМ ЛАГА ==============
+        # Если лаг = 3, то:
+        # - Берём рекламации БЕЗ последних 3 месяцев (X)
+        # - Берём претензии БЕЗ первых 3 месяцев (y)
+        # Так мы сопоставляем: рекламации января → претензии апреля
+        # ==========================================================
         if lag > 0 and lag < len(self.reclamations) and lag < len(self.claims_sum):
-            X = self.reclamations[:-lag]
-            y = self.claims_sum[lag:]
+            X = self.reclamations[:-lag]  # Рекламации (причина)
+            y = self.claims_sum[lag:]  # Претензии (позже рекламаций на lag месяцев)
         else:
             X = self.reclamations
             y = self.claims_sum
 
-        # Синхронизируем длины
+        # Синхронизируем длины массивов
         min_len = min(len(X), len(y))
         if min_len < 2:
             return 0.0, float(np.mean(y)) if len(y) > 0 else 0.0, 0.0, 0.0
@@ -264,10 +274,20 @@ class ClaimsPredictor(BaseForecast):
         X = X[:min_len]
         y = y[:min_len]
 
-        # Линейная регрессия через numpy
+        # ===== ЛИНЕЙНАЯ РЕГРЕССИЯ через метод наименьших квадратов (numpy) ======
+        # Задача: найти slope и intercept, чтобы линия y = slope ꞏ X + intercept
+        # была максимально близка ко всем точкам данных.
+        #
+        # X_with_bias — добавляем столбец единиц для расчёта intercept
+        # [[x1, 1],
+        #  [x2, 1],
+        #  [x3, 1], ...]
+        # ========================================================================
         X_with_bias = np.vstack([X, np.ones(len(X))]).T
 
         try:
+            # np.linalg.lstsq — "least squares" (наименьшие квадраты)
+            # Находит коэффициенты, минимизирующие сумму квадратов ошибок
             coeffs, residuals, rank, s = np.linalg.lstsq(X_with_bias, y, rcond=None)
             slope, intercept = coeffs[0], coeffs[1]
         except Exception:
@@ -275,13 +295,26 @@ class ClaimsPredictor(BaseForecast):
             slope = 0.0
             intercept = float(np.mean(y))
 
-        # R² (коэффициент детерминации)
-        y_pred = slope * X + intercept
-        ss_res = np.sum((y - y_pred) ** 2)
-        ss_tot = np.sum((y - np.mean(y)) ** 2)
+        # ============ R² (R-SQUARED) — КОЭФФИЦИЕНТ ДЕТЕРМИНАЦИИ =================
+        # Показывает, какую долю вариации Y объясняет модель.
+        # R² = 1 - (SS_res / SS_tot)
+        #    SS_res — сумма квадратов остатков (ошибок модели)
+        #    SS_tot — общая сумма квадратов (разброс данных)
+        # R² = 1.0 → модель идеально предсказывает (все точки на линии)
+        # R² = 0.7 → модель объясняет 70% вариации (хорошо)
+        # R² = 0.3 → модель объясняет 30% (слабо, много "шума")
+        # ========================================================================
+        y_pred = slope * X + intercept  # Предсказанные значения
+        ss_res = np.sum((y - y_pred) ** 2)  # Сумма квадратов ошибок
+        ss_tot = np.sum((y - np.mean(y)) ** 2)  # Общий разброс данных
         r_squared = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
 
-        # Стандартное отклонение остатков
+        # ============ СТАНДАРТНОЕ ОТКЛОНЕНИЕ ОСТАТКОВ (residual_std) ============
+        # Это "средняя ошибка" модели — на сколько в среднем реальные значения
+        # отличаются от предсказанных.
+        # Используется для расчёта доверительного интервала:
+        #    CI = прогноз ± (1.96 × residual_std)
+        # ========================================================================
         residual_std = float(np.std(y - y_pred))
 
         return float(slope), float(intercept), float(r_squared), residual_std
@@ -301,29 +334,52 @@ class ClaimsPredictor(BaseForecast):
 
         coef = self._coefficients
 
-        # Z-score для доверительного интервала
+        # =========== Z-score для доверительного интервала ==============
+        # 1.96 — это значение из таблицы нормального распределения
+        # При 95% доверии: 2.5% вероятности слева, 2.5% справа
+        # Интервал: [прогноз - 1.96×ошибка, прогноз + 1.96×ошибка]
+        # ===============================================================
         if self.confidence_level == 0.95:
             z_score = 1.96
         elif self.confidence_level == 0.99:
-            z_score = 2.576
+            z_score = 2.576  # Для 99% доверия — шире интервал
         else:
             z_score = 1.96
 
         predictions = []
 
         for i, recl_count in enumerate(future_reclamations):
-            # Основной прогноз через регрессию
+            # =========== ОСНОВНОЙ ПРОГНОЗ: линейная регрессия ===========
+            # Формула: y = slope × x + intercept
+            #
+            # slope (наклон) — сколько BYN добавляет каждая рекламация
+            # intercept — базовый уровень претензий при 0 рекламаций
+            #
+            # Пример: slope=500, intercept=5000, рекламаций=50
+            #         прогноз = 500 × 50 + 5000 = 30000 BYN
+            # ============================================================
             predicted_sum = (
                 coef.regression_slope * recl_count + coef.regression_intercept
             )
-            predicted_sum = max(0, predicted_sum)
+            predicted_sum = max(0, predicted_sum)  # Сумма не может быть отрицательной
 
-            # Доверительный интервал
+            # =========== ДОВЕРИТЕЛЬНЫЙ ИНТЕРВАЛ =========================
+            # margin = z_score × стандартная_ошибка_модели
+            #
+            # Это "запас погрешности" — насколько реальное значение может отличаться от прогноза.
+            #
+            # Пример: прогноз=30000, margin=5000, интервал = [25000, 35000]
+            #         "С вероятностью 95% сумма будет от 25000 до 35000"
+            # ============================================================
             margin = z_score * self._residual_std
             ci_lower = max(0, predicted_sum - margin)
             ci_upper = predicted_sum + margin
 
-            # Ожидаемое количество претензий
+            # =========== ОЖИДАЕМОЕ КОЛИЧЕСТВО ПРЕТЕНЗИЙ =================
+            # claims = количество рекламаций × коэффициент конверсии
+            #
+            # Пример: 50 рекламаций × 0.15 (15%) = 7.5 претензий
+            # ============================================================
             expected_claims = recl_count * coef.conversion_rate
 
             predictions.append(
@@ -418,7 +474,7 @@ class ClaimsPredictor(BaseForecast):
             "regression": {
                 "slope": round(coef.regression_slope, 4),
                 "intercept": round(coef.regression_intercept, 2),
-                "formula": f"Сумма = {coef.regression_slope:.2f} × Рекламации + {coef.regression_intercept:.0f}",
+                "formula": f"СУММА ПРЕТЕНЗИЙ = {coef.regression_slope:.2f} × Рекламации + {coef.regression_intercept:.0f}",
             },
         }
 

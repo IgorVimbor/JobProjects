@@ -2,8 +2,28 @@
 """
 Модуль кросс-корреляции временных рядов.
 
-Включает класс:
-- `TimeSeriesCorrelation` - Анализ корреляции с учётом временного лага
+Включает классы:
+- `TimeSeriesCorrelation` - Анализ корреляции с учётом лага
+- `LagCorrelationResult` - Результат для одного лага
+- `OptimalLagResult` - Результат поиска оптимального лага
+"""
+
+"""
+Что делает:
+    Анализирует СВЯЗЬ между двумя временными рядами
+    (например, рекламации и суммы претензий) и находит
+    ВРЕМЕННОЙ СДВИГ (лаг) между ними.
+
+Зачем это нужно:
+    Рекламация сегодня → Претензия через 3 месяца
+    Чтобы прогнозировать претензии, нужно знать этот сдвиг.
+
+Что такое корреляция:
+    Это число от -1 до +1, показывающее силу связи:
+
+    +1.0 = идеальная прямая связь (больше X → больше Y)
+     0.0 = нет связи (X и Y независимы)
+    -1.0 = идеальная обратная связь (больше X → меньше Y)
 """
 
 import numpy as np
@@ -13,7 +33,16 @@ from dataclasses import dataclass
 
 @dataclass
 class LagCorrelationResult:
-    """Результат корреляции для конкретного лага"""
+    """
+    Результат корреляции для конкретного лага
+
+    Атрибуты:
+        lag: Временной сдвиг в месяцах (0, 1, 2, ...)
+        correlation: Коэффициент корреляции (-1 до +1)
+        p_value: Статистическая значимость (меньше 0.05 = значимо)
+        is_significant: True если p_value < 0.05
+        sample_size: Количество пар точек для расчёта
+    """
 
     lag: int
     correlation: float
@@ -24,7 +53,15 @@ class LagCorrelationResult:
 
 @dataclass
 class OptimalLagResult:
-    """Результат поиска оптимального лага"""
+    """
+    Результат поиска оптимального лага.
+
+    Атрибуты:
+        optimal_lag: Лаг с максимальной корреляцией
+        correlation: Значение корреляции при оптимальном лаге
+        p_value: Статистическая значимость
+        all_results: Результаты для всех проверенных лагов
+    """
 
     optimal_lag: int
     correlation: float
@@ -36,10 +73,11 @@ class TimeSeriesCorrelation:
     """
     Анализ кросс-корреляции временных рядов с поиском оптимального лага.
 
-    Используется для определения временной задержки между:
-    - Количеством рекламаций
-    - Суммами претензий
+    Кросс-корреляция - способ измерить, насколько один ряд "похож" на другой
+    при разных сдвигах во времени.
 
+    Используется для определения временной задержки между количеством рекламаций
+    и суммами претензий.
     Типичный лаг: 2-4 месяца (рекламация → претензия)
     """
 
@@ -53,13 +91,17 @@ class TimeSeriesCorrelation:
         Args:
             series_x: Первый временной ряд (рекламации)
             series_y: Второй временной ряд (претензии)
-            significance_level: Уровень значимости (по умолчанию 0.05)
+            significance_level: Уровень значимости для статистических тестов (по умолчанию 0.05).
+                0.05 = 95% уверенность (стандарт)
+                0.01 = 99% уверенность (строже)
         """
         self.series_x = np.array(series_x, dtype=float)
         self.series_y = np.array(series_y, dtype=float)
         self.significance_level = significance_level
 
-        # Проверяем scipy для p-value
+        # ============ ПРОВЕРКА НАЛИЧИЯ SCIPY ============
+        # scipy даёт точный p-value для корреляции.
+        # Если scipy нет — используем приближённый расчёт.
         try:
             from scipy import stats
 
@@ -72,13 +114,30 @@ class TimeSeriesCorrelation:
         """
         Расчёт коэффициента корреляции Пирсона.
 
+        Корреляция Пирсона измеряет ЛИНЕЙНУЮ связь между двумя переменными.
+        Формула (упрощённо):
+        r = Σ((x - x̄)(y - ȳ)) / √(Σ(x - x̄)² × Σ(y - ȳ)²)
+
+        Где:
+        - x̄, ȳ — средние значения
+        - Числитель — "совместное отклонение" (ковариация)
+        - Знаменатель — произведение стандартных отклонений
+
+        Args:
+            x: Первый массив значений
+            y: Второй массив значений (той же длины)
+
         Returns:
             Tuple[correlation, p_value]
+            - correlation: от -1 до +1
+            - p_value: вероятность, что связь случайна (< 0.05 = связь статистически значима)
         """
+        # Нужно минимум 3 точки для осмысленной корреляции
         if len(x) < 3:
             return 0.0, 1.0
 
         if self._has_scipy:
+            # Точный расчёт через scipy
             corr, p_value = self._stats.pearsonr(x, y)
             return float(corr), float(p_value)
         else:
@@ -86,7 +145,9 @@ class TimeSeriesCorrelation:
             n = len(x)
             mean_x, mean_y = np.mean(x), np.mean(y)
 
+            # Числитель: сумма произведений отклонений
             numerator = np.sum((x - mean_x) * (y - mean_y))
+            # Знаменатель: произведение "размахов"
             denominator = np.sqrt(np.sum((x - mean_x) ** 2) * np.sum((y - mean_y) ** 2))
 
             if denominator == 0:
@@ -94,7 +155,8 @@ class TimeSeriesCorrelation:
 
             corr = numerator / denominator
 
-            # Приближённый p-value через t-статистику
+            # Приближённый p-value через t-статистику: t = r × √((n-2) / (1-r²))
+            # Чем больше t, тем меньше p-value (значимее связь)
             if abs(corr) >= 1:
                 p_value = 0.0
             else:
@@ -104,80 +166,36 @@ class TimeSeriesCorrelation:
 
             return float(corr), float(p_value)
 
-    # def calculate_correlation_at_lag(self, lag: int) -> LagCorrelationResult:
-    #     """
-    #     Расчёт корреляции при заданном лаге.
-
-    #     lag > 0: series_x опережает series_y на lag периодов
-    #     (рекламации в момент t влияют на претензии в момент t+lag)
-
-    #     Args:
-    #         lag: Временной сдвиг в периодах (месяцах)
-
-    #     Returns:
-    #         LagCorrelationResult
-    #     """
-    #     if lag == 0:
-    #         x, y = self.series_x, self.series_y
-    #     elif lag > 0:
-    #         # X опережает Y: X[:-lag] соответствует Y[lag:]
-    #         x = self.series_x[:-lag] if lag < len(self.series_x) else np.array([])
-    #         y = self.series_y[lag:] if lag < len(self.series_y) else np.array([])
-    #     else:
-    #         # Y опережает X (редкий случай)
-    #         abs_lag = abs(lag)
-    #         x = (
-    #             self.series_x[abs_lag:]
-    #             if abs_lag < len(self.series_x)
-    #             else np.array([])
-    #         )
-    #         y = (
-    #             self.series_y[:-abs_lag]
-    #             if abs_lag < len(self.series_y)
-    #             else np.array([])
-    #         )
-
-    #     if len(x) < 3 or len(y) < 3:
-    #         return LagCorrelationResult(
-    #             lag=lag,
-    #             correlation=0.0,
-    #             p_value=1.0,
-    #             is_significant=False,
-    #             sample_size=min(len(x), len(y)),
-    #         )
-
-    #     # Убеждаемся, что длины равны
-    #     min_len = min(len(x), len(y))
-    #     x, y = x[:min_len], y[:min_len]
-
-    #     corr, p_value = self._pearson_correlation(x, y)
-
-    #     return LagCorrelationResult(
-    #         lag=lag,
-    #         correlation=corr,
-    #         p_value=p_value,
-    #         is_significant=p_value < self.significance_level,
-    #         sample_size=min_len,
-    #     )
-
     def calculate_correlation_at_lag(self, lag: int) -> LagCorrelationResult:
         """
         Расчёт корреляции при заданном лаге.
 
-        lag > 0: series_x опережает series_y на lag периодов
-        (рекламации в момент t влияют на претензии в момент t+lag)
-        """
-        n_x = len(self.series_x)
-        n_y = len(self.series_y)
+        Лаг — это сдвиг во времени (период времиени) между двумя рядами.
+        lag > 0: series_x опережает series_y на lag (рекламации в момент t влияют на претензии t+lag)
 
+        Args:
+            lag: Временной сдвиг (положительный = X опережает Y)
+
+        Returns:
+            LagCorrelationResult с корреляцией и статистикой
+        """
+        n_x = len(self.series_x)  # Длина массива series_x
+        n_y = len(self.series_y)  # Длина массива series_y
+
+        # ФОРМИРОВАНИЕ СОПОСТАВИМЫХ МАССИВОВ
         if lag == 0:
             # Без сдвига — берём минимальную длину
             min_len = min(n_x, n_y)
             x = self.series_x[:min_len]
             y = self.series_y[:min_len]
         elif lag > 0:
-            # X опережает Y: X[:-lag] соответствует Y[lag:]
+            # ───────────────────────────────────────────────────────────────────────────────
+            # X опережает Y: рекламации РАНЬШЕ, претензии ПОЗЖЕ. X[:-lag] соответствует Y[lag:]
+            # X[:-lag] = все элементы кроме последних lag
+            # Y[lag:]  = все элементы начиная с индекса lag
+            # ───────────────────────────────────────────────────────────────────────────────
             if lag >= n_x or lag >= n_y:
+                # Лаг слишком большой — данных не хватает
                 return LagCorrelationResult(
                     lag=lag,
                     correlation=0.0,
@@ -188,7 +206,7 @@ class TimeSeriesCorrelation:
             x = self.series_x[:-lag]
             y = self.series_y[lag:]
         else:
-            # Y опережает X (редкий случай)
+            # Y опережает X (отрицательный лаг) — редкий случай
             abs_lag = abs(lag)
             if abs_lag >= n_x or abs_lag >= n_y:
                 return LagCorrelationResult(
@@ -201,7 +219,7 @@ class TimeSeriesCorrelation:
             x = self.series_x[abs_lag:]
             y = self.series_y[:-abs_lag]
 
-        # Синхронизируем длины (защита от рассинхрона)
+        # СИНХРОНИЗАЦИЯ ДЛИН (защита от рассинхрона)
         min_len = min(len(x), len(y))
         if min_len < 3:
             return LagCorrelationResult(
@@ -215,6 +233,7 @@ class TimeSeriesCorrelation:
         x = x[:min_len]
         y = y[:min_len]
 
+        # РАСЧЁТ КОРРЕЛЯЦИИ
         corr, p_value = self._pearson_correlation(x, y)
 
         return LagCorrelationResult(
@@ -229,20 +248,27 @@ class TimeSeriesCorrelation:
         """
         Поиск оптимального лага с максимальной корреляцией.
 
+        Перебирает все лаги от min_lag до max_lag и находит тот, при котором корреляция максимальна.
+
         Args:
-            max_lag: Максимальный лаг для проверки
+            max_lag: Максимальный лаг для проверки (обычно 6)
             min_lag: Минимальный лаг (обычно 0)
 
         Returns:
-            OptimalLagResult с оптимальным лагом и всеми результатами
+            OptimalLagResult с лучшим лагом и всеми результатами
         """
         results = []
 
+        # ПЕРЕБОР ВСЕХ ЛАГОВ
         for lag in range(min_lag, max_lag + 1):
             result = self.calculate_correlation_at_lag(lag)
             results.append(result)
 
-        # Находим лаг с максимальной абсолютной корреляцией
+        # ПОИСК МАКСИМУМА (лаг с максимальной абсолютной корреляцией)
+        # ───────────────────────────────────────────────────────────────────────
+        # Используем abs() потому что сильная отрицательнаякорреляция тоже важна
+        # (хотя для рекламаций/претензий ожидаем положительную)
+        # ───────────────────────────────────────────────────────────────────────
         best = max(results, key=lambda r: abs(r.correlation))
 
         return OptimalLagResult(
@@ -268,8 +294,16 @@ class TimeSeriesCorrelation:
         """
         Полный анализ корреляции.
 
+        Возвращает все результаты в формате, готовом для JSON-сериализации и отображения в UI.
+
         Returns:
-            Dict с результатами анализа для JSON-сериализации
+            Словарь с ключами:
+            - optimal_lag: лучший лаг
+            - optimal_correlation: корреляция при лучшем лаге
+            - p_value: статистическая значимость
+            - is_significant: значима ли связь
+            - interpretation: текстовое описание силы связи
+            - all_lags: список результатов для всех лагов
         """
         optimal = self.find_optimal_lag(max_lag)
 
@@ -292,7 +326,20 @@ class TimeSeriesCorrelation:
         }
 
     def _interpret_correlation(self, corr: float) -> str:
-        """Текстовая интерпретация коэффициента корреляции"""
+        """
+        Текстовая интерпретация коэффициента корреляции
+
+        Шкала (общепринятая):
+            |r| >= 0.9  — очень сильная связь
+            |r| >= 0.7  — сильная связь
+            |r| >= 0.5  — умеренная связь
+            |r| >= 0.3  — слабая связь
+            |r| <  0.3  — очень слабая связь
+
+        Знак:
+            r > 0 — положительная (X↑ → Y↑)
+            r < 0 — отрицательная (X↑ → Y↓)
+        """
         abs_corr = abs(corr)
 
         if abs_corr >= 0.9:
