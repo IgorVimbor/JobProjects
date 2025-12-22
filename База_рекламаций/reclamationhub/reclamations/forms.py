@@ -196,45 +196,72 @@ class ReclamationAdminForm(forms.ModelForm):
         mileage_operating_time = cleaned_data.get("mileage_operating_time")
 
         if away_type and mileage_operating_time:
-            # Проверяем только для км и м/ч
-            if away_type in [Reclamation.AwayType.KILOMETRE, Reclamation.AwayType.MOTO]:
-                # Убираем пробелы по краям
-                mileage_value = mileage_operating_time.strip()
+            mileage_value = mileage_operating_time.strip()
 
-                # Убираем единицы измерения если пользователь их ввел
+            # Для "н/д" — только "н/д"
+            if away_type == Reclamation.AwayType.NOTDATA:
+                if mileage_value.lower() != "н/д":
+                    self.add_error(
+                        "mileage_operating_time",
+                        "Для единицы измерения 'н/д' допустимо только значение 'н/д'.",
+                    )
+
+            # Для "ПСИ" — только "ПСИ"
+            elif away_type == Reclamation.AwayType.PSI:
+                if mileage_value.upper() != "ПСИ" and mileage_value.lower() != "пси":
+                    self.add_error(
+                        "mileage_operating_time",
+                        "Для единицы измерения 'ПСИ' допустимо только значение 'ПСИ'.",
+                    )
+
+            # Для "км" и "м/ч" — только числовое значение
+            elif away_type in [
+                Reclamation.AwayType.KILOMETRE,
+                Reclamation.AwayType.MOTO,
+            ]:
+                # Убираем единицы измерения если пользователь их ввёл
                 mileage_value = (
                     mileage_value.replace("км", "").replace("м/ч", "").strip()
                 )
-
+                # Если выбрано "км" или "м/ч", но поле пустое или введено "н/д", "нет данных" и др.
                 if not mileage_value or mileage_value.lower() == "н/д":
                     self.add_error(
                         "mileage_operating_time",
-                        "Для выбранной единицы измерения необходимо ввести числовое значение",
+                        "Для выбранной единицы измерения необходимо ввести числовое значение.",
                     )
                 else:
-                    try:
-                        # Заменяем запятую на точку для корректного преобразования
-                        mileage_value = mileage_value.replace(",", ".")
+                    # Проверяем, что это число, а не текст типа "3 месяца"
+                    # Убираем пробелы и заменяем запятую на точку
+                    mileage_value = mileage_value.replace(" ", "").replace(",", ".")
 
-                        # Преобразуем в число
-                        numeric_value = float(mileage_value)
-
-                        # Проверяем что число положительное
-                        if numeric_value < 0:
-                            self.add_error(
-                                "mileage_operating_time",
-                                "Значение пробега/наработки не может быть отрицательным",
-                            )
-                        else:
-                            # ← ДЛЯ ОБЕИХ ЕДИНИЦ ИЗМЕРЕНИЯ приводим к целому числу
-                            cleaned_data["mileage_operating_time"] = str(
-                                int(numeric_value)
-                            )
-
-                    except ValueError:
+                    # Проверяем, что остались только цифры и точка
+                    if not re.match(r"^\d+\.?\d*$", mileage_value):
                         self.add_error(
                             "mileage_operating_time",
-                            "Введите корректное целое числовое значение (например: 1250)",
+                            "Введите только числовое значение. "
+                            "Текстовые значения ('месяцы', 'недели' и т.п.) недопустимы.",
                         )
+                    else:
+                        try:
+                            # Преобразуем в число
+                            numeric_value = float(mileage_value)
+
+                            # Проверяем что число положительное
+                            if numeric_value < 0:
+                                self.add_error(
+                                    "mileage_operating_time",
+                                    "Значение пробега/наработки не может быть отрицательным.",
+                                )
+                            else:
+                                # Приводим к целому числу
+                                cleaned_data["mileage_operating_time"] = str(
+                                    int(numeric_value)
+                                )
+
+                        except ValueError:
+                            self.add_error(
+                                "mileage_operating_time",
+                                "Введите корректное целое числовое значение (например: 1250).",
+                            )
 
         return cleaned_data

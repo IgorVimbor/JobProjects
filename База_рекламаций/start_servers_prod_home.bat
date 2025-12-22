@@ -2,18 +2,18 @@
 :: Устанавливаем кодировку UTF-8 для корректного отображения русских символов
 chcp 65001 > nul
 title Сервер Django (Production)
+
+:: Выводим информационные сообщения
+echo.
 echo        ========================================
 echo          Запуск серверов Django + Nginx (PROD)
 echo        ========================================
-
 echo.
-echo        Запуск Django prod-сервера...
+echo        Запуск Django prod-сервера ...
+
 :: Переходим в папку проекта и активируем виртуальное окружение
 cd /d "D:\MyRepositories\JobProjects\База_рекламаций"
 call rhub_venv\Scripts\activate
-
-@REM :: 1. Явно указываем использовать настройки из файла reclamationhub\settings\production.py
-@REM set "DJANGO_SETTINGS_MODULE=reclamationhub.settings.production"
 
 :: 1. Явно указываем использовать настройки из файла reclamationhub\settings\development.py
 set "DJANGO_SETTINGS_MODULE=reclamationhub.settings.development"
@@ -28,25 +28,37 @@ start /min "Django" waitress-serve --host=127.0.0.1 --port=8000 reclamationhub.w
 
 timeout /t 3 /nobreak > nul
 
-echo.
-:: 3. Запускаем прокси-сервер Nginx
-echo        Запуск Nginx...
-cd /d "C:\nginx-1.28.0"
-start "" ".\nginx.exe"
-
-:: 4. Запуск Python-скрипта email_send_start.py отправки письма
+:: 3. Запуск Python-скрипта отправки письма
 echo.
 echo        Выполняется Python-скрипт email_send_start.py ...
 echo.
 python email_send_start.py
 
-:: Выводим информационное сообщение о запуске серверов
 timeout /t 2 /nobreak > nul
-echo        ===============================================================
-echo        Серверы Nginx + Django (Waitress) запущены в режиме Production!
-echo        ===============================================================
+
+:: 4. Запускаем прокси-сервер Nginx
 echo.
-echo        ... Это окно закроется автоматически... ХОРОШЕГО ДНЯ!!!
-timeout /t 4 /nobreak > nul
+echo        Запуск Nginx ...
+cd /d "C:\nginx-1.28.0"
+start "" ".\nginx.exe"
+echo.
+
+timeout /t 2 /nobreak > nul
+
+:: Выводим информационное сообщение о запуске серверов
+echo.
+echo        =====================================================
+echo         Серверы Nginx + Django (Waitress) успешно запущены!
+echo        =====================================================
+echo.
+echo.
+echo                 --- ХОРОШЕГО И УДАЧНОГО ДНЯ !!! ---
+echo.
+echo.
+timeout /t 3 /nobreak > nul
+echo        ... Это окно закроется автоматически...
+timeout /t 3 /nobreak > nul
+
 :: Закрываем окно
 exit
+@REM pause
