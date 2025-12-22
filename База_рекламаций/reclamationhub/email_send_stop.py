@@ -1,4 +1,4 @@
-"""Python-скрипт для автоматического логирования и отправки письма с Mail.ru"""
+"""Python-скрипт для логирования и отправки письма с фикстурой БД после остановки серверов"""
 
 import smtplib
 import os
@@ -8,13 +8,15 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 import logging
-from datetime import date
+from datetime import datetime
 
 
 # ---------------------------- Настройка логирования --------------------------------
 
+today = datetime.now()
+
 # Файл для записи логов
-log_file = f"D:/Reclamationhub_log/rhub_backup_{date.today().strftime('%Y%m%d')}.log"
+log_file = f"D:/Reclamationhub_log/rhub_backup_{today.strftime('%Y-%m-%d')}.log"
 
 # Создаем форматтер для единого формата вывода
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
@@ -34,7 +36,7 @@ load_dotenv(dotenv_path=env_prod_file_path)
 
 
 def send_email_mailru():
-    logging.info("--- Начало скрипта отправки письма ---")
+    logging.info("--- Начало скрипта отправки письма с фикстурой БД ---")
     # -------------- 1. ЗАГРУЗКА И ПРОВЕРКА ПЕРЕМЕННЫХ ----------------
     # Получение данных из переменных окружения
     sender_email = os.getenv("MAIL_USERNAME")
@@ -45,8 +47,8 @@ def send_email_mailru():
 
     # Проверка, что все переменные загружены
     if not all([sender_email, sender_password, receiver_email]):
-        print("Ошибка: не все переменные окружения установлены")
-        logging.info("Ошибка: не все переменные окружения установлены")
+        print("ОШИБКА: не все переменные окружения установлены")
+        logging.info("ОШИБКА: не все переменные окружения установлены")
         return False
 
     # -------------- 2. СОЗДАНИЕ КОНТЕЙНЕРА ПИСЬМА ---------------------
@@ -60,11 +62,10 @@ def send_email_mailru():
     body = f"""
     Привет!
 
-    Это автоматическое письмо отправлено с Mail.ru на Gmail.
-    Во вложении фикстура базы данных db.json по состоянию на {date.today().strftime("%d-%m-%Y")}.
+    Это автоматическое письмо от АСУР БЗА.
 
-    С уважением,
-    Автоматическая система рекламаций БЗА
+    Серверы Django и Nginx успешно закрыты {today.strftime("%Y-%m-%d %H:%M")}.
+    Во вложении актуальная фикстура БД db.json.
     """
 
     message.attach(MIMEText(body, "plain", "utf-8"))
@@ -117,14 +118,14 @@ def send_email_mailru():
         server.sendmail(sender_email, receiver_email, text)
         server.quit()
 
-        print("Письмо с вложением успешно отправлено с Mail.ru на Gmail!")
-        logging.info("Письмо с вложением успешно отправлено с Mail.ru на Gmail!")
+        print("Письмо с фикстурой БД успешно отправлено!")
+        logging.info("Письмо с фикстурой БД успешно отправлено!")
 
     except Exception as e:
-        print(f"ОШИБКА: Во время отправки письма возникла ошибка: {e}")
-        logging.info(f"ОШИБКА: Во время отправки письма возникла ошибка: {e}")
+        print(f"ОШИБКА: При отправке письма с фикстурой БД возникла ошибка: {e}")
+        logging.info(f"ОШИБКА: При отправке письма с фикстурой БД возникла ошибка: {e}")
 
-    logging.info("--- Скрипт отправки письма завершен ---")
+    logging.info("--- OK! Завершен скрипт отправки письма с фикстурой БД ---")
 
 
 if __name__ == "__main__":

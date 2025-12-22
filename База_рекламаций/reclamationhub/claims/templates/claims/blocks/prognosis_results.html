@@ -1,5 +1,4 @@
 <!-- Блок результатов прогноза рекламаций и претензий -->
-
 <!-- claims/templates/claims/blocks/prognosis_results.html -->
 
 {% load static %}
@@ -8,25 +7,212 @@
 <div class="row mb-3">
     <div class="col-12">
         <div class="alert alert-success">
-            <strong>Прогноз для {{ prognosis_data.consumer_display }}</strong>
+            Прогноз на <strong>{{ prognosis_data.forecast_months }} мес.</strong> для <strong>{{ prognosis_data.consumer_display }}</strong>
             <br>
             <small>
                 База: <strong>{{ prognosis_data.year }}</strong> год.
-                Прогноз по рекламациям на <strong>{{ prognosis_data.forecast_months }} мес</strong>,
-                по претензиям - с учетом <strong>временного смещения</strong>.
+                {% comment %} <br> {% endcomment %}
+                Метод: <strong>{{ prognosis_data.forecast_display }}</strong>
             </small>
         </div>
     </div>
 </div>
 
-<!-- Карточки с метриками -->
+<!-- Анализ связи для linked метода -->
+{% if prognosis_data.forecast_method == 'linked' and prognosis_data.correlation_analysis %}
 <div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    📈 Анализ связи Рекламации → Претензии для linked метода
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Оптимальный лаг -->
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card border-primary rounded p-3 text-center h-100">
+                            <h6 class="card-subtitle mb-2 text-muted">Оптимальный временной лаг</h6>
+                            <div class="display-6 text-primary mb-1">
+                                {{ prognosis_data.correlation_analysis.optimal_lag }} мес.
+                            </div>
+                            <div class="text-muted small">
+                                рекламации + лаг → претензии <!-- через {{ prognosis_data.correlation_analysis.optimal_lag }} мес. -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Корреляция -->
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card border-warning rounded p-3 text-center h-100">
+                            <h6 class="card-subtitle mb-2 text-muted">Корреляция</h6>
+                            <div class="display-6 mb-1
+                                {% if prognosis_data.correlation_analysis.optimal_correlation >= 0.7 %}text-success
+                                {% elif prognosis_data.correlation_analysis.optimal_correlation >= 0.5 %}text-warning
+                                {% else %}text-danger{% endif %}">
+                                {{ prognosis_data.correlation_analysis.optimal_correlation|floatformat:4 }}
+                            </div>
+                            <div class="text-muted small">
+                                {{ prognosis_data.correlation_analysis.interpretation|default:"" }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Конверсия -->
+                    {% comment %} <div class="col-md-3 mb-3">
+                        <div class="border rounded p-3 text-center h-100">
+                            <div class="text-muted small">Конверсия в претензии</div>
+                            <div class="display-6 text-warning mb-1">
+                                {{ prognosis_data.linked_model.conversion.rate_pct }}
+                            </div>
+                            <div class="text-muted small">
+                                рекламаций становятся претензиями
+                            </div>
+                        </div>
+                    </div> {% endcomment %}
+
+                    <!-- Качество модели -->
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card border-info rounded p-3 text-center h-100">
+                            <h6 class="card-subtitle mb-2 text-muted">Качество модели (R²)</h6>
+                            <div class="display-6 mb-1
+                                {% if prognosis_data.linked_model.model_quality.r_squared >= 0.7 %}text-success
+                                {% elif prognosis_data.linked_model.model_quality.r_squared >= 0.5 %}text-warning
+                                {% else %}text-danger{% endif %}">
+                                {{ prognosis_data.linked_model.model_quality.r_squared|floatformat:3 }}
+                            </div>
+                            <div class="text-muted small">
+                                {{ prognosis_data.linked_model.model_quality.quality_interpretation }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Средняя сумма претензии -->
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card border-success rounded p-3 text-center h-100">
+                            <h6 class="card-subtitle mb-2 text-muted">Средняя сумма претензии</h6>
+                            <div class="display-6 text-success mb-1">
+                                {{ prognosis_data.linked_model.claim_amount.average|floatformat:2 }} BYN
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Таблица корреляций по лагам (свёрнутая) -->
+                <div class="mt-3">
+                    <button class="btn btn-outline-primary flex-fill" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#lagDetails">
+                        Показать корреляцию по всем лагам
+                    </button>
+                    <div class="collapse mt-2" id="lagDetails">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Временной лаг (кол-во месяцев)</th>
+                                        {% for lag_data in prognosis_data.correlation_analysis.all_lags %}
+                                        <th class="text-center
+                                            {% if lag_data.lag == prognosis_data.correlation_analysis.optimal_lag %}table-primary{% endif %}">
+                                            {{ lag_data.lag }}
+                                        </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Корреляция</td>
+                                        {% for lag_data in prognosis_data.correlation_analysis.all_lags %}
+                                        <td class="text-center
+                                            {% if lag_data.lag == prognosis_data.correlation_analysis.optimal_lag %}table-primary fw-bold{% endif %}">
+                                            {{ lag_data.correlation }}
+                                        </td>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <td>Значимость</td>
+                                        {% for lag_data in prognosis_data.correlation_analysis.all_lags %}
+                                        <td class="text-center">
+                                            {% if lag_data.significant %}
+                                            <span class="badge bg-success">✓</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">—</span>
+                                            {% endif %}
+                                        </td>
+                                        {% endfor %}
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Сезонные индексы для seasonal/linked -->
+{% if prognosis_data.seasonality_pattern %}
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    📈 Сезонность рекламаций - индекс месяца
+                    <small class="text-muted ms-2">
+                        (индекс > 1 = выше среднего, < 1 = ниже среднего)
+                    </small>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for month, index in prognosis_data.seasonality_pattern.items %}
+                    <div class="col-md-1 col-sm-2 col-3 mb-2 text-center">
+                        <div class="border rounded p-2
+                            {% if index >= 1.2 %}bg-danger bg-opacity-25
+                            {% elif index >= 1.0 %}bg-warning bg-opacity-25
+                            {% elif index >= 0.8 %}bg-success bg-opacity-25
+                            {% else %}bg-info bg-opacity-25{% endif %}">
+                            <div class="small text-muted">{{ month }}</div>
+                            <div class="fw-bold">{{ index }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-2 small text-muted">
+                    <span class="badge bg-danger bg-opacity-50 me-1">≥1.2</span> Высокий уровень
+                    <span class="badge bg-warning bg-opacity-50 mx-1">1.0-1.2</span> Выше среднего
+                    <span class="badge bg-success bg-opacity-50 mx-1">0.8-1.0</span> Ниже среднего
+                    <span class="badge bg-info bg-opacity-50 mx-1">&lt;0.8</span> Низкий уровень
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Формула прогноза -->
+{% if prognosis_data.linked_model.regression.formula %}
+<div class="mt-3 mb-2 p-3 bg-light rounded">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <strong>📊 Формула прогноза:</strong>
+            {% comment %} <code class="ms-2 fs-6">{{ prognosis_data.linked_model.regression.formula }}</code> {% endcomment %}
+            <strong><span class="text-success">{{ prognosis_data.linked_model.regression.formula }}</span></strong>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Карточки с метриками -->
+<div class="row mb-3">
     <!-- Карточка 1: Процент конверсии -->
     <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card border-primary">
+        <div class="card border-primary text-center h-100">
             <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Процент конверсии</h6>
-                <h2 class="card-title text-primary">
+                <h6 class="card-subtitle mb-2 text-muted">Конверсия в претензии</h6>
+                <h2 class="display-6 text-primary mb-1">
                     {{ prognosis_data.conversion_params.conversion_rate|floatformat:1 }}%
                 </h2>
                 <p class="card-text small">
@@ -38,8 +224,8 @@
     </div>
 
     <!-- Карточка 2: Среднее время эскалации -->
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card border-warning">
+    {% comment %} <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-warning h-100">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Среднее время эскалации</h6>
                 <h2 class="card-title text-warning">
@@ -50,14 +236,14 @@
                 </p>
             </div>
         </div>
-    </div>
+    </div> {% endcomment %}
 
-    <!-- Карточка 3: Прогноз рекламаций -->
+    <!-- Карточка 2: Прогноз рекламаций -->
     <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card border-success">
+        <div class="card border-warning text-center h-100">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Прогноз рекламаций</h6>
-                <h2 class="card-title text-success">
+                <h2 class="display-6 text-warning mb-1">
                     {{ prognosis_data.total_reclamations_forecast }}
                 </h2>
                 <p class="card-text small">
@@ -67,16 +253,31 @@
         </div>
     </div>
 
-    <!-- Карточка 4: Прогноз претензий -->
+    <!-- Карточка 3: Прогноз претензий -->
     <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card border-info">
+        <div class="card border-info text-center h-100">
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">Прогноз претензий</h6>
-                <h2 class="card-title text-info">
+                <h2 class="display-6 text-info mb-1">
                     {{ prognosis_data.total_claims_forecast }}
                 </h2>
                 <p class="card-text small">
                     ожидаемое количество за {{ prognosis_data.forecast_months }} мес.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка 4: Прогноз сумм претензий -->
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-success text-center h-100">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Прогноз сумм претензий</h6>
+                <h2 class="display-6 text-success mb-1">
+                    {{ prognosis_data.total_claims_costs_forecast|floatformat:2 }} BYN
+                </h2>
+                <p class="card-text small">
+                    ожидаемая сумма за {{ prognosis_data.forecast_months }} мес.
                 </p>
             </div>
         </div>
@@ -87,12 +288,33 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h5>📈 График прогноза (факт + прогноз)</h5>
-                <!-- Отображение метода прогнозирования -->
-                <small class="text-muted">
-                    Метод: {{ prognosis_data.forecast_display }}
-                </small>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0">📈 График прогноза (факт + прогноз)</h5>
+                    <small class="text-muted">
+                        Метод: {{ prognosis_data.forecast_display }}
+                    </small>
+                </div>
+                {% if prognosis_data.forecast_method == 'linked' %}
+                <div>
+                    <span>
+                        <small class="text-muted">Качество модели R² =</small>
+                        {% with r2=prognosis_data.linked_model.model_quality.r_squared %}
+                            <span class="{% if r2 >= 0.7 %}text-success{% elif r2 >= 0.5 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ r2|floatformat:3 }}
+                            </span>
+                        {% endwith %}
+                    </span>
+                    <br>
+                    <span>
+                        <small class="text-muted">Доверительный интервал (95%) =</small>
+                        <span class="text-success">{{ prognosis_data.total_claims_costs_ci_lower|floatformat:2 }}</span>
+                        ÷
+                        <span class="text-success">{{ prognosis_data.total_claims_costs_ci_upper|floatformat:2 }}</span>
+                        <span class="text-success">BYN</span>
+                    </span>
+                </div>
+                {% endif %}
             </div>
             <div class="card-body">
                 <canvas id="prognosisChart" height="160"></canvas>
@@ -115,8 +337,13 @@
                             <tr>
                                 <th rowspan="2" class="align-middle">Период</th>
                                 <th colspan="2" class="text-center">Рекламации</th>
-                                <th colspan="2" class="text-center">Претензии (количество)</th>
+                                <th colspan="2" class="text-center">Претензии (кол-во)</th>
+                                <!-- Расширенный заголовок для linked -->
+                                {% if prognosis_data.forecast_method == 'linked' %}
+                                <th colspan="3" class="text-center">Претензии (суммы, BYN)</th>
+                                {% else %}
                                 <th colspan="2" class="text-center">Претензии (суммы, BYN)</th>
+                                {% endif %}
                             </tr>
                             <tr>
                                 <th class="text-center">Факт</th>
@@ -125,6 +352,9 @@
                                 <th class="text-center text-success">Прогноз</th>
                                 <th class="text-center">Факт</th>
                                 <th class="text-center text-success">Прогноз</th>
+                                {% if prognosis_data.forecast_method == 'linked' %}
+                                <th class="text-center text-info">Интервал (95%)</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -185,9 +415,36 @@
                                         <span class="text-muted">—</span>
                                     {% endif %}
                                 </td>
+
+                                <!-- Доверительный интервал (только для linked) -->
+                                {% if prognosis_data.forecast_method == 'linked' %}
+                                <td class="text-center text-info small">
+                                    {% if row.claim_cost_ci_lower and row.claim_cost_ci_upper %}
+                                        {{ row.claim_cost_ci_lower|floatformat:0 }}–{{ row.claim_cost_ci_upper|floatformat:0 }}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>
+
+                        <!-- Итоговая строка -->
+                        <tfoot class="table-secondary">
+                            <tr>
+                                <td><strong>ИТОГО (прогноз)</strong></td>
+                                <td class="text-center">—</td>
+                                <td class="text-center text-success"><strong>{{ prognosis_data.total_reclamations_forecast }}</strong></td>
+                                <td class="text-center">—</td>
+                                <td class="text-center text-success"><strong>{{ prognosis_data.total_claims_forecast }}</strong></td>
+                                <td class="text-center">—</td>
+                                <td class="text-center text-success"><strong>{{ prognosis_data.total_claims_costs_forecast|floatformat:2 }}</strong></td>
+                                {% if prognosis_data.forecast_method == 'linked' %}
+                                <td class="text-center">—</td>
+                                {% endif %}
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -198,7 +455,7 @@
 <!-- Кнопки действий -->
 <div class="row mt-3 mb-4">
     <div class="col-12">
-        <div class="d-flex gap-2 justify-content-end">
+        <div class="d-flex gap-2 justify-content-end flex-wrap">
             <a href="{% url 'claims:claim_prognosis' %}" class="btn btn-primary">
                 🔄 Новый прогноз
             </a>
@@ -208,6 +465,10 @@
                 <input type="hidden" name="year" value="{{ prognosis_data.year }}">
                 <input type="hidden" name="forecast_months" value="{{ prognosis_data.forecast_months }}">
                 <input type="hidden" name="exchange_rate" value="{{ prognosis_data.exchange_rate }}">
+                <input type="hidden" name="forecast_method" value="{{ prognosis_data.forecast_method }}">
+                <input type="hidden" name="statistical_mode" value="{{ prognosis_data.statistical_mode }}">
+                <input type="hidden" name="ml_model" value="{{ prognosis_data.ml_model }}">
+                <input type="hidden" name="seasonal_type" value="{{ prognosis_data.seasonal_type }}">
                 {% for consumer in prognosis_data.consumers %}
                     <input type="hidden" name="consumers" value="{{ consumer }}">
                 {% endfor %}
@@ -215,7 +476,7 @@
                     💾 Сохранить в файл
                 </button>
             </form>
-            <button class="btn btn-outline-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <button class="btn btn-outline-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                 ⬆️ Вверх
             </button>
         </div>
@@ -227,138 +488,171 @@
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('prognosisChart').getContext('2d');
 
+    // Базовые данные
+    const labels = {{ prognosis_data.combined_data.labels|safe }};
+    const datasets = [
+        // ========== ЛЕВАЯ ОСЬ Y (количество) ==========
+
+        // 1. Рекламации (факт)
+        {
+            label: 'Рекламации (факт)',
+            data: {{ prognosis_data.combined_data.reclamations_fact|safe }},
+            borderColor: 'rgb(255, 193, 7)',
+            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+            tension: 0.3,
+            fill: true,
+            yAxisID: 'y',
+            datalabels: {
+                anchor: 'end',
+                align: 'top',
+                color: 'rgb(204, 102, 0)',
+                font: { weight: 'normal', size: 10 },
+                formatter: function(value) {
+                    return value === 0 ? '' : value;
+                }
+            }
+        },
+
+        // 2. Рекламации (прогноз)
+        {
+            label: 'Рекламации (прогноз)',
+            data: {{ prognosis_data.combined_data.reclamations_forecast|safe }},
+            borderColor: 'rgba(255, 193, 7, 1)',
+            backgroundColor: 'rgba(255, 193, 7, 0.2)',
+            borderDash: [5, 5],
+            tension: 0.3,
+            fill: true,
+            yAxisID: 'y',
+            datalabels: {
+                anchor: 'end',
+                align: 'top',
+                color: 'rgb(204, 102, 0)',
+                font: { weight: 'normal', size: 10 },
+                formatter: function(value) {
+                    return value === 0 ? '' : value;
+                }
+            }
+        },
+
+        // 3. Претензии (факт)
+        {
+            label: 'Претензии (факт)',
+            data: {{ prognosis_data.combined_data.claims_fact|safe }},
+            borderColor: 'rgb(244, 67, 54)',
+            backgroundColor: 'rgba(244, 67, 54, 0.1)',
+            tension: 0.3,
+            fill: true,
+            yAxisID: 'y',
+            datalabels: {
+                anchor: 'end',
+                align: 'top',
+                color: 'rgb(198, 40, 40)',
+                font: { weight: 'normal', size: 10 },
+                formatter: function(value) {
+                    return value === 0 ? '' : value;
+                }
+            }
+        },
+
+        // 4. Претензии (прогноз)
+        {
+            label: 'Претензии (прогноз)',
+            data: {{ prognosis_data.combined_data.claims_forecast|safe }},
+            borderColor: 'rgba(244, 67, 54, 1)',
+            backgroundColor: 'rgba(244, 67, 54, 0.2)',
+            borderDash: [5, 5],
+            tension: 0.3,
+            fill: true,
+            yAxisID: 'y',
+            datalabels: {
+                anchor: 'end',
+                align: 'top',
+                color: 'rgb(198, 40, 40)',
+                font: { weight: 'normal', size: 10 },
+                formatter: function(value) {
+                    return value === 0 ? '' : value;
+                }
+            }
+        },
+
+        // ========== ПРАВАЯ ОСЬ Y1 (суммы) ==========
+
+        // 5. Суммы претензий (факт)
+        {
+            label: 'Сумма претензий (факт, BYN)',
+            data: {{ prognosis_data.combined_data.claims_costs_fact|safe }},
+            borderColor: 'rgb(25, 135, 84)',
+            backgroundColor: 'rgba(25, 135, 84, 0.1)',
+            tension: 0.3,
+            fill: true,
+            yAxisID: 'y1',
+            datalabels: {
+                anchor: 'end',
+                align: 'top',
+                color: 'rgb(25, 135, 84)',
+                font: { weight: 'normal', size: 10 },
+                formatter: function(value) {
+                    return value === 0 ? '' : value.toFixed(0);
+                }
+            }
+        },
+
+        // 6. Суммы претензий (прогноз)
+        {
+            label: 'Сумма претензий (прогноз, BYN)',
+            data: {{ prognosis_data.combined_data.claims_costs_forecast|safe }},
+            borderColor: 'rgba(25, 135, 84, 1)',
+            backgroundColor: 'rgba(25, 135, 84, 0.2)',
+            borderDash: [5, 5],
+            tension: 0.3,
+            fill: true,
+            yAxisID: 'y1',
+            datalabels: {
+                anchor: 'end',
+                align: 'top',
+                color: 'rgb(25, 135, 84)',
+                font: { weight: 'normal', size: 10 },
+                formatter: function(value) {
+                    return value === 0 ? '' : value.toFixed(0);
+                }
+            }
+        }
+    ];
+
+    {% if prognosis_data.forecast_method == 'linked' and prognosis_data.combined_data.claims_costs_ci_lower %}
+    // Добавляем доверительные интервалы для linked метода
+    datasets.push({
+        label: 'Доверительный интервал (верх)',
+        data: {{ prognosis_data.combined_data.claims_costs_ci_upper|safe }},
+        borderColor: 'rgba(25, 135, 84, 0.3)',
+        backgroundColor: 'transparent',
+        borderDash: [2, 2],
+        tension: 0.3,
+        fill: false,
+        yAxisID: 'y1',
+        pointRadius: 0,
+        datalabels: { display: false }
+    });
+
+    datasets.push({
+        label: 'Доверительный интервал (низ)',
+        data: {{ prognosis_data.combined_data.claims_costs_ci_lower|safe }},
+        borderColor: 'rgba(25, 135, 84, 0.3)',
+        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+        borderDash: [2, 2],
+        tension: 0.3,
+        fill: '-1',  // Заливка до предыдущего датасета
+        yAxisID: 'y1',
+        pointRadius: 0,
+        datalabels: { display: false }
+    });
+    {% endif %}
+
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: {{ prognosis_data.combined_data.labels|safe }},
-            datasets: [
-                // ========== ЛЕВАЯ ОСЬ Y (количество) ==========
-
-                // 1. Рекламации (факт)
-                {
-                    label: 'Рекламации (факт)',
-                    data: {{ prognosis_data.combined_data.reclamations_fact|safe }},
-                    borderColor: 'rgb(255, 193, 7)',
-                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                    yAxisID: 'y',
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        color: 'rgb(204, 102, 0)',
-                        font: { weight: 'normal', size: 10 },
-                        formatter: function(value) {
-                            return value === 0 ? '' : value;
-                        }
-                    }
-                },
-
-                // 2. Рекламации (прогноз)
-                {
-                    label: 'Рекламации (прогноз)',
-                    data: {{ prognosis_data.combined_data.reclamations_forecast|safe }},
-                    borderColor: 'rgba(255, 193, 7, 1)',
-                    backgroundColor: 'rgba(255, 193, 7, 0.2)',
-                    borderDash: [5, 5],
-                    tension: 0.3,
-                    fill: true,
-                    yAxisID: 'y',
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        color: 'rgb(204, 102, 0)',
-                        font: { weight: 'normal', size: 10 },
-                        formatter: function(value) {
-                            return value === 0 ? '' : value;
-                        }
-                    }
-                },
-
-                // 3. Претензии (факт)
-                {
-                    label: 'Претензии (факт)',
-                    data: {{ prognosis_data.combined_data.claims_fact|safe }},
-                    borderColor: 'rgb(244, 67, 54)',
-                    backgroundColor: 'rgba(244, 67, 54, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                    yAxisID: 'y',
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        color: 'rgb(198, 40, 40)',
-                        font: { weight: 'normal', size: 10 },
-                        formatter: function(value) {
-                            return value === 0 ? '' : value;
-                        }
-                    }
-                },
-
-                // 4. Претензии (прогноз)
-                {
-                    label: 'Претензии (прогноз)',
-                    data: {{ prognosis_data.combined_data.claims_forecast|safe }},
-                    borderColor: 'rgba(244, 67, 54, 1)',
-                    backgroundColor: 'rgba(244, 67, 54, 0.2)',
-                    borderDash: [5, 5],
-                    tension: 0.3,
-                    fill: true,
-                    yAxisID: 'y',
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        color: 'rgb(198, 40, 40)',
-                        font: { weight: 'normal', size: 10 },
-                        formatter: function(value) {
-                            return value === 0 ? '' : value;
-                        }
-                    }
-                },
-
-                // ========== ПРАВАЯ ОСЬ Y1 (суммы) ==========
-
-                // 5. Суммы претензий (факт)
-                {
-                    label: 'Сумма претензий (факт, BYN)',
-                    data: {{ prognosis_data.combined_data.claims_costs_fact|safe }},
-                    borderColor: 'rgb(25, 135, 84)',
-                    backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                    yAxisID: 'y1',
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        color: 'rgb(25, 135, 84)',
-                        font: { weight: 'normal', size: 10 },
-                        formatter: function(value) {
-                            return value === 0 ? '' : value.toFixed(2);
-                        }
-                    }
-                },
-
-                // 6. Суммы претензий (прогноз)
-                {
-                    label: 'Сумма претензий (прогноз, BYN)',
-                    data: {{ prognosis_data.combined_data.claims_costs_forecast|safe }},
-                    borderColor: 'rgba(25, 135, 84, 1)',
-                    backgroundColor: 'rgba(25, 135, 84, 0.2)',
-                    borderDash: [5, 5],
-                    tension: 0.3,
-                    fill: true,
-                    yAxisID: 'y1',
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        color: 'rgb(25, 135, 84)',
-                        font: { weight: 'normal', size: 10 },
-                        formatter: function(value) {
-                            return value === 0 ? '' : value.toFixed(2);
-                        }
-                    }
-                }
-            ]
+            labels: labels,
+            datasets: datasets
         },
         options: {
             responsive: true,
@@ -368,7 +662,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     display: true,
                     position: 'top',
                     labels: {
-                        font: { size: 11, weight: 'bold' }
+                        font: { size: 11, weight: 'bold' },
+                        filter: function(item, chart) {
+                            // Скрываем CI линии из легенды
+                            return !item.text.includes('Доверительный интервал');
+                        }
                     },
                 },
                 title: {
@@ -383,6 +681,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         label: function(context) {
                             let label = context.dataset.label || '';
+                            if (label.includes('Доверительный интервал')) {
+                                return null;  // Не показываем CI в tooltip
+                            }
                             if (label) {
                                 label += ': ';
                             }
@@ -419,7 +720,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     display: true,
                     position: 'left',
                     beginAtZero: true,
-                    grace: '10%',  // Автоматический буфер +10% к максимуму
+                    grace: '10%',
                     title: {
                         display: true,
                         text: 'Количество (шт.)',
@@ -439,7 +740,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     display: true,
                     position: 'right',
                     beginAtZero: true,
-                    grace: '10%',  // Автоматический буфер +10% к максимуму
+                    grace: '10%',
                     title: {
                         display: true,
                         text: 'Сумма (BYN)',
@@ -449,7 +750,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ticks: {
                         color: 'rgb(25, 135, 84)',
                         callback: function(value) {
-                            return value.toLocaleString('ru-RU') + ' руб.';
+                            return value.toLocaleString('ru-RU');
                         }
                     },
                     grid: {

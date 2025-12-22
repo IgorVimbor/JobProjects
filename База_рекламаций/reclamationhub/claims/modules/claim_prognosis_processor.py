@@ -1,15 +1,16 @@
 # claims/modules/claim_prognosis_processor.py
 """
-Процессор для прогнозирования претензий с методами статистического анализа и машинного обучения.
-
-Включает класс:
-- `ClaimPrognosisProcessor` - Процессор прогнозирования претензий (оркестратор)
+Процессор для прогнозирования методами статистического анализа и машинного обучения.
 
 Методы прогнозирования:
-1. statistical - Скользящее среднее + тренд (conservative/balanced/aggressive)
-2. ml - Машинное обучение (linear/ridge/polynomial)
-3. seasonal - Сезонный прогноз Хольта-Винтерса (НОВЫЙ)
-4. linked - Связанный прогноз: рекламации → претензии с учётом лага (НОВЫЙ)
+1. statistical — Скользящее среднее + тренд (3 режима: conservative/balanced/aggressive)
+2. ml — Машинное обучение (3 модели: linear/ridge/polynomial)
+3. seasonal — Сезонный прогноз с учётом колебаний
+4. linked — Связанный прогноз: рекламации → претензии с учётом лага
+
+Включает класс:
+- `ClaimPrognosisProcessor` - Оркестратор: главный "дирижёр" прогнозирования.
+Собирает данные, выбирает метод, запускает расчёты, форматирует результаты.
 """
 
 from datetime import date
@@ -18,13 +19,12 @@ import numpy as np
 
 import matplotlib
 
-matplotlib.use("Agg")
+matplotlib.use("Agg")  # Бэкенд без GUI для серверного рендеринга
 import matplotlib.pyplot as plt
 
-from claims.modules.forecast import StatisticalForecast, MachineLearningForecast
-
-# === НОВЫЕ ИМПОРТЫ ===
 from claims.modules.forecast import (
+    StatisticalForecast,
+    MachineLearningForecast,
     SeasonalForecast,
     ClaimsPredictor,
     TimeSeriesCorrelation,
@@ -40,15 +40,23 @@ class ClaimPrognosisProcessor:
     """
     Процессор прогнозирования претензий (оркестратор)
 
+    ЗАДАЧИ:
+    1. Получить исторические данные из БД
+    2. Выбрать и настроить метод прогнозирования
+    3. Запустить расчёты
+    4. Объединить факт и прогноз для графика
+    5. Сформировать результат для отображения
+
     Поддерживает методы:
     1-3. Статистические (консервативный, сбалансированный, агрессивный)
     4-6. Машинное обучение (linear, ridge, polynomial)
-    7.   Сезонный (Holt-Winters с учётом сезонности) - НОВЫЙ
-    8.   Связанный (рекламации → претензии с лагом) - НОВЫЙ
+    7.   Сезонный (пока только наивный прогноз naive)
+    8.   Связанный (рекламации → претензии с лагом)
     """
 
     # ========== КОНСТАНТЫ ==========
 
+    # Названия месяцев для отображения на графике и в таблице
     MONTH_NAMES = {
         1: "Янв",
         2: "Фев",
@@ -64,11 +72,11 @@ class ClaimPrognosisProcessor:
         12: "Дек",
     }
 
-    # === НОВОЕ: Описания методов для UI ===
+    # Описания методов для UI (форма выбора)
     METHOD_DESCRIPTIONS = {
         "statistical": "Скользящее среднее + тренд",
         "ml": "Машинное обучение",
-        "seasonal": "Сезонный прогноз (Holt-Winters)",
+        "seasonal": "Сезонный прогноз (учёт колебаний)",
         "linked": "Связанный прогноз (рекламации → претензии)",
     }
 
@@ -83,57 +91,90 @@ class ClaimPrognosisProcessor:
         forecast_method="statistical",
         statistical_mode="balanced",
         ml_model="linear",
-        seasonal_type="mul",  # НОВЫЙ параметр
+        seasonal_type="mul",
     ):
         """
         Args:
-            year: год анализа исторических данных
-            consumers: список потребителей (пустой = все)
-            forecast_months: период прогноза (3, 6 или 12 месяцев)
-            exchange_rate: курс конвертации валюты
-            forecast_method: 'statistical', 'ml', 'seasonal', 'linked'
-            statistical_mode: 'conservative', 'balanced', 'aggressive'
-            ml_model: 'linear', 'ridge', 'polynomial'
-            seasonal_type: 'mul' (мультипликативная) или 'add' (аддитивная) сезонность
+            year (int): Год исторических данных для анализа. По умолчанию: текущий год
+            consumers (list): Список потребителей для фильтрации. Пустой список = все потребители
+            forecast_months (int): Период прогноза (3, 6 или 12 месяцев). По умолчанию: 6
+            exchange_rate (Decimal): Курс конвертации RUR → BYN. По умолчанию: 0.03
+            forecast_method (str): Метод прогнозирования:
+                - "statistical" → скользящее среднее + тренд
+                - "ml" → машинное обучение
+                - "seasonal" → сезонный прогноз
+                - "linked" → связанный прогноз
+            statistical_mode (str): Режим для statistical метода:
+                - "conservative" → сглаживание, медленная реакция
+                - "balanced" → универсальный (по умолчанию)
+                - "aggressive" → быстрая реакция на тренд
+            ml_model (str): Модель для ml метода:
+                - "linear" → линейная регрессия (по умолчанию)
+                - "ridge" → регуляризованная регрессия
+                - "polynomial" → полиномиальный тренд
+            seasonal_type (str): Тип сезонности:
+                - "mul" → мультипликативная (амплитуда растёт с уровнем)
+                - "add" → аддитивная (амплитуда постоянная)
         """
+        # Базовые параметры
         self.today = date.today()
         self.year = year or self.today.year
         self.consumers = consumers or []
-        self.all_consumers_mode = len(self.consumers) == 0
+        self.all_consumers_mode = len(self.consumers) == 0  # Флаг "все потребители"
         self.forecast_months = forecast_months or 6
         self.exchange_rate = exchange_rate or 0.03
 
-        # Параметры методов
+        # Параметры методов прогнозирования
         self.forecast_method = forecast_method
         self.statistical_mode = statistical_mode
         self.ml_model = ml_model
-        self.seasonal_type = seasonal_type  # НОВОЕ
+        self.seasonal_type = seasonal_type
 
-        # Создаем экземпляр forecaster'а
+        # Создаем экземпляр forecaster'а (прогнозировщика)
+        # forecaster — это объект, который делает расчёты.
+        # Тип объекта зависит от выбранного метода.
         self.forecaster = self._create_forecaster()
 
-        # === НОВОЕ: Результаты анализа корреляции (заполняется при linked) ===
-        self._correlation_analysis = None
-        self._linked_model_info = None
+        # Результаты анализа корреляции (заполняется при linked)
+        self._correlation_analysis = None  # Результат корреляционного анализа
+        self._linked_model_info = None  # Информация о модели связанного прогноза
 
     def _create_forecaster(self):
         """
-        Фабричный метод для создания forecaster'а
+        Фабричный метод создания forecaster'а (прогнозировщика) нужного типа.
+        Это паттерн проектирования.
 
         Returns:
-            BaseForecast: экземпляр прогнозировщика
+            BaseForecast: экземпляр прогнозировщика нужного типа
         """
         if self.forecast_method == "statistical":
+            # ────────────────────────────────────────────────────
+            # Статистический: скользящее среднее + линейный тренд
+            # Подходит для: стабильных данных без резких скачков
+            # ────────────────────────────────────────────────────
             return StatisticalForecast(mode=self.statistical_mode)
         elif self.forecast_method == "ml":
+            # ────────────────────────────────────────────────────
+            # Машинное обучение: регрессионные модели sklearn
+            # Подходит для: данных с чётким трендом
+            # ────────────────────────────────────────────────────
             return MachineLearningForecast(model=self.ml_model)
         elif self.forecast_method == "seasonal":
+            # ────────────────────────────────────────────────────
+            # Сезонный: учитывает повторяющиеся пики и спады
+            # Подходит для: данных с явной сезонностью
+            # ────────────────────────────────────────────────────
             return SeasonalForecast(
                 method="auto", seasonal_period=12, seasonal_type=self.seasonal_type
             )
         elif self.forecast_method == "linked":
-            # Для linked используем SeasonalForecast для рекламаций
+            # ────────────────────────────────────────────────────
+            # Связанный: прогноз претензий на основе рекламаций
+            # Подходит для: когда претензии "следуют" за рекламациями
+            #
+            # Для рекламаций используем SeasonalForecast
             # ClaimsPredictor будет создан позже с данными
+            # ────────────────────────────────────────────────────
             return SeasonalForecast(
                 method="auto", seasonal_period=12, seasonal_type=self.seasonal_type
             )
@@ -141,11 +182,11 @@ class ClaimPrognosisProcessor:
             # Fallback
             return StatisticalForecast(mode="balanced")
 
-    # ========== ИСТОРИЧЕСКИЕ ДАННЫЕ ==========
+    # ========== ПОЛУЧЕНИЕ ИСТОРИЧЕСКИХ ДАННЫХ ==========
 
     def _get_historical_data(self):
         """
-        Получение исторических данных через TimeAnalysisProcessor
+        Получение исторических данных из БД через TimeAnalysisProcessor
 
         Returns:
             dict: данные по месяцам (рекламации, претензии количество, претензии суммы)
@@ -168,13 +209,18 @@ class ClaimPrognosisProcessor:
             "claims_costs": monthly_data["claims_costs"],
         }
 
-    # ========== ПРОГНОЗЫ ПОКАЗАТЕЛЕЙ ==========
+    # ========== БАЗОВЫЕ МЕТОДЫ ПРОГНОЗИРОВАНИЯ ==========
+    # Эти методы используют self.forecaster — объект, созданный в _create_forecaster()
 
     def _forecast_reclamations(self, historical_reclamations):
         """
-        Прогноз количества рекламаций
+        Прогноз количества рекламаций.
 
-        historical_reclamations: список исторических значений
+        Используется во ВСЕХ методах прогнозирования.
+        Рекламации прогнозируются независимо от претензий.
+
+        Args:
+            historical_reclamations: список исторических значений
 
         Returns:
             list: прогноз на forecast_months периодов
@@ -187,7 +233,11 @@ class ClaimPrognosisProcessor:
         """
         Прогноз количества претензий (НЕЗАВИСИМЫЙ)
 
-        historical_claims: список исторических значений
+        Используется в методах: statistical, ml, seasonal.
+        НЕ используется в linked (там количество = рекламации × расчитанную конверсию).
+
+        Args:
+            historical_claims: список исторических значений
 
         Returns:
             list: прогноз на forecast_months периодов
@@ -200,7 +250,11 @@ class ClaimPrognosisProcessor:
         """
         Прогноз сумм претензий (НЕЗАВИСИМЫЙ)
 
-        historical_costs: список исторических сумм
+        Используется в методах: statistical, ml, seasonal.
+        НЕ используется в linked (там суммы через регрессию от рекламаций).
+
+        Args:
+            historical_costs: список исторических сумм
 
         Returns:
             list: прогноз на forecast_months периодов
@@ -209,19 +263,27 @@ class ClaimPrognosisProcessor:
             historical_costs, self.forecast_months, round_decimals=2
         )
 
-    # === НОВЫЕ МЕТОДЫ ДЛЯ СВЯЗАННОГО ПРОГНОЗА ===
+    # =========== СВЯЗАННЫЙ ПРОГНОЗ (LINKED) =============
 
     def _analyze_correlation(self, reclamations, claims_costs):
         """
         Анализ корреляции между рекламациями и суммами претензий.
+
+        Корреляция показывает:
+            1. Есть ли связь между рекламациями и претензиями?
+            2. Насколько она сильная?
+            3. Какой временной лаг (через сколько месяцев)?
+
+        Если корреляция низкая — linked метод не имеет смысла.
 
         Args:
             reclamations: список количества рекламаций
             claims_costs: список сумм претензий
 
         Returns:
-            dict: результаты анализа корреляции
+            dict с результатами анализа
         """
+        # Минимум 6 точек для осмысленного анализа
         if len(reclamations) < 6 or len(claims_costs) < 6:
             return {
                 "optimal_lag": 3,  # Значение по умолчанию
@@ -230,6 +292,7 @@ class ClaimPrognosisProcessor:
                 "error": "Недостаточно данных для анализа корреляции",
             }
 
+        # Создаём анализатор и запускаем анализ
         correlation_analyzer = TimeSeriesCorrelation(reclamations, claims_costs)
 
         return correlation_analyzer.analyze(max_lag=6)
@@ -239,9 +302,9 @@ class ClaimPrognosisProcessor:
         Связанный прогноз: рекламации → претензии.
 
         Алгоритм:
-        1. Анализируем корреляцию и находим оптимальный лаг
-        2. Прогнозируем рекламации сезонным методом
-        3. На основе прогноза рекламаций прогнозируем претензии
+            1. Анализируем корреляцию и находим оптимальный лаг
+            2. Прогнозируем рекламации сезонным методом
+            3. На основе прогноза рекламаций прогнозируем претензии
 
         Args:
             historical_data: dict с историческими данными
@@ -253,14 +316,52 @@ class ClaimPrognosisProcessor:
         claims_count = historical_data["claims"]
         claims_costs = historical_data["claims_costs"]
 
-        # 1. Анализ корреляции
+        # ПРОВЕРКА МИНИМУМА ДАННЫХ
+        # Для linked нужно минимум 6 месяцев данных.
+        # При меньшем количестве — fallback на сезонный прогноз.
+        min_data_points = 6
+        if len(reclamations) < min_data_points or len(claims_costs) < min_data_points:
+            # Fallback на сезонный прогноз
+            seasonal_forecaster = SeasonalForecast(
+                method="auto", seasonal_period=12, seasonal_type=self.seasonal_type
+            )
+
+            reclamations_forecast = seasonal_forecaster.forecast(
+                reclamations, self.forecast_months, round_decimals=0
+            )
+            claims_count_forecast = seasonal_forecaster.forecast(
+                claims_count, self.forecast_months, round_decimals=0
+            )
+            claims_costs_forecast = seasonal_forecaster.forecast(
+                claims_costs, self.forecast_months, round_decimals=2
+            )
+
+            # Пустые CI — данных недостаточно. Сохраняем информацию об ошибке
+            self._correlation_analysis = {
+                "optimal_lag": 0,
+                "correlation": 0.0,
+                "is_significant": False,
+                "error": f"Недостаточно данных (нужно минимум {min_data_points} месяцев)",
+            }
+            self._linked_model_info = None
+
+            return {
+                "reclamations": reclamations_forecast,
+                "claims_count": claims_count_forecast,
+                "claims_costs": claims_costs_forecast,
+                "claims_costs_ci_lower": [],  # Пустой CI — данных недостаточно
+                "claims_costs_ci_upper": [],
+            }
+
+        # ШАГ 1: АНАЛИЗ КОРРЕЛЯЦИИ
         self._correlation_analysis = self._analyze_correlation(
             reclamations, claims_costs
         )
         optimal_lag = self._correlation_analysis.get("optimal_lag", 3)
 
-        # 2. Прогноз рекламаций (сезонный)
+        # ШАГ 2: ПРОГНОЗ РЕКЛАМАЦИЙ (сезонный метод)
         # Прогнозируем на forecast_months + lag для расчёта претензий
+        # Дополнительные месяцы нужны т.к. претензии "отстают" от рекламаций на lag месяцев
         extended_forecast_months = self.forecast_months + optimal_lag
 
         seasonal_forecaster = SeasonalForecast(
@@ -274,7 +375,7 @@ class ClaimPrognosisProcessor:
         # Основной прогноз рекламаций (без расширения)
         reclamations_forecast = reclamations_forecast_extended[: self.forecast_months]
 
-        # 3. Создаём модель связанного прогноза претензий
+        # ШАГ 3: ОБУЧЕНИЕ МОДЕЛИ СВЯЗАННОГО ПРОГНОЗА
         claims_predictor = ClaimsPredictor(
             reclamations_history=reclamations,
             claims_count_history=claims_count,
@@ -283,10 +384,10 @@ class ClaimPrognosisProcessor:
         )
         claims_predictor.fit()
 
-        # Сохраняем информацию о модели
+        # Сохраняем информацию о модели для UI
         self._linked_model_info = claims_predictor.get_full_analysis()
 
-        # 4. Прогноз претензий на основе рекламаций
+        # ШАГ 4: ПРОГНОЗ ПРЕТЕНЗИЙ
         claims_predictions = claims_predictor.predict(reclamations_forecast)
 
         claims_count_forecast = [
@@ -306,7 +407,7 @@ class ClaimPrognosisProcessor:
             "claims_costs_ci_upper": claims_costs_ci_upper,
         }
 
-    # ========== ПАРАМЕТРЫ КОНВЕРСИИ (ИНФОРМАЦИОННЫЕ) ==========
+    # ========== ПАРАМЕТРЫ КОНВЕРСИИ (информационные карточки) ==========
 
     def _get_conversion_params(self):
         """
@@ -331,7 +432,7 @@ class ClaimPrognosisProcessor:
         if summary["total_reclamations"] == 0:
             return {
                 "conversion_rate": 0,
-                "escalation_days": 120,
+                "escalation_days": 120,  # Значение по умолчанию
                 "total_reclamations": 0,
                 "escalated_reclamations": 0,
             }
@@ -343,15 +444,19 @@ class ClaimPrognosisProcessor:
             "escalated_reclamations": summary["escalated_reclamations"],
         }
 
-    # ========== ГЕНЕРАЦИЯ МЕТОК ==========
+    # ========== ГЕНЕРАЦИЯ МЕТОК ДЛЯ ОСИ X ==========
 
     def _generate_forecast_labels(self, start_year, start_month, months_count):
         """
         Генерация меток для прогнозных месяцев
 
-        start_year: стартовый год
-        start_month: стартовый месяц
-        months_count: количество месяцев
+        Когда прогноз выходит за пределы исторических данных,
+        нужно создать новые метки для оси X.
+
+        Args:
+            start_year: стартовый год
+            start_month: стартовый месяц (1-12)
+            months_count: сколько месяцев генерировать
 
         Returns:
             tuple: (labels, labels_formatted)
@@ -371,21 +476,24 @@ class ClaimPrognosisProcessor:
 
         return labels, labels_formatted
 
-    # ========== ОБЪЕДИНЕНИЕ ДАННЫХ ==========
+    # ========== # ОБЪЕДИНЕНИЕ ФАКТА И ПРОГНОЗА ==========
 
     def get_combined_data(self):
         """
         Объединение исторических и прогнозных данных
 
         ЛОГИКА:
-        1. Определяем ТЕКУЩИЙ месяц через date.today()
-        2. Рекламации: факт до ПРОШЛОГО месяца, прогноз с ТЕКУЩЕГО
-        3. Претензии: факт до позапрошлого месяца, прогноз с ПРОШЛОГО
+        1. Определяем ТЕКУЩИЙ месяц через date.today().
+        2. Рекламации: факт до ПРОШЛОГО месяца, прогноз с ТЕКУЩЕГО.
+           Фактические данные по РЕКЛАМАЦИЯМ за текущий месяц ещё неполные, поэтому прогноз начинается с ТЕКУЩЕГО месяца.
+        3. Претензии: факт до позапрошлого месяца, прогноз с ПРОШЛОГО.
+           Претензии "отстают" от рекламаций примерно на месяц. Фактических данных по ПРЕТЕНЗИЯМ за прошлый месяц ещё нет,
+           поэтому прогноз начинается с ПРОШЛОГО месяца.
 
         Returns:
             dict: объединенные данные для визуализации
         """
-        # 1. Получаем исторические данные
+        # ШАГ 1: ПОЛУЧЕНИЕ ИСТОРИЧЕСКИХ ДАННЫХ
         historical = self._get_historical_data()
 
         if not historical["labels"]:
@@ -398,28 +506,32 @@ class ClaimPrognosisProcessor:
                 "claims_forecast": [],
                 "claims_costs_fact": [],
                 "claims_costs_forecast": [],
-                "claims_costs_ci_lower": [],  # НОВОЕ
-                "claims_costs_ci_upper": [],  # НОВОЕ
+                "claims_costs_ci_lower": [],
+                "claims_costs_ci_upper": [],
                 "table_data": [],
             }
 
-        # 2. Определяем ТЕКУЩИЙ месяц динамически
+        # ШАГ 2: ОПРЕДЕЛЕНИЕ ТЕКУЩЕГО МЕСЯЦА (динамически)
         today = date.today()
-        current_month_label = today.strftime("%Y-%m")
+        current_month_label = today.strftime("%Y-%m")  # "2025-03"
 
         # Ищем индекс текущего месяца в истории
         try:
             current_index = historical["labels"].index(current_month_label)
         except ValueError:
+            # Текущего месяца нет в истории — вся история в прошлом
             current_index = len(historical["labels"])
 
-        # 3. Определяем границы факт/прогноз
+        # ШАГ 3: ОПРЕДЕЛЕНИЕ ГРАНИЦ ФАКТ/ПРОГНОЗ
+        # Рекламации: факт до текущего месяца (не включая)
         recl_fact_end = current_index
+        # Претензии: факт до прошлого месяца (не включая)
         claim_fact_end = max(0, current_index - 1)
 
-        # 4. ПРОГНОЗИРОВАНИЕ (различается по методу)
+        # ШАГ 4: ПРОГНОЗИРОВАНИЕ (различается по методу)
         if self.forecast_method == "linked":
-            # === СВЯЗАННЫЙ ПРОГНОЗ ===
+            # СВЯЗАННЫЙ ПРОГНОЗ
+            # Все три показателя рассчитываются взаимосвязано
             recl_historical = (
                 historical["reclamations"][:recl_fact_end] if recl_fact_end > 0 else []
             )
@@ -447,7 +559,8 @@ class ClaimPrognosisProcessor:
             claims_costs_ci_upper = linked_forecast.get("claims_costs_ci_upper", [])
 
         else:
-            # === СТАНДАРТНЫЙ ПРОГНОЗ (statistical, ml, seasonal) ===
+            # СТАНДАРТНЫЙ ПРОГНОЗ (statistical, ml, seasonal)
+            # Каждый показатель прогнозируется независимо
             recl_historical = (
                 historical["reclamations"][:recl_fact_end] if recl_fact_end > 0 else []
             )
@@ -465,15 +578,19 @@ class ClaimPrognosisProcessor:
             )
             claims_costs_forecast = self._forecast_claim_costs(cost_historical)
 
+            # Для не-linked методов нет доверительного интервала
             claims_costs_ci_lower = []
             claims_costs_ci_upper = []
 
-        # 5. Генерируем метки для НОВЫХ месяцев
+        # ШАГ 5: ГЕНЕРАЦИЯ МЕТОК ДЛЯ НОВЫХ МЕСЯЦЕВ
+        # Если прогноз выходит за пределы исторических данных, то создаем новые метки
         last_label = historical["labels"][-1]
         last_year, last_month = map(int, last_label.split("-"))
         next_month_date = date(last_year, last_month, 1) + relativedelta(months=1)
 
+        # Определяем сколько прогнозных месяцев уже есть в истории
         months_in_history = len(historical["labels"]) - current_index
+        # Определяем сколько новых меток нужно создать
         new_months_needed = max(0, self.forecast_months - months_in_history)
 
         if new_months_needed > 0:
@@ -486,18 +603,27 @@ class ClaimPrognosisProcessor:
             new_labels = []
             new_labels_formatted = []
 
-        # 6. Объединяем метки
+        # ШАГ 6: ОБЪЕДИНЕНИЕ МЕТОК
         all_labels = historical["labels"] + new_labels
         all_labels_formatted = historical["labels_formatted"] + new_labels_formatted
         total_length = len(all_labels)
 
-        # 7. Формируем массивы
+        # ШАГ 7: ФОРМИРОВАНИЕ МАССИВОВ ДЛЯ ГРАФИКА
+        # ────────────────────────────────────────────────────
+        # Для каждого месяца определяем:
+        # - Это факт или прогноз?
+        # - Какое значение показать?
+        #
+        # Массивы формата: [value, 0, 0, value, value, ...]
+        # где 0 означает "не показывать" (для графика Chart.js)
+        # ────────────────────────────────────────────────────
         # РЕКЛАМАЦИИ
         reclamations_fact = []
         reclamations_forecast_padded = []
 
         for i in range(total_length):
             if i < recl_fact_end:
+                # Факт — берём из истории
                 reclamations_fact.append(
                     historical["reclamations"][i]
                     if i < len(historical["reclamations"])
@@ -505,6 +631,7 @@ class ClaimPrognosisProcessor:
                 )
                 reclamations_forecast_padded.append(0)
             else:
+                # Прогноз — берём из forecast
                 reclamations_fact.append(0)
                 forecast_index = i - recl_fact_end
                 reclamations_forecast_padded.append(
@@ -532,7 +659,7 @@ class ClaimPrognosisProcessor:
                     else 0
                 )
 
-        # ПРЕТЕНЗИИ (суммы)
+        # ПРЕТЕНЗИИ (суммы) + доверительные интервалы
         claims_costs_fact = []
         claims_costs_forecast_padded = []
         ci_lower_padded = []
@@ -567,7 +694,7 @@ class ClaimPrognosisProcessor:
                     else 0.0
                 )
 
-        # 8. Формируем данные для ТАБЛИЦЫ
+        # ШАГ 8: ФОРМИРОВАНИЕ ДАННЫХ ДЛЯ ТАБЛИЦЫ
         table_data = []
         for i in range(total_length):
             row = {
@@ -603,7 +730,31 @@ class ClaimPrognosisProcessor:
     # ========== ГЛАВНЫЙ МЕТОД ==========
 
     def generate_analysis(self):
-        """Главный метод генерации прогноза"""
+        """
+        Главный метод прогноза: собирает всё и возвращает готовый результат.
+
+        Это точка входа для представления (view).
+        Вызывает все остальные методы в правильном порядке.
+
+        Порядок действий:
+        1. Получить исторические данные
+        2. Получить параметры конверсии (для карточек)
+        3. Сформировать объединённые данные (факт + прогноз)
+        4. Добавить метаданные (информация о модели, сезонность)
+        5. Вернуть готовый результат
+
+        Returns:
+            dict с ключами:
+            - success: True/False — успешно ли выполнен анализ
+            - error: текст ошибки (если success=False)
+            - year, consumers, forecast_months, ... — параметры
+            - historical: исторические данные
+            - conversion_params: параметры конверсии
+            - combined_data: объединённые данные для графика
+            - correlation_analysis: результат корреляции (для linked)
+            - linked_model: информация о модели (для linked)
+            - seasonality_pattern: сезонные индексы (для seasonal/linked)
+        """
         try:
             # Получаем все данные
             historical = self._get_historical_data()
@@ -612,6 +763,7 @@ class ClaimPrognosisProcessor:
 
             # Проверяем наличие исторических данных
             if not historical["labels"]:
+                # Формируем понятное сообщение об ошибке
                 consumer_text = (
                     "всех потребителей"
                     if self.all_consumers_mode
@@ -626,7 +778,7 @@ class ClaimPrognosisProcessor:
                     "error": f"Нет данных для {consumer_text} за {self.year} год",
                 }
 
-            # Определяем текст для отображения
+            # Формируем текст для отображения
             if self.all_consumers_mode:
                 consumer_display = "всех потребителей"
             elif len(self.consumers) == 1:
@@ -634,6 +786,7 @@ class ClaimPrognosisProcessor:
             else:
                 consumer_display = f"{len(self.consumers)} потребителей"
 
+            # БАЗОВЫЙ РЕЗУЛЬТАТ
             result = {
                 "success": True,
                 "year": self.year,
@@ -642,6 +795,7 @@ class ClaimPrognosisProcessor:
                 "all_consumers_mode": self.all_consumers_mode,
                 "forecast_months": self.forecast_months,
                 "exchange_rate": str(self.exchange_rate),
+                # Информация о методе
                 "forecast_method": self.forecast_method,
                 "forecast_method_display": self.METHOD_DESCRIPTIONS.get(
                     self.forecast_method, self.forecast_method
@@ -652,17 +806,18 @@ class ClaimPrognosisProcessor:
                     else None
                 ),
                 "ml_model": self.ml_model if self.forecast_method == "ml" else None,
+                # Данные
                 "historical": historical,
                 "conversion_params": conversion_params,
                 "combined_data": combined_data,
             }
 
-            # === НОВОЕ: Добавляем информацию о модели для linked ===
+            # Дополнительные данные для linked метода
             if self.forecast_method == "linked":
                 result["correlation_analysis"] = self._correlation_analysis
                 result["linked_model"] = self._linked_model_info
 
-            # === НОВОЕ: Сезонные индексы для seasonal/linked ===
+            # Сезонные индексы для seasonal и linked методов
             if self.forecast_method in ("seasonal", "linked"):
                 seasonal = SeasonalForecast(method="auto", seasonal_period=12)
                 result["seasonality_pattern"] = seasonal.get_seasonality_pattern(
@@ -685,6 +840,8 @@ class ClaimPrognosisProcessor:
     def get_available_methods(self):
         """
         Возвращает доступные методы прогнозирования для UI.
+
+        Используется в представлении для динамического построения формы.
 
         Returns:
             list[dict]: список методов с описаниями
