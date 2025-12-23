@@ -38,7 +38,7 @@ echo        Выполняется Python-скрипт email_send_start.py ...
 echo.
 python email_send_start.py
 
-timeout /t 2 /nobreak > nul
+timeout /t 3 /nobreak > nul
 :: ---------------------------------------------------------------------------------------------
 
 :: 4. Запускаем прокси-сервер Nginx
@@ -48,7 +48,7 @@ cd /d "C:\nginx-1.28.0"
 start "" ".\nginx.exe"
 echo.
 
-timeout /t 2 /nobreak > nul
+timeout /t 3 /nobreak > nul
 :: ---------------------------------------------------------------------------------------------
 
 :: Выводим информационное сообщение о запуске серверов
