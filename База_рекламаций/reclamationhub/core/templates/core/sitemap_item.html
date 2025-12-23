@@ -1,0 +1,34 @@
+<!-- Include-шаблон для секций на карте сайта с описаниями разделов -->
+
+<!-- core\templates\core\sitemap_item.html
+
+Вынесли повторяющийся код в отдельный шаблон. Используется в templates\core\about.html
+-->
+
+<div class="sitemap-section h-100">
+    <h6>
+        {% comment %} {{ item.icon }} {% endcomment %}
+        {% if item.url %}
+        <a href="{{ item.url }}">{{ item.section }}</a>
+        {% else %}
+        {{ item.section }}
+        {% endif %}
+    </h6>
+    <small class="text-muted d-block {% if item.children %}mb-2{% endif %}">
+        {{ item.description }}
+    </small>
+
+    {% if item.children %}
+    <ul class="mb-0 small">
+        {% for child in item.children %}
+        <li>
+            {% if child.url %}
+            <a href="{{ child.url }}">{{ child.name }}</a>
+            {% else %}
+            {{ child.name }}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>

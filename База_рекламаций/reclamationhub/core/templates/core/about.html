@@ -1,0 +1,154 @@
+<!-- Шаблон страницы "О проекте" -->
+
+<!-- core\templates\core\about.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}О проекте{% endblock %}
+
+{% block content %}
+
+<!-- Заголовок -->
+<div class="about-header">
+    <div class="d-flex align-items-center justify-content-between flex-wrap">
+        <div class="d-flex align-items-center">
+            <h2 class="mb-3">{{ project.name }}</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Описание системы и ключевые возможности -->
+<div class="row mb-3">
+    <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="card h-100">
+            <div class="card-header" style="background-color: #417690; color: white;">
+                <h5 class="mb-0">📊 О системе</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text small">{{ project.description }}</p>
+                <hr>
+                <table class="info-table w-100 small">
+                    <tr>
+                        <td>Версия</td>
+                        <td>{{ project.version }} {{ project.release_date }}</td>
+                    </tr>
+                    <tr>
+                        <td>Разработчик</td>
+                        <td><strong>{{ project.author }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td><a href="mailto:{{ project.email }}">{{ project.email }}</a></td>
+                    </tr>
+                    <tr>
+                        <td>Год разработки и срок поддержки</td>
+                        <td><strong>{{ project.year_started }} — {% now "Y" %}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Лицензия</td>
+                        <td>{{ project.license }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Описание текущей версии -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header" style="background-color: #417690; color: white;">
+                <h5 class="mb-0">
+                    📊 Текущая версия
+                    <small class="opacity-75 ms-2">{{ project.version }} {{ project.release_date }}</small>
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6 class="text-muted mb-2"><strong>Что включено:</strong></h6>
+                <div class="row small">
+                    {% for item in whats_new %}
+                    <p class="mb-1">
+                        <span class="text-success me-2">✓</span>{{ item }}
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Карта сайта -->
+<div class="card mb-3">
+    <div class="card-header" style="background-color: #17a2b8; color: white;">
+        <h5 class="mb-0">🗺️ Карта сайта</h5>
+    </div>
+    <div class="card-body">
+
+        <!-- Строка 1: Главная, Рекламации, Акты, Претензии (4 колонки) -->
+        <div class="row mb-3">
+            {% for item in sitemap.row1 %}
+            <div class="col-sm-6 col-lg-3 mb-3 mb-lg-0">
+                {% include 'core/sitemap_item.html' %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <hr class="my-2">
+
+        <!-- Строка 2: Справки, Аналитика рекламаций, Аналитика претензий (3 колонки) -->
+        <div class="row mb-3">
+            {% for item in sitemap.row2 %}
+            <div class="col-md-4 mb-3 mb-md-0">
+                {% include 'core/sitemap_item.html' %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <hr class="my-2">
+
+        <!-- Строка 3: Экспорт, Администрирование (2 колонки) -->
+        <div class="row">
+            {% for item in sitemap.row3 %}
+            <div class="col-md-6 mb-3 mb-md-0">
+                {% include 'core/sitemap_item.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Технологии -->
+<div class="card mb-3">
+    <div class="card-header" style="background-color: #17a2b8; color: white;">
+        <h5 class="mb-0">📊 Используемые технологии</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for tech in technologies %}
+        <li class="list-group-item d-flex justify-content-between align-items-center py-1">
+            <div>
+                {% comment %} <strong>{{ tech.name }}</strong> {% endcomment %}
+                {{ tech.name }}
+                {% if tech.version %}
+                <small class="text-muted">{{ tech.version }}</small>
+                {% endif %}
+            </div>
+            <small class="text-muted">{{ tech.purpose }}</small>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Кнопки действий -->
+<div class="row mt-3 mb-4">
+    <div class="col-12">
+        <div class="d-flex gap-2 justify-content-center flex-wrap">
+            <a href="{% url 'home' %}" class="btn btn-primary me-2">
+                🔄 На главную
+            </a>
+            <button class="btn btn-outline-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                ⬆️ Вверх
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

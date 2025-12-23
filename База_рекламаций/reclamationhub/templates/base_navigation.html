@@ -74,12 +74,15 @@
 
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold text-white" href="{% url 'admin:index' %}">Панель редактирования</a>
+                    <a class="nav-link text-white" href="{% url 'admin:index' %}">Редактирование</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold text-white" href="{% url 'utils:excel_exporter' %}">
+                    <a class="nav-link text-white" href="{% url 'utils:excel_exporter' %}">
                         <i class="fas fa-file-excel"></i> Экспорт Excel
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'about' %}">О проекте</a>
                 </li>
             </ul>
         </div>
