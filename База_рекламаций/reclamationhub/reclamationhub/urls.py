@@ -21,6 +21,7 @@ from django.conf import settings
 from django.views.static import serve
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
+from django.utils.safestring import mark_safe
 
 from reclamationhub.admin import admin_site
 from reclamations.views.product_utils import get_products
@@ -106,4 +107,7 @@ if settings.DEBUG:
 admin_site.site_header = "Панель редактирования"
 
 # Изменяем второй заголовок (над виджетами)
-admin_site.index_title = "База рекламаций ОТК"
+admin_site.index_title = mark_safe(
+    "<strong>Аналитическая система управления рекламациями (АСУР)</strong>"
+)
+# admin_site.index_title = "База рекламаций ОТК"

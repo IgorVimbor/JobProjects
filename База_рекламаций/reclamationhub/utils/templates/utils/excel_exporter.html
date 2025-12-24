@@ -30,11 +30,17 @@
                                 <div class="mb-3">
                                     <label for="year" class="form-label fw-bold">Год экспорта данных:</label>
                                     <select class="form-select" id="year" name="year" required>
-                                        {% for year in available_years %}
+                                        {% comment %} {% for year in available_years %}
                                             {% if year == "all" %}
                                                 <option value="all" {% if year == current_year %}selected{% endif %}>Все годы</option>
                                             {% else %}
                                                 <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                            {% endif %}
+                                        {% endfor %} {% endcomment %}
+                                        <option value="all">Все годы</option>
+                                        {% for year in available_years %}
+                                            {% if year != "all" %}
+                                            <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>

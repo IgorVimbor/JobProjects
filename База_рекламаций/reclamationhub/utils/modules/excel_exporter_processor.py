@@ -1,6 +1,6 @@
-# utils\modules\excel_exporter.py
+# utils\modules\excel_exporter_processor.py
 """
-Процессор экспортера в Excel данных из базы данных с возможностью выбора полей.
+Процессор экспорта в Excel данных из базы данных.
 
 Включает класс:
 - `UniversalExcelExporter` - Универсальный экспортер в Excel с возможностью выбора полей

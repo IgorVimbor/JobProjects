@@ -1,6 +1,6 @@
 # СТРУКТУРА ПРОЕКТА reclamationhub
 
-*Создано: 2025-12-24 00:44:47*
+*Создано: 2025-12-24 23:38:50*
 
 ---
 
@@ -132,7 +132,7 @@
 **Шаблоны (templates):**
 
 - `core\about.html` — Шаблон страницы "О проекте"
-- `core\sitemap_item.html` — {{ item.icon }}
+- `core\sitemap_item.html` — Include-шаблон для секций на карте сайта с описаниями разделов
 
 ---
 
@@ -236,10 +236,14 @@
 
 **Модули (modules):**
 
-- `excel_exporter.py` — 
-  Процессор экспортера в Excel данных из базы данных с возможностью выбора полей.  
+- `excel_exporter_processor.py` — 
+  Процессор экспорта в Excel данных из базы данных.  
   Включает класс:  
   - `UniversalExcelExporter` - Универсальный экспортер в Excel с возможностью выбора полей  
+
+**Представления (views):**
+
+- `excel_exporter.py` — Представление для страницы экспорта в Excel данных из базы данных
 
 **Шаблоны (templates):**
 
@@ -324,7 +328,7 @@ reclamationhub/
 │   ├── templates/  # Шаблоны
 │   │   └── core/
 │   │       ├──  about.html  # Шаблон страницы "О проекте"
-│   │       └──  sitemap_item.html  # {{ item.icon }}
+│   │       └──  sitemap_item.html  # Include-шаблон для секций на карте сайта с описаниями разделов
 │   ├──  __init__.py
 │   ├──  apps.py  # Конфигурация приложения
 │   ├──  project_info.py  # Метаданные проекта ReclamationHub.
@@ -344,7 +348,7 @@ reclamationhub/
 │   ├──  apps.py  # Конфигурация приложения
 │   ├──  forms.py  # Формы Django
 │   ├──  models.py  # Модели данных (ORM)
-│   └──  storages.py
+│   └──  storages.py  # Файл для переопределения стандартного класса Storage.
 │
 ├── project_docs/  # Django App
 │   ├── generators/
@@ -363,9 +367,9 @@ reclamationhub/
 ├── reclamationhub/
 │   ├── settings/
 │   │   ├──  __init__.py
-│   │   ├──  base.py  # Django settings for reclamationhub project.
-│   │   ├──  development.py
-│   │   └──  production.py
+│   │   ├──  base.py  # Базовые настройки Django для проекта
+│   │   ├──  development.py  # Настройки Django для режима разработки
+│   │   └──  production.py  # Настройки Django для рабочего режима
 │   ├──  __init__.py
 │   ├──  admin.py  # Настройка админ-панели
 │   ├──  asgi.py  # ASGI-конфигурация
@@ -470,14 +474,15 @@ reclamationhub/
 ├── utils/  # Django App
 │   ├── modules/  # Процессоры
 │   │   ├──  __init__.py
-│   │   └──  excel_exporter.py  # Процессор экспортера в Excel данных из базы данных с возможностью выбора полей.
+│   │   └──  excel_exporter_processor.py  # Процессор экспорта в Excel данных из базы данных.
 │   ├── templates/  # Шаблоны
 │   │   └── utils/
 │   │       └──  excel_exporter.html  # Шаблон страницы экспортера в Excel данных из базы данных
+│   ├── views/  # Представления
+│   │   └──  excel_exporter.py  # Представление для страницы экспорта в Excel данных из базы данных
 │   ├──  __init__.py
 │   ├──  apps.py  # Конфигурация приложения
-│   ├──  urls.py  # Маршрутизация URL
-│   └──  views.py  # Представления (контроллеры)
+│   └──  urls.py  # Маршрутизация URL
 │
 ├──  .env.production
 ├──  backup_and_commit.py  # Python-скрипт для автоматического логирования, создания бэкапа БД и отправки изменений на Git

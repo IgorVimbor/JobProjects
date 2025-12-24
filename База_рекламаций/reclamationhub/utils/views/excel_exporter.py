@@ -1,13 +1,14 @@
-# utils\views.py
-"""Представление для страницы экспортера в Excel данных из базы данных"""
+# utils\views\excel_exporter.py
+"""Представление для страницы экспорта в Excel данных из базы данных"""
 
+from datetime import date
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 from reclamations.models import Reclamation
-from utils.modules.excel_exporter import UniversalExcelExporter
+from utils.modules.excel_exporter_processor import UniversalExcelExporter
 from reports.config.paths import BASE_REPORTS_DIR
 
 
@@ -56,23 +57,27 @@ def excel_exporter_page(request):
             grouped_fields[group] = []
         grouped_fields[group].append(field)
 
-    # Получаем доступные годы
+    # Получаем доступные годы ... ['all', 2025, 2024]
     available_years = ["all"] + list(
         Reclamation.objects.values_list("year", flat=True).distinct().order_by("-year")
     )
+    # Находим последний год по которому есть рекламации (кроме 'all')
+    last_reclamation_year = available_years[1]
 
     # Получаем названия полей быстрого экспорта
     quick_export_names = get_quick_export_field_names()
 
     context = {
-        "page_title": "Универсальный экспорт данных",
+        "page_title": "Экспорт в Excel",
         "description": "✅ Для экспорта в Excel файл выберите столбцы или воспользуйтесь быстрым экспортом с предустановленным набором столбцов",
         "grouped_fields": grouped_fields,
         "total_fields": len(available_fields),
         "quick_export_fields": quick_export_names,
         "quick_fields_count": len(quick_export_names),
         "available_years": available_years,
-        "current_year": "all",  # По умолчанию все годы
+        # "current_year": "all",  # По умолчанию все годы
+        # "current_year": date.today().year,  # По умолчанию текущий год
+        "current_year": last_reclamation_year,
     }
 
     return render(request, "utils/excel_exporter.html", context)

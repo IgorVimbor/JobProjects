@@ -1,3 +1,5 @@
+"""Базовые настройки Django для проекта"""
+
 """
 Django settings for reclamationhub project.
 

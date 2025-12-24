@@ -7,6 +7,7 @@
 
 import os
 import json
+from django.utils.safestring import mark_safe
 import pandas as pd
 from datetime import date
 from dateutil.relativedelta import relativedelta
@@ -240,11 +241,20 @@ class CulpritsDefectProcessor:
                 df_filtered["act_number_int"] >= self.start_act_number
             ]
 
-            if df_filtered.empty:
-                return (
-                    False,
-                    f"Нет данных за {self.analysis_year} год начиная с акта № {self.start_act_number}",
-                )
+            if df_filtered.empty:  # Если датафрейм пустой
+                if self.prev_month.month == len(self.dct_act_numbers):
+                    return (  # Если справка за прошлый месяц уже формировалась - выводим сообщение
+                        False,
+                        mark_safe(
+                            f"Справка за {self.month_name} {self.analysis_year} года <strong>уже формировалась</strong>! "
+                            f"Смотри в папке {BASE_REPORTS_DIR}."
+                        ),
+                    )
+                else:  # Если справка не делалась, но датафрейм пустой - выводим сообщение
+                    return (
+                        False,
+                        f"Нет данных за {self.analysis_year} год начиная с акта № {self.start_act_number}",
+                    )
 
             # Находим минимальный и максимальный номера актов (числовые)
             self.start_act_number = int(df_filtered["act_number_int"].min())
