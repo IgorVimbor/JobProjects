@@ -64,6 +64,9 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     form = ReclamationAdminForm
 
+    # Добавляем шаблон формы
+    change_list_template = "admin/reclamation_changelist.html"
+
     # Отображение кнопок сохранения сверху и снизу формы
     save_on_top = True
 
@@ -221,9 +224,18 @@ class ReclamationAdmin(admin.ModelAdmin):
         ),
     ]
 
+    # Автозаполнение для связанных полей
+    autocomplete_fields = ["product_name", "product"]
+
+    # Сортировка по умолчанию
+    ordering = ["-id"]
+
     # Фильтры
     # list_filter = ['year', "status", "defect_period", "product__product_type"]
     list_filter = [YearListFilter, "status", "defect_period", "product__product_type"]
+
+    # Быстрый поиск по ID
+    raw_id_fields = ["product_name", "product"]
 
     # Поиск
     search_fields = [
@@ -248,54 +260,23 @@ class ReclamationAdmin(admin.ModelAdmin):
     """
     )
 
-    # Метод get_queryset с select_related используется для оптимизации запросов к базе данных.
-    # Без select_related будет N+1 запросов (1 запрос для списка рекламаций + N запросов для связанных данных)
-    # С select_related будет только 1 запрос
-    def get_queryset(self, request):
-        return (
-            super()
-            .get_queryset(request)
-            .select_related("product_name", "product", "defect_period")
-        )
-
-    def changelist_view(self, request, extra_context=None):
-        """Метод для настройки вывода рекламаций по текущему году по умолчанию"""
-        # Проверяем есть ли фильтр по году от пользователя
-        user_year_filter = "year" in request.GET
-        auto_year_filter = "year__exact" in request.GET
-
-        if user_year_filter and auto_year_filter:
-            # Конфликт! Удаляем автоматический фильтр
-            request.GET = request.GET.copy()
-            del request.GET["year__exact"]
-
-        elif not user_year_filter and not auto_year_filter:
-            # Никаких фильтров нет - добавляем текущий год
-            current_year = datetime.now().year
-            request.GET = request.GET.copy()
-            request.GET["year__exact"] = current_year
-
-        return super().changelist_view(request, extra_context)
-
-    # ----------------------------- Вспомогательные методы для отображения -----------------------------------
-
-    # def claimed_defect_display(self, obj):
-    #     """Метод для сокращения длинного текста дефекта"""
-    #     if len(obj.claimed_defect) > 50:
-    #         return f"{obj.claimed_defect[:50]}..."
-    #     return obj.claimed_defect
-
-    # claimed_defect_display.short_description = "Дефект"
-
-    # И заменим в list_display (список вверху)
-    # list_display = [
-    #     # ...
-    #     "claimed_defect_display",  # вместо "claimed_defect"
-    #     # ...
-    # ]
-
-    # Добавляем действия в панель "Действие / Выполнить"
+    # Добавляем методы действия в панель "Действие/Выполнить"
     actions = ["add_measures", "add_investigation", "add_disposal_act"]
+
+    # Добавляем URL для методов действий
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(  # для групповой накладной прихода
+                "add_invoice_into/", self.add_invoice_into_view, name="add_invoice_into"
+            ),
+            path(  # для добавления акта утилизации
+                "add_disposal_act/", self.add_disposal_act, name="add_disposal_act"
+            ),
+        ]
+        return custom_urls + urls
+
+    # ========= Определение методов действий ==========
 
     @admin.action(description="Редактировать запись")
     def add_measures(self, request, queryset):
@@ -344,6 +325,137 @@ class ReclamationAdmin(admin.ModelAdmin):
         # Здесь используется self, а во views.py параметр admin_instance в функции -
         # через него передаем ссылку на ReclamationAdmin для вызова message_user.
         return add_disposal_act_view(self, request, queryset)
+
+    def add_invoice_into_view(self, request):
+        """Метод группового добавления накладной прихода рекламационных изделий"""
+        # Здесь используется self, а во views.py параметр admin_instance в функции -
+        # через него передаем ссылку на ReclamationAdmin для вызова message_user.
+        return add_invoice_into_view(self, request)
+
+    # ========= Переопределение стандартных методов Django ==========
+
+    def get_queryset(self, request):
+        """Метод get_queryset с select_related используется для оптимизации запросов к базе данных"""
+        # Без select_related будет N+1 запросов (1 запрос для списка рекламаций + N запросов для связанных данных)
+        # С select_related будет только 1 запрос
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("product_name", "product", "defect_period")
+        )
+
+    def changelist_view(self, request, extra_context=None):
+        """Переопределяем стандартный метод для настройки вывода рекламаций по текущему году по умолчанию"""
+        # Проверяем есть ли фильтр по году от пользователя
+        user_year_filter = "year" in request.GET
+        auto_year_filter = "year__exact" in request.GET
+
+        if user_year_filter and auto_year_filter:
+            # Конфликт! Удаляем автоматический фильтр
+            request.GET = request.GET.copy()
+            del request.GET["year__exact"]
+
+        elif not user_year_filter and not auto_year_filter:
+            # Никаких фильтров нет - добавляем текущий год
+            current_year = datetime.now().year
+            request.GET = request.GET.copy()
+            request.GET["year__exact"] = current_year
+
+        return super().changelist_view(request, extra_context)
+
+    def get_search_results(self, request, queryset, search_term):
+        """Переопределяем стандартный метод поиска для поиска по составному номеру рекламации"""
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term
+        )
+
+        # Дополнительный поиск по формату "2025-1356"
+        if search_term and "-" in search_term:
+            try:
+                year, number = search_term.split("-")
+                queryset |= self.model.objects.filter(
+                    year=int(year), yearly_number=int(number)
+                )
+            except ValueError:
+                pass
+
+        return queryset, use_distinct
+
+    def response_add(self, request, obj, post_url_continue=None):
+        """Переопределяем стандартный метод вывода сообщения при добавлении рекламации"""
+        storage = messages.get_messages(request)
+        storage.used = True  # Очищаем стандартное сообщение
+
+        self.message_user(
+            request, f"Рекламация <{obj}> была успешно добавлена.", messages.SUCCESS
+        )
+        return super().response_add(request, obj, post_url_continue)
+
+    def response_change(self, request, obj):
+        """Переопределяем стандартный метод вывода сообщения при изменении рекламации"""
+        storage = messages.get_messages(request)
+        storage.used = True  # Очищаем стандартное сообщение
+
+        self.message_user(
+            request, f"Рекламация <{obj}> была успешно изменена.", messages.SUCCESS
+        )
+
+        return super().response_change(request, obj)
+
+    def save_model(self, request, obj, form, change):
+        """
+        Переопределяем стандартный метод сохранения для обновления статуса рекламации
+        и добавления суффикса к пробегу
+        """
+        # Добавляем суффикс к пробегу/наработке в зависимости от типа
+        if (
+            obj.away_type == Reclamation.AwayType.KILOMETRE
+            and not obj.mileage_operating_time.endswith(" км")
+        ):
+            obj.mileage_operating_time = f"{obj.mileage_operating_time} км"
+        elif (
+            obj.away_type == Reclamation.AwayType.MOTO
+            and not obj.mileage_operating_time.endswith(" м/ч")
+        ):
+            obj.mileage_operating_time = f"{obj.mileage_operating_time} м/ч"
+        # В базу данных записываем "ПСИ", если выбрано "ПСИ"
+        elif obj.away_type == Reclamation.AwayType.PSI:
+            obj.mileage_operating_time = "ПСИ"
+
+        # Обновление статуса рекламации при добавлении или удалении накладной
+        if change and "receipt_invoice_number" in form.changed_data:
+            old_obj = Reclamation.objects.get(pk=obj.pk)
+
+            # Если статус "Новая" и введена накладная - изменяем статус на "В работе"
+            if obj.receipt_invoice_number and obj.is_new():
+                obj.status = Reclamation.Status.IN_PROGRESS
+
+            # Если статус "В работе" и была накладная, но поле стало пустым - изменяем статус на "Новая"
+            elif (
+                old_obj.receipt_invoice_number
+                and not obj.receipt_invoice_number
+                and obj.status == Reclamation.Status.IN_PROGRESS
+            ):
+                obj.status = Reclamation.Status.NEW
+
+        super().save_model(request, obj, form, change)
+
+    # ========= Вспомогательные методы для отображения в админ-панели ==========
+
+    # def claimed_defect_display(self, obj):
+    #     """Метод для сокращения длинного текста дефекта"""
+    #     if len(obj.claimed_defect) > 50:
+    #         return f"{obj.claimed_defect[:50]}..."
+    #     return obj.claimed_defect
+
+    # claimed_defect_display.short_description = "Дефект"
+
+    # И заменим в list_display (список вверху)
+    # list_display = [
+    #     # ...
+    #     "claimed_defect_display",  # вместо "claimed_defect"
+    #     # ...
+    # ]
 
     @admin.display(description="Номер рекламации")
     def display_number(self, obj):
@@ -427,83 +539,6 @@ class ReclamationAdmin(admin.ModelAdmin):
         # Возвращаем список через <br> (вертикально)
         return mark_safe("<br>".join(links))
 
-    def get_search_results(self, request, queryset, search_term):
-        """Переопределяем стандартный метод поиска для поиска по составному номеру рекламации"""
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term
-        )
-
-        # Дополнительный поиск по формату "2025-1356"
-        if search_term and "-" in search_term:
-            try:
-                year, number = search_term.split("-")
-                queryset |= self.model.objects.filter(
-                    year=int(year), yearly_number=int(number)
-                )
-            except ValueError:
-                pass
-
-        return queryset, use_distinct
-
-    def response_add(self, request, obj, post_url_continue=None):
-        """Переопределяем стандартный метод вывода сообщения при добавлении рекламации"""
-        storage = messages.get_messages(request)
-        storage.used = True  # Очищаем стандартное сообщение
-
-        self.message_user(
-            request, f"Рекламация <{obj}> была успешно добавлена.", messages.SUCCESS
-        )
-        return super().response_add(request, obj, post_url_continue)
-
-    def response_change(self, request, obj):
-        """Переопределяем стандартный метод вывода сообщения при изменении рекламации"""
-        storage = messages.get_messages(request)
-        storage.used = True  # Очищаем стандартное сообщение
-
-        self.message_user(
-            request, f"Рекламация <{obj}> была успешно изменена.", messages.SUCCESS
-        )
-
-        return super().response_change(request, obj)
-
-    def save_model(self, request, obj, form, change):
-        """
-        Переопределяем стандартный метод сохранения для обновления статуса рекламации
-        и добавления суффикса к пробегу
-        """
-        # Добавляем суффикс к пробегу/наработке в зависимости от типа
-        if (
-            obj.away_type == Reclamation.AwayType.KILOMETRE
-            and not obj.mileage_operating_time.endswith(" км")
-        ):
-            obj.mileage_operating_time = f"{obj.mileage_operating_time} км"
-        elif (
-            obj.away_type == Reclamation.AwayType.MOTO
-            and not obj.mileage_operating_time.endswith(" м/ч")
-        ):
-            obj.mileage_operating_time = f"{obj.mileage_operating_time} м/ч"
-        # В базу данных записываем "ПСИ", если выбрано "ПСИ"
-        elif obj.away_type == Reclamation.AwayType.PSI:
-            obj.mileage_operating_time = "ПСИ"
-
-        # Обновление статуса рекламации при добавлении или удалении накладной
-        if change and "receipt_invoice_number" in form.changed_data:
-            old_obj = Reclamation.objects.get(pk=obj.pk)
-
-            # Если статус "Новая" и введена накладная - изменяем статус на "В работе"
-            if obj.receipt_invoice_number and obj.is_new():
-                obj.status = Reclamation.Status.IN_PROGRESS
-
-            # Если статус "В работе" и была накладная, но поле стало пустым - изменяем статус на "Новая"
-            elif (
-                old_obj.receipt_invoice_number
-                and not obj.receipt_invoice_number
-                and obj.status == Reclamation.Status.IN_PROGRESS
-            ):
-                obj.status = Reclamation.Status.NEW
-
-        super().save_model(request, obj, form, change)
-
     # Автозаполнение для связанных полей
     autocomplete_fields = ["product_name", "product"]
 
@@ -515,22 +550,3 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     # Добавляем шаблон формы, где можно будет ввести номера актов и номер накладной
     change_list_template = "admin/reclamation_changelist.html"
-
-    # Добавляем URL
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path(  # для групповой накладной прихода
-                "add_invoice_into/", self.add_invoice_into_view, name="add_invoice_into"
-            ),
-            path(  # для добавления акта утилизации
-                "add_disposal_act/", self.add_disposal_act, name="add_disposal_act"
-            ),
-        ]
-        return custom_urls + urls
-
-    def add_invoice_into_view(self, request):
-        """Метод группового добавления накладной прихода рекламационных изделий"""
-        # Здесь используется self, а во views.py параметр admin_instance в функции -
-        # через него передаем ссылку на ReclamationAdmin для вызова message_user.
-        return add_invoice_into_view(self, request)

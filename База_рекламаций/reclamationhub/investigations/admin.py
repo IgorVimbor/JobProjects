@@ -62,97 +62,13 @@ class InvestigationAdmin(admin.ModelAdmin):
 
     form = InvestigationAdminForm
 
+    # Добавляем шаблон формы
     change_list_template = "admin/investigation_changelist.html"
 
-    @admin.display(description="Рекламация: ID и изделие")
-    def reclamation_display(self, obj):
-        """Метод для отображения рекламации в админке (в две строки)"""
-        return obj.reclamation.admin_display_by_reclamation()
+    # Отображение кнопок сохранения сверху и снизу формы
+    save_on_top = True
 
-    # reclamation_display.short_description = "Рекламация (ID и изделие)"
-
-    @admin.display(description="Номер изделия")
-    def product_number_display(self, obj):
-        """Метод для отображения номера изделия из модели reclamation"""
-        return obj.reclamation.product_number
-
-    @admin.display(description="Номер и дата акта рекламации")
-    def act_reclamation_display(self, obj):
-        """Метод для отображения акта рекламации приобретателя в админке"""
-        return obj.reclamation.admin_display_by_consumer_act()
-
-    # act_reclamation_display.short_description = "Номер и дата акта рекламации"
-
-    @admin.display(description="Период выявления дефекта")
-    def get_defect_period(self, obj):
-        """Метод для отображения поля "Период выявления дефекта" из модели reclamation"""
-        return obj.reclamation.defect_period
-
-    # get_defect_period.short_description = "Период выявления дефекта"
-
-    @admin.display(description="Виновник дефекта")
-    def get_fault_display(self, obj):
-        """Метод для отображения виновника"""
-        if obj.fault_type == Investigation.FaultType.BZA:
-            return f"БЗА ({obj.guilty_department})" if obj.guilty_department else "БЗА"
-        return obj.get_fault_type_display()
-
-    # get_fault_display.short_description = "Виновник дефекта"
-
-    @admin.display(description="Копия акта")
-    def has_act_scan_icon(self, obj):
-        """Отображение иконки наличия скана"""
-        if obj.has_act_scan:
-            return mark_safe(
-                f'<div style="display: flex; justify-content: center; align-items: center; height: 100%;">'
-                f'<a href="{obj.act_scan.url}" '
-                f'target="_blank" '
-                f'style="font-size: 24px; text-decoration: none;" '
-                f'title="Открыть скан акта">'
-                f"📄</a>"
-                f"</div>"
-            )
-        return ""
-
-    @admin.display(description="Номерок 8D (ПКД)")
-    def has_pkd_number(self, obj):
-        """Отображение номера 8D (ПКД) из модели reclamation при наличии"""
-        return obj.reclamation.pkd_number
-
-    @admin.display(description="Претензия")
-    def has_claim(self, obj):
-        """Метод для отображения номера претензии как ссылки (оптимизация для ManyToManyField)"""
-        # Проверяем, есть ли связанная рекламация (быстрая проверка через аннотацию)
-        if getattr(obj, "claims_count", 0) == 0:
-            return ""
-
-        # Используем prefetch_related данные (без дополнительных запросов)
-        claims = obj.reclamation.claims.all()
-
-        if not claims:
-            return ""
-
-        # Формируем список ссылок
-        links = []
-        for claim in claims:
-            # Базовый URL списка претензий
-            url = reverse("admin:claims_claim_changelist")
-            # Добавляем фильтрацию по номеру регистрации
-            filtered_url = f"{url}?registration_number={claim.registration_number}"
-
-            link = (
-                f'<a href="{filtered_url}" '
-                f'target="_blank" '
-                f'rel="noopener" '
-                f"onmouseover=\"this.style.fontWeight='bold'\" "
-                f"onmouseout=\"this.style.fontWeight='normal'\" "
-                f'title="Перейти к претензии">'
-                f"{claim.registration_number}</a>"
-            )
-            links.append(link)
-
-        # Возвращаем список через <br> (вертикально)
-        return mark_safe("<br>".join(links))
+    list_per_page = 10  # количество записей на странице
 
     # Отображаем все поля модели Investigation
     list_display = [
@@ -247,10 +163,9 @@ class InvestigationAdmin(admin.ModelAdmin):
         ),
     ]
 
-    # Отображение кнопок сохранения сверху и снизу формы
-    save_on_top = True
-
-    list_per_page = 10  # количество записей на странице
+    # Сортировка по умолчанию
+    # ordering = ["reclamation"]
+    ordering = ["-act_number_sort", "-act_date"]
 
     # Поля для фильтрации
     # list_filter = ['reclamation__year', "reclamation__defect_period", "reclamation__product__product_type"]
@@ -279,22 +194,66 @@ class InvestigationAdmin(admin.ModelAdmin):
     """
     )
 
-    # Сортировка по умолчанию
-    # ordering = ["reclamation"]
-    ordering = ["-act_number_sort", "-act_date"]
+    # Добавляем методы действий в панель "Действие/Выполнить"
+    actions = ["edit_shipment"]
 
-    # def get_queryset(self, request):
-    #     return (
-    #         super()
-    #         .get_queryset(request)
-    #         .select_related(
-    #             "reclamation",  # для доступа к pk рекламации
-    #             "reclamation__product",  # для product в admin_display_by_reclamation
-    #             "reclamation__product_name",  # для product_name в admin_display_by_reclamation
-    #         )
-    #     )
+    # Добавляем URL для методов действий
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(  # для группового акта исследования
+                "add_group_investigation/",
+                self.add_group_investigation_view,
+                name="add_group_investigation",
+            ),
+            path(  # для групповой накладной расхода
+                "add_invoice_out/",
+                self.add_invoice_out_view,
+                name="add_invoice_out",
+            ),
+        ]
+        return custom_urls + urls
+
+    # ========= Определение методов действий ==========
+
+    @admin.action(description="Редактировать запись")
+    def edit_shipment(self, request, queryset):
+        """Действие для редактирования даты отправки акта"""
+        # Если выбрано больше одной записи
+        if queryset.count() > 1:
+            self.message_user(
+                request,
+                "Выберите только один акт исследования для редактирования",
+                level="ERROR",
+            )
+            return
+
+        # Получаем единственную выбранную запись
+        investigation = queryset.first()
+
+        # Перенаправляем на форму редактирования с фокусом на секции отправки
+        return HttpResponseRedirect(
+            f"../investigation/{investigation.pk}/change/#shipment-section"
+        )
+
+    # edit_shipment.short_description = "Редактировать запись"  # Вариант присвоения имени
+
+    def add_group_investigation_view(self, request):
+        """Метод добавления группового акта исследования - делегируем вызов функции из views"""
+        # Здесь используется self, а во views.py параметр admin_instance
+        return add_group_investigation_view(self, request)
+
+    def add_invoice_out_view(self, request):
+        """Метод группового добавления накладной отгрузки изделий - делегируем вызов функции из views"""
+        # Здесь используется self, а во views.py параметр admin_instance
+        return add_invoice_out_view(self, request)
+
+    # ========= Переопределение стандартных методов Django ==========
 
     def get_queryset(self, request):
+        """Метод get_queryset с select_related используется для оптимизации запросов к базе данных"""
+        # Без select_related будет N+1 запросов (1 запрос для списка рекламаций + N запросов для связанных данных)
+        # С select_related будет только 1 запрос
         return (
             super()
             .get_queryset(request)
@@ -349,23 +308,6 @@ class InvestigationAdmin(admin.ModelAdmin):
             .annotate(claims_count=Count("reclamation__claims", distinct=True))
         )
 
-    # Добавляем URL для групповой формы
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path(  # для группового акта исследования
-                "add_group_investigation/",
-                self.add_group_investigation_view,
-                name="add_group_investigation",
-            ),
-            path(  # для групповой накладной расхода
-                "add_invoice_out/",
-                self.add_invoice_out_view,
-                name="add_invoice_out",
-            ),
-        ]
-        return custom_urls + urls
-
     def changelist_view(self, request, extra_context=None):
         """Метод для настройки вывода актов исследования по текущему году по умолчанию"""
         # Проверяем есть ли фильтр по году от пользователя
@@ -384,16 +326,6 @@ class InvestigationAdmin(admin.ModelAdmin):
             request.GET["reclamation__year__exact"] = current_year
 
         return super().changelist_view(request, extra_context)
-
-    def add_group_investigation_view(self, request):
-        """Метод добавления группового акта исследования - делегируем вызов функции из views"""
-        # Здесь используется self, а во views.py параметр admin_instance
-        return add_group_investigation_view(self, request)
-
-    def add_invoice_out_view(self, request):
-        """Метод группового добавления накладной отгрузки изделий - делегируем вызов функции из views"""
-        # Здесь используется self, а во views.py параметр admin_instance
-        return add_invoice_out_view(self, request)
 
     # def get_form(self, request, obj=None, **kwargs):
     #     form = super().get_form(request, obj, **kwargs)
@@ -452,27 +384,94 @@ class InvestigationAdmin(admin.ModelAdmin):
             request, f"Статус рекламации {reclamation} изменен на 'Исследование'"
         )
 
-    # Добавляем действие в панель "Действие / Выполнить"
-    actions = ["edit_shipment"]
+    # ========= Вспомогательные методы для отображения в админ-панели ==========
 
-    @admin.action(description="Редактировать запись")
-    def edit_shipment(self, request, queryset):
-        """Действие для редактирования даты отправки акта"""
-        # Если выбрано больше одной записи
-        if queryset.count() > 1:
-            self.message_user(
-                request,
-                "Выберите только один акт исследования для редактирования",
-                level="ERROR",
+    @admin.display(description="Рекламация: ID и изделие")
+    def reclamation_display(self, obj):
+        """Метод для отображения рекламации в админке (в две строки)"""
+        return obj.reclamation.admin_display_by_reclamation()
+
+    # reclamation_display.short_description = "Рекламация (ID и изделие)"
+
+    @admin.display(description="Номер изделия")
+    def product_number_display(self, obj):
+        """Метод для отображения номера изделия из модели reclamation"""
+        return obj.reclamation.product_number
+
+    @admin.display(description="Номер и дата акта рекламации")
+    def act_reclamation_display(self, obj):
+        """Метод для отображения акта рекламации приобретателя в админке"""
+        return obj.reclamation.admin_display_by_consumer_act()
+
+    # act_reclamation_display.short_description = "Номер и дата акта рекламации"
+
+    @admin.display(description="Период выявления дефекта")
+    def get_defect_period(self, obj):
+        """Метод для отображения поля "Период выявления дефекта" из модели reclamation"""
+        return obj.reclamation.defect_period
+
+    # get_defect_period.short_description = "Период выявления дефекта"
+
+    @admin.display(description="Виновник дефекта")
+    def get_fault_display(self, obj):
+        """Метод для отображения виновника"""
+        if obj.fault_type == Investigation.FaultType.BZA:
+            return f"БЗА ({obj.guilty_department})" if obj.guilty_department else "БЗА"
+        return obj.get_fault_type_display()
+
+    # get_fault_display.short_description = "Виновник дефекта"
+
+    @admin.display(description="Копия акта")
+    def has_act_scan_icon(self, obj):
+        """Отображение иконки наличия скана"""
+        if obj.has_act_scan:
+            return mark_safe(
+                f'<div style="display: flex; justify-content: center; align-items: center; height: 100%;">'
+                f'<a href="{obj.act_scan.url}" '
+                f'target="_blank" '
+                f'style="font-size: 24px; text-decoration: none;" '
+                f'title="Открыть скан акта">'
+                f"📄</a>"
+                f"</div>"
             )
-            return
+        return ""
 
-        # Получаем единственную выбранную запись
-        investigation = queryset.first()
+    @admin.display(description="Номерок 8D (ПКД)")
+    def has_pkd_number(self, obj):
+        """Отображение номера 8D (ПКД) из модели reclamation при наличии"""
+        return obj.reclamation.pkd_number
 
-        # Перенаправляем на форму редактирования с фокусом на секции отправки
-        return HttpResponseRedirect(
-            f"../investigation/{investigation.pk}/change/#shipment-section"
-        )
+    @admin.display(description="Претензия")
+    def has_claim(self, obj):
+        """Метод для отображения номера претензии как ссылки (оптимизация для ManyToManyField)"""
+        # Проверяем, есть ли связанная рекламация (быстрая проверка через аннотацию)
+        if getattr(obj, "claims_count", 0) == 0:
+            return ""
 
-    # edit_shipment.short_description = "Редактировать запись"
+        # Используем prefetch_related данные (без дополнительных запросов)
+        claims = obj.reclamation.claims.all()
+
+        if not claims:
+            return ""
+
+        # Формируем список ссылок
+        links = []
+        for claim in claims:
+            # Базовый URL списка претензий
+            url = reverse("admin:claims_claim_changelist")
+            # Добавляем фильтрацию по номеру регистрации
+            filtered_url = f"{url}?registration_number={claim.registration_number}"
+
+            link = (
+                f'<a href="{filtered_url}" '
+                f'target="_blank" '
+                f'rel="noopener" '
+                f"onmouseover=\"this.style.fontWeight='bold'\" "
+                f"onmouseout=\"this.style.fontWeight='normal'\" "
+                f'title="Перейти к претензии">'
+                f"{claim.registration_number}</a>"
+            )
+            links.append(link)
+
+        # Возвращаем список через <br> (вертикально)
+        return mark_safe("<br>".join(links))
