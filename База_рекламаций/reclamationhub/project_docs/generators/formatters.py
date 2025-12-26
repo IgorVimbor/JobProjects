@@ -140,6 +140,25 @@ class MarkdownFormatter:
                         lines.append(f"- `{tpl['file']}` — {doc}")
                     lines.append("")
 
+            # Пользовательские теги (templatetags)
+            tags_path = app.path / "templatetags"
+            if tags_path.exists():
+                modules = self.analyzer.analyze_modules_dir(tags_path)
+                if modules:
+                    lines.append("**Пользовательские теги (templatetags):**")
+                    lines.append("")
+                    for mod in modules:
+                        doc = mod["docstring"] or "—"
+                        lines.append(f"- `{mod['file']}` — ")
+                        for line in doc.split("\n"):
+                            # line = line.strip()
+                            if line:
+                                lines.append(f"  {line}  ")  # два пробела в конце
+                                # В Markdown одиночный перенос строки игнорируется. Нужно:
+                                # - Два пробела в конце строки, или
+                                # - Пустая строка между строками
+                    lines.append("")
+
             lines.append("---")
             lines.append("")
 
@@ -196,6 +215,7 @@ class MarkdownFormatter:
         labels = {
             "app": "Django App",
             "templates": "Шаблоны",
+            "templatetags": "Пользовательские теги",
             "static": "Статика",
             "modules": "Процессоры",
             "views": "Представления",

@@ -7,6 +7,7 @@
 
 {% extends 'admin/change_list.html' %}
 {% load i18n admin_urls %}
+{% load search_tags %}
 
 {% if not is_popup %}
 {% block breadcrumbs %}
@@ -31,4 +32,84 @@
     </li>
     -->
     {{ block.super }}
+{% endblock %}
+
+<!-- Блок поиска -->
+{% block search %}
+<div id="toolbar">
+    <form id="changelist-search" method="get">
+        <!-- Первая строка: поля поиска -->
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <label for="searchbar">
+                <strong>Поиск:</strong>
+            </label>
+
+            <!-- Стандартное поле поиска Django -->
+            <div>
+                <input type="text"
+                       size="25"
+                       name="q"
+                       value="{{ cl.query|default:'' }}"
+                       id="searchbar"
+                       placeholder="По полям из списка">
+            </div>
+
+            <!-- Отдельное поле для номера изделия -->
+            <div>
+                <input type="text"
+                       name="product_number"
+                       value="{{ product_number_value|default:'' }}"
+                       placeholder="По номеру изделия"
+                       style="width: 150px; height: 12px;">
+            </div>
+
+            <!-- Отдельное поле для номера двигателя -->
+            <div>
+                <input type="text"
+                       name="engine_number"
+                       value="{{ engine_number_value|default:'' }}"
+                       placeholder="По номеру двигателя"
+                       style="width: 150px; height: 12px;">
+            </div>
+
+            <input type="submit" value="{% trans 'Search' %}">
+
+            <!-- Кнопка сброса поиска -->
+            {% if cl.query or product_number_value or engine_number_value %}
+            <!-- Формируем URL для сброса поиска: сохраняем все GET-параметры кроме q, product_number, engine_number, p -->
+            <!-- <a href="?{% for key, value in request.GET.items %}{% if key != 'q' and key != 'product_number' and key != 'engine_number' and key != 'p' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" -->
+            <!-- Вместо цикла в шаблоне (см. строку выше) используем Template tags из core/templatetags/search_tags.py -->
+            <a href="{% clear_search_url request %}"
+            style="padding: 5px 12px;
+                text-decoration: none;
+                border: 1px solid;
+                border-radius: 4px;
+                font-size: 13px;">
+                ✕ Сбросить поиск
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Вторая строка: подсказка -->
+        <div style="margin-top: 8px;
+                    color: #666;
+                    font-size: 13px;
+                    padding-left: 55px;">
+            <span style="color: #999;">Список полей:</span>
+            Номер строки (ID) ••• Обозначение изделия ••• Исходящий № отправителя (№ ПСА) •••
+            Номер акта рекламации ••• Номер накладной прихода ••• Номер акта исследования
+        </div>
+
+        <!-- Сохраняем другие GET-параметры -->
+        <!-- {% for key, value in request.GET.items %}
+            {% if key != 'q' and key != 'product_number' and key != 'engine_number' and key != 'p' %}
+                <input type="hidden" name="{{ key }}" value="{{ value }}">
+            {% endif %}
+        {% endfor %} -->
+
+        <!-- Сохраняем другие GET-параметры -->
+        <!-- Вместо цикла в шаблоне (см. выше) используем Template tags из core/templatetags/search_tags.py -->
+        {% preserve_filters request 'q' 'product_number' 'engine_number' 'p' %}
+    </form>
+</div>
 {% endblock %}

@@ -10,6 +10,7 @@ from datetime import datetime
 from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
 from reclamations.forms import ReclamationAdminForm
+from core.modules.search_mixin import ProductEngineSearchMixin
 from reclamations.views.invoice_intake import add_invoice_into_view
 from reclamations.views.disposal_act import add_disposal_act_view
 
@@ -53,7 +54,18 @@ class YearListFilter(SimpleListFilter):
 
 
 @admin.register(Reclamation, site=admin_site)
-class ReclamationAdmin(admin.ModelAdmin):
+class ReclamationAdmin(ProductEngineSearchMixin, admin.ModelAdmin):
+    """
+    Миксин должен быть ПЕРВЫМ в списке наследования, чтобы его методы
+    вызывались перед методами admin.ModelAdmin.
+
+    MRO (Method Resolution Order):
+    1. ReclamationAdmin
+    2. ProductEngineSearchMixin
+    3. admin.ModelAdmin
+    4. object
+    """
+
     class Media:
         css = {"all": ("admin/css/custom_admin.css",)}
         js = (
@@ -238,27 +250,30 @@ class ReclamationAdmin(admin.ModelAdmin):
     raw_id_fields = ["product_name", "product"]
 
     # Поиск
+    """---- Убираем product_number и engine_number, т.к. их обрабатывает миксин через отдельные поля ----"""
     search_fields = [
         "year",  # год
         "yearly_number",  # номер в году
+        "product__nomenclature",  # обозначение изделия
         "sender_outgoing_number",  # исходящий № отправителя
-        "product_number",  # номер изделия
-        "engine_number",  # номер двигателя
+        # "product_number",  # номер изделия
+        # "engine_number",  # номер двигателя
         "consumer_act_number",  # номер акта приобретателя изделия
         "end_consumer_act_number",  # номер акта конечного потребителя
         "receipt_invoice_number",  # номер накладной прихода изделия
         "investigation__act_number",  # номер акта исследования
     ]
 
-    search_help_text = mark_safe(
-        """
-    <p>ПОИСК ПО ПОЛЯМ:</p>
-    <ul>
-        <li>НОМЕР СТРОКИ (ID) ••• ИСХОДЯЩИЙ № ОТПРАВИТЕЛЯ (№ ПСА) ••• НОМЕР ИЗДЕЛИЯ ••• НОМЕР ДВИГАТЕЛЯ</li>
-        <li>НОМЕР АКТА РЕКЛАМАЦИИ ПРИОБРЕТАТЕЛЯ ИЛИ ПОТРЕБИТЕЛЯ ••• НОМЕР НАКЛАДНОЙ ПРИХОДА ••• НОМЕР АКТА ИССЛЕДОВАНИЯ</li>
-    </ul>
-    """
-    )
+    """---- Параметр search_help_text не используется, т.к. поля поиска добавлены в шаблон reclamation_changelist.html ----"""
+    # search_help_text = mark_safe(
+    #     """
+    # <p>ПОИСК ПО ПОЛЯМ:</p>
+    # <ul>
+    #     <li>НОМЕР СТРОКИ (ID) ••• ИСХОДЯЩИЙ № ОТПРАВИТЕЛЯ (№ ПСА) ••• НОМЕР ИЗДЕЛИЯ ••• НОМЕР ДВИГАТЕЛЯ</li>
+    #     <li>НОМЕР АКТА РЕКЛАМАЦИИ ПРИОБРЕТАТЕЛЯ ИЛИ ПОТРЕБИТЕЛЯ ••• НОМЕР НАКЛАДНОЙ ПРИХОДА ••• НОМЕР АКТА ИССЛЕДОВАНИЯ</li>
+    # </ul>
+    # """
+    # )
 
     # Добавляем методы действия в панель "Действие/Выполнить"
     actions = ["add_measures", "add_investigation", "add_disposal_act"]
@@ -338,15 +353,58 @@ class ReclamationAdmin(admin.ModelAdmin):
         """Метод get_queryset с select_related используется для оптимизации запросов к базе данных"""
         # Без select_related будет N+1 запросов (1 запрос для списка рекламаций + N запросов для связанных данных)
         # С select_related будет только 1 запрос
-        return (
+        queryset = (
             super()
             .get_queryset(request)
             .select_related("product_name", "product", "defect_period")
         )
 
+        # Добавляем фильтрацию по номеру изделия и двигателя из миксина
+        queryset = self._apply_product_engine_filter(request, queryset)
+
+        return queryset
+
+    def get_search_results(self, request, queryset, search_term):
+        """Переопределяем стандартный метод для поиска по составному номеру рекламации"""
+
+        # 1. Стандартный поиск Django по search_fields
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term
+        )
+
+        # 2. Добавляем свою дополнительную логику поиска
+        if search_term and "-" in search_term:
+            # Дополнительный поиск по формату "2025-1356"
+            try:
+                year, number = search_term.split("-")
+                queryset |= self.model.objects.filter(
+                    year=int(year), yearly_number=int(number)
+                )
+            except ValueError:
+                pass
+
+        # Возвращаем результат
+        return queryset, use_distinct
+
     def changelist_view(self, request, extra_context=None):
-        """Переопределяем стандартный метод для настройки вывода рекламаций по текущему году по умолчанию"""
-        # Проверяем есть ли фильтр по году от пользователя
+        """Переопределяем стандартный метод для настройки вывода рекламаций
+        по текущему году по умолчанию + ДОПОЛНЯЕМ явным вызовом миксина."""
+
+        extra_context = extra_context or {}
+
+        # 1. Извлекаем и удаляем параметры с номером изделия и двигателя из GET
+        # Сохраняем значения до того, как Django их увидит
+        request._product_number = request.GET.get("product_number", "").strip()
+        request._engine_number = request.GET.get("engine_number", "").strip()
+
+        # Убираем из GET, чтобы Django Admin не применял их как точный фильтр
+        if "product_number" in request.GET or "engine_number" in request.GET:
+            get_params = request.GET.copy()
+            get_params.pop("product_number", None)
+            get_params.pop("engine_number", None)
+            request.GET = get_params
+
+        # 2. Проверяем есть ли фильтр по году от пользователя
         user_year_filter = "year" in request.GET
         auto_year_filter = "year__exact" in request.GET
 
@@ -361,25 +419,13 @@ class ReclamationAdmin(admin.ModelAdmin):
             request.GET = request.GET.copy()
             request.GET["year__exact"] = current_year
 
-        return super().changelist_view(request, extra_context)
+        # 3. Добавляем контекст полей поиска из миксина
+        extra_context = self._add_product_engine_context(request, extra_context)
 
-    def get_search_results(self, request, queryset, search_term):
-        """Переопределяем стандартный метод поиска для поиска по составному номеру рекламации"""
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term
-        )
+        # Вызываем родительский changelist_view
+        response = super().changelist_view(request, extra_context)
 
-        # Дополнительный поиск по формату "2025-1356"
-        if search_term and "-" in search_term:
-            try:
-                year, number = search_term.split("-")
-                queryset |= self.model.objects.filter(
-                    year=int(year), yearly_number=int(number)
-                )
-            except ValueError:
-                pass
-
-        return queryset, use_distinct
+        return response
 
     def response_add(self, request, obj, post_url_continue=None):
         """Переопределяем стандартный метод вывода сообщения при добавлении рекламации"""
@@ -498,7 +544,7 @@ class ReclamationAdmin(admin.ModelAdmin):
 
     @admin.display(description="Решение по рекламации")
     def has_investigation_solution(self, obj):
-        """Метод для отображения решения в акте исследования по рекламации"""
+        """Метод для цветного отображения решения по рекламации из акта исследования"""
         if obj.has_investigation:
             # Используем get_solution_display() для получения русского названия
             # Django автоматически создает метод get_ПОЛЕ_display() для полей с choices

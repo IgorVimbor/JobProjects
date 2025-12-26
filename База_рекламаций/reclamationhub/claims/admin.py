@@ -22,9 +22,7 @@ class ClaimYearListFilter(SimpleListFilter):
     def lookups(self, request, model_admin):
         # Получаем годы из модели Claim
         years = (
-            Claim.objects.values_list("year", flat=True)
-            .distinct()
-            .order_by("-year")
+            Claim.objects.values_list("year", flat=True).distinct().order_by("-year")
         )
         # Возвращаем отсортированный список вариантов для фильтра
         return [(year, str(year)) for year in years]
@@ -53,7 +51,9 @@ class ClaimYearListFilter(SimpleListFilter):
         for lookup, title in self.lookup_choices:
             yield {
                 "selected": str(selected_value) == str(lookup),
-                "query_string": changelist.get_query_string({self.parameter_name: lookup}),
+                "query_string": changelist.get_query_string(
+                    {self.parameter_name: lookup}
+                ),
                 "display": title,
             }
 
@@ -360,16 +360,14 @@ class ClaimAdmin(admin.ModelAdmin):
     @admin.display(description="Решение по претензии")
     def result_colored(self, obj):
         """Цветное отображение результата"""
+        # Используем get_result_claim_display() для получения русского названия
+        # Django автоматически создает метод get_ПОЛЕ_display() для полей с choices
+        display = obj.get_result_claim_display()
+
         if obj.result_claim == Claim.Result.ACCEPTED:
-            return format_html(
-                '<span style="color: green; font-weight: bold;">✓ {}</span>',
-                obj.get_result_claim_display(),
-            )
+            return format_html('<span style="color: green;">✓ {}</span>', display)
         elif obj.result_claim == Claim.Result.REJECTED:
-            return format_html(
-                '<span style="color: red; font-weight: bold;">{}</span>',
-                obj.get_result_claim_display(),
-            )
+            return format_html('<span style="color: red;">{}</span>', display)
         return "-"
 
     @admin.display(description="Сумма по претензии")
@@ -380,7 +378,7 @@ class ClaimAdmin(admin.ModelAdmin):
             amount_str = f"{obj.claim_amount_all:,.2f}".replace(",", " ")
             return format_html(  # синий - color: #007bff, темно-синий - color: #004085
                 '<span style="color: #007bff; style="font-weight: bold;">{}</span>',
-                amount_str
+                amount_str,
             )
         return "0.00"
 
@@ -399,7 +397,7 @@ class ClaimAdmin(admin.ModelAdmin):
             amount_str = f"{obj.costs_all:,.2f}".replace(",", " ")
             return format_html(  # синий - color: #007bff, темно-синий - color: #004085
                 '<span style="color: #007bff; style="font-weight: bold;">{}</span>',
-                amount_str
+                amount_str,
             )
         return "0.00"
 

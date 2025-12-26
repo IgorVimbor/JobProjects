@@ -1,3 +1,5 @@
+# core\modules\project_info.py
+
 """Метаданные проекта ReclamationHub."""
 
 from django.utils.safestring import mark_safe

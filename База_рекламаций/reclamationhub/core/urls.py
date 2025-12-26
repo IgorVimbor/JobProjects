@@ -1,7 +1,7 @@
 from django.urls import path
-from core.views import home_view, ajax_year_data, about  # export_excel
 
-# from . import views
+from core.views.home_page import home_view, ajax_year_data
+from core.views.about_page import about
 
 
 urlpatterns = [

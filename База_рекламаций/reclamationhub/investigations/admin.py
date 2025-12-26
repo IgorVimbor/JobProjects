@@ -3,11 +3,13 @@ from django.contrib.admin import SimpleListFilter
 from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 from django.db.models import Count, Prefetch
 from datetime import datetime
 
 from reclamationhub.admin import admin_site
 from reclamations.models import Reclamation
+from core.modules.search_mixin import ProductEngineSearchMixin
 from claims.models import Claim
 from .models import Investigation
 from .forms import InvestigationAdminForm
@@ -54,7 +56,11 @@ class InvestigationYearListFilter(SimpleListFilter):
 
 
 @admin.register(Investigation, site=admin_site)
-class InvestigationAdmin(admin.ModelAdmin):
+class InvestigationAdmin(ProductEngineSearchMixin, admin.ModelAdmin):
+    """
+    Миксин должен быть ПЕРВЫМ в списке наследования, чтобы его методы
+    вызывались перед методами admin.ModelAdmin.
+    """
 
     class Media:
         css = {"all": ("admin/css/custom_admin.css",)}
@@ -78,7 +84,9 @@ class InvestigationAdmin(admin.ModelAdmin):
         "product_number_display",
         "get_defect_period",
         "act_reclamation_display",
-        "solution",
+        "engine_number_display",
+        # "solution",
+        "solution_display",
         "get_fault_display",
         "defect_causes",
         "defect_causes_explanation",
@@ -176,23 +184,25 @@ class InvestigationAdmin(admin.ModelAdmin):
     ]
 
     # Поля для поиска
+    """---- Убираем product_number и engine_number, т.к. их обрабатывает миксин через отдельные поля ----"""
     search_fields = [
         "act_number",  # номер акта исследования
         "reclamation__product__nomenclature",  # обозначение изделия
-        "reclamation__product_number",  # номер изделия
-        "reclamation__engine_number",  # номер двигателя
+        # "reclamation__product_number",  # номер изделия
+        # "reclamation__engine_number",  # номер двигателя
         "shipment_invoice_number",  # накладная отгрузки (расхода)
     ]
 
-    search_help_text = mark_safe(
-        """
-    <p>ПОИСК ПО ПОЛЯМ:</p>
-    <ul>
-        <li>НОМЕР АКТА ИССЛЕДОВАНИЯ ••• ОБОЗНАЧЕНИЕ ИЗДЕЛИЯ</li>
-        <li>НОМЕР ИЗДЕЛИЯ ••• НОМЕР ДВИГАТЕЛЯ ••• НАКЛАДНАЯ РАСХОДА</li>
-    </ul>
-    """
-    )
+    """---- Параметр search_help_text не используется, т.к. поля поиска добавлены в шаблон investigation_changelist.html ----"""
+    # search_help_text = mark_safe(
+    #     """
+    # <p>ПОИСК ПО ПОЛЯМ:</p>
+    # <ul>
+    #     <li>НОМЕР АКТА ИССЛЕДОВАНИЯ ••• ОБОЗНАЧЕНИЕ ИЗДЕЛИЯ</li>
+    #     <li>НОМЕР ИЗДЕЛИЯ ••• НОМЕР ДВИГАТЕЛЯ ••• НАКЛАДНАЯ РАСХОДА</li>
+    # </ul>
+    # """
+    # )
 
     # Добавляем методы действий в панель "Действие/Выполнить"
     actions = ["edit_shipment"]
@@ -254,7 +264,7 @@ class InvestigationAdmin(admin.ModelAdmin):
         """Метод get_queryset с select_related используется для оптимизации запросов к базе данных"""
         # Без select_related будет N+1 запросов (1 запрос для списка рекламаций + N запросов для связанных данных)
         # С select_related будет только 1 запрос
-        return (
+        queryset = (
             super()
             .get_queryset(request)
             .select_related(
@@ -275,7 +285,7 @@ class InvestigationAdmin(admin.ModelAdmin):
                 "reclamation__country_rejected",
                 "reclamation__end_consumer",
                 "reclamation__engine_brand",
-                "reclamation__engine_number",
+                # "reclamation__engine_number",
                 "reclamation__transport_name",
                 "reclamation__transport_number",
                 "reclamation__defect_detection_date",
@@ -308,9 +318,30 @@ class InvestigationAdmin(admin.ModelAdmin):
             .annotate(claims_count=Count("reclamation__claims", distinct=True))
         )
 
+        # Добавляем фильтрацию по номеру изделия и двигателя из миксина
+        queryset = self._apply_product_engine_filter(request, queryset)
+
+        return queryset
+
     def changelist_view(self, request, extra_context=None):
-        """Метод для настройки вывода актов исследования по текущему году по умолчанию"""
-        # Проверяем есть ли фильтр по году от пользователя
+        """Метод для настройки вывода актов исследования по текущему году по умолчанию
+        + ДОПОЛНЯЕМ явным вызовом миксина."""
+
+        extra_context = extra_context or {}
+
+        # 1. Извлекаем и удаляем параметры с номером изделия и двигателя из GET
+        # Сохраняем значения до того, как Django их увидит
+        request._product_number = request.GET.get("product_number", "").strip()
+        request._engine_number = request.GET.get("engine_number", "").strip()
+
+        # Убираем из GET, чтобы Django Admin не применял их как точный фильтр
+        if "product_number" in request.GET or "engine_number" in request.GET:
+            get_params = request.GET.copy()
+            get_params.pop("product_number", None)
+            get_params.pop("engine_number", None)
+            request.GET = get_params
+
+        # 2. Проверяем есть ли фильтр по году от пользователя
         user_year_filter = "reclamation__year" in request.GET
         auto_year_filter = "reclamation__year__exact" in request.GET
 
@@ -325,7 +356,13 @@ class InvestigationAdmin(admin.ModelAdmin):
             request.GET = request.GET.copy()
             request.GET["reclamation__year__exact"] = current_year
 
-        return super().changelist_view(request, extra_context)
+        # 3. Добавляем контекст полей поиска из миксина
+        extra_context = self._add_product_engine_context(request, extra_context)
+
+        # Вызываем родительский changelist_view
+        response = super().changelist_view(request, extra_context)
+
+        return response
 
     # def get_form(self, request, obj=None, **kwargs):
     #     form = super().get_form(request, obj, **kwargs)
@@ -391,26 +428,40 @@ class InvestigationAdmin(admin.ModelAdmin):
         """Метод для отображения рекламации в админке (в две строки)"""
         return obj.reclamation.admin_display_by_reclamation()
 
-    # reclamation_display.short_description = "Рекламация (ID и изделие)"
+    # reclamation_display.short_description = "Рекламация (ID и изделие)"  # Вариант присвоения имени
 
     @admin.display(description="Номер изделия")
     def product_number_display(self, obj):
         """Метод для отображения номера изделия из модели reclamation"""
         return obj.reclamation.product_number
 
-    @admin.display(description="Номер и дата акта рекламации")
-    def act_reclamation_display(self, obj):
-        """Метод для отображения акта рекламации приобретателя в админке"""
-        return obj.reclamation.admin_display_by_consumer_act()
-
-    # act_reclamation_display.short_description = "Номер и дата акта рекламации"
-
     @admin.display(description="Период выявления дефекта")
     def get_defect_period(self, obj):
         """Метод для отображения поля "Период выявления дефекта" из модели reclamation"""
         return obj.reclamation.defect_period
 
-    # get_defect_period.short_description = "Период выявления дефекта"
+    @admin.display(description="Номер и дата акта рекламации")
+    def act_reclamation_display(self, obj):
+        """Метод для отображения акта рекламации приобретателя из модели reclamation"""
+        return obj.reclamation.admin_display_by_consumer_act()
+
+    @admin.display(description="Номер двигателя")
+    def engine_number_display(self, obj):
+        """Метод для отображения номера двигателя из модели reclamation"""
+        return obj.reclamation.engine_number
+
+    @admin.display(description="Решение по рекламации")
+    def solution_display(self, obj):
+        """Метод для цветного отображения решения по рекламации из акта исследования"""
+        # Используем get_solution_display() для получения русского названия
+        # Django автоматически создает метод get_ПОЛЕ_display() для полей с choices
+        display = obj.get_solution_display()
+
+        if obj.solution == "ACCEPT":
+            return format_html('<span style="color: green;">✓ {}</span>', display)
+        elif obj.solution == "DEFLECT":
+            return format_html('<span style="color: red;">{}</span>', display)
+        return ""
 
     @admin.display(description="Виновник дефекта")
     def get_fault_display(self, obj):
@@ -418,8 +469,6 @@ class InvestigationAdmin(admin.ModelAdmin):
         if obj.fault_type == Investigation.FaultType.BZA:
             return f"БЗА ({obj.guilty_department})" if obj.guilty_department else "БЗА"
         return obj.get_fault_type_display()
-
-    # get_fault_display.short_description = "Виновник дефекта"
 
     @admin.display(description="Копия акта")
     def has_act_scan_icon(self, obj):
