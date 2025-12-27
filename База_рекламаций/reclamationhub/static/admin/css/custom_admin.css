@@ -1,4 +1,4 @@
-/* Стили для таблиц в админ-панели */
+/* ========== ОБЩИЕ СТИЛИ ДЛЯ ТАБЛИЦ В АДМИН-ПАНЕЛИ ========== */
 
 /* Контейнер для таблицы */
 .results {
@@ -35,7 +35,7 @@
     background-color: #f0f7ff !important;
 }
 
-/* --------------- Стиль для закрепления столбцов таблицы ------------------ */
+/* ------- Закрепление столбцов таблицы ------- */
 /* Фиксируем первый столбец с чекбоксами */
 #result_list th:first-child,
 #result_list td:first-child {
@@ -83,7 +83,7 @@
 }
 
 
-/* ---------- Стили для секции "Принятые меры" для внесения данных ----------- */
+/* ========== СЕКЦИЯ "Принятые меры" В ФОРМЕ РЕКЛАМАЦИЙ ========== */
 .measures-section {
     transition: background-color 1s;
     padding: 10px;
@@ -91,7 +91,7 @@
 }
 
 
-/* ---- Стили для секции "Дата отправки акта исследования" для внесения данных ---- */
+/* ========== СЕКЦИЯ "Дата отправки акта исследования" ========== */
 .shipment-section {
     transition: background-color 1s;
     padding: 10px;
@@ -99,7 +99,36 @@
 }
 
 
-/* ------------- Размещаем фильтры в навигационной панели ---------------- */
+/* ========== ОБЩИЕ СТИЛИ ДЛЯ БОКОВОЙ ПАНЕЛИ ФИЛЬТРОВ И СПИСКА ПРИЛОЖЕНИЙ ========== */
+
+/* Карточка фильтров */
+#changelist-filter {
+    background: var(--body-bg, #fff) !important;
+    border: 1px solid var(--hairline-color, #e8e8e8) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;  /* отступ снизу */
+}
+
+/* Карточка списка приложений */
+#nav-apps-section {
+    background: var(--body-bg, #fff);
+    border: 1px solid var(--hairline-color, #e8e8e8);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* margin-top: 15px;  отступ сверху */
+}
+
+/* Поле поиска по разделам */
+#nav-apps-section #nav-filter {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+/* ------ СТИЛИ ФИЛЬТРОВ ------ */
+
 #changelist-filter {
     /* font-weight: bold !important; */
     font-size: 16px !important;
@@ -107,10 +136,7 @@
     padding: 10px !important;
     background: transparent !important;
     border: none !important;
-}
-
-/* Убираем отступы слева у списков фильтров */
-#changelist-filter {
+    /* Убираем отступы слева у списков фильтров */
     margin-left: 0 !important;
     padding-left: 0 !important;
 }
@@ -148,7 +174,7 @@
     font-weight: 500 !important;
 }
 
-/* Стили для контента фильтров */
+/* Анимация сворачивания контента фильтров */
 .filter-content {
     transition: all 0.3s ease-in-out;
     overflow: hidden;
@@ -163,7 +189,9 @@
     padding: 0;
 }
 
-/* ------------- Стили для ClearableFileInput добавления файла pdf ---------------- */
+
+/* ========== ОБЩИЕ СТИЛИ ДОБАВЛЕНИЯ ФАЙЛА PDF ClearableFileInput ========== */
+
 /* Убираем жирный шрифт в поле загрузки файла */
 .file-upload {
     font-size: 14px !important;

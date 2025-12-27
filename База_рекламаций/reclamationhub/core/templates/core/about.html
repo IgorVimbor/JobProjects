@@ -116,25 +116,85 @@
     </div>
 </div>
 
-<!-- Технологии -->
+<!-- Используемые технологии (сворачиваемая) -->
 <div class="card mb-3">
-    <div class="card-header" style="background-color: #17a2b8; color: white;">
+    <div class="card-header card-header-collapsible d-flex align-items-center"
+         style="background-color: #17a2b8; color: white;"
+         data-bs-toggle="collapse"
+         data-bs-target="#collapseTechnologies">
         <h5 class="mb-0">📊 Используемые технологии</h5>
+        <span class="collapse-icon ms-2">▼</span>
     </div>
-    <ul class="list-group list-group-flush">
-        {% for tech in technologies %}
-        <li class="list-group-item d-flex justify-content-between align-items-center py-1">
-            <div>
-                {% comment %} <strong>{{ tech.name }}</strong> {% endcomment %}
-                {{ tech.name }}
-                {% if tech.version %}
-                <small class="text-muted">{{ tech.version }}</small>
-                {% endif %}
+    <div class="collapse" id="collapseTechnologies">
+        <ul class="list-group list-group-flush small">
+            {% for tech in technologies %}
+            <li class="list-group-item d-flex justify-content-between align-items-center py-1">
+                <div>
+                    {{ tech.name }}
+                    {% if tech.version %}
+                    <span class="text-muted">{{ tech.version }}</span>
+                    {% endif %}
+                </div>
+                <span class="text-muted">{{ tech.purpose }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- Предыдущие версии (сворачиваемая) -->
+<div class="card mb-3">
+    <div class="card-header card-header-collapsible d-flex align-items-center"
+         style="background-color: #17a2b8; color: white;"
+         data-bs-toggle="collapse"
+         data-bs-target="#collapseChangelog">
+        <h5 class="mb-0">📜 Предыдущие версии</h5>
+        <span class="collapse-icon ms-2">▼</span>
+    </div>
+    <div class="collapse" id="collapseChangelog">
+        <div class="card-body py-2">
+            <!-- Циклом по всем версиям из CHANGELOG -->
+            {% for release in changelog %}
+            <div class="version-item">
+                <!-- Заголовок версии -->
+                <div class="version-header collapsed d-flex justify-content-between align-items-center"
+                     data-bs-toggle="collapse"
+                     data-bs-target="#version-{{ forloop.counter }}">
+                    <div>
+                        <small class="collapse-icon me-2">▼</small>
+                        <small class="text-primary">v{{ release.version }}</small>
+                        <small class="text-muted ms-2">— {{ release.title }}</small>
+                    </div>
+                    <small class="text-muted">{{ release.date }}</small>
+                </div>
+
+                <!-- Содержимое версии (4 колонки по типам изменений) -->
+                <div class="collapse" id="version-{{ forloop.counter }}">
+                    <div class="version-body">
+                        <div class="row small">
+                            {% for group in release.changes_grouped %}
+                            <div class="col-md-6 col-lg-3 mb-2 mb-lg-0">
+                                <div class="change-group-title text-{{ group.color }} ps-4">
+                                    <strong>{{ group.label }}</strong>  <!-- Тип изменения (Добавлено, Изменено, Удалено)-->
+                                </div>
+                                <hr class="my-1"> <!-- Горизонтальная линия -->
+                                {% for item in group.items %}
+                                <div class="change-group-item ps-4">
+                                    <small>{{ item }}</small> <!-- Содержание изменения -->
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% empty %}
+                            <div class="col-12 text-muted">Нет изменений</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-1"> <!-- Горизонтальная линия -->
             </div>
-            <small class="text-muted">{{ tech.purpose }}</small>
-        </li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 <!-- Кнопки действий -->
@@ -151,4 +211,65 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Инициализация стрелки для конкретного collapse-элемента
+    function initCollapseIcon(collapseEl) {
+        const trigger = document.querySelector('[data-bs-target="#' + collapseEl.id + '"]');
+
+        if (!trigger) return;
+
+        const icon = trigger.querySelector('.collapse-icon');
+        if (!icon) return;
+
+        // Устанавливаем начальное состояние
+        if (collapseEl.classList.contains('show')) {
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            icon.style.transform = 'rotate(-90deg)';
+        }
+
+        // При раскрытии
+        collapseEl.addEventListener('show.bs.collapse', function(event) {
+            if (event.target === collapseEl) {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        });
+
+        // При сворачивании
+        collapseEl.addEventListener('hide.bs.collapse', function(event) {
+            if (event.target === collapseEl) {
+                icon.style.transform = 'rotate(-90deg)';
+            }
+        });
+    }
+
+    // Автоскролл к низу страницы при открытии карточки
+    function initAutoScroll(collapseEl) {
+        collapseEl.addEventListener('shown.bs.collapse', function(event) {
+            // Только для основных карточек (не для вложенных версий)
+            if (event.target === collapseEl &&
+                (collapseEl.id === 'collapseTechnologies' || collapseEl.id === 'collapseChangelog')) {
+
+                // Скролл чтобы карточка была видна целиком
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    }
+
+    // Инициализируем все collapse-элементы
+    const collapseElements = document.querySelectorAll('.collapse');
+    collapseElements.forEach(function(collapseEl) {
+        initCollapseIcon(collapseEl);
+        initAutoScroll(collapseEl);
+    });
+});
+</script>
 {% endblock %}

@@ -2,47 +2,101 @@
 
 // static\admin\js\custom_admin.js
 
-// =============== Создание кнопки Свернуть/Развернуть фильтры на админ-панели ================
+
+// =============== Кнопка Свернуть/Развернуть фильтры ================
 
 window.addEventListener('load', function() {
     var filterSection = document.getElementById('changelist-filter');
-    if (filterSection) {
-        var toggleButton = document.createElement('div');
-        toggleButton.className = 'filter-toggle';
+    if (!filterSection) return;
 
-        // Проверяем сохраненное состояние
-        var isCollapsed = localStorage.getItem('admin_filters_collapsed') === 'true';
+    // Определяем, та же это страница или новая
+    var basePath = window.location.pathname;
+    var isSamePage = sessionStorage.getItem('filter_page_path') === basePath;
+    sessionStorage.setItem('filter_page_path', basePath);
 
-        // Устанавливаем начальное состояние
-        if (isCollapsed) {
-            filterSection.classList.add('collapsed');
-            toggleButton.textContent = 'Развернуть фильтры';
-        } else {
-            toggleButton.textContent = 'Свернуть фильтры';
-        }
-
-        filterSection.insertBefore(toggleButton, filterSection.firstChild);
-
-        var filterContent = document.createElement('div');
-        filterContent.className = 'filter-content';
-        while (filterSection.children.length > 1) {
-            filterContent.appendChild(filterSection.children[1]);
-        }
-        filterSection.appendChild(filterContent);
-
-        toggleButton.addEventListener('click', function() {
-            filterSection.classList.toggle('collapsed');
-            var isNowCollapsed = filterSection.classList.contains('collapsed');
-            toggleButton.textContent = isNowCollapsed ? 'Развернуть фильтры' : 'Свернуть фильтры';
-
-            // Сохраняем новое состояние
-            localStorage.setItem('admin_filters_collapsed', isNowCollapsed);
-        });
+    if (!isSamePage) {
+        sessionStorage.removeItem('admin_filters_collapsed');
+        sessionStorage.removeItem('admin_filters_details');
     }
+
+    // 1. Создаём кнопку
+    var toggleButton = document.createElement('div');
+    toggleButton.className = 'filter-toggle';
+
+    // 2. Определяем начальное состояние панели
+    var savedCollapsed = sessionStorage.getItem('admin_filters_collapsed');
+    var isCollapsed = isSamePage && savedCollapsed !== null
+        ? savedCollapsed === 'true'
+        : true;
+
+    toggleButton.textContent = isCollapsed ? 'Развернуть фильтры' : 'Свернуть фильтры';
+    if (isCollapsed) {
+        filterSection.classList.add('collapsed');
+    }
+    filterSection.insertBefore(toggleButton, filterSection.firstChild);
+
+    // 3. Оборачиваем контент в div
+    var filterContent = document.createElement('div');
+    filterContent.className = 'filter-content';
+    while (filterSection.children.length > 1) {
+        filterContent.appendChild(filterSection.children[1]);
+    }
+    filterSection.appendChild(filterContent);
+
+    // 4. Управляем состоянием отдельных фильтров
+    initDetailsState(filterContent, isSamePage);
+
+    // 5. Обработчик кнопки
+    toggleButton.addEventListener('click', function() {
+        var isNowCollapsed = filterSection.classList.toggle('collapsed');
+        toggleButton.textContent = isNowCollapsed ? 'Развернуть фильтры' : 'Свернуть фильтры';
+        sessionStorage.setItem('admin_filters_collapsed', isNowCollapsed);
+    });
 });
 
+// Инициализирует состояние отдельных фильтров (элементов <details>)
+function initDetailsState(container, isSamePage) {
+    var allDetails = container.querySelectorAll('details');
+    // Получаем сохранённое состояние или null, если его нет
+    var savedState = isSamePage && JSON.parse(sessionStorage.getItem('admin_filters_details') || 'null');
 
-// ============ Прокрутка формы "Рекламация" к секции "Принятые меры" для внесения данных ===============
+    allDetails.forEach(function(details, index) {
+        // Имя фильтра из атрибута или индекс как запасной вариант
+        var filterName = details.getAttribute('data-filter-title') || String(index);
+
+        // Флаг состояния - определяем, должен ли фильтр быть открыт:
+        // - Если есть сохранённое состояние — используем его
+        // - Иначе: первый фильтр (index=0) открыт, остальные закрыты
+        var shouldOpen = savedState
+            ? savedState[filterName]
+            : index === 0;
+
+        // toggleAttribute('open', true) — добавляет атрибут open
+        // toggleAttribute('open', false) — удаляет атрибут open
+        details.toggleAttribute('open', shouldOpen);
+
+        // Сохраняем новое состояние всех фильтров
+        // При клике на <summary> срабатывает событие 'toggle'
+        details.addEventListener('toggle', function() {
+            saveDetailsState(container);
+        });
+    });
+}
+
+// Сохраняет текущее состояние всех фильтров в sessionStorage.
+function saveDetailsState(container) {
+    var state = {};
+    container.querySelectorAll('details').forEach(function(details, index) {
+        // Ключ — название фильтра или его индекс
+        var filterName = details.getAttribute('data-filter-title') || String(index);
+        // details.open — встроенное свойство, возвращает true/false
+        state[filterName] = details.open;
+    });
+    sessionStorage.setItem('admin_filters_details', JSON.stringify(state));
+}
+
+
+// ============ Прокрутка к секции "Принятые меры" в форме рекламаций ===============
 
 window.addEventListener('load', function() {
     // Если в URL есть #measures-section
@@ -64,7 +118,7 @@ window.addEventListener('load', function() {
 });
 
 
-// ============ Прокрутка формы "Акт исследования" к секции отправки акта исследования ===============
+// ============ Прокрутка к секции "Отправка акта" в форме актов исследования ===============
 
 window.addEventListener('load', function() {
     // Если в URL есть #shipment-section
@@ -86,7 +140,7 @@ window.addEventListener('load', function() {
 });
 
 
-// ==================== Обновление title для текстовых полей =====================
+// ============= Обновление title для текстовых полей =============
 
 window.addEventListener('load', function() {
     // Находим все поля из списка text_fields в формах рекламаций и актов исследования

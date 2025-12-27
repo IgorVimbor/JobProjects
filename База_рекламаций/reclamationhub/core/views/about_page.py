@@ -6,11 +6,21 @@ from django.shortcuts import render
 from django.urls import reverse, NoReverseMatch
 
 from core.modules.project_info import (
+    CHANGELOG,
     PROJECT_INFO,
     SITEMAP,
     TECHNOLOGIES,
     WHATS_NEW,
 )
+
+
+# Типы изменений с метаданными
+CHANGE_TYPES = {
+    "added": {"label": "Добавлено", "color": "success", "order": 1},
+    "changed": {"label": "Изменено", "color": "success", "order": 2},  # "info"
+    "fixed": {"label": "Исправлено", "color": "danger", "order": 3},  # "warning"
+    "removed": {"label": "Удалено", "color": "danger", "order": 4},
+}
 
 
 def about(request):
@@ -52,12 +62,46 @@ def about(request):
         "row3": sitemap_with_urls[7:],  # Экспорт, Администрирование
     }
 
+    # Обрабатываем changelog: группируем изменения по типам
+    changelog_enriched = []
+    for release in CHANGELOG:
+        release_copy = release.copy()
+
+        # Группируем changes по типу
+        changes_grouped = {}
+        for change in release["changes"]:
+            change_type = change["type"]
+            if change_type not in changes_grouped:
+                type_info = CHANGE_TYPES.get(
+                    change_type,
+                    {
+                        "label": change_type,
+                        "color": "secondary",
+                        "order": 99,
+                    },
+                )
+                changes_grouped[change_type] = {
+                    "label": type_info["label"],
+                    "color": type_info["color"],
+                    "order": type_info["order"],
+                    "items": [],
+                }
+            changes_grouped[change_type]["items"].append(change["text"])
+
+        # Сортируем по order и преобразуем в список
+        release_copy["changes_grouped"] = sorted(
+            changes_grouped.values(), key=lambda x: x["order"]
+        )
+
+        changelog_enriched.append(release_copy)
+
     context = {
         "project": PROJECT_INFO,
         "sitemap": sitemap_grouped,
         "technologies": TECHNOLOGIES,
         # "features": FEATURES,
         "whats_new": WHATS_NEW,
+        "changelog": changelog_enriched,
     }
 
     return render(request, "core/about.html", context)
